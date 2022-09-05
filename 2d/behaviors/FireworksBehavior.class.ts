@@ -20,8 +20,8 @@ class Particle {
   public readonly id = particle_id_seed++;
   private bornAt: number;
   private velocity: L.LatLngTuple;
-  private theta: number = 0;
-  private dtheta: number = 0;
+  private theta = 0;
+  private dtheta = 0;
   private readonly vertex: number[];
   private dR = 6;
   private track: L.LatLng[] = [];
@@ -51,7 +51,7 @@ class Particle {
     this.dR = 0;
   }
 
-  move(dt: number = 0) {
+  move(dt = 0) {
     const { lat, lng } = this.latlng;
     const [vLat, vLng] = this.velocity;
 
@@ -89,7 +89,7 @@ class Flash {
   private lifetime = 400; // ms
   private r = 500;
   private bornAt: number = performance.now();
-  private deadAt: number = 0;
+  private deadAt = 0;
 
   constructor(private around: L.LatLng, color: string) {
     this.layer = new L.Circle(around, {

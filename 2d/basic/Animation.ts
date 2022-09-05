@@ -29,7 +29,7 @@ export namespace hr {
     state: AnimationState = AnimationState.init;
     queuedAt = 0;
     startAt = null;
-    duration: number = 0;
+    duration = 0;
 
     public lastElapse: number = null;
     public epslon = 0;
@@ -179,8 +179,8 @@ export class AnimationManager {
 }
 
 export class TranslationAnimation extends hr.Animation<hr.ReactiveLayerWithAnimate> {
-  private lat: number = 0;
-  private lng: number = 0;
+  private lat = 0;
+  private lng = 0;
 
   private dlat = 0;
   private dlng = 0;
@@ -256,9 +256,9 @@ export class RotationAnimation extends hr.Animation<hr.ReactiveLayerWithAnimate>
 }
 
 export class OneDimensionVarAnimation extends hr.Animation<L.Circle & hr.WithAnimate> {
-  private vol: number = 0;
-  private vol0: number = 0;
-  private dvol: number = 0;
+  private vol = 0;
+  private vol0 = 0;
+  private dvol = 0;
 
   constructor(m: any, vol: number, delay = 0) {
     super(hr.AnimationType.variable, m, delay);

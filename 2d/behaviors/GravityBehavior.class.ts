@@ -81,8 +81,8 @@ class Body {
   readonly layer: L.Circle;
   readonly lifetime: number = random2(600000, 800000);
   track: L.LatLng[] = [];
-  mass: number = 0;
-  r: number = 0;
+  mass = 0;
+  r = 0;
 
   constructor(public latlng: L.LatLng, public velocity: L.LatLngTuple) {
     this.r = random2(100, 600);

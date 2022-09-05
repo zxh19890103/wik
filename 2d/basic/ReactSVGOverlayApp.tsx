@@ -185,8 +185,6 @@ export const ReactSVGOverlayApp = React.memo((props: { server: ReactSVGOverlayAp
           type: 'init',
           payload: server.svgToAdd,
         });
-        for (const svg of server.svgToAdd) {
-        }
         server.svgToAdd = null;
       }, 0);
     }

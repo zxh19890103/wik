@@ -14,7 +14,7 @@ export class RectDrawBehavior extends Behavior {
   private rect: L.Rectangle = null;
   private latlng0: L.LatLng = null;
   private latlng1: L.LatLng = null;
-  private moved: boolean = false;
+  private moved = false;
 
   private pane: PaneObject;
 

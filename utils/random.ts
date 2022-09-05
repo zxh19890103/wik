@@ -8,6 +8,6 @@ export const randomColor = () => {
   return '#' + random().toString(16).substring(2, 8);
 };
 
-export const randomLatLng = (r: number = 1000): L.LatLngTuple => {
+export const randomLatLng = (r = 1000): L.LatLngTuple => {
   return [random() * r, random() * r];
 };

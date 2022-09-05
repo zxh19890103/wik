@@ -7,7 +7,7 @@ import { WithClickCancel } from './ClickCancel';
 import { IList } from '../model';
 
 export interface ReactiveLayer extends WithSnap, WithClickCancel, WithLayerID {
-  readonly $$isReactive: Symbol;
+  readonly $$isReactive: symbol;
 
   $$list: IList<ReactiveLayer>;
   $$parent: ReactiveLayer;

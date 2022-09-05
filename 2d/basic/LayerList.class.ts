@@ -35,7 +35,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 {
   items: Set<M> = new Set();
   index: Map<string, M> = new Map();
-  size: number = 0;
+  size = 0;
 
   @inject(Interface.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
@@ -231,18 +231,14 @@ function onItemClick(this: any, e) {
   const layer = e.propagatedFrom as Interactive;
   if ((layer as unknown as WithClickCancel).isObjClickEventCancelled) return;
 
-  layer.onClick && layer.onClick(e);
-
-  this.emit('click', { layer });
+  this.emit('click', { layer, leafletEvt: e });
 }
 
 function onItemDblClick(this: any, e) {
   L.DomEvent.stop(e);
   const layer = e.propagatedFrom as Interactive;
 
-  layer.onDblClick && layer.onDblClick(e);
-
-  this.emit('dblclick', { layer });
+  this.emit('dblclick', { layer, leafletEvt: e });
 }
 
 function onItemPress(this: any, e) {
@@ -256,7 +252,7 @@ function onItemHover(this: LayerList<any>, e) {
   L.DomEvent.stop(e);
   const layer = e.propagatedFrom as Interactive;
 
-  this.emit('hover', { layer, on: e.type === 'mouseover' });
+  this.emit('hover', { layer, on: e.type === 'mouseover', leafletEvt: e });
 }
 
 function onItemContextMenu(this: LayerList<any>, e) {

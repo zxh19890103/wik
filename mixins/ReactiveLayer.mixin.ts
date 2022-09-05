@@ -59,16 +59,16 @@ export function ReactiveLayerMixin(
 
     layerId = uniqueLayerId();
     latlngs: PolylineLatLngs = [];
-    angle: number = 0;
+    angle = 0;
     position: L.LatLng = new L.LatLng(0, 0);
     scale: L.Point = new L.Point(1, 1);
 
     layerState: AnyObject = {};
 
     private lastSnapshot = null;
-    ifRender: boolean = true;
+    ifRender = true;
 
-    isObjClickEventCancelled: boolean = false;
+    isObjClickEventCancelled = false;
     cancelObjClickEvent() {
       this.isObjClickEventCancelled = true;
       requestAnimationFrame(() => {
@@ -200,7 +200,7 @@ export function ReactiveLayerMixin(
       this.setAngle(this.angle + dDeg);
     }
 
-    scales(dLat: number, dLng: number = 1) {
+    scales(dLat: number, dLng = 1) {
       const { x, y } = this.scale;
       this.setScale(x * dLat, y * dLng);
     }

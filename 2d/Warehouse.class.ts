@@ -224,18 +224,18 @@ export abstract class Warehouse<LayoutData = any>
 
     this.on('click', (e) => {
       const layer = invokeCallbackOnSub(e, 'onClick');
-      this.modeManager.apply('onClick', layer);
+      this.modeManager.apply('onClick', layer, e);
     });
 
     this.on('dblclick', (e) => {
       const layer = invokeCallbackOnSub(e, 'onDblClick');
-      this.modeManager.apply('onDblClick', layer);
+      this.modeManager.apply('onDblClick', layer, e);
     });
 
     this.on('hover', (e) => {
-      const { layer, on } = e.payload;
-      invokeCallbackOnSub(e, 'onHover', on);
-      this.modeManager.apply('onHover', layer, on);
+      const { layer, on, leafletEvt } = e.payload;
+      invokeCallbackOnSub(e, 'onHover', on, leafletEvt);
+      this.modeManager.apply('onHover', layer, on, leafletEvt);
     });
 
     this.on('press', (e) => {

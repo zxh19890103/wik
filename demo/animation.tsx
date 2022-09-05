@@ -9,7 +9,7 @@ import * as Utils from '../utils';
 import { MyWarehouse } from './MyWarehouse.class';
 import { SVG_KUBOT } from '../2d/images';
 
-L.Icon.Default.imagePath = `http://wls.hairoutech.com:9100/fe-libs/leaflet-static/`;
+L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
 async function bootstrap(container: HTMLDivElement) {
   document.title = 'animation test.';

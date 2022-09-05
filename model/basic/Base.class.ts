@@ -6,7 +6,7 @@ import { WithEmitter, WithEmitterMix } from '../../mixins/Emitter';
 
 let _id_seed = 1992;
 
-const uniqueId = (prefix: string = 'model') => {
+const uniqueId = (prefix = 'model') => {
   return prefix + _id_seed++;
 };
 

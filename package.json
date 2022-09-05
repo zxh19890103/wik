@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite dev --host",
     "build": "tsc --project tsconfig.prod.json",
-    "prebuild": "node ./scripts/build --stage=pre",
+    "lint": "eslint . --fix",
+    "prebuild": "yarn lint && node ./scripts/build --stage=pre",
     "postbuild": "node ./scripts/build --stage=post"
   },
   "dependencies": {
@@ -23,6 +24,12 @@
     "leaflet": "~1.7.1"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
     "sass": "^1.54.8",
     "typescript": "^4.8.2",
     "vite": "^3.0.9",

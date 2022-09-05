@@ -42,7 +42,7 @@ export class Bot
    * @param n0 如果是平移，就是 lat；如果是旋转，就是 deg
    * @param n1 如果是平移，就是 lng；如果是旋转，留空就行
    */
-  animate(type: hr.AnimationType, n0: number, n1: number = 0) {
+  animate(type: hr.AnimationType, n0: number, n1 = 0) {
     switch (type) {
       case hr.AnimationType.rotate: {
         this.animationManager.add(new RotationAnimation(this, n0));

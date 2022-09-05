@@ -1,16 +1,17 @@
-import React, { Suspense } from "react";
-import ReactDOM from "react-dom";
+import React, { Suspense } from 'react';
+import ReactDOM from 'react-dom';
 
-import "./index.scss";
+import './index.scss';
 
-const route = window["__ROUTE__"];
+const route = window['__ROUTE__'];
 
 const pages = {
-  demo: React.lazy(() => import("./demo")),
-  dev: React.lazy(() => import("./dev")),
-  dev3d: React.lazy(() => import("./dev3d")),
-  complete: React.lazy(() => import("./complete")),
-  animation: React.lazy(() => import("./animation")),
+  demo: React.lazy(() => import('./demo')),
+  dev: React.lazy(() => import('./dev')),
+  dev3d: React.lazy(() => import('./dev3d')),
+  complete: React.lazy(() => import('./complete')),
+  animation: React.lazy(() => import('./animation')),
+  minimal: React.lazy(() => import('./minimal')),
 };
 
 const Route = () => {
@@ -38,4 +39,4 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.querySelector("#app"));
+ReactDOM.render(<App />, document.querySelector('#app'));

@@ -22,14 +22,13 @@ const pre = () => {
 const post = () => {
   pubPkg.version = devPkg.version;
 
-  fs.writeFileSync(
-    path.join(distPath, './package.json'),
-    JSON.stringify(pubPkg, '  \n')
-  );
+  fs.writeFileSync(path.join(distPath, './package.json'), JSON.stringify(pubPkg, '  \n'));
 
   for (const file of ['global.d.ts', 'lib.d.ts']) {
     fs.copyFileSync(path.join(rootPath, file), path.join(distPath, file));
   }
+
+  console.log('Now you should come in ./dist folder and run `npm publish`');
 };
 
 const main = () => {

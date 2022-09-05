@@ -1,13 +1,12 @@
 import L from 'leaflet';
 import { useEffect, useRef } from 'react';
 import { HrMap } from '../2d/basic/Map.class';
-import 'leaflet/dist/leaflet.css';
 import './dev.scss';
 
 import * as hrGUI from '../2d';
 import * as hrGUIBasic from '../2d/basic';
 
-L.Icon.Default.imagePath = `http://wls.hairoutech.com:9100/fe-libs/leaflet-static/`;
+L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
 export default () => {
   const domRef = useRef<HTMLDivElement>();

@@ -14,8 +14,8 @@ import { Constructor } from '../../interfaces/Constructor';
 })
 export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(ReactiveLayerMixin) {
   protected image: HTMLImageElement = null;
-  protected width: number = 0;
-  protected height: number = 0;
+  protected width = 0;
+  protected height = 0;
   protected isDrawingBounds = false;
 
   constructor(private imgSrc: string | HTMLImageElement, width: number, height: number) {

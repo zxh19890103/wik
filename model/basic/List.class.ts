@@ -49,7 +49,7 @@ export interface IList<M> extends Iterable<M> {
 export class List<M extends Base> extends Base implements IList<M> {
   items: Set<M> = new Set();
   index: Map<string, M> = new Map();
-  size: number = 0;
+  size = 0;
   private item_C: Constructor<M> = null;
   private view_containers: ViewContainer<M, View<M>>[] = [];
   private isBatching = false;

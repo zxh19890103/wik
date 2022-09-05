@@ -10,7 +10,7 @@ import * as hrGUIBasic from '../2d/basic';
 import * as hrModel from '../model';
 import { SVG_KUBOT } from '../2d/images';
 
-L.Icon.Default.imagePath = `http://wls.hairoutech.com:9100/fe-libs/leaflet-static/`;
+L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
 class MyRobotView extends hrGUI.Robot implements hrModel.RobotView {
   model: hrModel.Robot;

@@ -41,7 +41,7 @@ export class PaneManager implements IDisposable {
    * @param rendererType is canvas OR svg OR without.?
    * @returns
    */
-  get(name: PaneName, type: RendererType = 'none', z: number = 401) {
+  get(name: PaneName, type: RendererType = 'none', z = 401) {
     if (this.pool[name]) {
       const po = this.pool[name];
       if (type !== 'none' && po.rendererType === 'none') {

@@ -3,11 +3,11 @@ import { Base, View } from './basic/Base.class';
 export type RobotEffect = 'Translate' | 'Rotate' | 'State';
 
 export class Robot extends Base<RobotEffect> {
-  px: number = 0;
-  py: number = 0;
-  pz: number = 0;
-  theta: number = 0;
-  error: boolean = false;
+  px = 0;
+  py = 0;
+  pz = 0;
+  theta = 0;
+  error = false;
 
   fromJSON(d: any): this {
     return this;

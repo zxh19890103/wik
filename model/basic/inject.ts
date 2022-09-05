@@ -16,7 +16,7 @@ import { Constructor, AbstractConstructor } from '../../interfaces/Constructor';
 /**
  * must be no-argument
  */
-type InjectToken = Symbol;
+type InjectToken = symbol;
 type InjectDecratorArgs = [object, string, PropertyDescriptor];
 type NodeKey = AbstractConstructor;
 

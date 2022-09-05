@@ -2,7 +2,7 @@ import L, { DomEvent } from 'leaflet';
 import { PaneManager } from './basic';
 
 (L.Canvas.prototype as any)._initContainer = function () {
-  var container = (this._container = document.createElement('canvas'));
+  const container = (this._container = document.createElement('canvas'));
 
   // These 3 lines are deleted for we will use a proxy pane.
   // DomEvent.on(container, 'mousemove', this._onMouseMove, this);
