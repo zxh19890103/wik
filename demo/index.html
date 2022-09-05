@@ -1,45 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Warehouse demo</title>
 
-    <link
-      rel="stylesheet"
-      href="http://wls.hairoutech.com:9100/fe-libs/leaflet/1.8.0/leaflet.min.css"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warehouse demo</title>
 
-    <script
-      src="http://wls.hairoutech.com:9100/fe-libs/leaflet/1.8.0/leaflet.min.js"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+  <link rel="stylesheet" href="http://wls.hairoutech.com:9100/fe-libs/leaflet/1.8.0/leaflet.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <script
-      src="http://wls.hairoutech.com:9100/fe-libs/react/17.0.1/react.production.min.js"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+  <script src="http://wls.hairoutech.com:9100/fe-libs/leaflet/1.8.0/leaflet.min.js" crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
 
-    <script
-      src="http://wls.hairoutech.com:9100/fe-libs/react-dom/17.0.1/react-dom.production.min.js"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+  <script src="http://wls.hairoutech.com:9100/fe-libs/react/17.0.1/react.development.js" crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
 
-    <script>
-      window.__ENV__ = {
-        MINIO_END: 'http://wls.hairoutech.com:9100',
-      };
-    </script>
-  </head>
+  <script src="http://wls.hairoutech.com:9100/fe-libs/react-dom/17.0.1/react-dom.development.js"
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-  <body class="root">
-    <div id="app"></div>
-    <script type="module" src="./index.tsx"></script>
-  </body>
+  <script>
+    window.__ROUTE__ = new URLSearchParams(location.search).get('route');
+  </script>
+</head>
+
+<body class="root">
+  <div id="app"></div>
+  <script type="module" src="./index.tsx"></script>
+</body>
+
 </html>

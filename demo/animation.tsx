@@ -1,7 +1,6 @@
 import L from 'leaflet';
 import { useEffect, useRef } from 'react';
 import { HrMap } from '../2d/basic/Map.class';
-import 'leaflet/dist/leaflet.css';
 import './dev.scss';
 
 import * as hrGUIBasic from '../2d/basic';
@@ -10,7 +9,7 @@ import * as Utils from '../utils';
 import { MyWarehouse } from './MyWarehouse.class';
 import { SVG_KUBOT } from '../2d/images';
 
-L.Icon.Default.imagePath = `${__ENV__.MINIO_END}/fe-libs/leaflet-static/`;
+L.Icon.Default.imagePath = `http://wls.hairoutech.com:9100/fe-libs/leaflet-static/`;
 
 async function bootstrap(container: HTMLDivElement) {
   document.title = 'animation test.';
@@ -75,7 +74,7 @@ async function bootstrap(container: HTMLDivElement) {
   }, 4000);
 }
 
-export const TestApp = () => {
+export default () => {
   const domRef = useRef<HTMLDivElement>();
 
   useEffect(() => {

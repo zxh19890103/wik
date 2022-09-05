@@ -27,7 +27,7 @@ const post = () => {
     JSON.stringify(pubPkg, '  \n')
   );
 
-  for (const file of ['global.d.ts', 'lib.d.ts', 'index.ts']) {
+  for (const file of ['global.d.ts', 'lib.d.ts']) {
     fs.copyFileSync(path.join(rootPath, file), path.join(distPath, file));
   }
 };

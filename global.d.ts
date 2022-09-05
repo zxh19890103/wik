@@ -1,4 +1,3 @@
-declare const __ENV__: any;
 declare const __PROD__: boolean;
 
 declare module '*.svg' {

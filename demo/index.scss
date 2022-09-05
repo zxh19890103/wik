@@ -11,19 +11,11 @@ body {
   height: 100%;
 }
 
-.hrContextMenu {
-
-  ul {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-  }
-
-  .leaflet-popup-content-wrapper {
-    border-radius: 4px;
-  }
-
-  .leaflet-popup-tip-container {
-    // display: none;
+.App {
+  &__topbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
   }
 }

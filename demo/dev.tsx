@@ -7,9 +7,9 @@ import './dev.scss';
 import * as hrGUI from '../2d';
 import * as hrGUIBasic from '../2d/basic';
 
-L.Icon.Default.imagePath = `${__ENV__.MINIO_END}/fe-libs/leaflet-static/`;
+L.Icon.Default.imagePath = `http://wls.hairoutech.com:9100/fe-libs/leaflet-static/`;
 
-export const Scene = () => {
+export default () => {
   const domRef = useRef<HTMLDivElement>();
 
   useEffect(() => {

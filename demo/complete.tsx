@@ -1,7 +1,6 @@
 import L from 'leaflet';
 import { useEffect, useRef, useState } from 'react';
 import { HrMap } from '../2d/basic/Map.class';
-import 'leaflet/dist/leaflet.css';
 import './dev.scss';
 
 import * as Util from '../utils';
@@ -11,7 +10,7 @@ import * as hrGUIBasic from '../2d/basic';
 import * as hrModel from '../model';
 import { SVG_KUBOT } from '../2d/images';
 
-L.Icon.Default.imagePath = `${__ENV__.MINIO_END}/fe-libs/leaflet-static/`;
+L.Icon.Default.imagePath = `http://wls.hairoutech.com:9100/fe-libs/leaflet-static/`;
 
 class MyRobotView extends hrGUI.Robot implements hrModel.RobotView {
   model: hrModel.Robot;
@@ -196,7 +195,7 @@ const Scene = (props: { points: any[]; locations: any[] }) => {
   return <div id="devScene" ref={domRef} />;
 };
 
-export const TestApp = () => {
+export default () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
 

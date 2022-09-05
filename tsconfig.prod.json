@@ -16,6 +16,7 @@
     "mixins/**/*",
     "model/**/*",
     "utils/**/*",
+    "ioc.config.ts",
     "global.d.ts",
     "lib.d.ts",
     "index.ts"

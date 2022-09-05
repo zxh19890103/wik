@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import './dev.scss';
 
-export const Scene = () => {
+export default () => {
   const domRef = useRef<HTMLDivElement>();
 
   useEffect(() => {}, []);
