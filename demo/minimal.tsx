@@ -17,6 +17,9 @@ class MyWarehouse extends Warehouse {
   }
 
   layout(data: any): void {
+    const point = new basic.Circle([0, 0], { radius: 3000, color: '#097' });
+    this.add(ObjectType.point, point);
+
     const origin = L.marker([0, 0]);
     origin.addTo(this.map);
   }
@@ -31,14 +34,11 @@ export default () => {
     interactivateAllPanes(root, warehouse.paneManager);
 
     warehouse.layout(null);
-
-    const point = new basic.Circle([0, 0], { radius: 3000, color: '#097' });
-    warehouse.add(ObjectType.point, point);
   };
 
   return (
-    <>
+    <div>
       <Scene warehouse={warehouse} afterMount={handleAfter} />
-    </>
+    </div>
   );
 };
