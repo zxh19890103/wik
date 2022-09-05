@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "ESNext",
+    "module": "ES2015",
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false
+  },
+  "include": [
+    "2d/**/*",
+    "3d/**/*",
+    "dom/**/*",
+    "mixins/**/*",
+    "model/**/*",
+    "utils/**/*",
+    "global.d.ts",
+    "lib.d.ts",
+    "index.ts"
+  ]
+}

@@ -1,0 +1,12 @@
+@keyframes twink {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.twink {
+  animation: twink 0.3s alternate infinite;
+}

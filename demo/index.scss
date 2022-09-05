@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  font-family: Microsoft Yahei, Arial, Hiragino Sans GB, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+}
+
+#app {
+  height: 100%;
+}
+
+.hrContextMenu {
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+
+  .leaflet-popup-content-wrapper {
+    border-radius: 4px;
+  }
+
+  .leaflet-popup-tip-container {
+    // display: none;
+  }
+}

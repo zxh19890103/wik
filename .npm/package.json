@@ -1,0 +1,23 @@
+{
+  "name": "@fe/graphic",
+  "version": "",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {},
+  "dependencies": {
+    "@types/leaflet": "^1.7.11",
+    "@types/node": "^18.7.3",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@types/three": "^0.143.0",
+    "eventemitter3": "^4.0.7",
+    "gl-matrix": "^3.4.3",
+    "reflect-metadata": "^0.1.13"
+  },
+  "peerDependencies": {
+    "leaflet": "~1.7.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "three": "^0.143.0"
+  }
+}
