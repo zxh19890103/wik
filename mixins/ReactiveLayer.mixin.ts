@@ -102,6 +102,15 @@ export function ReactiveLayerMixin(
       return this;
     }
 
+    override remove(): this {
+      if (this.$$list) {
+        this.$$list.remove(this);
+      } else {
+        super.remove();
+      }
+      return this;
+    }
+
     addChild(...children: ReactiveLayer[]): void {
       throw new Error('Method not implemented.');
     }

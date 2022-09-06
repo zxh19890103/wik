@@ -56,20 +56,27 @@ export class EditBehavior extends Behavior {
     const target = e.target as HTMLAnchorElement;
     if (target.tagName !== 'A') return;
     const value = target.getAttribute('data-value');
-    if (!value || !value.trim()) return;
 
-    const item = this.currentContextMenuItems.find((x) => x.value === value);
-    if (item && item.callback) {
-      if (typeof item.callback === 'string') {
-        if (this.currentContextMenuTarget[item.callback]) {
-          this.currentContextMenuTarget[item.callback]();
-        }
-      } else {
-        item.callback();
+    if (!value || !value.trim()) {
+      if (!__PROD__) {
+        console.warn('value should not be empty!');
       }
-    } else if (this.currentContextMenuTarget.onContextMenuClick) {
-      this.currentContextMenuTarget.onContextMenuClick(value);
+    } else {
+      const item = this.currentContextMenuItems.find((x) => x.value === value);
+      if (item && item.callback) {
+        if (typeof item.callback === 'string') {
+          if (this.currentContextMenuTarget[item.callback]) {
+            this.currentContextMenuTarget[item.callback]();
+          }
+        } else {
+          item.callback();
+        }
+      } else if (this.currentContextMenuTarget.onContextMenuClick) {
+        this.currentContextMenuTarget.onContextMenuClick(value);
+      }
     }
+
+    this.contextmenuPopup.remove();
   };
 
   override onContextMenu(obj: Interactive, evt: L.LeafletMouseEvent): void {

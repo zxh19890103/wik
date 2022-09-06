@@ -5,9 +5,11 @@ import { ReactSVGOverlay } from './basic/ReactSVGOverlay.class';
 import ImageSVG from './basic/Image.svg';
 import type { meta } from './meta';
 import * as svg from '../2d/images';
+import { OnContextMenu } from '../interfaces/Interactive';
+import { ContextMenuItem } from '../interfaces/types';
 
 @leafletOptions<L.ImageOverlayOptions>({})
-export class Haiport extends ReactSVGOverlay {
+export class Haiport extends ReactSVGOverlay implements OnContextMenu {
   constructor(
     latlng: L.LatLngExpression,
     svgServer: ReactSVGOverlayAppServer,
@@ -19,6 +21,24 @@ export class Haiport extends ReactSVGOverlay {
       imageURL: meta?.type === 'OUT' ? svg.SVG_HAIPORT_D : svg.SVG_HAIPORT_D,
     };
     this.position = L.latLng(latlng);
+  }
+
+  onContextMenu(evt?: L.LeafletMouseEvent): ContextMenuItem[] {
+    return [
+      {
+        text: 'Delete',
+        value: 'delete',
+      },
+    ];
+  }
+
+  onContextMenuClick(key: string): void | Promise<any> {
+    switch (key) {
+      case 'delete': {
+        this.remove();
+        break;
+      }
+    }
   }
 
   onClick() {

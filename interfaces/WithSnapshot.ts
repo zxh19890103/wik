@@ -1,4 +1,4 @@
-export interface WithSnap<S = any> {
+export interface WithSnapshot<S = any> {
   snapshot(): void;
   getSnapshot(): S;
   toSnapshot(): S;

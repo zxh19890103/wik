@@ -1,0 +1,27 @@
+.hrContextMenu {
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 0 !important;
+
+  width: 120px;
+
+  ul {
+    padding: 0;
+    list-style-type: none;
+    font-size: 12px;
+
+    li {
+      display: block;
+      margin: 5px 0;
+    }
+  }
+
+  .leaflet-popup-content-wrapper {
+    border-radius: 4px;
+  }
+
+  .leaflet-popup-tip-container {
+    display: none;
+  }
+}

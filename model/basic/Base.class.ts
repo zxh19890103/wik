@@ -1,5 +1,5 @@
 import { Serializable } from '../../interfaces/Serializable';
-import { WithSnap } from '../../interfaces/WithSnap';
+import { WithSnapshot } from '../../interfaces/WithSnapshot';
 import { appendEffectCallReq } from './effect';
 import { mixin } from './mixin';
 import { WithEmitter, WithEmitterMix } from '../../mixins/Emitter';
@@ -13,7 +13,7 @@ const uniqueId = (prefix = 'model') => {
 @mixin(WithEmitterMix)
 export abstract class Base<E extends string = string>
   extends EventEmitter3<E, any>
-  implements WithSnap, Serializable
+  implements WithSnapshot, Serializable
 {
   id: string = uniqueId();
   private _snapshot = null;

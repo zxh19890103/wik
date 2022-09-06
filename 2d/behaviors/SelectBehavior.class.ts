@@ -15,6 +15,7 @@ export class RectDrawBehavior extends Behavior {
   private latlng0: L.LatLng = null;
   private latlng1: L.LatLng = null;
   private moved = false;
+  private isMapDraggable = false;
 
   private pane: PaneObject;
 
@@ -23,13 +24,11 @@ export class RectDrawBehavior extends Behavior {
   }
 
   override onLoad(): void {
-    this.map.dragging.disable();
+    this.isMapDraggable = this.map.dragging.enabled();
     this.pane = this.paneMgr.get('selectPane', 'canvas', 498);
   }
 
-  override onUnload(): void {
-    this.map.dragging.enable();
-  }
+  override onUnload(): void {}
 
   override onNoopClick(evt: unknown): void {
     this.selectionMgr.clearAll();
@@ -37,9 +36,14 @@ export class RectDrawBehavior extends Behavior {
 
   override onMouseDown(evt: L.LeafletMouseEvent): void {
     this.latlng0 = this.latlng1 = evt.latlng;
+
     this.rect = new L.Rectangle(L.latLngBounds(this.latlng0, this.latlng1), {
       renderer: this.pane.renderer,
     }).addTo(this.map);
+
+    if (this.isMapDraggable) {
+      this.map.dragging.disable();
+    }
   }
 
   override onMouseMove(evt: L.LeafletMouseEvent): void {
@@ -50,45 +54,44 @@ export class RectDrawBehavior extends Behavior {
   }
 
   override onMouseUp(evt: L.LeafletMouseEvent): void {
-    if (!this.moved) {
-      this.rect?.remove();
-      this.rect = null;
-      return;
+    if (this.moved) {
+      const bounds = this.rect.getBounds();
+
+      const results = [];
+
+      this.warehouse.each((item, type) => {
+        const layer = item as any;
+        if (layer.getBounds) {
+          // SVGOverlay, ImageOverlay, Polyline, Rectangle, Polygon
+          if (bounds.intersects(layer.getBounds())) {
+            results.push(layer);
+          }
+        } else if (layer.getLatLng) {
+          // Marker, Circle, CirlceMarker
+          if (bounds.contains(layer.getLatLng())) {
+            results.push(layer);
+          }
+        } else {
+          // eslint-disable-next-line quotes
+          console.log("we don't know how to judage.");
+        }
+      });
+
+      console.log(`you've selected ${results.length} layers.`);
+
+      this.selectionMgr.all(results);
+
+      this.map.cancelObjClickEvent();
     }
 
+    this.rect?.remove();
+    this.rect = null;
+    this.moved = false;
     this.latlng0 = null;
     this.latlng1 = null;
 
-    const bounds = this.rect.getBounds();
-
-    const results = [];
-
-    this.warehouse.each((item, type) => {
-      const layer = item as any;
-      if (layer.getBounds) {
-        // SVGOverlay, ImageOverlay, Polyline, Rectangle, Polygon
-        if (bounds.intersects(layer.getBounds())) {
-          results.push(layer);
-        }
-      } else if (layer.getLatLng) {
-        // Marker, Circle, CirlceMarker
-        if (bounds.contains(layer.getLatLng())) {
-          results.push(layer);
-        }
-      } else {
-        // eslint-disable-next-line quotes
-        console.log("we don't know how to judage.");
-      }
-    });
-
-    console.log(`you've selected ${results.length} layers.`);
-
-    this.selectionMgr.all(results);
-
-    this.map.cancelObjClickEvent();
-
-    this.rect.remove();
-    this.rect = null;
-    this.moved = false;
+    if (this.isMapDraggable) {
+      this.map.dragging.enabled();
+    }
   }
 }

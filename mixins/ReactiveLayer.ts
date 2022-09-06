@@ -1,12 +1,12 @@
 import * as glMatrix from 'gl-matrix';
-import { WithSnap } from '../interfaces/WithSnap';
+import { WithSnapshot } from '../interfaces/WithSnapshot';
 import { PolylineLatLngs } from '../interfaces/types';
 import { WithLayerID } from '../interfaces/WithLayerID';
 import { ReactiveLayerRenderEffect } from './effects';
 import { WithClickCancel } from './ClickCancel';
 import { IList } from '../model';
 
-export interface ReactiveLayer extends WithSnap, WithClickCancel, WithLayerID {
+export interface ReactiveLayer extends WithSnapshot, WithClickCancel, WithLayerID {
   readonly $$isReactive: symbol;
 
   $$list: IList<ReactiveLayer>;

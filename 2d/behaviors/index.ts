@@ -1,3 +1,5 @@
+import './style.scss';
+
 export * from './DefaultBehavior.class';
 export * from './ReadonlyBehavior.class';
 export * from './DrawBehavior.class';

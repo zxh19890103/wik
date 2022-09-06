@@ -11,6 +11,9 @@ export default {
   optimizeDeps: {
     exclude: ['react', 'react-dom', 'leaflet', 'three'],
   },
+  server: {
+    open: true,
+  },
   /**
    * We do not use vite's build feature, instead we use TSC to transform TS file to "es6 + d.ts"
    */
