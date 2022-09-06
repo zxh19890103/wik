@@ -4,73 +4,54 @@ import { HrMap } from '../2d/basic/Map.class';
 import './dev.scss';
 
 import * as hrGUIBasic from '../2d/basic';
+import * as hrAnimation from '../2d/animation';
 import * as hrGUI from '../2d';
 import * as Utils from '../utils';
-import { MyWarehouse } from './MyWarehouse.class';
 import { SVG_KUBOT } from '../2d/images';
+import { injectCtor, injector, ObjectType } from '../model';
+import { Warehouse } from '../2d';
+
+import '../ioc.config';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
+
+@injectCtor()
+class MyWarehouse extends Warehouse {
+  layout(data: any): void {}
+}
 
 async function bootstrap(container: HTMLDivElement) {
   document.title = 'animation test.';
 
   const root = new HrMap(container, { zoom: 1.5 });
 
-  const warehouse = new MyWarehouse(null);
+  const warehouse = injector.$new<MyWarehouse>(MyWarehouse);
   warehouse.mount(root);
 
   hrGUI.interactivateAllPanes(root, warehouse.paneManager);
 
-  for (let i = 0; i < 30000; i++) {
-    warehouse.points.add(
-      new hrGUI.Point([Utils.randomInt(-90000, 90000), Utils.randomInt(-90000, 90000)]),
-    );
-  }
-
-  for (let i = 0; i < 20000; i++) {
-    warehouse.shelfs.add(
-      new hrGUI.Shelf([Utils.randomInt(-90000, 90000), Utils.randomInt(-90000, 90000)]),
-    );
-  }
-
-  for (let i = 0; i < 100; i++) {
-    warehouse.chargepiles.add(
-      new hrGUI.Chargepile([Utils.randomInt(-9000, 9000), Utils.randomInt(-9000, 9000)], null),
-    );
-  }
-
-  for (let i = 0; i < 100; i++) {
-    warehouse.haiports.add(
-      new hrGUI.Haiport([Utils.randomInt(-9000, 9000), Utils.randomInt(-9000, 9000)], null),
-    );
-  }
-
   await hrGUIBasic.setDefaultImage(hrGUI.Bot, SVG_KUBOT);
 
   for (let i = 0; i < 1000; i++) {
-    const bot = new hrGUI.Bot(null, 1000, 1000);
+    const bot = injector.$new<hrGUI.Bot>(hrGUI.Bot, null, 1000, 1000);
     bot.position = L.latLng(Utils.randomInt(-500, 500), Utils.randomInt(-500, 500));
-    warehouse.addBot(bot);
+    warehouse.add(ObjectType.bot, bot);
   }
 
   setTimeout(() => {
     for (const bot of warehouse.bots) {
       bot.animate(
-        hrGUIBasic.hr.AnimationType.translate,
+        hrAnimation.AnimationType.translate,
         Utils.randomInt(-20000, 20000),
         Utils.randomInt(-20000, 20000),
       );
     }
 
-    setTimeout(() => {
-      for (const bot of warehouse.bots) {
-        bot.animate(hrGUIBasic.hr.AnimationType.rotate, Utils.randomInt(-2000, 2000));
-      }
-    }, 800);
-
-    setTimeout(() => {
-      // warehouse.animationManager.stop();
-    }, 3000);
+    // setTimeout(() => {
+    //   for (const bot of warehouse.bots) {
+    //     bot.animate(hrAnimation.AnimationType.rotate, Utils.randomInt(-2000, 2000));
+    //   }
+    // }, 800);
   }, 4000);
 }
 
@@ -81,5 +62,5 @@ export default () => {
     bootstrap(domRef.current);
   }, []);
 
-  return <div id="devScene" ref={domRef}></div>;
+  return <div className="hrScene" ref={domRef}></div>;
 };

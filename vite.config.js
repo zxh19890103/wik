@@ -12,6 +12,7 @@ export default {
     exclude: ['react', 'react-dom', 'leaflet', 'three'],
   },
   server: {
+    port: 3005,
     open: true,
   },
   /**

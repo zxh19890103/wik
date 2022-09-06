@@ -7,7 +7,6 @@ import { ObjectType, IWarehouse } from '../model';
 import { HrEvent } from '../model/basic/Event.class';
 import { mixin } from '../model/basic/mixin';
 import {
-  AnimationManager,
   HrMap,
   ImageManager,
   LayerList,
@@ -16,6 +15,7 @@ import {
   SVGOverlayList,
   VectorLayerList,
 } from './basic';
+import { AnimationManager } from './animation/AnimationManager.class';
 import { HighlightManager } from './basic/HighlightManager.class';
 import { Bot } from './Bot.class';
 import { CacheShelf } from './CacheShelf.class';

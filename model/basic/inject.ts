@@ -86,7 +86,7 @@ namespace injector {
   function getCtorInjectArgs(c: Constructor) {
     const node = keyNodeMapping.get(c);
 
-    if (!node && node.paramsDeps.length === 0) {
+    if (!node || node.paramsDeps.length === 0) {
       return [];
     }
 

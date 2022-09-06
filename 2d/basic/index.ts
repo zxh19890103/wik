@@ -18,6 +18,5 @@ export * from './LayerList.class';
 export * from './SVGOverlayList.class';
 export * from './VectorLayerList.class';
 
-export * from './Animation';
 export * from './PaneManager.class';
 export * from './ImageManager.class';

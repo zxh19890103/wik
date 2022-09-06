@@ -83,5 +83,5 @@ export const Scene = (props: { initialData: any }) => {
     }, 1000);
   }, []);
 
-  return <div id="devScene" ref={domRef}></div>;
+  return <div className="hrScene" ref={domRef}></div>;
 };

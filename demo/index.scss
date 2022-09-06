@@ -1,3 +1,7 @@
+html {
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: Microsoft Yahei, Arial, Hiragino Sans GB, sans-serif, Apple Color Emoji,
@@ -12,6 +16,7 @@ body {
 }
 
 .App {
+  height: 100%;
   &__topbar {
     position: fixed;
     bottom: 0;

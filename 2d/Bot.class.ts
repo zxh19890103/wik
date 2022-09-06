@@ -4,37 +4,34 @@ import { WithInput } from '../interfaces/WithInput';
 import { WithLayerState } from '../interfaces/WithLayerState';
 import { inject } from '../model/basic/inject';
 
+import { ImageLayer, ImageManager } from './basic';
+
 import {
-  hr,
-  ImageLayer,
+  WithAnimate,
+  HrAnimation,
+  AnimationType,
   TranslationAnimation,
   RotationAnimation,
   AnimationManager,
-  ImageManager,
-} from './basic';
+} from './animation';
 
-import * as Interface from '../interfaces/symbols';
 import { LeafletMouseEvent } from 'leaflet';
 import { ContextMenuItem } from '../interfaces/types';
 import { WithClone } from '../interfaces/WithClone';
+import * as Interface from '../interfaces/symbols';
 
 type ContextMenuKey = 'rotate' | 'copy';
 
 export class Bot
   extends ImageLayer
-  implements
-    hr.WithAnimate,
-    WithInput<BotInput>,
-    OnSelect,
-    OnContextMenu<ContextMenuKey>,
-    WithClone
+  implements WithAnimate, WithInput<BotInput>, OnSelect, OnContextMenu<ContextMenuKey>, WithClone
 {
   @inject(Interface.IAnimationManager)
   readonly animationManager: AnimationManager = null;
   @inject(Interface.IImageManager)
   readonly imageManager: ImageManager = null;
 
-  currentAnimation: hr.Animation = null;
+  currentAnimation: HrAnimation = null;
 
   /**
    * 只支持两种动画，一个是平移，二是绕中心旋转
@@ -42,13 +39,13 @@ export class Bot
    * @param n0 如果是平移，就是 lat；如果是旋转，就是 deg
    * @param n1 如果是平移，就是 lng；如果是旋转，留空就行
    */
-  animate(type: hr.AnimationType, n0: number, n1 = 0) {
+  animate(type: AnimationType, n0: number, n1 = 0) {
     switch (type) {
-      case hr.AnimationType.rotate: {
+      case AnimationType.rotate: {
         this.animationManager.add(new RotationAnimation(this, n0));
         break;
       }
-      case hr.AnimationType.translate: {
+      case AnimationType.translate: {
         this.animationManager.add(new TranslationAnimation(this, n0, n1));
         break;
       }

@@ -35,7 +35,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/ban-types': [0],
-    '@typescript-eslint/no-namespace': [1],
-    'no-inner-declarations': [1],
+    '@typescript-eslint/no-namespace': [0],
+    'no-inner-declarations': [0],
   },
 };
