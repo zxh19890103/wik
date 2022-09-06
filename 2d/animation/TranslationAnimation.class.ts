@@ -5,32 +5,30 @@ import { ReactiveLayerWithAnimate } from './WithAnimate';
 
 const { sqrt } = Math;
 
-export class TranslationAnimation extends HrAnimation<ReactiveLayerWithAnimate> {
-  private lat = 0;
-  private lng = 0;
-
+export class TranslationAnimation extends HrAnimation<
+  ReactiveLayerWithAnimate,
+  { lat: number; lng: number }
+> {
   private dlat = 0;
   private dlng = 0;
 
-  constructor(m: ReactiveLayerWithAnimate, lat: number, lng: number, delay = 0) {
-    super(AnimationType.translate, m, delay);
-    this.lat = lat;
-    this.lng = lng;
+  constructor(m: ReactiveLayerWithAnimate, lat: number, lng: number) {
+    super(AnimationType.translate, m, { lat, lng }, { delay: 0 });
   }
 
   start(t: number) {
     const position = this.m.position;
     const dur = this.duration;
 
-    this.dlat = (this.lat - position.lat) / dur;
-    this.dlng = (this.lng - position.lng) / dur;
+    this.dlat = (this.value.lat - position.lat) / dur;
+    this.dlng = (this.value.lng - position.lng) / dur;
 
     this.epslon = MS_PER_FRAME * sqrt(this.dlat * this.dlat + this.dlng * this.dlng);
   }
 
   calcDur() {
-    const dx = this.lng - this.m.position.lng;
-    const dy = this.lat - this.m.position.lat;
+    const dx = this.value.lng - this.m.position.lng;
+    const dy = this.value.lat - this.m.position.lat;
     this.duration = sqrt(dx * dx + dy * dy) * 0.4;
   }
 
@@ -39,6 +37,6 @@ export class TranslationAnimation extends HrAnimation<ReactiveLayerWithAnimate> 
   }
 
   final(): void {
-    this.m.setPosition(this.lat, this.lng);
+    this.m.setPosition(this.value.lat, this.value.lng);
   }
 }

@@ -55,7 +55,6 @@ export class AnimationManager {
           continue;
         }
         case AnimationState.queued: {
-          item.calcDur();
           /**
            * it should give user an option to select queque OR interupt the current?
            */
@@ -64,6 +63,8 @@ export class AnimationManager {
             currItem.final();
             currItem.state = AnimationState.finished;
           }
+
+          item.calcDur();
           item.start(now);
           item.state = AnimationState.running;
           item.m.currentAnimation = item;
