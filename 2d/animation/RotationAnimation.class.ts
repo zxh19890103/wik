@@ -1,15 +1,14 @@
 import { HrAnimation } from './Animation.class';
-import { AnimationType } from './AnimationType.enum';
-import { MS_PER_FRAME } from './constants';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
 const { abs } = Math;
 
-export class RotationAnimation extends HrAnimation<ReactiveLayerWithAnimate, number> {
+export class RotationAnimation extends HrAnimation<ReactiveLayerWithAnimate> {
   private ddeg: number;
+  readonly value: number;
 
   constructor(m: ReactiveLayerWithAnimate, deg: number) {
-    super(AnimationType.rotate, m, deg, { delay: 0 });
+    super(m, deg, { delay: 0 });
   }
 
   start(t: number) {
@@ -21,7 +20,8 @@ export class RotationAnimation extends HrAnimation<ReactiveLayerWithAnimate, num
   }
 
   calcDur() {
-    this.duration = abs(this.value - this.m.angle) * 20;
+    // k = time / dA
+    return abs(this.value - this.m.angle) * 20;
   }
 
   final(): void {

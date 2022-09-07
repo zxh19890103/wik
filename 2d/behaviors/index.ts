@@ -8,3 +8,4 @@ export * from './SelectBehavior.class';
 export * from './FireworksBehavior.class';
 export * from './GravityBehavior.class';
 export * from './EditBehavior.class';
+export * from './BezierBehavior.class';

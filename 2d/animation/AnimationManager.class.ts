@@ -64,7 +64,19 @@ export class AnimationManager {
            * maybe duration has been calculated.
            */
           if (item.duration === null) {
-            item.calcDur();
+            item.duration = item.calcDur();
+
+            if (!__PROD__ && typeof item.duration !== 'number') {
+              throw new Error('duration should be a number.');
+            }
+
+            /**
+             * 5ms has no animated effect. We finalize it directly.
+             */
+            if (item.duration < 5) {
+              this.end1(item);
+              break;
+            }
           }
 
           item.start(now);
@@ -90,7 +102,11 @@ export class AnimationManager {
         } else {
           if (item.lastElapse !== null) {
             const dt = elapse - item.lastElapse;
-            item.run(elapse, dt);
+            const r = item.run(elapse, dt);
+            if (r === false) {
+              // False means you should stop the animation
+              this.end1(item);
+            }
           }
         }
       }

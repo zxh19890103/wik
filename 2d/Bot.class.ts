@@ -9,7 +9,6 @@ import { ImageLayer, ImageManager } from './basic';
 import {
   WithAnimate,
   HrAnimation,
-  AnimationType,
   TranslationAnimation,
   RotationAnimation,
   AnimationManager,
@@ -34,23 +33,19 @@ export class Bot
 
   currentAnimation: HrAnimation = null;
 
-  /**
-   * 只支持两种动画，一个是平移，二是绕中心旋转
-   * @param type 动画类型：平移或者旋转
-   * @param n0 如果是平移，就是 lat；如果是旋转，就是 deg
-   * @param n1 如果是平移，就是 lng；如果是旋转，留空就行
-   */
-  animate(type: AnimationType, n0: number, n1 = 0) {
+  animate(type: 'rotate' | 'translate', n0: number, n1 = 0) {
     switch (type) {
-      case AnimationType.rotate: {
+      case 'rotate': {
         appendAnimation.call(this, new RotationAnimation(this, n0));
         break;
       }
-      case AnimationType.translate: {
+      case 'translate': {
         appendAnimation.call(this, new TranslationAnimation(this, n0, n1));
         break;
       }
     }
+
+    return this;
   }
 
   onInput(data: BotInput): void {

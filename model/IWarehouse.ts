@@ -7,6 +7,7 @@ export interface IWarehouse {
 
   each(fn: (item: GraphicObject, type: ObjectType) => void, type?: ObjectType): void;
 
+  first(type: ObjectType): GraphicObject;
   item(type: ObjectType, id: string): GraphicObject;
   query(type: ObjectType, predicate: (item: unknown) => boolean): unknown[];
   add(type: ObjectType, item: GraphicObject): void;

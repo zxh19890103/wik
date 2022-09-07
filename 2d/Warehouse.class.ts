@@ -107,6 +107,12 @@ export abstract class Warehouse<LayoutData = any>
     }
   }
 
+  first<G>(type: ObjectType): G {
+    const list = this.typeListMapping.get(type);
+    for (const item of list) return item as G;
+    return null;
+  }
+
   item(type: ObjectType, id: string) {
     return this.typeListMapping.get(type).find(id);
   }
@@ -190,9 +196,10 @@ export abstract class Warehouse<LayoutData = any>
     this.modeManager.create('select', injector.$new(behaviors.RectDrawBehavior, this, map));
     this.modeManager.create('particles', injector.$new(behaviors.FireworksBehavior, map));
     this.modeManager.create('gravity', new behaviors.GravityBehavior(map));
+    this.modeManager.create('bezier', new behaviors.BezierBehavior(map, this));
     this.modeManager.create('editable', new behaviors.EditBehavior(this, map));
 
-    this.modeManager.mode = 'default';
+    this.modeManager.mode = 'bezier';
 
     if (!__PROD__) {
       const div = document.createElement('div');
@@ -252,8 +259,6 @@ export abstract class Warehouse<LayoutData = any>
 
     /**
      * event bind on map seems like that it can't read the actual propagatedFrom layer, no this field.
-     *
-     * derivated events: just click (no movement) ->
      */
     this.map.on('mousedown mousemove mouseup click', (evt) => {
       if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;

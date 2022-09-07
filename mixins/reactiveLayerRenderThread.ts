@@ -35,8 +35,11 @@ const appendLayerRenderReq = (context: ReactiveLayer, effect: ReactiveLayerRende
   if (isFlushScheduled) return;
 
   // it's idle, bootstrap it.
-  queueMicrotask(flush);
-  // setTimeout(flush, 0);
+  // queueMicrotask(flush);
+  /**
+   * @todo queueMicrotask does not work right.
+   */
+  setTimeout(flush, 10);
   isFlushScheduled = true;
 };
 

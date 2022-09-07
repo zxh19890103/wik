@@ -1,18 +1,15 @@
 import { HrAnimation } from './Animation.class';
-import { AnimationType } from './AnimationType.enum';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
 const { sqrt } = Math;
 
-export class TranslationAnimation extends HrAnimation<
-  ReactiveLayerWithAnimate,
-  { lat: number; lng: number }
-> {
+export class TranslationAnimation extends HrAnimation<ReactiveLayerWithAnimate> {
   private dlat = 0;
   private dlng = 0;
+  readonly value: { lat: number; lng: number };
 
   constructor(m: ReactiveLayerWithAnimate, lat: number, lng: number) {
-    super(AnimationType.translate, m, { lat, lng }, { delay: 0 });
+    super(m, { lat, lng }, { delay: 0 });
   }
 
   start(t: number) {
@@ -26,7 +23,7 @@ export class TranslationAnimation extends HrAnimation<
   calcDur() {
     const dx = this.value.lng - this.m.position.lng;
     const dy = this.value.lat - this.m.position.lat;
-    this.duration = sqrt(dx * dx + dy * dy) * 0.4;
+    return sqrt(dx * dx + dy * dy) * 0.4;
   }
 
   run(elapse: number, dt: number): void {

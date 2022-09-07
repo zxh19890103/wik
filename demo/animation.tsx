@@ -40,15 +40,20 @@ async function bootstrap(container: HTMLDivElement) {
     warehouse.add(ObjectType.bot, bot);
   }
 
-  root.on('click', (e) => {
-    L.marker(e.latlng).addTo(root);
-    bot.animate(hrAnimation.AnimationType.translate, e.latlng.lat, e.latlng.lng);
-  });
+  // root.on('click', (e) => {
+  //   console.log('clicked');
+  //   L.marker(e.latlng).addTo(root);
+  //   bot.animate('translate', e.latlng.lat, e.latlng.lng);
+  // });
+
+  // message   : m0 - m1 - m2  - m3 - m4
+  // time       : t0 - t1 - t2 - t3 - t4
+  // property  : p - p - p - a - p
+  //
 
   document.addEventListener('keypress', (e) => {
-    console.log(e.key);
     if (e.key === 'r') {
-      bot.animate(hrAnimation.AnimationType.rotate, Utils.randomInt(-180, 180));
+      bot.animate('rotate', Utils.randomInt(-180, 180));
     }
   });
 }

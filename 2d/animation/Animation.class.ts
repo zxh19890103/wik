@@ -1,5 +1,4 @@
 import { AnimationState } from './AnimationState.enum';
-import { AnimationType } from './AnimationType.enum';
 import { WithAnimate } from './WithAnimate';
 
 let __id_seed = 2023;
@@ -8,32 +7,25 @@ export type HrAnimationValue = number | Record<string, number> | Array<number>;
 export type HrAnimationOptions = {
   delay?: number;
   duration?: number;
+  [extra: string]: any;
 };
 
-export abstract class HrAnimation<
-  M extends WithAnimate = WithAnimate,
-  V extends HrAnimationValue = number,
-> {
+export abstract class HrAnimation<M extends WithAnimate = WithAnimate> {
   readonly id = __id_seed++;
   readonly delay: number;
   readonly options: HrAnimationOptions;
-  readonly value: V;
+  readonly value: HrAnimationValue;
 
   state: AnimationState = AnimationState.init;
   addedAt = 0;
   startAt = null;
   duration = null;
 
-  next: HrAnimation = null;
-
   lastElapse: number = null;
 
-  constructor(
-    protected type: AnimationType,
-    public m: M,
-    value: V,
-    options: HrAnimationOptions = {},
-  ) {
+  next: HrAnimation = null;
+
+  constructor(public m: M, value: HrAnimationValue, options: HrAnimationOptions = {}) {
     this.options = options;
     this.delay = options.delay || 0;
     this.duration = options.duration || null;
@@ -41,7 +33,12 @@ export abstract class HrAnimation<
   }
 
   abstract start(t: number): void;
-  abstract run(elapse: number, deltaT: number): void;
-  abstract calcDur(): void;
+  /**
+   * Returns boolean or void.
+   * 1. if it's boolean: true means it'll continue running, false means it would be stopped.
+   * 2. if it's void: just keep running util timeout.
+   */
+  abstract run(elapse: number, deltaT: number): boolean | void;
+  abstract calcDur(): number;
   abstract final(): void;
 }
