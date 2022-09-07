@@ -15,8 +15,9 @@ export class AnimationManager {
 
   add(animtion: HrAnimation) {
     this.animations.push(animtion);
-    animtion.state = AnimationState.queued;
-    animtion.queuedAt = performance.now();
+    animtion.state = AnimationState.added;
+    animtion.addedAt = performance.now();
+    animtion.m.currentAnimation = animtion;
     if (this.state !== AnimationManagerState.idle) return;
     this.bootstrap();
   }
@@ -54,29 +55,27 @@ export class AnimationManager {
           deleted += 1;
           continue;
         }
-        case AnimationState.queued: {
+        case AnimationState.added: {
           /**
            * it should give user an option to select queque OR interupt the current?
            */
-          const currItem = item.m.currentAnimation;
-          if (currItem) {
-            currItem.final();
-            currItem.state = AnimationState.finished;
+
+          /**
+           * maybe duration has been calculated.
+           */
+          if (item.duration === null) {
+            item.calcDur();
           }
 
-          item.calcDur();
           item.start(now);
           item.state = AnimationState.running;
-          item.m.currentAnimation = item;
           item.startAt = now;
           console.log('item start');
           break;
         }
         case AnimationState.stop: {
           console.log('item stop req');
-          item.state = AnimationState.finished;
-          item.m.currentAnimation = null;
-          item.final();
+          this.end1(item);
           continue;
         }
       }
@@ -86,9 +85,8 @@ export class AnimationManager {
         console.log('item animation wait');
       } else {
         if (elapse > item.duration) {
-          item.state = AnimationState.finished;
-          item.m.currentAnimation = null;
-          item.final();
+          // stopped for timeout.
+          this.end1(item);
         } else {
           if (item.lastElapse !== null) {
             const dt = elapse - item.lastElapse;
@@ -115,6 +113,16 @@ export class AnimationManager {
 
   pause() {}
   resume() {}
+
+  end1(item: HrAnimation) {
+    item.state = AnimationState.finished;
+    item.m.currentAnimation = null;
+    item.final();
+
+    if (!item.next) return;
+
+    this.add(item.next);
+  }
 
   final() {
     for (const ani of this.animations) {

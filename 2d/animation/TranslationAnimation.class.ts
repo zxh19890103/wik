@@ -1,6 +1,5 @@
 import { HrAnimation } from './Animation.class';
 import { AnimationType } from './AnimationType.enum';
-import { MS_PER_FRAME } from './constants';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
 const { sqrt } = Math;
@@ -22,8 +21,6 @@ export class TranslationAnimation extends HrAnimation<
 
     this.dlat = (this.value.lat - position.lat) / dur;
     this.dlng = (this.value.lng - position.lng) / dur;
-
-    this.epslon = MS_PER_FRAME * sqrt(this.dlat * this.dlat + this.dlng * this.dlng);
   }
 
   calcDur() {

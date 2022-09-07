@@ -13,6 +13,7 @@ import {
   TranslationAnimation,
   RotationAnimation,
   AnimationManager,
+  appendAnimation,
 } from './animation';
 
 import { LeafletMouseEvent } from 'leaflet';
@@ -27,7 +28,7 @@ export class Bot
   implements WithAnimate, WithInput<BotInput>, OnSelect, OnContextMenu<ContextMenuKey>, WithClone
 {
   @inject(Interface.IAnimationManager)
-  readonly animationManager: AnimationManager = null;
+  readonly animationMgr: AnimationManager = null;
   @inject(Interface.IImageManager)
   readonly imageManager: ImageManager = null;
 
@@ -42,11 +43,11 @@ export class Bot
   animate(type: AnimationType, n0: number, n1 = 0) {
     switch (type) {
       case AnimationType.rotate: {
-        this.animationManager.add(new RotationAnimation(this, n0));
+        appendAnimation.call(this, new RotationAnimation(this, n0));
         break;
       }
       case AnimationType.translate: {
-        this.animationManager.add(new TranslationAnimation(this, n0, n1));
+        appendAnimation.call(this, new TranslationAnimation(this, n0, n1));
         break;
       }
     }

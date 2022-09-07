@@ -32,27 +32,25 @@ async function bootstrap(container: HTMLDivElement) {
 
   await hrGUIBasic.setDefaultImage(hrGUI.Bot, SVG_KUBOT);
 
-  for (let i = 0; i < 1000; i++) {
-    const bot = injector.$new<hrGUI.Bot>(hrGUI.Bot, null, 1000, 1000);
+  let bot: hrGUI.Bot;
+
+  for (let i = 0; i < 1; i++) {
+    bot = injector.$new<hrGUI.Bot>(hrGUI.Bot, null, 1000, 1000);
     bot.position = L.latLng(Utils.randomInt(-500, 500), Utils.randomInt(-500, 500));
     warehouse.add(ObjectType.bot, bot);
   }
 
-  setTimeout(() => {
-    for (const bot of warehouse.bots) {
-      bot.animate(
-        hrAnimation.AnimationType.translate,
-        Utils.randomInt(-20000, 20000),
-        Utils.randomInt(-20000, 20000),
-      );
-    }
+  root.on('click', (e) => {
+    L.marker(e.latlng).addTo(root);
+    bot.animate(hrAnimation.AnimationType.translate, e.latlng.lat, e.latlng.lng);
+  });
 
-    // setTimeout(() => {
-    //   for (const bot of warehouse.bots) {
-    //     bot.animate(hrAnimation.AnimationType.rotate, Utils.randomInt(-2000, 2000));
-    //   }
-    // }, 800);
-  }, 4000);
+  document.addEventListener('keypress', (e) => {
+    console.log(e.key);
+    if (e.key === 'r') {
+      bot.animate(hrAnimation.AnimationType.rotate, Utils.randomInt(-180, 180));
+    }
+  });
 }
 
 export default () => {

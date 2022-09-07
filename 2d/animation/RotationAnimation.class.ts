@@ -14,7 +14,6 @@ export class RotationAnimation extends HrAnimation<ReactiveLayerWithAnimate, num
 
   start(t: number) {
     this.ddeg = (this.value - this.m.angle) / this.duration;
-    this.epslon = MS_PER_FRAME * abs(this.ddeg);
   }
 
   run(elapse: number, dt: number): void {
