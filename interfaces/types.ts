@@ -5,6 +5,8 @@ export type PolylineLatLngs =
   | L.LatLngExpression[][]
   | L.LatLngExpression[][][];
 
+export type LatLngVector2D = [L.LatLngLiteral, L.LatLngLiteral];
+
 export type ContextMenuItem = {
   value: string;
   text: string;

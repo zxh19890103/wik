@@ -1,9 +1,10 @@
 import L from 'leaflet';
-import { CubicBezier } from '../../utils';
+import { CubicBezierCurve, rad2vector, vector2rad } from '../../utils';
 import { HrAnimation, HrAnimationOptions } from './Animation.class';
+import { D2R, R2D } from '../basic/constants';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
-const { sqrt } = Math;
+const N = 1000;
 
 interface BezierTranslationAnimationOptions extends HrAnimationOptions {
   controls: L.LatLngLiteral[];
@@ -14,7 +15,7 @@ export class BezierTranslationAnimation extends HrAnimation<ReactiveLayerWithAni
 
   readonly options: BezierTranslationAnimationOptions;
   readonly value: { lat: number; lng: number };
-  private bezier: CubicBezier;
+  private bezier: CubicBezierCurve;
   private i = 0;
 
   private tangs: L.Polyline;
@@ -25,8 +26,8 @@ export class BezierTranslationAnimation extends HrAnimation<ReactiveLayerWithAni
 
   start(t: number) {
     const position = this.m.position;
-    const b = new CubicBezier(position, ...this.options.controls, this.value);
-    this.path = b.sample(0, 100, 1000);
+    const b = new CubicBezierCurve(position, ...this.options.controls, this.value);
+    this.path = b.sample(0, 1, N);
 
     const map = (this.m as any)._map;
 
@@ -42,35 +43,33 @@ export class BezierTranslationAnimation extends HrAnimation<ReactiveLayerWithAni
   }
 
   run(elapse: number, dt: number) {
-    const latlng = this.path[this.i++];
+    const i = this.i;
+
+    const latlng = this.path[i];
 
     if (!latlng) {
       return false;
     }
 
-    const dx = latlng.lng - this.m.position.lng;
-    const dy = latlng.lat - this.m.position.lat;
+    const dir = this.bezier.dirAt(i / N);
+    // console.log(vector2rad(dir) * R2D);
+    this.m.setAngle(vector2rad(dir) * R2D);
 
-    /**
-     *
-     * [0, 1] -> [dx, dy]
-     * @see https://www.omnicalculator.com/math/angle-between-two-vectors
-     * arccos[(xa * xb + ya * yb) / (√(xa2 + ya2) * √(xb2 + yb2))]
-     */
+    // if (i === 0) {
+    //   const angle0 = rad2vector(this.m.angle * D2R); // angle at this moment.
+    //   const rad = this.bezier.diffTo(i / N, angle0);
+    //   this.m.rotate(rad * R2D);
+    // } else {
+    //   const rad = this.bezier.diff(i / N, (i + 1) / N);
+    //   this.m.rotate(rad * R2D);
+    // }
 
-    /***
-     * rad between [0,-1] and [dx, dy]
-     * [0, -1] is the angle of bot
-     * @todo Not all cases are valid.
-     */
-    let rad = Math.acos(-dy / sqrt(dx * dx + dy * dy));
-    if (dy > 0) rad = 2 * Math.PI - rad;
-
-    const latlngs = this.bezier.tangentAt(this.i / 1000, 8000);
+    const latlngs = this.bezier.tangentAt(i / N, 8000);
     this.tangs.setLatLngs(latlngs);
 
     this.m.setPosition(latlng.lat, latlng.lng);
-    this.m.setAngle((rad * 180) / Math.PI);
+
+    this.i += 1;
 
     return true;
   }

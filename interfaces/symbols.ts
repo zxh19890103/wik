@@ -6,3 +6,4 @@ export const IAnimationManager = Symbol.for('IAnimationManager');
 export const IPaneManager = Symbol.for('IPaneManager');
 export const IWarehouse = Symbol.for('IWarehouse');
 export const IModeManager = Symbol.for('IModeManager');
+export const IGlobalConstManager = Symbol.for('IGlobalConstManager');

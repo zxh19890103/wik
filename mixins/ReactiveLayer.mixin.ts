@@ -12,6 +12,7 @@ import { uniqueLayerId } from '../interfaces/WithLayerID';
 import { IList } from '../model';
 
 const { mat3, vec2 } = glMatrix;
+const D2R = 180 / Math.PI;
 
 export function ReactiveLayerMixin(
   Base: Constructor<L.Layer>,
@@ -243,12 +244,11 @@ export function ReactiveLayerMixin(
       if (!this.isMatrixNeedsUpdate) return;
       this.matrix = mat3.create();
 
-      const translation = mat3.fromTranslation(mat3.create(), [
-        this.position.lng,
-        this.position.lat,
-      ]);
-      const rotation = mat3.fromRotation(mat3.create(), (this.angle / 180) * Math.PI);
-      const scaling = mat3.fromScaling(mat3.create(), [this.scale.y, this.scale.x]);
+      const { position, angle, scale } = this;
+
+      const translation = mat3.fromTranslation(mat3.create(), [position.lng, position.lat]);
+      const rotation = mat3.fromRotation(mat3.create(), angle * D2R);
+      const scaling = mat3.fromScaling(mat3.create(), [scale.y, scale.x]);
 
       mat3.multiply(this.matrix, this.matrix, translation);
       mat3.multiply(this.matrix, this.matrix, rotation);

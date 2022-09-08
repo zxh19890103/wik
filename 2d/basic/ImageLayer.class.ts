@@ -116,8 +116,6 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
     const image = this.getImage();
     if (!image) return;
 
-    // size = ?; zoom = ???
-
     const { x: sx, y: sy } = this._map.project([-this.height, this.width]);
 
     ctx.save();
