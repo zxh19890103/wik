@@ -76,7 +76,7 @@ export class Bot
   onContextMenuClick(key: ContextMenuKey): void | Promise<any> {
     switch (key) {
       case 'rotate': {
-        this.rotate(45);
+        this.rotate(90);
         break;
       }
       case 'copy': {

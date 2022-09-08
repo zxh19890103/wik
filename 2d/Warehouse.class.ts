@@ -207,6 +207,7 @@ export abstract class Warehouse<LayoutData = any>
 
       for (const [_, mode] of this.modeManager.modes) {
         const btn = document.createElement('button');
+        btn.style.cssText = 'border: 1px solid #000; margin: 0 1px';
         btn.onclick = () => {
           this.modeManager.mode = mode;
         };

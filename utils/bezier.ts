@@ -48,4 +48,29 @@ export class CubicBezier {
         return this.at((s + i * step) / 100);
       });
   }
+
+  /**
+   *
+   * @param dist [0-1]
+   * @param length mm
+   * @returns
+   */
+  tangentAt(dist: number, length = 100): [L.LatLngLiteral, L.LatLngLiteral] {
+    const p0 = this.at(dist);
+    const p1 = this.at(dist + 0.01);
+
+    const v0 = p1.lat - p0.lat,
+      v1 = p1.lng - p0.lng;
+
+    const d = Math.sqrt(v0 * v0 + v1 * v1);
+    const n = [v0 / d, v1 / d];
+
+    return [
+      p0,
+      {
+        lat: p0.lat + n[0] * length,
+        lng: p0.lng + n[1] * length,
+      },
+    ];
+  }
 }
