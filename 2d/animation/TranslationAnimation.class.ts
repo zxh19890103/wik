@@ -1,33 +1,51 @@
+import { LinearLine2D } from '../../utils';
 import { HrAnimation } from './Animation.class';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
-const { sqrt } = Math;
+/**
+ * 
+可以配置的
+默认一般移动 1.8M/S
+旋转90度一般3.5s
+不过移动1.8M/S是最大速度
+一般，这个可以配置
+ */
 
 export class TranslationAnimation extends HrAnimation<ReactiveLayerWithAnimate> {
-  private dlat = 0;
-  private dlng = 0;
   readonly value: { lat: number; lng: number };
+  private linear: LinearLine2D;
 
   constructor(m: ReactiveLayerWithAnimate, lat: number, lng: number) {
     super(m, { lat, lng }, { delay: 0 });
   }
 
   start(t: number) {
-    const position = this.m.position;
-    const dur = this.duration;
+    this.linear = new LinearLine2D(this.m.position, this.value);
+    const d = this.linear.measure(0, 1);
 
-    this.dlat = (this.value.lat - position.lat) / dur;
-    this.dlng = (this.value.lng - position.lng) / dur;
+    this.N = Math.ceil(
+      (60 * this.globalConstMgr.robotAnimationRate * d) / this.globalConstMgr.kubotMoveSpeed,
+    );
   }
 
   calcDur() {
-    const dx = this.value.lng - this.m.position.lng;
-    const dy = this.value.lat - this.m.position.lat;
-    return sqrt(dx * dx + dy * dy) * 0.4;
+    return Infinity;
   }
 
-  run(elapse: number, dt: number): void {
-    this.m.translate(this.dlat * dt, this.dlng * dt);
+  run(elapse: number, dt: number, t: number): boolean {
+    /**
+     * N = 100 ? not always be
+     * requestAnimationFrame: min(dt) = 1/60 s.
+     * total distance: dist (mm)
+     * speed: v (mm/s)
+     *
+     * N = ceil( (dist / v) / dt )
+     */
+
+    const diff = this.linear.diff(t / this.N, (t + 1) / this.N);
+    this.m.translate(diff.lat, diff.lng);
+
+    return true;
   }
 
   final(): void {

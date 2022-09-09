@@ -1,9 +1,10 @@
 import { LatLngVector2D } from '../interfaces/types';
+import { LineBuilder } from './Line';
 import { DEFAULT_ZERO_VECTOR } from './vector';
 
 const { pow, asin, sqrt } = Math;
 
-export class CubicBezierCurve {
+export class CubicBezierCurve implements LineBuilder<L.LatLngLiteral> {
   /**
    *
    * @param p0 start
@@ -43,15 +44,25 @@ export class CubicBezierCurve {
    * @param t1 to [0 - 1]
    */
   diff(t0: number, t1: number) {
-    const dir0 = this.dirAt(t0); // from
-    const dir1 = this.dirAt(t1); // to
+    // const dir0 = this.dir(t0); // from
+    // const dir1 = this.dir(t1); // to
+
+    // cross = fromX * toY - fromY * toX;
+    // return asin(dir0.lng * dir1.lat - dir0.lat * dir1.lng);
+
+    return null;
+  }
+
+  diffOf(t0: number, t1: number) {
+    const dir0 = this.dir(t0); // from
+    const dir1 = this.dir(t1); // to
 
     // cross = fromX * toY - fromY * toX;
     return asin(dir0.lng * dir1.lat - dir0.lat * dir1.lng);
   }
 
   diffTo(t: number, basis: L.LatLngLiteral = DEFAULT_ZERO_VECTOR) {
-    const dir = this.dirAt(t); // to
+    const dir = this.dir(t); // to
 
     return asin(basis.lng * dir.lat - basis.lat * dir.lng);
   }
@@ -99,7 +110,7 @@ export class CubicBezierCurve {
   /**
    * returns the normal vector respresents the direction forward at distance of t.
    */
-  dirAt(t: number): L.LatLngLiteral {
+  dir(t: number): L.LatLngLiteral {
     const p0 = this.at(t);
     const p1 = this.at(t + 0.01);
 
@@ -122,7 +133,7 @@ export class CubicBezierCurve {
    */
   tangentAt(t: number, length = 1): LatLngVector2D {
     const p = this.at(t);
-    const dir = this.dirAt(t);
+    const dir = this.dir(t);
 
     return [
       p,

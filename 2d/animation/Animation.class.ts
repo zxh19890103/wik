@@ -1,3 +1,4 @@
+import { GlobalConstManager } from '../../model';
 import { AnimationState } from './AnimationState.enum';
 import { WithAnimate } from './WithAnimate';
 
@@ -21,9 +22,26 @@ export abstract class HrAnimation<M extends WithAnimate = WithAnimate> {
   startAt = null;
   duration = null;
 
+  /**
+   * Time sequence, tick
+   */
+  t = 0;
+  /**
+   * count of tick this animation would take to finish it.
+   */
+  N = 100;
+
+  /**
+   * last elapse (unit: ms)
+   */
   lastElapse: number = null;
 
+  /**
+   * next animation after this finished.
+   */
   next: HrAnimation = null;
+
+  readonly globalConstMgr: GlobalConstManager = null;
 
   constructor(public m: M, value: HrAnimationValue, options: HrAnimationOptions = {}) {
     this.options = options;
@@ -32,13 +50,26 @@ export abstract class HrAnimation<M extends WithAnimate = WithAnimate> {
     this.value = value;
   }
 
+  /**
+   * many things to do...
+   * prepare
+   */
   abstract start(t: number): void;
   /**
    * Returns boolean or void.
    * 1. if it's boolean: true means it'll continue running, false means it would be stopped.
    * 2. if it's void: just keep running util timeout.
    */
-  abstract run(elapse: number, deltaT: number): boolean | void;
+  abstract run(elapse: number, deltaT: number, t: number): boolean | void;
+
+  /**
+   * computes the duration animation need to take.
+   *
+   * returns Infinity if you want control the animation by t & N
+   */
   abstract calcDur(): number;
+  /**
+   * set the property to final value on the object/layer
+   */
   abstract final(): void;
 }

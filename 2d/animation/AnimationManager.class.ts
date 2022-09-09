@@ -1,6 +1,8 @@
-import { injectable } from '../../model/basic/inject';
+import { GlobalConstManager } from '../../model';
+import { inject, injectable, injector } from '../../model/basic/inject';
 import { HrAnimation } from './Animation.class';
 import { AnimationState } from './AnimationState.enum';
+import * as Interfaces from '../../interfaces/symbols';
 
 export enum AnimationManagerState {
   idle = 0,
@@ -10,11 +12,15 @@ export enum AnimationManagerState {
 
 @injectable()
 export class AnimationManager {
+  @inject(Interfaces.IGlobalConstManager)
+  readonly globalConstMgr: GlobalConstManager;
+
   animations: HrAnimation[] = [];
   private state: AnimationManagerState = AnimationManagerState.idle;
 
   add(animtion: HrAnimation) {
     this.animations.push(animtion);
+    injector.writeProp(animtion, 'globalConstMgr', this.globalConstMgr);
     animtion.state = AnimationState.added;
     animtion.addedAt = performance.now();
     animtion.m.currentAnimation = animtion;
@@ -102,10 +108,13 @@ export class AnimationManager {
         } else {
           if (item.lastElapse !== null) {
             const dt = elapse - item.lastElapse;
-            const r = item.run(elapse, dt);
-            if (r === false) {
+            const t = item.t;
+            const r = item.N > 0 ? item.run(elapse, dt, t) : false;
+            if (r === false || t > item.N) {
               // False means you should stop the animation
               this.end1(item);
+            } else {
+              item.t += 1;
             }
           }
         }

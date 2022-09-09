@@ -12,6 +12,8 @@ import { injectCtor, injector, ObjectType } from '../model';
 import { Warehouse } from '../2d';
 
 import '../ioc.config';
+import { ESSS } from './esss';
+import { appendAnimation, RotationAnimation, TranslationAnimation } from '../2d/animation';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -40,21 +42,35 @@ async function bootstrap(container: HTMLDivElement) {
     warehouse.add(ObjectType.bot, bot);
   }
 
-  // root.on('click', (e) => {
-  //   console.log('clicked');
-  //   L.marker(e.latlng).addTo(root);
-  //   bot.animate('translate', e.latlng.lat, e.latlng.lng);
-  // });
+  const esss = new ESSS();
+  // 1708980144136261120
 
-  // message   : m0 - m1 - m2  - m3 - m4
-  // time       : t0 - t1 - t2 - t3 - t4
-  // property  : p - p - p - a - p
-  //
+  let flied = false;
+  let lastAngle: number = null,
+    lastLatLng: L.LatLngLiteral = null;
 
-  document.addEventListener('keypress', (e) => {
-    if (e.key === 'r') {
-      bot.animate('rotate', Utils.randomInt(-180, 180));
+  esss.subscribe('robot#1708980144136261120', (d) => {
+    const lng = Number(d.precisePosition.x);
+    const lat = Number(d.precisePosition.y);
+    const angle = Number(d.robot2mapTheta);
+
+    if (angle !== lastAngle) {
+      appendAnimation.call(bot, new RotationAnimation(bot, angle));
+      lastAngle = angle;
+      console.log('rotate', angle);
     }
+
+    if (!lastLatLng || lat !== lastLatLng.lat || lng !== lastLatLng.lng) {
+      appendAnimation.call(bot, new TranslationAnimation(bot, lat, lng));
+      lastLatLng = L.latLng(lat, lng);
+      console.log('translate', lat, lng);
+    }
+
+    if (flied) return;
+    setTimeout(() => {
+      root.flyTo([lat, lng]);
+      flied = true;
+    }, 300);
   });
 }
 
