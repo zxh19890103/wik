@@ -99,6 +99,7 @@ export class AnimationManager {
       }
 
       const elapse = now - item.startAt;
+
       if (elapse < item.delay) {
         console.log('item animation wait');
       } else {

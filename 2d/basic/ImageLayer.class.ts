@@ -120,7 +120,7 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
 
     ctx.save();
     ctx.translate(cx, cy);
-    ctx.rotate(-(this.angle + 90) * D2R);
+    ctx.rotate(-this.angle * D2R);
     ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, -sx / 2, -sy / 2, sx, sy);
     ctx.restore();
   }

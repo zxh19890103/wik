@@ -13,6 +13,7 @@ const pages = {
   animation: React.lazy(() => import('./animation')),
   minimal: React.lazy(() => import('./minimal')),
   click: React.lazy(() => import('./click')),
+  performance: React.lazy(() => import('./performance')),
 };
 
 const Route = () => {
