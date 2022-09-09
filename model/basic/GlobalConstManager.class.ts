@@ -22,10 +22,11 @@ export class GlobalConstManager {
   /**
    * Animation effects play rate. default = 1
    */
-  robotAnimationRate = 0.1;
+  robotAnimationRate = 1;
 
   getVal(k: string, defaultVal = null) {
-    return this[k] || defaultVal;
+    if (this[k] === undefined) return defaultVal;
+    return this[k];
   }
 
   setVal(k: string, v: any) {
