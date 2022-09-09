@@ -22,6 +22,7 @@ export class Mode implements IMode {
     }
 
     this.onLoad && this.onLoad();
+    console.log(`mode = ${this.name}`);
   }
 
   unload(): void {

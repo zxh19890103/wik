@@ -13,13 +13,9 @@ export class BezierBehavior extends Behavior {
     super();
   }
 
-  override onLoad(): void {
-    console.log('load BezierBehavior');
-  }
+  override onLoad(): void {}
 
-  override onUnload(): void {
-    console.log('load BezierBehavior');
-  }
+  override onUnload(): void {}
 
   private points: L.LatLngLiteral[] = [];
 

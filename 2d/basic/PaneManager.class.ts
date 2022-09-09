@@ -32,8 +32,9 @@ export interface PaneObject {
 export class PaneManager implements IDisposable {
   readonly map: HrMap;
   private panesElement: HTMLDivElement;
-  private pool: Record<string, PaneObject> = {};
+  public readonly pool: Record<string, PaneObject> = {};
   private styleElement: HTMLStyleElement = null;
+  public onZChange: VoidFunction = null;
 
   /**
    *
@@ -45,7 +46,7 @@ export class PaneManager implements IDisposable {
     if (this.pool[name]) {
       const po = this.pool[name];
       if (type !== 'none' && po.rendererType === 'none') {
-        this.createRenderer(name, type, null);
+        po.renderer = this.createRenderer(name, type, null);
       }
       return po;
     }
@@ -66,6 +67,7 @@ export class PaneManager implements IDisposable {
     const pane = this.pool[name];
     if (!pane) return;
     pane.z = z;
+    this.onZChange && this.onZChange();
     this.requestRender();
   }
 
@@ -75,6 +77,8 @@ export class PaneManager implements IDisposable {
     pane.visible = visible;
     this.requestRender();
   }
+
+  getRenderersOrderByZDesc() {}
 
   private _scheduled = false;
   requestRender() {

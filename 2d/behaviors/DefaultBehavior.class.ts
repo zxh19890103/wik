@@ -12,9 +12,7 @@ export class DefaultBehavior extends Behavior {
   @inject(Interface.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
-  override onLoad(): void {
-    console.log('load DefaultBehavior');
-  }
+  override onLoad(): void {}
 
   override onUnload(): void {}
 
@@ -27,11 +25,16 @@ export class DefaultBehavior extends Behavior {
     }
   }
 
+  onNoopClick(evt: unknown): void {
+    console.log('noop clicked');
+  }
+
   override onDblClick(layer: Interactive, e: L.LeafletMouseEvent): void {
     layer.onDblClick && layer.onDblClick(e);
   }
 
   override onClick(layer: Interactive, e: L.LeafletMouseEvent): void {
+    console.log('ha you clicked', layer);
     layer.onClick && layer.onClick(e);
 
     if (layer.onSelect && layer.onUnSelect) {

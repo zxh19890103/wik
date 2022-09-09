@@ -172,6 +172,7 @@ export abstract class Warehouse<LayoutData = any>
   private onListMount(list: LayerList<LayerWithID>) {
     list.mount(this.map);
     if (list instanceof VectorLayerList) {
+      console.log(list.paneObj.name);
       manageRenderer(list.pane, list.paneObj.renderer);
     }
   }
