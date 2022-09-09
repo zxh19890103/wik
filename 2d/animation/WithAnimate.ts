@@ -12,10 +12,9 @@ export interface WithAnimate {
 export function appendAnimation<A extends HrAnimation>(this: WithAnimate, a: A) {
   if (this.currentAnimation) {
     let tail = this.currentAnimation;
-    while (tail.next) {
-      tail = tail.next;
-    }
+    while (tail.next) tail = tail.next;
     tail.next = a;
+    console.log('append');
   } else {
     this.animationMgr.add(a);
   }

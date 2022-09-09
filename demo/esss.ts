@@ -18,7 +18,7 @@ class ESSS {
     ws.onmessage = (msg) => {
       const payload = JSON.parse(msg.data);
 
-      if (payload.type !== 'UPDATED' || !payload.current) return;
+      if (!payload.current || payload.type !== 'UPDATED') return;
 
       const data = payload.current;
 

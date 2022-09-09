@@ -106,16 +106,16 @@ export class AnimationManager {
           // stopped for timeout.
           this.end1(item);
         } else {
-          if (item.lastElapse !== null) {
-            const dt = elapse - item.lastElapse;
-            const t = item.t;
-            const r = item.N > 0 ? item.run(elapse, dt, t) : false;
-            if (r === false || t > item.N) {
-              // False means you should stop the animation
-              this.end1(item);
-            } else {
-              item.t += 1;
-            }
+          const t = item.t;
+          const r =
+            item.N > 0
+              ? item.run(elapse, item.lastElapse ? elapse - item.lastElapse : 0, t)
+              : false;
+          if (r === false || t > item.N) {
+            // False means you should stop the animation
+            this.end1(item);
+          } else {
+            item.t += 1;
           }
         }
       }

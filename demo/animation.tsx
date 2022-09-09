@@ -4,7 +4,6 @@ import { HrMap } from '../2d/basic/Map.class';
 import './dev.scss';
 
 import * as hrGUIBasic from '../2d/basic';
-import * as hrAnimation from '../2d/animation';
 import * as hrGUI from '../2d';
 import * as Utils from '../utils';
 import { SVG_KUBOT } from '../2d/images';
@@ -13,6 +12,7 @@ import { Warehouse } from '../2d';
 
 import '../ioc.config';
 import { ESSS } from './esss';
+import ROBOT_IDS_IN_110 from './robotids';
 import { appendAnimation, RotationAnimation, TranslationAnimation } from '../2d/animation';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
@@ -34,44 +34,75 @@ async function bootstrap(container: HTMLDivElement) {
 
   await hrGUIBasic.setDefaultImage(hrGUI.Bot, SVG_KUBOT);
 
-  let bot: hrGUI.Bot;
+  const id_mapping = {};
+  const initial_state = {};
 
-  for (let i = 0; i < 1; i++) {
-    bot = injector.$new<hrGUI.Bot>(hrGUI.Bot, null, 1000, 1000);
+  for (let i = 0; i < 60; i++) {
+    const bot = injector.$new<hrGUI.Bot>(hrGUI.Bot, null, 1000, 1000);
     bot.position = L.latLng(Utils.randomInt(-500, 500), Utils.randomInt(-500, 500));
     warehouse.add(ObjectType.bot, bot);
+    const srcid = ROBOT_IDS_IN_110[i];
+    id_mapping[bot.layerId] = srcid;
+    id_mapping[srcid] = bot.layerId;
+    initial_state[bot.layerId] = null;
   }
 
   const esss = new ESSS();
-  // 1708980144136261120
 
-  let flied = false;
-  let lastAngle: number = null,
-    lastLatLng: L.LatLngLiteral = null;
+  const center = [28850, 41590] as any;
+  root.setView(center);
 
-  esss.subscribe('robot#1708980144136261120', (d) => {
+  esss.subscribe('robot', (d) => {
+    const srcid = d.id;
+    const botId = id_mapping[srcid];
+    const bot = warehouse.bots.find(botId);
+    if (!bot) {
+      return;
+    }
+
     const lng = Number(d.precisePosition.x);
     const lat = Number(d.precisePosition.y);
     const angle = Number(d.robot2mapTheta);
 
-    if (angle !== lastAngle) {
-      appendAnimation.call(bot, new RotationAnimation(bot, angle));
-      lastAngle = angle;
-      console.log('rotate', angle);
-    }
+    if (!initial_state[botId]) {
+      // set
+      bot.setPosition({ lat, lng });
+      bot.setAngle(angle);
 
-    if (!lastLatLng || lat !== lastLatLng.lat || lng !== lastLatLng.lng) {
-      appendAnimation.call(bot, new TranslationAnimation(bot, lat, lng));
-      lastLatLng = L.latLng(lat, lng);
-      console.log('translate', lat, lng);
+      initial_state[botId] = {
+        p: { lat, lng },
+        a: angle,
+      };
+    } else {
+      // update
+      const state = initial_state[botId];
+      if (angle !== state.a) {
+        appendAnimation.call(bot, new RotationAnimation(bot, angle));
+        state.a = angle;
+        console.log('rotate', angle);
+      }
+      if (lat !== state.p.lat || lng !== state.p.lng) {
+        appendAnimation.call(bot, new TranslationAnimation(bot, lat, lng));
+        state.p = { lat, lng };
+        console.log('translate', lat, lng);
+      }
     }
-
-    if (flied) return;
-    setTimeout(() => {
-      root.flyTo([lat, lng]);
-      flied = true;
-    }, 300);
   });
+
+  const { random } = Math;
+  const randomLatLng = () => {
+    return [-10000 + center[0] + random() * 20000, -10000 + center[1] + random() * 20000];
+  };
+
+  const loop = () => {
+    setTimeout(loop, 30);
+    for (const bot of warehouse.bots) {
+      const [y, x] = randomLatLng();
+      appendAnimation.call(bot, new TranslationAnimation(bot, y, x));
+    }
+  };
+
+  setTimeout(loop, 5000);
 }
 
 export default () => {
