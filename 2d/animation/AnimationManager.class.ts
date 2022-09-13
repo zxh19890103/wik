@@ -3,6 +3,7 @@ import { inject, injectable, injector } from '../../model/basic/inject';
 import { HrAnimation } from './Animation.class';
 import { AnimationState } from './AnimationState.enum';
 import * as Interfaces from '../../interfaces/symbols';
+import { IDisposable } from '../../interfaces/Disposable';
 
 export enum AnimationManagerState {
   idle = 0,
@@ -11,14 +12,38 @@ export enum AnimationManagerState {
 }
 
 @injectable()
-export class AnimationManager {
+export class AnimationManager implements IDisposable {
   @inject(Interfaces.IGlobalConstManager)
   readonly globalConstMgr: GlobalConstManager;
 
   animations: HrAnimation[] = [];
   private state: AnimationManagerState = AnimationManagerState.idle;
 
+  private isPageHidden = false;
+  private onIsPageHiddenChange: (...args) => void;
+
+  constructor() {
+    this.onIsPageHiddenChange = () => {
+      this.isPageHidden = document.visibilityState === 'hidden';
+      if (this.isPageHidden) {
+        this.final();
+        this.state = AnimationManagerState.idle;
+      }
+    };
+
+    document.addEventListener('visibilitychange', this.onIsPageHiddenChange);
+  }
+
+  dispose(): void {
+    document.removeEventListener('visibilitychange', this.onIsPageHiddenChange);
+  }
+
   add(animtion: HrAnimation) {
+    if (this.isPageHidden) {
+      animtion.final();
+      return;
+    }
+
     this.animations.push(animtion);
     injector.writeProp(animtion, 'globalConstMgr', this.globalConstMgr);
     animtion.state = AnimationState.added;
@@ -39,7 +64,7 @@ export class AnimationManager {
     const animations = this.animations;
     const size = animations.length;
 
-    if (animations.length === 0) {
+    if (size === 0) {
       this.state = AnimationManagerState.idle;
       console.log('stopped for length === 0');
       return;
@@ -50,7 +75,7 @@ export class AnimationManager {
     let deleted = 0;
 
     /**
-     * While the script takes long, user interactive will be blocked. What's the solution?
+     * While the loop script takes long, user interactive will be blocked. What's the solution?
      */
     for (let item: HrAnimation, i = 0; i < size; i += 1) {
       item = animations[i];
@@ -62,10 +87,6 @@ export class AnimationManager {
           continue;
         }
         case AnimationState.added: {
-          /**
-           * it should give user an option to select queque OR interupt the current?
-           */
-
           /**
            * maybe duration has been calculated.
            */
@@ -137,9 +158,6 @@ export class AnimationManager {
     }
   }
 
-  pause() {}
-  resume() {}
-
   end1(item: HrAnimation) {
     item.state = AnimationState.finished;
     item.m.currentAnimation = null;
@@ -151,8 +169,16 @@ export class AnimationManager {
   }
 
   final() {
+    let iterator: HrAnimation = null;
+
     for (const ani of this.animations) {
-      ani.final();
+      iterator = ani;
+
+      do {
+        iterator.final();
+      } while ((iterator = iterator.next));
+
+      ani.m.currentAnimation = null;
     }
 
     this.animations = [];

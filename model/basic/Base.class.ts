@@ -38,11 +38,6 @@ export abstract class Base<E extends string = string>
   getSnapshot() {
     return this._snapshot;
   }
-
-  reqEffectCall(effect: E, payload: any = null) {
-    this.snapshot();
-    appendEffectCallReq({ cause: this, effect, payload });
-  }
 }
 
 export interface Base<E extends string = string> extends WithEmitter<E> {}

@@ -13,16 +13,20 @@ import { injectable } from './inject';
 export class GlobalConstManager {
   /**
    * the move speed of kubot, mm/s
+   *
+   * 1800 mm per second
    */
   kubotMoveSpeed = 1800;
   /**
    * the rotation speed of kubot, deg/s
+   *
+   * 2.5 s per 90 deg.
    */
-  kubotRotateSpeed = 25.714;
+  kubotRotateSpeed = 90;
   /**
    * Animation effects play rate. default = 1
    */
-  robotAnimationRate = 0.6;
+  robotAnimationRate = 0.4;
 
   getVal(k: string, defaultVal = null) {
     if (this[k] === undefined) return defaultVal;

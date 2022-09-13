@@ -27,8 +27,6 @@ export class TranslationAnimation extends HrAnimation<ReactiveLayerWithAnimate> 
     this.N = Math.ceil(
       (60 * this.globalConstMgr.robotAnimationRate * d) / this.globalConstMgr.kubotMoveSpeed,
     );
-
-    this.m.setAngle(vector2rad(this.linear.dir()) * R2D);
   }
 
   calcDur() {

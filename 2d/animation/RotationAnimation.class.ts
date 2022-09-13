@@ -15,7 +15,7 @@ export class RotationAnimation extends HrAnimation<ReactiveLayerWithAnimate> {
   }
 
   start(t: number) {
-    this.linear = new LinearLine1D(this.m.angle, this.value);
+    this.linear = new LinearLine1D(this.m.angle, this.value, 360);
     const d = this.linear.measure(0, 1);
     this.N = Math.ceil(
       (60 * d * this.globalConstMgr.robotAnimationRate) / this.globalConstMgr.kubotRotateSpeed,

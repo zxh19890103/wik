@@ -1,10 +1,32 @@
-import { LatLngLiteral } from 'leaflet';
 import { LineBuilder } from './Line';
 
 const { abs, sqrt } = Math;
 
 export class LinearLine1D implements LineBuilder<number> {
-  constructor(public var0: number, public var1: number) {}
+  /**
+   * value, which is eqaul to var1 considering period provided, and which is the nearest eqaul-value to var0.
+   */
+  private _var1 = 0;
+
+  constructor(public var0: number, public var1: number, private period: number = 0) {
+    if (period === 0) {
+      this._var1 = var1; // no period
+    } else {
+      let min = Infinity,
+        j = -1;
+      for (let i = -10; i < 10; i++) {
+        const tryVal1 = var1 + i * period;
+        const gap = abs(tryVal1 - var0);
+        if (gap < min) {
+          j = i;
+          min = gap;
+        }
+      }
+
+      this._var1 = var1 + j * period;
+      console.log(this._var1);
+    }
+  }
 
   /**
    *
@@ -12,7 +34,7 @@ export class LinearLine1D implements LineBuilder<number> {
    */
   at(t: number) {
     // formula:  b(t) = var0 + t * (var1 - var0)
-    return this.var0 + (this.var1 - this.var0) * t;
+    return this.var0 + (this._var1 - this.var0) * t;
   }
 
   dir(): number {

@@ -18,13 +18,13 @@ export class Robot extends Base<RobotEffect> {
     return { ...this };
   }
 
-  @effect('Translate')
+  @effect<RobotEffect>('Translate')
   setPosition(x: number, y: number) {
     this.px += x;
     this.py += y;
   }
 
-  @effect('Rotate')
+  @effect<RobotEffect>('Rotate')
   setTheta(deg: number) {
     this.theta += deg;
   }

@@ -102,7 +102,7 @@ async function bootstrap(container: HTMLDivElement) {
     }
   };
 
-  setTimeout(loop, 5000);
+  // setTimeout(loop, 5000);
 }
 
 export default () => {

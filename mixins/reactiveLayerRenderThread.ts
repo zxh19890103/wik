@@ -1,6 +1,5 @@
 import { ReactiveLayer } from './ReactiveLayer';
 import { ReactiveLayerRenderEffect, LAYER_DATA_UPDATE_EFFECTS, TRANSFORM_EFFECT } from './effects';
-import { Interactive } from '../interfaces/Interactive';
 
 const __RENDER_REQUESTS__: ReactiveLayer[] = [];
 const __RENDER_REQUEST_EFFECTS__: Map<string, ReactiveLayerRenderEffect> = new Map();
@@ -12,10 +11,8 @@ let isFlushScheduled = false;
 let isRendering = false;
 
 const appendLayerRenderReq = (context: ReactiveLayer, effect: ReactiveLayerRenderEffect) => {
-  console.log('appendLayerRenderReq');
-
   if (isRendering) {
-    console.log(
+    console.warn(
       '[appendLayerRenderReq] While rendering, new request of render cannot be appended.',
     );
     return;
@@ -44,9 +41,6 @@ const appendLayerRenderReq = (context: ReactiveLayer, effect: ReactiveLayerRende
 const flush = () => {
   isRendering = true;
 
-  console.log('appendLayerRenderReq:flush');
-  console.log('appendLayerRenderReq:flush:start');
-
   // Before render & During render
   for (const item of __RENDER_REQUESTS__) {
     const effect = __RENDER_REQUEST_EFFECTS__.get(item.layerId);
@@ -70,16 +64,16 @@ const flush = () => {
       item.onScale && item.onScale(snapshot?.scale);
     }
 
-    if (effect & ReactiveLayerRenderEffect.state) {
-      item.onLayerStateUpdate && item.onLayerStateUpdate(snapshot?.state);
-    }
-
     if (effect & ReactiveLayerRenderEffect.shape) {
       item.onShapeUpdate && item.onShapeUpdate(snapshot?.latlngs);
     }
 
     if (effect & LAYER_DATA_UPDATE_EFFECTS) {
       item.onLayerUpdate && item.onLayerUpdate(snapshot);
+    }
+
+    if (effect & ReactiveLayerRenderEffect.state) {
+      item.onLayerStateUpdate && item.onLayerStateUpdate(snapshot?.state);
     }
 
     if (effect & ReactiveLayerRenderEffect.init) {
@@ -116,8 +110,6 @@ const flush = () => {
       __RENDER_REQUEST_EFFECTS__.delete(id);
     }
   }, 10);
-
-  console.log('appendLayerRenderReq:flush:end');
 
   isFlushScheduled = false;
 };

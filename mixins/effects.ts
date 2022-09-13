@@ -50,13 +50,13 @@ export enum ReactiveLayerRenderEffect {
   json = /*             */ 0b00000000000000000000000010,
 
   /**
-   * ?????
+   *
    */
   none = /*             */ 0b00000000000000000000000000,
 }
 
 /**
- * move/rotate/scale/shape/size
+ * move,rotate,scale,shape,size
  */
 export const TRANSFORM_EFFECT =
   ReactiveLayerRenderEffect.init |
@@ -67,16 +67,17 @@ export const TRANSFORM_EFFECT =
   ReactiveLayerRenderEffect.size;
 
 /**
- * json/init/json2/form/template/state
+ * json,init,json2,form
  */
 export const LAYER_DATA_UPDATE_EFFECTS =
   ReactiveLayerRenderEffect.json |
   ReactiveLayerRenderEffect.init |
   ReactiveLayerRenderEffect.json2 |
-  ReactiveLayerRenderEffect.form;
+  ReactiveLayerRenderEffect.form |
+  ReactiveLayerRenderEffect.state;
 
 /**
- *Transform/form/state
+ *transform,form,state
  */
 export const MODEL_WS_UPDATE_EFFECT =
   TRANSFORM_EFFECT | ReactiveLayerRenderEffect.form | ReactiveLayerRenderEffect.state;
