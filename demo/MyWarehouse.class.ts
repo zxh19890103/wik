@@ -1,16 +1,15 @@
 import { Warehouse } from '../2d/Warehouse.class';
-import { ObjectType } from '../model';
 import * as hrGUI from '../2d';
 import { injectCtor } from '../model/basic/inject';
 import * as Interface from '../interfaces/symbols';
 import { ModeManager } from '../model/modes/ModeManager.class';
 
 @injectCtor(Interface.IModeManager)
-export class MyWarehouse extends Warehouse {
+export class MyWarehouse extends Warehouse<any, 'bot2'> {
   constructor(public readonly modeMgr: ModeManager) {
     super();
 
-    this.addUpdateDep(ObjectType.location, (item: hrGUI.Location, data) => {
+    this.addUpdateDep('location', (item: hrGUI.Location, data) => {
       item.position = data.position;
     });
   }

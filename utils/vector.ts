@@ -1,10 +1,10 @@
 import { D2R, R2D } from '../2d/basic/constants';
 
-const { PI, sqrt, asin, acos, sin, cos } = Math;
+const { PI, sqrt, asin, sin, cos } = Math;
 
 export const HALF_PI = PI / 2;
-export const DEFAULT_ZERO_VECTOR: L.LatLngLiteral = { lat: 1, lng: 0 }; // default [0, 1]
-export const DEFAULT_ZERO_RAD = 90 * D2R; // default 0  angle between [0, 1] and [1,0]
+export const DEFAULT_ZERO_VECTOR: L.LatLngLiteral = { lat: 0, lng: 1 }; // default [0, 1]
+export const DEFAULT_ZERO_RAD = 0 * D2R; // default 0  angle between [0, 1] and [1,0]
 
 export const distanceBetween = (p0: L.LatLngLiteral, p1: L.LatLngLiteral) => {
   const dx = p1.lng - p0.lng;
@@ -43,13 +43,34 @@ export const vector2rad = (vec: L.LatLngLiteral): number => {
   const y = vec.lat / leng;
   const x = vec.lng / leng;
 
-  // @see https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Math/asin
-  const cross = asin(DEFAULT_ZERO_VECTOR.lng * y - DEFAULT_ZERO_VECTOR.lat * x);
-  const dot = acos(DEFAULT_ZERO_VECTOR.lat * y + DEFAULT_ZERO_VECTOR.lng * x);
+  const { lat, lng } = DEFAULT_ZERO_VECTOR;
 
-  if (dot > HALF_PI) {
-    return cross + PI;
-  } else {
+  const sine = lng * y - lat * x;
+  const cosine = lat * y + lng * x;
+
+  // @see https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Math/asin
+  // -.5 pi - .5 pi
+  const cross = asin(sine);
+
+  if (sine > 0 && cosine > 0) {
+    // 1 > 0
     return cross;
+  } else if (sine > 0 && cosine < 0) {
+    // 2 > 0
+    return PI - cross;
+  } else if (sine < 0 && cosine < 0) {
+    // 3 < 0
+    return PI - cross;
+  } else if (sine < 0 && cosine > 0) {
+    // 4
+    return cross + 2 * PI;
+  } else if (sine === 0) {
+    return cosine > 0 ? 0 : PI;
+  } else if (cosine === 0) {
+    return sine > 0 ? HALF_PI : 1.5 * PI;
   }
+
+  return 0;
 };
+
+console.log(vector2rad({ lat: -1, lng: 0 }) * R2D);

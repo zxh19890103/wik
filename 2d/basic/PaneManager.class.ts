@@ -78,8 +78,6 @@ export class PaneManager implements IDisposable {
     this.requestRender();
   }
 
-  getRenderersOrderByZDesc() {}
-
   private _scheduled = false;
   requestRender() {
     if (this._scheduled) return;

@@ -1,8 +1,7 @@
 import { LatLngVector2D } from '../interfaces/types';
 import { LineBuilder } from './Line';
-import { DEFAULT_ZERO_VECTOR } from './vector';
 
-const { pow, asin, sqrt } = Math;
+const { pow, sqrt } = Math;
 
 export class CubicBezierCurve implements LineBuilder<L.LatLngLiteral> {
   /**
@@ -38,33 +37,8 @@ export class CubicBezierCurve implements LineBuilder<L.LatLngLiteral> {
     };
   }
 
-  /**
-   * computes the angle change from t0 to t1.
-   * @param t0 from [0 - 1]
-   * @param t1 to [0 - 1]
-   */
-  diff(t0: number, t1: number) {
-    // const dir0 = this.dir(t0); // from
-    // const dir1 = this.dir(t1); // to
-
-    // cross = fromX * toY - fromY * toX;
-    // return asin(dir0.lng * dir1.lat - dir0.lat * dir1.lng);
-
+  diff(t0: number, t1: number): L.LatLngLiteral {
     return null;
-  }
-
-  diffOf(t0: number, t1: number) {
-    const dir0 = this.dir(t0); // from
-    const dir1 = this.dir(t1); // to
-
-    // cross = fromX * toY - fromY * toX;
-    return asin(dir0.lng * dir1.lat - dir0.lat * dir1.lng);
-  }
-
-  diffTo(t: number, basis: L.LatLngLiteral = DEFAULT_ZERO_VECTOR) {
-    const dir = this.dir(t); // to
-
-    return asin(basis.lng * dir.lat - basis.lat * dir.lng);
   }
 
   /**

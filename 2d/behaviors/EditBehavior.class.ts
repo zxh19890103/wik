@@ -3,6 +3,7 @@ import { GraphicObject } from '../../interfaces/GraghicObject';
 import { Interactive } from '../../interfaces/Interactive';
 import { ContextMenuItem } from '../../interfaces/types';
 import { ReactiveLayer } from '../../mixins/ReactiveLayer';
+import { IWarehouse } from '../../model';
 import { Behavior } from '../../model/behaviors';
 import { HrMap } from '../basic';
 import { Warehouse } from '../Warehouse.class';
@@ -18,7 +19,7 @@ export class EditBehavior extends Behavior {
   private currentContextMenuItems: ContextMenuItem[] = null;
   private contextmenuPopup: L.Popup = null;
 
-  constructor(private warehouse: Warehouse, private map: HrMap) {
+  constructor(private warehouse: IWarehouse, private map: HrMap) {
     super();
   }
 

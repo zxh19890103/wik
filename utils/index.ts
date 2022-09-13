@@ -5,3 +5,4 @@ export * from './random';
 export * from './bezier';
 export * from './linear';
 export * from './vector';
+export * from './capital';

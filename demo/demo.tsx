@@ -9,7 +9,7 @@ import { MyWarehouse } from './MyWarehouse.class';
 import { ObjectType } from '../model';
 import { injector } from '../model/basic/inject';
 
-import '../ioc.config';
+import './ioc.config';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
@@ -34,7 +34,7 @@ async function bootstrap(container: HTMLDivElement, initialData: any) {
     const bot = injector.$new<hrGUI.Bot>(hrGUI.Bot, imageManager.get(SVG_KUBOT), 1000, 1000);
     bot.position = L.latLng(Utils.randomLatLng(9000));
     bots.push(bot);
-    warehouse.add(ObjectType.bot, bot);
+    warehouse.add('bot', bot);
   }
 
   const size = bots.length;
@@ -42,7 +42,7 @@ async function bootstrap(container: HTMLDivElement, initialData: any) {
   const loop = () => {
     setTimeout(loop, 100);
     const index = 0 ^ (Math.random() * size);
-    warehouse.update(ObjectType.bot, bots[index], {
+    warehouse.update('bot', bots[index], {
       error: Math.random() > 0.5,
     });
   };

@@ -31,6 +31,8 @@ export class Bot
   @inject(Interface.IImageManager)
   readonly imageManager: ImageManager = null;
 
+  protected readonly anglePhase: number = 90;
+
   currentAnimation: HrAnimation = null;
 
   animate(type: 'rotate' | 'translate', n0: number, n1 = 0) {

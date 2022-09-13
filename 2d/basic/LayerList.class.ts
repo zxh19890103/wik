@@ -40,6 +40,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
   @inject(Interface.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
+  mounted = false;
   protected featureGroup: L.FeatureGroup = null;
   protected isBatching = false;
   /**
@@ -214,6 +215,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
   mount(parent: HrMap) {
     this._map = parent;
     parent.addLayer(this.featureGroup);
+    this.mounted = true;
   }
 
   dispose(): void {

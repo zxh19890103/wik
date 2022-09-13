@@ -32,7 +32,7 @@ export class BezierTranslationAnimation extends HrAnimation<ReactiveLayerWithAni
 
     const map = (this.m as any)._map;
 
-    L.polyline(this.path).addTo(map);
+    L.polyline(this.path, { weight: 1, color: '#000' }).addTo(map);
 
     this.bezier = b;
   }
@@ -42,7 +42,9 @@ export class BezierTranslationAnimation extends HrAnimation<ReactiveLayerWithAni
   }
 
   run(elapse: number, dt: number, t: number) {
-    const latlng = this.bezier.at(t / this.N);
+    const tt = t / this.N;
+    const latlng = this.bezier.at(tt);
+    this.m.setAngle(vector2rad(this.bezier.dir(tt)) * R2D);
     this.m.setPosition(latlng);
     return true;
   }

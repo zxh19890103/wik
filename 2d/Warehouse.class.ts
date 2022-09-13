@@ -21,7 +21,7 @@ import { Bot } from './Bot.class';
 import { CacheShelf } from './CacheShelf.class';
 import { Chargepile } from './Chargepile.class';
 import { Conveyor } from './Conveyor.class';
-import { manageRenderer } from './danger';
+import { manageRenderer } from './leafletCanvasOverrides';
 import { Haiport } from './Haiport.class';
 import { Location } from './Location.class';
 import { Point } from './Point.class';
@@ -35,12 +35,17 @@ import { GraphicObject } from '../interfaces/GraghicObject';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'noopclick';
 
+type ListCtorArgs = {
+  pane: string;
+  rendererBy?: 'canvas' | 'svg' | 'overlay';
+};
+
 @mixin(WithEmitterMix)
-export abstract class Warehouse<LayoutData = any>
+export abstract class Warehouse<LayoutData = any, OT extends string = never>
   extends EventEmitter3<WarehouseEventType, any>
   implements IWarehouse
 {
-  private updateDeps: Partial<Record<ObjectType, ItemUpdateFn<LayerWithID, any>>> = {};
+  private updateDeps: Partial<Record<ObjectType<OT>, ItemUpdateFn<LayerWithID, any>>> = {};
 
   @inject(Interface.IAnimationManager)
   readonly animationManager: AnimationManager;
@@ -60,7 +65,7 @@ export abstract class Warehouse<LayoutData = any>
   readonly map: HrMap = null;
   readonly mounted: boolean = false;
 
-  private typeListMapping: Map<ObjectType, LayerList<LayerWithID>> = new Map();
+  private typeListMapping: Map<ObjectType<OT>, LayerList<LayerWithID>> = new Map();
 
   points: VectorLayerList<Point>;
   shelfs: VectorLayerList<Shelf>;
@@ -87,18 +92,18 @@ export abstract class Warehouse<LayoutData = any>
     this.locations = injector.$new(LayerList);
 
     //#region set
-    this.regTypeList(ObjectType.point, this.points);
-    this.regTypeList(ObjectType.shelf, this.shelfs);
-    this.regTypeList(ObjectType.haiport, this.haiports);
-    this.regTypeList(ObjectType.chargepile, this.chargepiles);
-    this.regTypeList(ObjectType.bot, this.bots);
-    this.regTypeList(ObjectType.cacheShelf, this.cacheShelfs);
-    this.regTypeList(ObjectType.conveyor, this.conveyors);
-    this.regTypeList(ObjectType.location, this.locations);
+    this.regTypeList('point', this.points);
+    this.regTypeList('shelf', this.shelfs);
+    this.regTypeList('haiport', this.haiports);
+    this.regTypeList('chargepile', this.chargepiles);
+    this.regTypeList('bot', this.bots);
+    this.regTypeList('cacheShelf', this.cacheShelfs);
+    this.regTypeList('conveyor', this.conveyors);
+    this.regTypeList('location', this.locations);
     //#endregion
   }
 
-  each(fn: (item: GraphicObject, type: ObjectType) => void, type?: ObjectType): void {
+  each(fn: (item: GraphicObject, type: ObjectType<OT>) => void, type?: ObjectType<OT>): void {
     for (const [t, list] of this.typeListMapping) {
       if (type && type !== t) continue;
       for (const item of list) {
@@ -107,21 +112,21 @@ export abstract class Warehouse<LayoutData = any>
     }
   }
 
-  first<G>(type: ObjectType): G {
+  first<G>(type: ObjectType<OT>): G {
     const list = this.typeListMapping.get(type);
     for (const item of list) return item as G;
     return null;
   }
 
-  item(type: ObjectType, id: string) {
+  item(type: ObjectType<OT>, id: string) {
     return this.typeListMapping.get(type).find(id);
   }
 
-  query<T extends LayerWithID>(type: ObjectType, predicate: (item: T) => boolean) {
+  query<T extends LayerWithID>(type: ObjectType<OT>, predicate: (item: T) => boolean) {
     return [];
   }
 
-  update(type: ObjectType, item: LayerWithID, data: any) {
+  update(type: ObjectType<OT>, item: LayerWithID, data: any) {
     const updateFn = this.updateDeps[type];
 
     if (!updateFn && (item as any).onInput) {
@@ -134,7 +139,7 @@ export abstract class Warehouse<LayoutData = any>
     that.onUpdate && that.onUpdate(item, data);
   }
 
-  add(type: ObjectType, item: LayerWithID) {
+  add(type: ObjectType<OT>, item: LayerWithID) {
     const list = this.typeListMapping.get(type);
     if (!list) return;
     list.add(item);
@@ -143,7 +148,7 @@ export abstract class Warehouse<LayoutData = any>
     that.onAdd && that.onAdd(item);
   }
 
-  remove(type: ObjectType, item: LayerWithID | string) {
+  remove(type: ObjectType<OT>, item: LayerWithID | string) {
     const list = this.typeListMapping.get(type);
     if (!list) return;
     let _item: LayerWithID = null;
@@ -159,20 +164,41 @@ export abstract class Warehouse<LayoutData = any>
     that.onRemove && that.onRemove(_item);
   }
 
-  regTypeList(type: number, list: LayerList<LayerWithID>) {
-    if (!this.typeListMapping.has(type)) {
-      this.typeListMapping.set(type, list);
+  regTypeList(type: ObjectType<OT>, list: LayerList<LayerWithID> | ListCtorArgs) {
+    let _list = null;
+
+    if (!__PROD__ && this.typeListMapping.has(type)) {
+      throw new Error(`list type ${type} has been set!`);
     }
 
-    this.setEventChild(list);
+    if (list instanceof LayerList) {
+      _list = list;
+    } else {
+      switch (list.rendererBy) {
+        case 'canvas':
+        case 'svg': {
+          _list = injector.$new(VectorLayerList, list.pane, list.rendererBy);
+          break;
+        }
+        case 'overlay':
+        default: {
+          _list = injector.$new(SVGOverlayList, list.pane);
+          break;
+        }
+      }
+    }
 
-    this.mounted && this.onListMount(list);
+    this.typeListMapping.set(type, _list);
+    this.setEventChild(_list);
+
+    this.mounted && this.onListMount(_list);
+
+    return _list;
   }
 
   private onListMount(list: LayerList<LayerWithID>) {
     list.mount(this.map);
     if (list instanceof VectorLayerList) {
-      console.log(list.paneObj.name);
       manageRenderer(list.pane, list.paneObj.renderer);
     }
   }
@@ -183,6 +209,7 @@ export abstract class Warehouse<LayoutData = any>
     injector.writeProp(this, 'mounted', true);
 
     for (const [_, list] of this.typeListMapping) {
+      if (list.mounted) continue;
       this.onListMount(list);
     }
 
@@ -199,12 +226,13 @@ export abstract class Warehouse<LayoutData = any>
     this.modeManager.create('gravity', new behaviors.GravityBehavior(map));
     this.modeManager.create('bezier', new behaviors.BezierBehavior(map, this));
     this.modeManager.create('editable', new behaviors.EditBehavior(this, map));
+    this.modeManager.create('formula', new behaviors.FormulaBehavior(map, this));
 
-    this.modeManager.mode = 'bezier';
+    this.modeManager.mode = 'formula';
 
     if (!__PROD__) {
       const div = document.createElement('div');
-      div.style.cssText = 'position: fixed; z-index: 9999; top: 0; left: 0; width: 500px;';
+      div.style.cssText = 'position: fixed; z-index: 9999; top: 0; left: 0; width: 1080px;';
 
       for (const [_, mode] of this.modeManager.modes) {
         const btn = document.createElement('button');

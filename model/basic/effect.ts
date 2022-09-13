@@ -1,3 +1,4 @@
+import { toCapital } from '../../utils';
 import { Base } from './Base.class';
 
 export type EffectCallReq = {
@@ -6,13 +7,17 @@ export type EffectCallReq = {
   payload: any;
 };
 
+/**
+ * @todo:
+ * try use link data-struct to construct the effects requests, thus you can control the applications at any moment.
+ */
 const effectCallReqs = new Set<EffectCallReq>();
 
 let isFlushScheduled = false;
-let isCallingEffects = false;
+let isEffectsApplying = false;
 
 export const appendEffectCallReq = (req: EffectCallReq) => {
-  if (isCallingEffects) {
+  if (isEffectsApplying) {
     console.warn('You can not call appendEffectCallReq while effects consuming...');
     return;
   }
@@ -25,7 +30,7 @@ export const appendEffectCallReq = (req: EffectCallReq) => {
 };
 
 const flush = () => {
-  isCallingEffects = true;
+  isEffectsApplying = true;
 
   for (const req of effectCallReqs) {
     const { cause, effect, payload } = req;
@@ -51,6 +56,20 @@ const flush = () => {
 
   effectCallReqs.clear();
 
-  isCallingEffects = false;
+  isEffectsApplying = false;
   isFlushScheduled = false;
 };
+
+export function effect(...names: string[]) {
+  return function (target: any, field: string, descriptor: PropertyDescriptor) {
+    const func = descriptor.value;
+    const effects = [toCapital(field), ...names.map(toCapital)];
+    descriptor.value = function (this: Base, ...args: any[]) {
+      this.snapshot();
+      func.call(this, ...args);
+      for (const effect of effects) {
+        appendEffectCallReq({ effect, cause: this, payload: args });
+      }
+    };
+  };
+}

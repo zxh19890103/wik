@@ -17,6 +17,7 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
   protected width = 0;
   protected height = 0;
   protected isDrawingBounds = false;
+  protected anglePhase = 0;
 
   constructor(private imgSrc: string | HTMLImageElement, width: number, height: number) {
     const latlngs = [
@@ -120,7 +121,7 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
 
     ctx.save();
     ctx.translate(cx, cy);
-    ctx.rotate(-this.angle * D2R);
+    ctx.rotate(-(this.angle + this.anglePhase) * D2R);
     ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, -sx / 2, -sy / 2, sx, sy);
     ctx.restore();
   }

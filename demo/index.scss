@@ -9,6 +9,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
+  background: rgb(19, 34, 1);
 }
 
 #app {
@@ -22,5 +23,8 @@ body {
     bottom: 0;
     left: 0;
     z-index: 9999;
+    a {
+      color: #fff;
+    }
   }
 }

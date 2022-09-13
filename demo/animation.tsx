@@ -10,7 +10,7 @@ import { SVG_KUBOT } from '../2d/images';
 import { injectCtor, injector, ObjectType } from '../model';
 import { Warehouse } from '../2d';
 
-import '../ioc.config';
+import './ioc.config';
 import { ESSS } from './esss';
 import ROBOT_IDS_IN_110 from './robotids';
 import { appendAnimation, RotationAnimation, TranslationAnimation } from '../2d/animation';
@@ -40,7 +40,7 @@ async function bootstrap(container: HTMLDivElement) {
   for (let i = 0; i < 60; i++) {
     const bot = injector.$new<hrGUI.Bot>(hrGUI.Bot, null, 1000, 1000);
     bot.position = L.latLng(Utils.randomInt(-500, 500), Utils.randomInt(-500, 500));
-    warehouse.add(ObjectType.bot, bot);
+    warehouse.add('bot', bot);
     const srcid = ROBOT_IDS_IN_110[i];
     id_mapping[bot.layerId] = srcid;
     id_mapping[srcid] = bot.layerId;

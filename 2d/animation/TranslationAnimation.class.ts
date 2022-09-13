@@ -1,4 +1,5 @@
-import { LinearLine2D } from '../../utils';
+import { LinearLine2D, vector2rad } from '../../utils';
+import { R2D } from '../basic/constants';
 import { HrAnimation } from './Animation.class';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
@@ -26,26 +27,17 @@ export class TranslationAnimation extends HrAnimation<ReactiveLayerWithAnimate> 
     this.N = Math.ceil(
       (60 * this.globalConstMgr.robotAnimationRate * d) / this.globalConstMgr.kubotMoveSpeed,
     );
+
+    this.m.setAngle(vector2rad(this.linear.dir()) * R2D);
   }
 
   calcDur() {
     return Infinity;
   }
 
-  run(elapse: number, dt: number, t: number): boolean {
-    /**
-     * N = 100 ? not always be
-     * requestAnimationFrame: min(dt) = 1/60 s.
-     * total distance: dist (mm)
-     * speed: v (mm/s)
-     *
-     * N = ceil( (dist / v) / dt )
-     */
-
+  run(elapse: number, dt: number, t: number) {
     const diff = this.linear.diff(t / this.N, (t + 1) / this.N);
     this.m.translate(diff.lat, diff.lng);
-
-    return true;
   }
 
   final(): void {

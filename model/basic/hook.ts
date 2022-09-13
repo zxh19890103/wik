@@ -32,11 +32,12 @@ function wrapHooks(proto: any, method: string, flag: HookFlag) {
       if (pass === false) return;
     }
 
+    if (this[on]) this[on]();
+
     func.call(this, ...args);
 
     if (HookFlag.after & flag) {
       if (this[after]) this[after]();
-      if (this[on]) this[on]();
     }
   };
 }

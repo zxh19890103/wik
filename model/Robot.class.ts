@@ -1,4 +1,5 @@
 import { Base, View } from './basic/Base.class';
+import { effect } from './basic/effect';
 
 export type RobotEffect = 'Translate' | 'Rotate' | 'State';
 
@@ -17,24 +18,14 @@ export class Robot extends Base<RobotEffect> {
     return { ...this };
   }
 
-  translate(x: number, y: number) {
+  @effect('Translate')
+  setPosition(x: number, y: number) {
     this.px += x;
     this.py += y;
-    this.reqEffectCall('Translate', { x, y });
   }
 
-  translateTo(x: number, y: number) {
-    this.px = x;
-    this.py = y;
-  }
-
-  rotateTo(deg: number) {
-    this.theta = deg;
-    // this.reqEffectCall('Rotate', deg);
-  }
-
-  rotate(deg: number) {
+  @effect('Rotate')
+  setTheta(deg: number) {
     this.theta += deg;
-    this.reqEffectCall('Rotate', deg);
   }
 }

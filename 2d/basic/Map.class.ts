@@ -21,7 +21,7 @@ import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
   zoomAnimation: true,
   inertia: true,
   zoom: INITIAL_ZOOM_LEVEL,
-  minZoom: -1,
+  minZoom: -10,
   maxZoom: 10,
   zoomControl: false,
   doubleClickZoom: false,

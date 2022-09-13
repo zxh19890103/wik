@@ -5,14 +5,14 @@ export interface IWarehouse {
   mount(root: any): void;
   layout(data: unknown): void;
 
-  each(fn: (item: GraphicObject, type: ObjectType) => void, type?: ObjectType): void;
+  each(fn: (item: GraphicObject, type: string) => void, type?: string): void;
 
-  first(type: ObjectType): GraphicObject;
-  item(type: ObjectType, id: string): GraphicObject;
-  query(type: ObjectType, predicate: (item: unknown) => boolean): unknown[];
-  add(type: ObjectType, item: GraphicObject): void;
-  update(type: ObjectType, item: GraphicObject, data: any): void;
-  remove(type: ObjectType, item: GraphicObject | string): void;
+  first<M extends GraphicObject>(type: string): M;
+  item(type: string, id: string): GraphicObject;
+  query(type: string, predicate: (item: unknown) => boolean): unknown[];
+  add(type: string, item: GraphicObject): void;
+  update(type: string, item: GraphicObject, data: any): void;
+  remove(type: string, item: GraphicObject | string): void;
 
   onClick?(item: GraphicObject): void;
   onDblClick?(item: GraphicObject): void;

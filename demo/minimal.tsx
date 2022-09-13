@@ -6,7 +6,7 @@ import { ObjectType, injector, ModeManager, injectCtor } from '../model';
 import { HrMap } from '../2d/basic';
 import { IModeManager } from '../interfaces/symbols';
 
-import '../ioc.config';
+import './ioc.config';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -17,11 +17,8 @@ class MyWarehouse extends Warehouse {
   }
 
   layout(data: any): void {
-    const point = new basic.Circle([0, 0], { radius: 3000, color: '#097' });
-    this.add(ObjectType.point, point);
-
-    const origin = L.marker([0, 0]);
-    origin.addTo(this.map);
+    const point = new basic.Circle([0, 0], { radius: 1000, color: '#097' });
+    // this.add('point', point);
   }
 }
 

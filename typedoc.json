@@ -1,0 +1,10 @@
+{
+  "name": "Graphic Library Documentation",
+  "entryPoints": ["2d", "3d", "dom", "interfaces", "mixins", "model", "utils"],
+  "entryPointStrategy": "expand",
+  "readme": "README.md",
+  "out": "docs",
+  "externalPattern": ["**/node_modules/**/*"],
+  "excludeExternals": true,
+  "cleanOutputDir": true
+}

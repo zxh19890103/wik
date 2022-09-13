@@ -62,7 +62,7 @@ export function ReactiveLayerMixin(
     latlngs: PolylineLatLngs = [];
     angle = 0;
     position: L.LatLng = new L.LatLng(0, 0);
-    scale: L.Point = new L.Point(1, 1);
+    scale: L.LatLngLiteral = { lat: 1, lng: 1 };
 
     layerState: AnyObject = {};
 
@@ -174,7 +174,7 @@ export function ReactiveLayerMixin(
     }
 
     setScale(sOnLat: number, sOnLng?: number): void {
-      this.scale = new L.Point(sOnLat, sOnLng === undefined ? sOnLat : sOnLng);
+      this.scale = { lat: sOnLat, lng: sOnLng === undefined ? sOnLat : sOnLng };
       this.isMatrixNeedsUpdate = true;
       this.requestRenderCall(ReactiveLayerRenderEffect.scale);
     }
@@ -211,8 +211,8 @@ export function ReactiveLayerMixin(
     }
 
     scales(dLat: number, dLng = 1) {
-      const { x, y } = this.scale;
-      this.setScale(x * dLat, y * dLng);
+      const { lat, lng } = this.scale;
+      this.setScale(lat * dLat, lng * dLng);
     }
 
     requestRenderCall(effect: ReactiveLayerRenderEffect) {
@@ -242,13 +242,14 @@ export function ReactiveLayerMixin(
      */
     updateMatrix() {
       if (!this.isMatrixNeedsUpdate) return;
+
       this.matrix = mat3.create();
 
       const { position, angle, scale } = this;
 
       const translation = mat3.fromTranslation(mat3.create(), [position.lng, position.lat]);
       const rotation = mat3.fromRotation(mat3.create(), angle * D2R);
-      const scaling = mat3.fromScaling(mat3.create(), [scale.y, scale.x]);
+      const scaling = mat3.fromScaling(mat3.create(), [scale.lng, scale.lat]);
 
       mat3.multiply(this.matrix, this.matrix, translation);
       mat3.multiply(this.matrix, this.matrix, rotation);
@@ -262,6 +263,7 @@ export function ReactiveLayerMixin(
     updateWorldMatrix() {
       const parent = this.$$parent;
 
+      // 1. calc this world matrix.
       if (parent) {
         // if parent world matrix is null ?
         if (parent.worldMatrix === null) {
@@ -280,9 +282,11 @@ export function ReactiveLayerMixin(
         this.worldMatrix = mat3.clone(this.matrix);
       }
 
+      // 2. calculates invert
       this.worldMatrixInvert = mat3.create();
       mat3.invert(this.worldMatrixInvert, this.worldMatrix);
 
+      // 3. calc children's world matrixes.
       if (this.$$children) {
         for (const child of this.$$children) {
           child.updateWorldMatrix();

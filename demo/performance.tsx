@@ -10,7 +10,7 @@ import { SVG_KUBOT } from '../2d/images';
 import { injectCtor, injector, ObjectType } from '../model';
 import { Warehouse } from '../2d';
 
-import '../ioc.config';
+import './ioc.config';
 import { appendAnimation, TranslationAnimation } from '../2d/animation';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
@@ -36,7 +36,7 @@ async function bootstrap(container: HTMLDivElement) {
     const position = L.latLng(Utils.randomInt(-500, 500), Utils.randomInt(-500, 500));
     const bot = new hrGUI.basic.Circle(position, { radius: 1000 });
     injector.writeProp(bot, 'animationMgr', warehouse.animationManager);
-    warehouse.add(ObjectType.bot, bot);
+    warehouse.add('bot', bot);
   }
 
   const { random } = Math;

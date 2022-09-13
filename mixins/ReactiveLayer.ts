@@ -28,7 +28,7 @@ export interface ReactiveLayer extends WithSnapshot, WithClickCancel, WithLayerI
   /**
    * 控制图形的缩放
    */
-  scale: L.Point;
+  scale: L.LatLngLiteral;
 
   addChild(...children: ReactiveLayer[]): void;
   removeChild(...children: ReactiveLayer[]): void;

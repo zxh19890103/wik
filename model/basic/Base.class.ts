@@ -49,6 +49,7 @@ export interface Base<E extends string = string> extends WithEmitter<E> {}
 
 export interface View<M extends Base = Base, E extends string = string> {
   model: M;
+  whenInit(): void;
   whenTrash(): void;
   whenEffect?(effect: E): void;
 }
@@ -58,21 +59,14 @@ export type ViewMake<M, V> = (m: M) => V;
 /**
  * This is the inferace for unifing THREE.js and Leaflet and so on.
  */
-export interface ViewContainer<M extends Base, V extends View<M>, G = any> {
-  /**
-   * L.FeatureGroup, L.LayerGroup, THREE.Group, THREE.Object3D
-   */
-  $$value: G;
+export interface ViewContainer<M extends Base, V extends View<M>> {
   $$make: ViewMake<M, V>;
   add(...items: V[]): void;
   remove(...items: V[]): void;
 }
 
-export function viewConstructMixin<M extends Base, V extends View<M>, O = any>(
-  this: V,
-  m: M,
-  options: O,
-) {
-  this.model = m;
-  m.$$views.push(this);
+export function makeModelView<M extends Base, V extends View<M>>(v: V, m: M) {
+  v.model = m;
+  m.$$views.push(v);
+  v.whenInit();
 }

@@ -11,5 +11,5 @@
 
 - To 2022/09/31, fulfill:
 
-  - ThreeJs 基础图形
   - ThreeJs 业务图形模型
+  - ThreeJs 基础图形

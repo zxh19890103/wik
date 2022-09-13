@@ -12,6 +12,8 @@ let isFlushScheduled = false;
 let isRendering = false;
 
 const appendLayerRenderReq = (context: ReactiveLayer, effect: ReactiveLayerRenderEffect) => {
+  console.log('appendLayerRenderReq');
+
   if (isRendering) {
     console.log(
       '[appendLayerRenderReq] While rendering, new request of render cannot be appended.',
@@ -35,16 +37,15 @@ const appendLayerRenderReq = (context: ReactiveLayer, effect: ReactiveLayerRende
   if (isFlushScheduled) return;
 
   // it's idle, bootstrap it.
-  // queueMicrotask(flush);
-  /**
-   * @todo queueMicrotask does not work right.
-   */
-  setTimeout(flush, 10);
+  queueMicrotask(flush);
   isFlushScheduled = true;
 };
 
 const flush = () => {
   isRendering = true;
+
+  console.log('appendLayerRenderReq:flush');
+  console.log('appendLayerRenderReq:flush:start');
 
   // Before render & During render
   for (const item of __RENDER_REQUESTS__) {
@@ -112,14 +113,11 @@ const flush = () => {
 
       item.afterRender && item.afterRender(effect);
 
-      // const interactive = item as unknown as Interactive;
-      // if (interactive.isSelected && interactive.onSelect) {
-      //   interactive.onSelect();
-      // }
-
       __RENDER_REQUEST_EFFECTS__.delete(id);
     }
   }, 10);
+
+  console.log('appendLayerRenderReq:flush:end');
 
   isFlushScheduled = false;
 };
