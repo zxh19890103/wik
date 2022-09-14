@@ -24,7 +24,6 @@ export class LinearLine1D implements LineBuilder<number> {
       }
 
       this._var1 = var1 + j * period;
-      console.log(this._var1);
     }
   }
 

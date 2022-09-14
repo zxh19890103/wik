@@ -1,6 +1,6 @@
 import * as basic from './basic';
 import * as behaviors from './behaviors';
-import * as meta from './meta';
+import * as meta from '../model/meta';
 
 import './styles/index.scss';
 

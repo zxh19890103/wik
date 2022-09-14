@@ -11,6 +11,8 @@
 # production
 /build
 /docs
+/doc
+/api
 __mock__/
 
 npm-debug.log*

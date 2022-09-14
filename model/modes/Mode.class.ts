@@ -1,7 +1,8 @@
-import { IBehavior, IMode } from '../../interfaces/Mode';
+import { IBehavior, IMode, IModeManager } from '../../interfaces/Mode';
 
 export class Mode implements IMode {
   readonly name: string;
+  readonly modeMgr: IModeManager;
   behaviors: IBehavior[];
 
   constructor(name: string, ...behaviors: IBehavior[]) {
@@ -12,8 +13,12 @@ export class Mode implements IMode {
   onLoad(): void {}
   onUnload(): void {}
 
-  add(b: IBehavior) {
-    this.behaviors.push(b);
+  add(b: IBehavior, ...bs: IBehavior[]) {
+    throw new Error('not implemented');
+  }
+
+  remove(b: IBehavior, ...bs: IBehavior[]) {
+    throw new Error('not implemented');
   }
 
   load(): void {
@@ -22,7 +27,6 @@ export class Mode implements IMode {
     }
 
     this.onLoad && this.onLoad();
-    console.log(`mode = ${this.name}`);
   }
 
   unload(): void {

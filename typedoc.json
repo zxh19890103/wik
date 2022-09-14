@@ -1,10 +1,21 @@
 {
+  "$schema": "https://typedoc.org/schema.json",
   "name": "Graphic Library Documentation",
   "entryPoints": ["2d", "3d", "dom", "interfaces", "mixins", "model", "utils"],
   "entryPointStrategy": "expand",
   "readme": "README.md",
-  "out": "docs",
+  "out": "doc",
   "externalPattern": ["**/node_modules/**/*"],
+  "includes": "node_modules/typedoc-plugin-pages",
   "excludeExternals": true,
-  "cleanOutputDir": true
+  "cleanOutputDir": true,
+  "pluginPages": {
+    "pages": [
+      {
+        "title": "Tutorials",
+        "moduleRoot": false,
+        "source": "./tutorials/general.md"
+      }
+    ]
+  }
 }

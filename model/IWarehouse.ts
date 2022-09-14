@@ -1,9 +1,8 @@
 import { GraphicObject } from '../interfaces/GraghicObject';
-import { ObjectType } from './ObjectType.enum';
 
 export interface IWarehouse {
   mount(root: any): void;
-  layout(data: unknown): void;
+  layout(data?: unknown): void | Promise<void>;
 
   each(fn: (item: GraphicObject, type: string) => void, type?: string): void;
 
@@ -14,11 +13,12 @@ export interface IWarehouse {
   update(type: string, item: GraphicObject, data: any): void;
   remove(type: string, item: GraphicObject | string): void;
 
-  onClick?(item: GraphicObject): void;
-  onDblClick?(item: GraphicObject): void;
+  onClick?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
+  onDblClick?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
   onPress?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
-  onHover?(item: GraphicObject, on: boolean): void;
+  onHover?(item: GraphicObject, on: boolean, evt: L.LeafletMouseEvent): void;
   onContextMenu?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
+  onMounted?(): void;
 
   onAdd?(item: GraphicObject): void;
   onRemove?(item: GraphicObject): void;

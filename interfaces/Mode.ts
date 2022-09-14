@@ -30,6 +30,7 @@ export type BehaviorCallback =
 export interface IMode {
   name: string;
   behaviors: IBehavior[];
+  modeMgr: IModeManager;
   load(): void;
   unload(): void;
   onLoad(): void;
@@ -39,8 +40,8 @@ export interface IMode {
 export interface IModeManager {
   modes: Map<string, IMode>;
 
-  addModes(...modes: IMode[]): void;
-  removeModes(...modes: IMode[]): void;
+  add(...modes: IMode[]): void;
+  remove(...modes: IMode[]): void;
 
   set mode(val: IMode);
   get mode(): IMode;

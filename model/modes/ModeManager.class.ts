@@ -1,5 +1,5 @@
 import { BehaviorCallback, IBehavior, IMode, IModeManager } from '../../interfaces/Mode';
-import { injectable } from '../basic/inject';
+import { injectable, injector } from '../basic/inject';
 import { Behavior } from '../behaviors';
 import { Mode } from './Mode.class';
 
@@ -40,16 +40,21 @@ export class ModeManager implements IModeManager {
   }
 
   create(name: string, ...behaviors: IBehavior[]): IMode {
+    if (!__PROD__ && this.modes.has(name)) {
+      throw new Error('mode name is duplicated.');
+    }
+
     const mode = new Mode(name, ...behaviors);
     this.modes.set(name, mode);
+    injector.writeProp(mode, 'modeMgr', this);
     return mode;
   }
 
-  addModes(...modes: IMode[]): void {
+  add(...modes: IMode[]): void {
     throw new Error('Method not implemented.');
   }
 
-  removeModes(...modes: IMode[]): void {
+  remove(...modes: IMode[]): void {
     throw new Error('Method not implemented.');
   }
 }

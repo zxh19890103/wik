@@ -3,7 +3,7 @@ import { Interactive } from '../interfaces/Interactive';
 import { LayerWithID } from '../interfaces/WithLayerID';
 import { WithEmitter, WithEmitterMix } from '../mixins/Emitter';
 import { InteractiveStateActionManager } from '../mixins/InteractiveStateActionManager.class';
-import { ObjectType, IWarehouse } from '../model';
+import { ObjectType, IWarehouse, GlobalConstManager } from '../model';
 import { HrEvent } from '../model/basic/Event.class';
 import { mixin } from '../model/basic/mixin';
 import {
@@ -28,12 +28,13 @@ import { Point } from './Point.class';
 import { Shelf } from './Shelf.class';
 
 import { inject, injector } from '../model/basic/inject';
-import * as Interface from '../interfaces/symbols';
+import * as Interfaces from '../interfaces/symbols';
 import { ModeManager } from '../model/modes/ModeManager.class';
 import * as behaviors from './behaviors';
 import { GraphicObject } from '../interfaces/GraghicObject';
+import { IBehavior } from '../interfaces/Mode';
 
-type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'noopclick';
+type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'mounted';
 
 type ListCtorArgs = {
   pane: string;
@@ -47,20 +48,22 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 {
   private updateDeps: Partial<Record<ObjectType<OT>, ItemUpdateFn<LayerWithID, any>>> = {};
 
-  @inject(Interface.IAnimationManager)
+  @inject(Interfaces.IAnimationManager)
   readonly animationManager: AnimationManager;
-  @inject(Interface.IPaneManager)
+  @inject(Interfaces.IPaneManager)
   readonly paneManager: PaneManager;
-  @inject(Interface.ISelectionManager)
+  @inject(Interfaces.ISelectionManager)
   readonly selectionManager: SelectionManager;
-  @inject(Interface.IImageManager)
+  @inject(Interfaces.IImageManager)
   readonly imageManager: ImageManager;
-  @inject(Interface.IHighlightManager)
+  @inject(Interfaces.IHighlightManager)
   readonly highlightManager: HighlightManager;
-  @inject(Interface.IStateActionManager)
+  @inject(Interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
-  @inject(Interface.IModeManager)
+  @inject(Interfaces.IModeManager)
   readonly modeManager: ModeManager;
+  @inject(Interfaces.IGlobalConstManager)
+  readonly globalConsts: GlobalConstManager;
 
   readonly map: HrMap = null;
   readonly mounted: boolean = false;
@@ -215,20 +218,15 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
     //#region modes
     this.modeManager.create('default', injector.$new(behaviors.DefaultBehavior));
-    this.modeManager.create('readonly', new behaviors.ReadonlyBehavior());
-    this.modeManager.create(
-      'draw',
-      new behaviors.DrawBehavior(map),
-      new behaviors.WaterDropBehavior(map),
-    );
     this.modeManager.create('select', injector.$new(behaviors.RectDrawBehavior, this, map));
-    this.modeManager.create('particles', injector.$new(behaviors.FireworksBehavior, map));
-    this.modeManager.create('gravity', new behaviors.GravityBehavior(map));
     this.modeManager.create('bezier', new behaviors.BezierBehavior(map, this));
-    this.modeManager.create('editable', new behaviors.EditBehavior(this, map));
-    this.modeManager.create('formula', new behaviors.FormulaBehavior(map, this));
 
-    this.modeManager.mode = 'formula';
+    const modes = this.configModes();
+    for (const m in modes) {
+      this.modeManager.create(m, ...modes[m]);
+    }
+
+    this.modeManager.mode = 'bezier';
 
     if (!__PROD__) {
       const div = document.createElement('div');
@@ -249,51 +247,69 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
     //#endregion
 
-    //#region events
+    //#region events & mode apply
+    {
+      const invokeCallbackOnSubClass = (e: HrEvent, onCall: string, ...args: any[]) => {
+        const layer = e.payload.layer as Interactive;
+        if (Object.hasOwn(this, onCall)) {
+          this[onCall](layer, ...args);
+        }
+        return layer;
+      };
 
-    const invokeCallbackOnSub = (e: HrEvent, onCall: string, ...args: any[]) => {
-      const layer = e.payload.layer as Interactive;
-      if (Object.hasOwn(this, onCall)) {
-        this[onCall](layer, ...args);
+      this.on('click', (e) => {
+        const { layer, leafletEvt } = e.payload;
+        invokeCallbackOnSubClass(e, 'onClick', leafletEvt);
+        this.modeManager.apply('onClick', layer, e);
+      });
+
+      this.on('dblclick', (e) => {
+        const { layer, leafletEvt } = e.payload;
+        invokeCallbackOnSubClass(e, 'onDblClick', leafletEvt);
+        this.modeManager.apply('onDblClick', layer, e);
+      });
+
+      this.on('hover', (e) => {
+        const { layer, on, leafletEvt } = e.payload;
+        invokeCallbackOnSubClass(e, 'onHover', on, leafletEvt);
+        this.modeManager.apply('onHover', layer, on, leafletEvt);
+      });
+
+      this.on('press', (e) => {
+        const { layer, leafletEvt } = e.payload;
+        invokeCallbackOnSubClass(e, 'onPress', leafletEvt);
+        this.modeManager.apply('onPress', layer, leafletEvt);
+      });
+
+      this.on('contextmenu', (e) => {
+        const { layer, leafletEvt } = e.payload;
+        invokeCallbackOnSubClass(e, 'onContextMenu', leafletEvt);
+        this.modeManager.apply('onContextMenu', layer, leafletEvt);
+      });
+
+      /**
+       * event bind on map seems like that it can't read the actual propagatedFrom layer, no this field.
+       */
+      this.map.on('mousedown mousemove mouseup click', (evt) => {
+        if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
+        this.modeManager.apply(eventName_behaviorCallback_mapping[evt.type], evt);
+      });
+    }
+
+    //#endregion
+
+    //#region layout
+
+    (async () => {
+      const d = await this.getLayoutData();
+      this.layout(d);
+
+      this.emit('mounted');
+      if (Object.hasOwn(this, 'onMounted')) {
+        this['onMounted']();
       }
-      return layer;
-    };
+    })();
 
-    this.on('click', (e) => {
-      const layer = invokeCallbackOnSub(e, 'onClick');
-      this.modeManager.apply('onClick', layer, e);
-    });
-
-    this.on('dblclick', (e) => {
-      const layer = invokeCallbackOnSub(e, 'onDblClick');
-      this.modeManager.apply('onDblClick', layer, e);
-    });
-
-    this.on('hover', (e) => {
-      const { layer, on, leafletEvt } = e.payload;
-      invokeCallbackOnSub(e, 'onHover', on, leafletEvt);
-      this.modeManager.apply('onHover', layer, on, leafletEvt);
-    });
-
-    this.on('press', (e) => {
-      const { layer, leafletEvt } = e.payload;
-      invokeCallbackOnSub(e, 'onPress', layer, leafletEvt);
-      this.modeManager.apply('onPress', layer, leafletEvt);
-    });
-
-    this.on('contextmenu', (e) => {
-      const { layer, leafletEvt } = e.payload;
-      invokeCallbackOnSub(e, 'onContextMenu', layer, leafletEvt);
-      this.modeManager.apply('onContextMenu', layer, leafletEvt);
-    });
-
-    /**
-     * event bind on map seems like that it can't read the actual propagatedFrom layer, no this field.
-     */
-    this.map.on('mousedown mousemove mouseup click', (evt) => {
-      if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
-      this.modeManager.apply(eventNameCallbackMap[evt.type], evt);
-    });
     //#endregion
   }
 
@@ -304,14 +320,28 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     this.updateDeps[type] = fn as any;
   }
 
-  abstract layout(data: LayoutData): void;
+  abstract layout(data?: LayoutData): void;
+
+  /**
+   * retains the data for layouting ,which is the initial data. default is null, you can't overrides it in subclass.
+   */
+  getLayoutData(): Promise<LayoutData> {
+    return Promise.resolve(null);
+  }
+
+  /**
+   * default is empty, you can overrides it.
+   */
+  configModes(): Record<string, IBehavior[]> {
+    return {};
+  }
 }
 
 export interface Warehouse<LayoutData> extends WithEmitter<WarehouseEventType> {}
 
 export type ItemUpdateFn<M extends LayerWithID, D> = (item: M, data: D) => void;
 
-const eventNameCallbackMap = {
+const eventName_behaviorCallback_mapping = {
   dragstart: 'onDragStart',
   drag: 'onDrag',
   dragend: 'onDragEnd',

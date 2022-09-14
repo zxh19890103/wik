@@ -2,11 +2,13 @@ import L from 'leaflet';
 import { Warehouse, basic, interactivateAllPanes } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { ObjectType, injector, ModeManager, injectCtor } from '../model';
+import { injector, ModeManager, injectCtor } from '../model';
 import { HrMap } from '../2d/basic';
 import { IModeManager } from '../interfaces/symbols';
+import { Bot } from '../2d/Bot.class';
 
 import './ioc.config';
+import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -16,9 +18,14 @@ class MyWarehouse extends Warehouse {
     super();
   }
 
-  layout(data: any): void {
+  async layout(data: any) {
     const point = new basic.Circle([0, 0], { radius: 1000, color: '#097' });
-    // this.add('point', point);
+    this.add('point', point);
+
+    await this.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
+
+    const bot = injector.$new<Bot>(Bot, this.imageManager.get(SVG_KUBOT_RED), 1000, 1000);
+    this.add('bot', bot);
   }
 }
 
@@ -29,13 +36,7 @@ export default () => {
 
   const handleAfter = (root: HrMap) => {
     interactivateAllPanes(root, warehouse.paneManager);
-
-    warehouse.layout(null);
   };
 
-  return (
-    <div>
-      <Scene warehouse={warehouse} afterMount={handleAfter} />
-    </div>
-  );
+  return <Scene warehouse={warehouse} afterMount={handleAfter} />;
 };

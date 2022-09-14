@@ -6,7 +6,7 @@ import { WithLayerState } from '../interfaces/WithLayerState';
 import { ReactiveLayerRenderEffect } from '../mixins/effects';
 import { leafletOptions } from '../utils/leaflet';
 import { Polygon } from './basic';
-import type { meta } from './meta';
+import type { meta } from '../model/meta';
 
 const default_latlngs = [
   [-300, -300],

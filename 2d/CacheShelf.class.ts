@@ -1,5 +1,5 @@
 import { Group } from './basic/Group.class';
-import { meta } from './meta';
+import { meta } from '../model/meta';
 import { Shelf } from './Shelf.class';
 
 export class CacheShelf extends Group<Shelf> {
