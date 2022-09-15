@@ -45,8 +45,6 @@ export default () => {
     interactivateAllPanes(root, warehouse.paneManager);
 
     await basic.setDefaultImage(Bot, SVG_KUBOT);
-
-    warehouse.layout(null);
   };
 
   return <Scene warehouse={warehouse} afterMount={handleAfter} />;

@@ -9,7 +9,8 @@
     "lint": "eslint . --fix",
     "prebuild": "yarn lint && node ./scripts/build --stage=pre",
     "postbuild": "node ./scripts/build --stage=post",
-    "docg": "typedoc"
+    "docg": "typedoc",
+    "postdocg": "scp -r doc/* hairou@172.20.8.54:/data/workspace/hrgui-doc"
   },
   "dependencies": {
     "@types/leaflet": "^1.7.11",
@@ -33,7 +34,10 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
     "sass": "^1.54.8",
+    "ssh2": "^1.11.0",
     "typedoc": "^0.23.14",
+    "typedoc-github-wiki-theme": "^1.0.1",
+    "typedoc-plugin-markdown": "^3.13.6",
     "typedoc-plugin-missing-exports": "^0.22.6",
     "typescript": "^4.8.2",
     "vite": "^3.0.9",

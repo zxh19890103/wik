@@ -38,15 +38,8 @@ export class InteractiveStateActionManager extends StateActionManager {
 
     if (!_ctx || !_type) return;
 
-    console.log('pop', _type);
-
     const actions = _ctx.changeHistory as InteractiveStateAction[];
     if (!actions) return;
-
-    console.log(
-      'pop start',
-      actions.map((a) => a.type),
-    );
 
     // actions between brace.
     const _actions: InteractiveStateAction[] = [];
@@ -55,7 +48,6 @@ export class InteractiveStateActionManager extends StateActionManager {
     let i = 0;
 
     while (i++ < SAFE && action) {
-      console.log('pop revert', action.type);
       action.revert();
 
       if (action.type === _type) {
@@ -67,19 +59,9 @@ export class InteractiveStateActionManager extends StateActionManager {
       action = actions.pop();
     }
 
-    console.log(
-      'pop middle',
-      _actions.map((a) => a.type),
-    );
-
     for (const a of _actions) a.apply();
 
     actions.push(..._actions);
-
-    console.log(
-      'pop end',
-      actions.map((a) => a.type),
-    );
 
     if (actions.length === 0) {
       _ctx.changeHistory = null;

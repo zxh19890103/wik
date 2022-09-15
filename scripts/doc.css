@@ -1,0 +1,17 @@
+.tsd-page-toolbar {
+}
+
+.tsd-page-title {
+}
+
+.tsd-panel.tsd-typography hr {
+  margin: 2rem -2rem;
+  border: none;
+  height: 1px;
+  transform: scale(1, 0.5);
+  background-color: #777;
+}
+
+.tsd-panel.tsd-typography h3 {
+  margin-top: 3rem;
+}

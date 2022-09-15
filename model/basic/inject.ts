@@ -73,8 +73,6 @@ namespace injector {
       ctor = Object.getPrototypeOf(ctor.prototype)?.constructor;
     }
 
-    // console.log(chain.join('->'));
-
     return instance;
   }
 
