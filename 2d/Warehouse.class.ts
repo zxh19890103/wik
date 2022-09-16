@@ -207,6 +207,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   }
 
   mount(map: HrMap) {
+    if (this.mounted) return;
+
     injector.writeProp(this, 'map', map);
     injector.writeProp(this.paneManager, 'map', map);
     injector.writeProp(this, 'mounted', true);
@@ -226,7 +228,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
       this.modeManager.create(m, ...modes[m]);
     }
 
-    this.modeManager.mode = 'bezier';
+    this.modeManager.mode = 'default';
 
     if (!__PROD__) {
       const div = document.createElement('div');
@@ -302,7 +304,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
     (async () => {
       const d = await this.getLayoutData();
-      this.layout(d);
+      await this.layout(d);
 
       this.emit('mounted');
       if (Object.hasOwn(this, 'onMounted')) {
@@ -320,7 +322,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     this.updateDeps[type] = fn as any;
   }
 
-  abstract layout(data?: LayoutData): void;
+  abstract layout(data?: LayoutData): void | Promise<void>;
 
   /**
    * retains the data for layouting ,which is the initial data. default is null, you can't overrides it in subclass.

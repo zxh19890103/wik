@@ -20,7 +20,6 @@ export class SelectionManager
 {
   private item: Interactive = null;
   private items: Interactive[] = [];
-  private noEmit = false;
 
   @inject(Interface.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;

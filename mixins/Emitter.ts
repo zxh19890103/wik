@@ -34,7 +34,13 @@ export abstract class WithEmitterMix {
 
   static event: HrEvent = null;
 
+  noEmit = false;
+
   emit(event, payload) {
+    if (this.noEmit) {
+      this.noEmit = false;
+      return;
+    }
     const eventObj = payload instanceof HrEvent ? payload : new HrEvent(this, event, payload);
     WithEmitterMix.event = eventObj;
     // skip this.emit access super.
@@ -53,9 +59,10 @@ export abstract class WithEmitterMix {
 writeReadonlyProp(WithEmitterMix.prototype, 'setEventChild', setEventChild);
 
 export interface WithEmitter<E extends string> {
+  noEmit: boolean;
   emit<T extends EventNames<E>>(event: T, payload?: AnyObject): boolean;
-  on<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void): this;
+  on<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
   off<T extends EventNames<E>>(event: T, fn?: (event: HrEvent) => void): this;
-  once<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void): this;
+  once<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
   setEventChild(child: WithEmitter<string>, rm?: boolean): this;
 }

@@ -15,6 +15,8 @@ export class MyWarehouse extends Warehouse<any, 'bot2'> {
   }
 
   layout(data: any): void {
+    if (!data) return;
+
     const {
       shelfPojo,
       pointPojo,

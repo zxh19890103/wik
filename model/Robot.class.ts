@@ -1,9 +1,13 @@
 import { Base, View } from './basic/Base.class';
 import { effect } from './basic/effect';
 
-export type RobotEffect = 'Translate' | 'Rotate' | 'State';
+export enum RobotEffect {
+  translate = 'Translate',
+  rotate = 'Rotate',
+  state = 'State',
+}
 
-export class Robot extends Base<RobotEffect> {
+export class Robot extends Base {
   px = 0;
   py = 0;
   pz = 0;
@@ -18,13 +22,13 @@ export class Robot extends Base<RobotEffect> {
     return { ...this };
   }
 
-  @effect<RobotEffect>('Translate')
+  @effect(RobotEffect.translate)
   setPosition(x: number, y: number) {
     this.px += x;
     this.py += y;
   }
 
-  @effect<RobotEffect>('Rotate')
+  @effect(RobotEffect.rotate)
   setTheta(deg: number) {
     this.theta += deg;
   }

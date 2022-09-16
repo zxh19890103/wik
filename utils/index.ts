@@ -6,3 +6,4 @@ export * from './bezier';
 export * from './linear';
 export * from './vector';
 export * from './capital';
+export * from './queueTask';

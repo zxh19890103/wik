@@ -9,26 +9,26 @@ import * as hrGUIBasic from '../2d/basic';
 
 import * as hrModel from '../model';
 import { Scene } from '../dom/Scene';
-import { makeModelView, injector } from '../model';
+import { injector, List } from '../model';
 import { MyWarehouse } from './MyWarehouse.class';
 
 import './ioc.config';
+import { Views } from '../model/basic/Views.class';
+import { setDefaultImage } from '../2d/basic';
+import { Bot } from '../2d';
+import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
-class MyRobotView extends hrGUI.Robot implements hrModel.RobotView {
+class MyRobotView extends hrGUI.Bot implements hrModel.RobotView {
   model: hrModel.Robot;
 
-  whenTranslate(dxy) {
+  whenTranslate() {
     this.setPosition(this.model.py, this.model.px);
   }
 
-  whenRotate(dd: number) {
+  whenRotate() {
     this.setAngle(this.model.theta);
-  }
-
-  whenTrash(): void {
-    this.remove();
   }
 
   whenInit() {}
@@ -41,23 +41,36 @@ class MyRobotView2 extends hrGUIBasic.Polygon implements hrModel.RobotView {
     this.setPosition(this.model.py, this.model.px);
   }
 
-  whenRotate(dd: number) {
+  whenRotate() {
     this.setAngle(this.model.theta);
-  }
-
-  whenTrash(): void {
-    this.remove();
   }
 
   whenInit() {
     this.setLocalLatLngs([
-      [-1000, 10000],
-      [10000, 300],
-      [10, 40000],
+      [-1000, -1000],
+      [1000, 1000],
+      [0, 0],
     ]);
 
     this.setPosition(this.model.py, this.model.px);
     this.setAngle(this.model.theta);
+  }
+}
+
+class MyRobotView3 extends hrGUIBasic.Circle implements hrModel.RobotView {
+  model: hrModel.Robot;
+
+  whenTranslate() {
+    this.setPosition(this.model.py, this.model.px);
+  }
+
+  whenRotate() {
+    // this.setAngle(this.model.theta);
+  }
+
+  whenInit() {
+    this.setRadius(4000);
+    this.setPosition(this.model.py, this.model.px);
   }
 }
 
@@ -67,37 +80,62 @@ export default () => {
   });
 
   const handleAfter = async (root: HrMap) => {
-    const bots: hrModel.Robot[] = [];
-    for (let i = 0; i < 5; i++) {
+    const bots = new List(hrModel.Robot, []);
+
+    await warehouse.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
+
+    new Views({
+      source: bots,
+      views: warehouse.bots as any,
+      make: (m) => new MyRobotView2([]),
+    });
+
+    new Views({
+      source: bots,
+      views: warehouse.shelfs as any,
+      make: (m) => new MyRobotView(warehouse.imageManager.get(SVG_KUBOT), 1000, 1000),
+    });
+
+    new Views({
+      source: bots,
+      views: warehouse.points as any,
+      make: (m) => new MyRobotView3([0, 0]),
+    });
+
+    for (let i = 0; i < 30; i++) {
       const bot = new hrModel.Robot();
       bot.px = Util.randomInt(-1000, 1000);
       bot.py = Util.randomInt(-1000, 1000);
       bot.theta = Util.randomInt(0, 360);
-      bots.push(bot);
+      bots.add(bot);
     }
+
+    /**
+     * we've supported the remove by itself.
+     */
+    // toViews(bots, (m) => v).subscribe('add', () => {})
 
     hrGUI.interactivateAllPanes(root, warehouse.paneManager);
-
-    warehouse.mount(root);
-
-    console.log('for bot in');
-    for (const bot of bots) {
-      const view = new MyRobotView2([]);
-      makeModelView(view, bot);
-      warehouse.add('bot', view);
-    }
-    console.log('for bot out');
-
-    // warehouse.layout(null);
 
     let theta = 0;
     const loop = () => {
       setTimeout(loop, 500);
       theta += 1;
+      let b = null;
       for (const bot of bots) {
-        // bot.setPosition(Util.randomInt(-10000, 10000), Util.randomInt(-10000, 10000));
+        bot.setPosition(Util.randomInt(-10000, 10000), Util.randomInt(-10000, 10000));
         bot.setTheta(theta);
+        b = bot;
       }
+
+      bots.remove(b);
+
+      // const bot = new hrModel.Robot();
+      // bot.px = Util.randomInt(-1000, 1000);
+      // bot.py = Util.randomInt(-1000, 1000);
+      // bot.theta = Util.randomInt(0, 360);
+
+      // bots.add(bot);
     };
 
     loop();

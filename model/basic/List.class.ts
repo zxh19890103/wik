@@ -1,5 +1,5 @@
 import { Constructor } from '../../interfaces/Constructor';
-import { Base, View, ViewContainer } from './Base.class';
+import { Base } from './Base.class';
 
 export interface IList<M> extends Iterable<M> {
   items: Set<M>;
@@ -50,8 +50,15 @@ export class List<M extends Base> extends Base implements IList<M> {
   items: Set<M> = new Set();
   index: Map<string, M> = new Map();
   size = 0;
+  /**
+   * 垃圾箱，删除之后，会暂存到这里
+   */
+  private trashClearTimeout: any = null;
+  private _trash: Map<string, M> = new Map();
+  /**
+   * item 的构造函数
+   */
   private item_C: Constructor<M> = null;
-  private view_containers: ViewContainer<M, View<M>>[] = [];
   private isBatching = false;
 
   *[Symbol.iterator]() {
@@ -63,6 +70,7 @@ export class List<M extends Base> extends Base implements IList<M> {
   constructor(C: Constructor<M>, items: M[]) {
     super();
     this.item_C = C;
+    this.noEmit = true;
     this.addRange(...items);
   }
 
@@ -82,6 +90,22 @@ export class List<M extends Base> extends Base implements IList<M> {
     return null;
   }
 
+  /**
+   * 反问 trash，会导致清理工作顺延 1s
+   */
+  getTrash() {
+    if (this.trashClearTimeout) {
+      clearTimeout(this.trashClearTimeout);
+    }
+
+    this.trashClearTimeout = setTimeout(() => {
+      this._trash.clear();
+      this.trashClearTimeout = null;
+    }, 1000);
+
+    return this._trash;
+  }
+
   add(item: M): void {
     this.items.add(item);
     this.index.set(item.id, item);
@@ -91,10 +115,6 @@ export class List<M extends Base> extends Base implements IList<M> {
     this.size += 1;
 
     if (this.isBatching) return;
-
-    for (const c of this.view_containers) {
-      c.add(c.$$make(item));
-    }
 
     this.emit('add', { item });
   }
@@ -111,10 +131,6 @@ export class List<M extends Base> extends Base implements IList<M> {
     }
 
     this.isBatching = false;
-
-    for (const c of this.view_containers) {
-      c.add(...items.map(c.$$make));
-    }
 
     this.emit('add.r', { items });
   }
@@ -135,8 +151,7 @@ export class List<M extends Base> extends Base implements IList<M> {
     this.setEventChild(item, true);
 
     this.size -= 1;
-
-    item.reqEffectCall('Trash');
+    this._trash.set(item.id, item);
 
     if (this.isBatching) return;
 
