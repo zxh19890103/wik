@@ -14,8 +14,6 @@ import { MyWarehouse } from './MyWarehouse.class';
 
 import './ioc.config';
 import { Views } from '../model/basic/Views.class';
-import { setDefaultImage } from '../2d/basic';
-import { Bot } from '../2d';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
@@ -129,13 +127,6 @@ export default () => {
       }
 
       bots.remove(b);
-
-      // const bot = new hrModel.Robot();
-      // bot.px = Util.randomInt(-1000, 1000);
-      // bot.py = Util.randomInt(-1000, 1000);
-      // bot.theta = Util.randomInt(0, 360);
-
-      // bots.add(bot);
     };
 
     loop();
