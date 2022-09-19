@@ -1,6 +1,7 @@
-import { D2R, R2D } from '../2d/basic/constants';
-
 const { PI, sqrt, asin, sin, cos } = Math;
+
+export const D2R = Math.PI / 180;
+export const R2D = 180 / Math.PI;
 
 export const HALF_PI = PI / 2;
 export const DEFAULT_ZERO_VECTOR: L.LatLngLiteral = { lat: 0, lng: 1 }; // default [0, 1]
@@ -72,5 +73,3 @@ export const vector2rad = (vec: L.LatLngLiteral): number => {
 
   return 0;
 };
-
-console.log(vector2rad({ lat: -1, lng: 0 }) * R2D);

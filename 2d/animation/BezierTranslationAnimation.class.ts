@@ -1,7 +1,6 @@
 import L from 'leaflet';
-import { CubicBezierCurve, rad2vector, vector2rad } from '../../utils';
+import { CubicBezierCurve, R2D, vector2rad } from '../../utils';
 import { HrAnimation, HrAnimationOptions } from './Animation.class';
-import { R2D } from '../basic/constants';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
 interface BezierTranslationAnimationOptions extends HrAnimationOptions {

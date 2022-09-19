@@ -1,9 +1,8 @@
 import { mix } from '../../model/basic';
-import { boundToLatLngs, leafletOptions, mapLatLng } from '../../utils';
+import { boundToLatLngs, D2R, leafletOptions, mapLatLng } from '../../utils';
 import L from 'leaflet';
 import { ReactiveLayer } from '../../mixins/ReactiveLayer';
 import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
-import { D2R } from './constants';
 import { Constructor } from '../../interfaces/Constructor';
 
 @leafletOptions<L.PolylineOptions>({

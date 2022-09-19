@@ -17,5 +17,6 @@ export * from './Robot.class';
 export * from './Shelf.class';
 export * from './Warehouse.class';
 export * from './Bot.class';
+export * from './Edge.class';
 
 export { basic, behaviors, meta };

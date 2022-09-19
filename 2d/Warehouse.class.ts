@@ -220,8 +220,6 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
     //#region modes
     this.modeManager.create('default', injector.$new(behaviors.DefaultBehavior));
-    this.modeManager.create('select', injector.$new(behaviors.RectDrawBehavior, this, map));
-    this.modeManager.create('bezier', new behaviors.BezierBehavior(map, this));
 
     const modes = this.configModes();
     for (const m in modes) {

@@ -1,5 +1,4 @@
-import { LinearLine2D, vector2rad } from '../../utils';
-import { R2D } from '../basic/constants';
+import { LinearLine2D, R2D } from '../../utils';
 import { HrAnimation } from './Animation.class';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
