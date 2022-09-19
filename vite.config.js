@@ -31,7 +31,7 @@ export default {
       react: 'React',
       'react-dom': 'ReactDOM',
       leaflet: 'L',
-      three: 'Three',
+      three: 'THREE',
     }),
   ],
 };
