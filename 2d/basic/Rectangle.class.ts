@@ -4,14 +4,9 @@ import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
 import { mix } from '../../model/basic/mixin';
 import { leafletOptions } from '../../utils/leaflet';
 import { mapLatLng } from '../../utils/mapLatLng';
-import { EMPTY_BOUNDS } from './constants';
+import { DEFAULT_PATH_STYLE, EMPTY_BOUNDS } from './constants';
 
-@leafletOptions<L.PolylineOptions>({
-  color: '#fa0087',
-  opacity: 1,
-  fillColor: '#f09d2a',
-  fillOpacity: 1,
-})
+@leafletOptions<L.PolylineOptions>(DEFAULT_PATH_STYLE)
 export class Rectangle extends mix(L.Rectangle).with<L.Rectangle, ReactiveLayer>(
   ReactiveLayerMixin,
 ) {

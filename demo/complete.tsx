@@ -108,13 +108,6 @@ export default () => {
       bots.add(bot);
     }
 
-    /**
-     * we've supported the remove by itself.
-     */
-    // toViews(bots, (m) => v).subscribe('add', () => {})
-
-    hrGUI.interactivateAllPanes(root, warehouse.paneManager);
-
     let theta = 0;
     const loop = () => {
       setTimeout(loop, 500);

@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, Edge } from '../2d';
+import { Warehouse, Route } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { injector, ModeManager, injectCtor } from '../model';
@@ -7,19 +7,30 @@ import { HrMap } from '../2d/basic';
 import { IModeManager } from '../interfaces/symbols';
 
 import './ioc.config';
+import { randomLatLng } from '../utils';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
 @injectCtor(IModeManager)
-class MyWarehouse extends Warehouse {
+class MyWarehouse extends Warehouse<any, 'routes'> {
   constructor(public readonly modeMgr: ModeManager) {
     super();
   }
 
   async layout(data: any) {
-    const edge = new Edge().move([0, 0]).forwards([-8002, 3400], [1200, 9091], [0, 1000]);
-    // const edge = new Edge().move([0, 0]).forwards([-8002, 3400]);
-    this.add('shelf', edge);
+    this.regTypeList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
+
+    const route = new Route([], {});
+
+    for (let r = 0; r < 3; r++) {
+      route
+        .M(randomLatLng(10000))
+        .L(randomLatLng(10000))
+        .B(randomLatLng(10000), randomLatLng(10000), randomLatLng(10000))
+        .F();
+    }
+
+    this.add('routes', route);
   }
 }
 

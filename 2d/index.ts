@@ -4,13 +4,11 @@ import * as meta from '../model/meta';
 
 import './styles/index.scss';
 
-export * from './leafletCanvasOverrides';
 export * from './CacheShelf.class';
 export * from './Chargepile.class';
 export * from './Conveyor.class';
 export * from './ConveyorNode.class';
 export * from './Haiport.class';
-export * from './Line.class';
 export * from './Location.class';
 export * from './Point.class';
 export * from './Robot.class';
@@ -18,5 +16,8 @@ export * from './Shelf.class';
 export * from './Warehouse.class';
 export * from './Bot.class';
 export * from './Edge.class';
+export * from './Route.class';
+
+export * from './leafletCanvasOverrides';
 
 export { basic, behaviors, meta };

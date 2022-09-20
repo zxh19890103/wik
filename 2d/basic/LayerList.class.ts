@@ -218,6 +218,12 @@ export class LayerList<M extends LayerWithID, E extends string = never>
     this.mounted = true;
   }
 
+  fit() {
+    const b = this.featureGroup.getBounds();
+    if (!b.isValid()) return;
+    this._map.fitBounds(b);
+  }
+
   dispose(): void {
     this._map = null;
   }

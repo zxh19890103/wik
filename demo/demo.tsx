@@ -6,7 +6,6 @@ import './dev.scss';
 import * as hrGUI from '../2d';
 import * as Utils from '../utils';
 import { MyWarehouse } from './MyWarehouse.class';
-import { ObjectType } from '../model';
 import { injector } from '../model/basic/inject';
 
 import './ioc.config';
@@ -20,10 +19,6 @@ async function bootstrap(container: HTMLDivElement, initialData: any) {
   const root = new HrMap(container, { zoom: 1.5 });
   const warehouse = injector.$new<MyWarehouse>(MyWarehouse);
   warehouse.mount(root);
-
-  warehouse.layout(initialData);
-
-  hrGUI.interactivateAllPanes(root, warehouse.paneManager);
 
   const { imageManager } = warehouse;
 

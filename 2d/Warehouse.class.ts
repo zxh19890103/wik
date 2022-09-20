@@ -21,7 +21,7 @@ import { Bot } from './Bot.class';
 import { CacheShelf } from './CacheShelf.class';
 import { Chargepile } from './Chargepile.class';
 import { Conveyor } from './Conveyor.class';
-import { manageRenderer } from './leafletCanvasOverrides';
+import { RenderersManager } from './leafletCanvasOverrides';
 import { Haiport } from './Haiport.class';
 import { Location } from './Location.class';
 import { Point } from './Point.class';
@@ -65,8 +65,11 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   @inject(Interfaces.IGlobalConstManager)
   readonly globalConsts: GlobalConstManager;
 
+  private renderersMgr: RenderersManager;
+
   readonly map: HrMap = null;
   readonly mounted: boolean = false;
+  readonly layouted: boolean = false;
 
   private typeListMapping: Map<ObjectType<OT>, LayerList<LayerWithID>> = new Map();
 
@@ -168,10 +171,14 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   }
 
   regTypeList(type: ObjectType<OT>, list: LayerList<LayerWithID> | ListCtorArgs) {
+    if (!__PROD__ && this.layouted) {
+      throw new Error('you can not register new list after layouted! reg in layout method.');
+    }
+
     let _list = null;
 
     if (!__PROD__ && this.typeListMapping.has(type)) {
-      throw new Error(`list type ${type} has been set!`);
+      throw new Error(`list type ${type} has been registered!`);
     }
 
     if (list instanceof LayerList) {
@@ -183,9 +190,12 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
           _list = injector.$new(VectorLayerList, list.pane, list.rendererBy);
           break;
         }
-        case 'overlay':
-        default: {
+        case 'overlay': {
           _list = injector.$new(SVGOverlayList, list.pane);
+          break;
+        }
+        default: {
+          _list = injector.$new(LayerList, []);
           break;
         }
       }
@@ -202,17 +212,21 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   private onListMount(list: LayerList<LayerWithID>) {
     list.mount(this.map);
     if (list instanceof VectorLayerList) {
-      manageRenderer(list.pane, list.paneObj.renderer);
+      this.renderersMgr.add(list.pane, list.paneObj.renderer);
     }
   }
 
   mount(map: HrMap) {
     if (this.mounted) return;
 
+    // inject
     injector.writeProp(this, 'map', map);
     injector.writeProp(this.paneManager, 'map', map);
     injector.writeProp(this, 'mounted', true);
 
+    this.renderersMgr = new RenderersManager(this.paneManager, map);
+
+    // mount list
     for (const [_, list] of this.typeListMapping) {
       if (list.mounted) continue;
       this.onListMount(list);
@@ -228,6 +242,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
     this.modeManager.mode = 'default';
 
+    // dev html
     if (!__PROD__) {
       const div = document.createElement('div');
       div.style.cssText = 'position: fixed; z-index: 9999; top: 0; left: 0; width: 1080px;';
@@ -303,6 +318,9 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     (async () => {
       const d = await this.getLayoutData();
       await this.layout(d);
+      injector.writeProp(this, 'layouted', true);
+
+      this.renderersMgr.interactAll();
 
       this.emit('mounted');
       if (Object.hasOwn(this, 'onMounted')) {

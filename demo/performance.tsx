@@ -28,8 +28,6 @@ async function bootstrap(container: HTMLDivElement) {
   const warehouse = injector.$new<MyWarehouse>(MyWarehouse);
   warehouse.mount(root);
 
-  hrGUI.interactivateAllPanes(root, warehouse.paneManager);
-
   await hrGUIBasic.setDefaultImage(hrGUI.Bot, SVG_KUBOT);
 
   for (let i = 0; i < 1000; i++) {

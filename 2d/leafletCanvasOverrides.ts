@@ -1,5 +1,7 @@
 import L, { DomEvent } from 'leaflet';
-import { PaneManager } from './basic';
+import { IDisposable } from '../interfaces/Disposable';
+import { injector } from '../model';
+import { HrMap, PaneManager } from './basic';
 
 // @see https://github.com/Leaflet/Leaflet/blob/main/src/layer/vector/Canvas.js
 // overrides
@@ -17,99 +19,111 @@ import { PaneManager } from './basic';
 };
 
 (L.Canvas.prototype as any)._fireEvent = function (layers, e, type) {
-  if (inMouseEventHandleForFramePhase === 0) {
+  if (phaseOfMouseEventHandleLoopFrame === 0) {
     // default
     this._map._fireDOMEvent(e, type || e.type, layers);
     return;
   }
 
-  if (layers && inMouseEventHandleForFramePhase === 1) {
+  if (layers && phaseOfMouseEventHandleLoopFrame === 1) {
     this._map._fireDOMEvent(e, type || e.type, layers);
-    inMouseEventHandleForFramePhase = 2;
+    phaseOfMouseEventHandleLoopFrame = 2;
     return;
   }
 
-  if (fireEvtCall === renderersCount) {
+  if (fireEvtCall === this._map['__canvas_renderers_size__']) {
     this._map._fireDOMEvent(e, type || e.type, layers);
   }
 };
 
-const __renderers__: Map<string, L.Renderer> = new Map();
-
-export const manageRenderer = (pane: string, renderer: L.Renderer = null) => {
-  __renderers__.set(pane, renderer);
-  renderersCount += 1;
-};
-
-let inMouseEventHandleForFramePhase = 0;
-let renderersCount = 0; // count of renderer
+/**
+ * 0 - no
+ * 1 - loop
+ * 2 - break
+ */
+let phaseOfMouseEventHandleLoopFrame = 0;
 let fireEvtCall = 0; // on called counter.
-let renderers_in_order = [];
 
-export function interactivateAllPanes(map: L.Map, paneMgr: PaneManager) {
-  const { renderer } = paneMgr.get('proxyPane', 'canvas', 499);
-  const container = renderer._container;
+export class RenderersManager implements IDisposable {
+  private renderers: Map<string, L.Renderer> = new Map();
+  private renderersInOrder = [];
+  private size = 0; // count of renderer
 
-  // order
-  const order = () => {
-    const panes = paneMgr.pool;
+  constructor(private paneMgr: PaneManager, private map: HrMap) {}
+
+  add(key: string, renderer: L.Renderer) {
+    this.renderers.set(key, renderer);
+    this.size += 1;
+  }
+
+  private order = () => {
+    const panes = this.paneMgr.pool;
     const z = [];
     const zr = {};
     for (const n in panes) {
-      if (!__renderers__.has(n)) continue;
+      if (!this.renderers.has(n)) continue;
       const o = panes[n];
       z.push(o.z);
-      zr[o.z] = __renderers__.get(n);
+      zr[o.z] = this.renderers.get(n);
     }
 
     z.sort((a, b) => b - a);
 
-    renderers_in_order = z.map((x) => zr[x]);
+    this.renderersInOrder = z.map((x) => zr[x]);
   };
 
-  paneMgr.onZChange = order;
-  order();
-
-  function onMouseMove(e) {
-    inMouseEventHandleForFramePhase = 1;
+  private onMouseMove(e) {
+    phaseOfMouseEventHandleLoopFrame = 1;
     fireEvtCall = 0;
-    for (const renderer of renderers_in_order) {
+    for (const renderer of this.renderersInOrder) {
       fireEvtCall++;
-      if (inMouseEventHandleForFramePhase === 2) continue;
+      if (phaseOfMouseEventHandleLoopFrame === 2) continue;
       if (!renderer._map) continue;
       renderer._onMouseMove(e);
     }
     fireEvtCall = 0;
-    inMouseEventHandleForFramePhase = 0;
+    phaseOfMouseEventHandleLoopFrame = 0;
   }
 
-  function onClick(e) {
-    inMouseEventHandleForFramePhase = 1;
+  private onClick(e) {
+    phaseOfMouseEventHandleLoopFrame = 1;
     fireEvtCall = 0;
-    for (const renderer of renderers_in_order) {
+    for (const renderer of this.renderersInOrder) {
       fireEvtCall++;
-      if (inMouseEventHandleForFramePhase === 2) continue;
+      if (phaseOfMouseEventHandleLoopFrame === 2) continue;
       if (!renderer._map) continue;
       renderer._onClick(e);
     }
     fireEvtCall = 0;
-    inMouseEventHandleForFramePhase = 0;
+    phaseOfMouseEventHandleLoopFrame = 0;
   }
 
-  function onMouseOut(e) {
-    inMouseEventHandleForFramePhase = 1;
+  private onMouseOut(e) {
+    phaseOfMouseEventHandleLoopFrame = 1;
     fireEvtCall = 0;
-    for (const renderer of renderers_in_order) {
+    for (const renderer of this.renderersInOrder) {
       fireEvtCall++;
-      if (inMouseEventHandleForFramePhase === 2) continue;
+      if (phaseOfMouseEventHandleLoopFrame === 2) continue;
       if (!renderer._map) continue;
       renderer._handleMouseOut(e);
     }
     fireEvtCall = 0;
-    inMouseEventHandleForFramePhase = 0;
+    phaseOfMouseEventHandleLoopFrame = 0;
   }
 
-  DomEvent.on(container, 'mousemove', onMouseMove);
-  DomEvent.on(container, 'click dblclick mousedown mouseup contextmenu', onClick);
-  DomEvent.on(container, 'mouseout', onMouseOut);
+  interactAll() {
+    const { paneMgr } = this;
+    const { renderer } = paneMgr.get('proxyPane', 'canvas', 499);
+    const container = renderer._container;
+
+    injector.writeProp(this.map, '__canvas_renderers_size__', this.size);
+    paneMgr.onZChange = this.order;
+    this.order();
+
+    DomEvent.on(container, 'mousemove', this.onMouseMove, this);
+    DomEvent.on(container, 'click dblclick mousedown mouseup contextmenu', this.onClick, this);
+    DomEvent.on(container, 'mouseout', this.onMouseOut, this);
+  }
+
+  dispose(): void {}
 }

@@ -1,9 +1,8 @@
 import L from 'leaflet';
-import { Warehouse, basic, interactivateAllPanes } from '../2d';
+import { Warehouse, basic } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { injector, ModeManager, injectCtor } from '../model';
-import { HrMap } from '../2d/basic';
 import { IModeManager } from '../interfaces/symbols';
 import { Bot } from '../2d/Bot.class';
 
@@ -34,9 +33,5 @@ export default () => {
     return injector.$new(MyWarehouse) as MyWarehouse;
   });
 
-  const handleAfter = (root: HrMap) => {
-    interactivateAllPanes(root, warehouse.paneManager);
-  };
-
-  return <Scene warehouse={warehouse} afterMount={handleAfter} />;
+  return <Scene warehouse={warehouse} afterMount={null} />;
 };

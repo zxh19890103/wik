@@ -4,9 +4,10 @@ import L from 'leaflet';
 import { ReactiveLayer } from '../../mixins/ReactiveLayer';
 import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
 import { Constructor } from '../../interfaces/Constructor';
+import { DEFAULT_PATH_STYLE } from './constants';
 
 @leafletOptions<L.PolylineOptions>({
-  color: '#f80',
+  ...DEFAULT_PATH_STYLE,
   stroke: true,
   dashArray: [3, 4],
   fill: true,

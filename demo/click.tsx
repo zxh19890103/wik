@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, basic, interactivateAllPanes, Bot } from '../2d';
+import { Warehouse, basic, Bot } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { injector, ModeManager, injectCtor } from '../model';
@@ -42,8 +42,6 @@ export default () => {
   });
 
   const handleAfter = async (root: HrMap) => {
-    interactivateAllPanes(root, warehouse.paneManager);
-
     await basic.setDefaultImage(Bot, SVG_KUBOT);
   };
 
