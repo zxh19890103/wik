@@ -10,7 +10,7 @@ import {
   InteractiveStateActionManager,
   WithInteractiveStateActionManager,
 } from '../../mixins/InteractiveStateActionManager.class';
-import { inject } from '../../model/basic/inject';
+import { inject, injector } from '../../model/basic/inject';
 import * as Interface from '../../interfaces/symbols';
 import { WithClickCancel } from '../../mixins/ClickCancel';
 
@@ -40,7 +40,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
   @inject(Interface.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
-  mounted = false;
+  readonly mounted = false;
   protected featureGroup: L.FeatureGroup = null;
   protected isBatching = false;
   /**
@@ -56,6 +56,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
     this.featureGroup.on('mouseover mouseout', onItemHover, this);
     this.featureGroup.on('mousedown', onItemPress, this);
     this.featureGroup.on('contextmenu', onItemContextMenu, this);
+
     layers && this.addArr(layers);
   }
 
@@ -215,7 +216,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
   mount(parent: HrMap) {
     this._map = parent;
     parent.addLayer(this.featureGroup);
-    this.mounted = true;
+    injector.writeProp(this, 'mounted', true);
   }
 
   fit() {

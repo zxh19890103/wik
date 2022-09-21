@@ -35,6 +35,7 @@ export const quequeTask = (task: Task) => {
 };
 
 const flush = () => {
+  console.log('[queueTask]', 'flush...');
   flushing = true;
 
   for (const task of tasks) {

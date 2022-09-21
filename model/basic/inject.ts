@@ -1,4 +1,6 @@
 import { Constructor, AbstractConstructor } from '../../interfaces/Constructor';
+import { quequeTask } from '../../utils';
+import { Injector } from './Injector.class';
 
 /**
  *  binds = <Symbol - Constructor>
@@ -18,13 +20,13 @@ import { Constructor, AbstractConstructor } from '../../interfaces/Constructor';
  */
 type InjectToken = symbol;
 type InjectDecratorArgs = [object, string, PropertyDescriptor];
-type NodeKey = AbstractConstructor;
+type GraphNodeTarget = AbstractConstructor;
 
-type GraphNode = {
-  key: NodeKey;
-  token: InjectToken;
+interface GraphNode {
+  /**
+   * for development
+   */
   _dev_label?: string;
-  value: any;
   /**
    * constructor parameters dependencies
    */
@@ -33,42 +35,49 @@ type GraphNode = {
    * Properties dependencies
    */
   deps: GraphNodeDep[];
-};
+}
+
+interface TargetGraphNode extends GraphNode {
+  /**
+   * target is the class having  deps and params deps.
+   */
+  target: GraphNodeTarget;
+}
+
+interface TokenGraphNode extends GraphNode {
+  /**
+   * thing's token that would be injected.
+   */
+  token: InjectToken;
+}
 
 type GraphNodeDep = {
-  parent: GraphNode;
-  child: GraphNode;
+  parent: TargetGraphNode;
+  child: TokenGraphNode;
+  /**
+   * the property name
+   */
   symbol: string;
 };
 
-const keyNodeMapping: Map<NodeKey, GraphNode> = new Map();
-const tokenInstanceMapping: Map<InjectToken, object> = new Map();
-const binds: Map<InjectToken, Constructor> = new Map();
-const binds2: Map<Constructor, InjectToken> = new Map();
-
+const graphNodes: Map<GraphNodeTarget | InjectToken, GraphNode> = new Map();
 namespace injector {
   export function $new<T>(c: Constructor, ...args: any[]): T {
     if (isInjectable(c)) {
       throw new Error(`no, ${c.name} should not be injectable.`);
     }
 
+    const _injector = new Injector();
     const ctorArgs = getCtorInjectArgs(c);
     const instance = new c(...ctorArgs, ...args) as unknown as T;
 
     let ctor = c as Constructor;
 
-    const chain = [];
-
     while (ctor) {
-      if (keyNodeMapping.has(ctor)) {
-        const n = keyNodeMapping.get(ctor);
-        const _val = n.value;
-        n.value = instance;
+      if (graphNodes.has(ctor)) {
+        const n = graphNodes.get(ctor);
         writeDeps(n);
-        n.value = _val;
       }
-
-      chain.push(ctor.name);
 
       ctor = Object.getPrototypeOf(ctor.prototype)?.constructor;
     }
@@ -77,56 +86,40 @@ namespace injector {
   }
 
   export function bind(key: InjectToken, value: Constructor) {
-    binds.set(key, value);
-    binds2.set(value, key);
+    // tokenToConstructorMapping.set(key, value);
+    // constructorToTokenMapping.set(value, key);
   }
 
   function getCtorInjectArgs(c: Constructor) {
-    const node = keyNodeMapping.get(c);
+    const node = graphNodes.get(c);
 
     if (!node || node.paramsDeps.length === 0) {
       return [];
     }
 
     return node.paramsDeps.map((x) => {
-      instantiateNode(x.child);
-      return x.child.value;
+      return getInstanceOfNode(x.child);
     });
   }
 
   function writeDeps(n: GraphNode) {
-    const instance = n.value;
+    const instance = getInstanceOfNode(n);
 
     for (const dep of n.deps) {
       const { child } = dep;
       // we create the value if it does not exists
-      instantiateNode(child);
+      const value = getInstanceOfNode(child);
       // write the deps on the proto, so that all the subclass instances can access them.
-      writeProp(instance, dep.symbol, child.value);
+      writeProp(instance, dep.symbol, value);
       writeDeps(child);
     }
   }
 
-  function instantiateNode(node: GraphNode) {
-    if (node.value) return;
-    const { token, key } = node;
-
-    // managed!
-    if (!__PROD__ && !isInjectable(key)) {
-      throw new Error(`no no no... ${node._dev_label} should be injectable!`);
-    }
-
-    // it's singleton
-    if (tokenInstanceMapping.has(token)) {
-      node.value = tokenInstanceMapping.get(token);
-    } else {
-      const c = key as Constructor;
-      node.value = new c();
-      tokenInstanceMapping.set(token, node.value);
-    }
-  }
-
   export function injectable(o: AbstractConstructor) {
+    if (!__PROD__ && o.length > 0) {
+      throw new Error(`constructor ${o.name} must have no constructing parameters.`);
+    }
+
     writeProp(o, '__injectable__', true);
   }
 
@@ -151,83 +144,81 @@ function injectable() {
   return function (target: AbstractConstructor) {
     // see the last implementation as the valid one.
     injector.injectable(target);
-    console.log('injectable', target.name);
   };
 }
 
 /**
  * inject a service according to the token, which binds with a constructor.
  */
-function inject(key: InjectToken) {
+function inject(token: InjectToken) {
   return function (...args: any[]) {
-    addInjectReq(() => {
-      const ctor = binds.get(key);
-      if (!ctor) {
-        console.log('inject child... failed for no ctor mapping');
-        return;
-      }
+    quequeTask({
+      key: 'inject' + injectRunIdSeed++,
+      run: () => {
+        const [target, prop, _] = args as InjectDecratorArgs;
 
-      const [target, prop, _] = args as InjectDecratorArgs;
+        const node = getGraphNode(target.constructor as Constructor) as TargetGraphNode;
+        const node1 = getGraphNode(token) as TokenGraphNode;
 
-      const parentCtor = target.constructor as Constructor;
+        const dep: GraphNodeDep = createGraphNodeDep(node, node1, prop);
 
-      console.log('inject child... ', parentCtor.name + '.' + prop, ctor.name);
-
-      const node = get(parentCtor);
-      const node1 = get(ctor);
-
-      const dep: GraphNodeDep = createDep(node, node1, prop);
-
-      node.deps.push(dep);
+        node.deps.push(dep);
+      },
     });
   };
 }
 
 function injectCtor(...tokens: InjectToken[]) {
   return function (target: any) {
-    addInjectReq(() => {
-      const ctor = target as Constructor;
-      const node = get(ctor);
-      let index = 0;
-      for (const token of tokens) {
-        const child = get(binds.get(token));
-        node.paramsDeps.push(createDep(node, child, index));
-        index++;
-      }
+    quequeTask({
+      key: 'injectCtor' + injectRunIdSeed++,
+      run: () => {
+        const node = getGraphNode(target as Constructor) as TargetGraphNode;
+        let index = 0;
+        for (const token of tokens) {
+          const child = getGraphNode(token) as TokenGraphNode;
+          node.paramsDeps.push(createGraphNodeDep(node, child, index));
+          index++;
+        }
+      },
     });
   };
 }
 
-function get(key: NodeKey) {
+function getGraphNode(key: GraphNodeTarget | InjectToken) {
   if (!key) return null;
 
-  if (keyNodeMapping.has(key)) {
-    return keyNodeMapping.get(key);
+  if (graphNodes.has(key)) {
+    return graphNodes.get(key);
   }
 
-  const node = createNode(key);
-  keyNodeMapping.set(key, node);
+  let node: GraphNode;
 
+  if (typeof key === 'symbol') {
+    node = {
+      token: key,
+      _dev_label: `${key.description}`,
+      deps: null,
+      paramsDeps: null,
+    } as TokenGraphNode;
+  } else {
+    node = {
+      target: key,
+      _dev_label: `${key.name}`,
+      deps: [],
+      paramsDeps: [],
+    } as TargetGraphNode;
+  }
+
+  graphNodes.set(key, node);
   return node;
 }
 
-/**
- *  one key, one token ?
- */
-function createNode(key: NodeKey): GraphNode {
-  const token = binds2.get(key as Constructor) || null;
-
-  return {
-    key: key,
-    token,
-    value: null,
-    _dev_label: `${key.name}`,
-    deps: [],
-    paramsDeps: [],
-  };
-}
-
-function createDep(parent: GraphNode, child: GraphNode, symbol?: string | number): GraphNodeDep {
+function createGraphNodeDep(
+  parent: TargetGraphNode,
+  child: TokenGraphNode,
+  symbol?: string | number,
+): GraphNodeDep {
   return {
     parent,
     child,
@@ -235,24 +226,6 @@ function createDep(parent: GraphNode, child: GraphNode, symbol?: string | number
   };
 }
 
-let _scheduled = false;
-const injectReqs: Set<VoidFunction> = new Set();
-
-const addInjectReq = (val) => {
-  injectReqs.add(val);
-  if (_scheduled) return;
-  _scheduled = true;
-  queueMicrotask(flushReqs);
-};
-
-const flushReqs = () => {
-  console.log('flush inject requests.');
-  for (const req of injectReqs) {
-    req();
-  }
-
-  injectReqs.clear();
-  _scheduled = false;
-};
+let injectRunIdSeed = 1992;
 
 export { injectable, inject, injectCtor, injector };

@@ -52,7 +52,6 @@ export default () => {
   });
 
   const handleAfter = (root: HrMap) => {};
-
   const [wh0, wh1] = warehouses;
 
   return (
