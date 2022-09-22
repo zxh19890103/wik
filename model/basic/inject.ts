@@ -1,67 +1,22 @@
 import { Constructor, AbstractConstructor } from '../../interfaces/Constructor';
+import { IInjector } from '../../interfaces/Injector';
 import { quequeTask } from '../../utils';
-import { Injector } from './Injector.class';
+import {
+  Injector,
+  InjectDecratorArgs,
+  TokenGraphNode,
+  TargetGraphNode,
+  InjectToken,
+  graphNodes,
+  providers,
+  GraphNodeDep,
+  GraphNodeTarget,
+  GraphNode,
+} from './Injector.class';
 
-/**
- *  binds = <Symbol - Constructor>
- *
- *  inject : create a child node, appended to `deps` array of Target (which is a node too.)
- *
- *  injectable: mark it injectable.
- *
- *  injectEntry: self is not injectable, but could depend others.
- *
- *
- *
- */
+class App {}
 
-/**
- * must be no-argument
- */
-type InjectToken = symbol;
-type InjectDecratorArgs = [object, string, PropertyDescriptor];
-type GraphNodeTarget = AbstractConstructor;
-
-interface GraphNode {
-  /**
-   * for development
-   */
-  _dev_label?: string;
-  /**
-   * constructor parameters dependencies
-   */
-  paramsDeps: GraphNodeDep[];
-  /**
-   * Properties dependencies
-   */
-  deps: GraphNodeDep[];
-}
-
-interface TargetGraphNode extends GraphNode {
-  /**
-   * target is the class having  deps and params deps.
-   */
-  target: GraphNodeTarget;
-}
-
-interface TokenGraphNode extends GraphNode {
-  /**
-   * thing's token that would be injected.
-   */
-  token: InjectToken;
-}
-
-type GraphNodeDep = {
-  parent: TargetGraphNode;
-  child: TokenGraphNode;
-  /**
-   * the property name
-   */
-  symbol: string;
-};
-
-const graphNodes: Map<GraphNodeTarget | InjectToken, GraphNode> = new Map();
-const providers: Map<AbstractConstructor, Record<symbol, Constructor>> = new Map();
+const rootInjector = new Injector(App);
 
 namespace injector {
   export function $new<T>(c: Constructor, ...args: any[]): T {
@@ -69,8 +24,17 @@ namespace injector {
       throw new Error(`no, ${c.name} should not be injectable.`);
     }
 
-    const params = getParamsDeps(c);
+    let _injector = rootInjector;
+    if (providers.has(c)) {
+      _injector = new Injector(c); // create injector #1
+    }
+
+    const params = getParamsDeps(c, _injector);
     const instance = new c(...params, ...args) as unknown as T;
+
+    writeProp(instance as object, 'injector', _injector);
+    writeProp(_injector, 'withInjector', instance);
+
     writeDeps(instance);
 
     return instance;
@@ -81,7 +45,7 @@ namespace injector {
     // constructorToTokenMapping.set(value, key);
   }
 
-  function getParamsDeps(c: Constructor) {
+  function getParamsDeps(c: Constructor, _injector: IInjector) {
     const node = graphNodes.get(c);
 
     if (!node || node.paramsDeps.length === 0) {
@@ -89,16 +53,17 @@ namespace injector {
     }
 
     return node.paramsDeps.map((x) => {
-      return getInstanceOfDep(x);
+      return getInstanceOfDep(x, _injector);
     });
   }
 
   function writeDeps(target: any) {
     const deps = getDeps(target.constructor);
+    const _injector = getInjector(target);
 
     for (const dep of deps) {
       // we create the value if it does not exists
-      const value = getInstanceOfDep(target, dep);
+      const value = getInstanceOfDep(dep, _injector);
       // write the deps on the proto, so that all the subclass instances can access them.
       writeProp(target, dep.symbol, value);
       writeDeps(value);
@@ -115,7 +80,8 @@ namespace injector {
 
     while (ctor) {
       if (graphNodes.has(ctor)) {
-        deps.push(...graphNodes.get(ctor).deps);
+        const addons = graphNodes.get(ctor).deps;
+        deps.push(...addons);
       }
 
       ctor = Object.getPrototypeOf(ctor.prototype)?.constructor;
@@ -136,6 +102,33 @@ namespace injector {
     return o['__injectable__'] || false;
   }
 
+  function getInstanceOfDep(dep: GraphNodeDep, _injector: IInjector) {
+    const { child } = dep;
+    return _injector.get(child.token);
+  }
+
+  /**
+   * given an object, may it has some dependencies?
+   * if yes, returns the injector which is the nearest.
+   *
+   * ! just access, no creating.
+   *
+   * $$parent is the field which describes the parent-child relation.
+   */
+  function getInjector(target: any): IInjector {
+    let o = target;
+
+    while (o) {
+      if (Object.hasOwn(o, 'injector')) {
+        return o.injector;
+      }
+
+      o = o.$$parent;
+    }
+
+    return rootInjector;
+  }
+
   export function writeProp(o: object, prop: string, value: any) {
     Object.defineProperty(o, prop, {
       value,
@@ -143,11 +136,6 @@ namespace injector {
       enumerable: false,
       configurable: false,
     });
-  }
-
-  function getInstanceOfDep(_injector: Injector, dep: GraphNodeDep) {
-    const { child, parent, symbol } = dep;
-    return _injector.get(child.token);
   }
 }
 
