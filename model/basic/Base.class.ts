@@ -3,6 +3,7 @@ import { WithSnapshot } from '../../interfaces/WithSnapshot';
 import { mixin } from './mixin';
 import { WithEmitter, WithEmitterMix } from '../../mixins/Emitter';
 import { EffectCallReq } from './effect';
+import { WithParent } from '../../interfaces/WithParent';
 
 let _id_seed = 1992;
 
@@ -17,7 +18,7 @@ export interface WithID {
 @mixin(WithEmitterMix)
 export abstract class Base<E extends string = string>
   extends EventEmitter3<E, any>
-  implements WithSnapshot, WithID, Serializable
+  implements WithSnapshot, WithID, WithParent<Base>, Serializable
 {
   id: string = uniqueId();
   private _snapshot = null;

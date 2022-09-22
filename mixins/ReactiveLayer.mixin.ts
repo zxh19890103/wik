@@ -54,9 +54,9 @@ export function ReactiveLayerMixin(
   return class extends Base implements ReactiveLayer {
     readonly $$isReactive = symbols.isReactiveSymbol;
 
-    $$list: IList<ReactiveLayer> = null;
-    $$parent: ReactiveLayer = null;
-    $$children: ReactiveLayer[] = [];
+    $$parent: IList<ReactiveLayer> = null;
+    $$system: ReactiveLayer = null;
+    $$subSystems: ReactiveLayer[] = [];
 
     layerId = uniqueLayerId();
     latlngs: PolylineLatLngs = [];
@@ -88,7 +88,7 @@ export function ReactiveLayerMixin(
     toSnapshot() {
       return {
         id: this.layerId,
-        parent: this.$$parent.layerId,
+        parent: this.$$system.layerId,
         angle: this.angle,
         position: this.position.clone(),
         scale: this.scale,
@@ -104,8 +104,8 @@ export function ReactiveLayerMixin(
     }
 
     override remove(): this {
-      if (this.$$list) {
-        this.$$list.remove(this);
+      if (this.$$parent) {
+        this.$$parent.remove(this);
       } else {
         super.remove();
       }
@@ -125,7 +125,7 @@ export function ReactiveLayerMixin(
     }
 
     isChild(): boolean {
-      return !!this.$$parent;
+      return !!this.$$system;
     }
 
     setLayerState(partial: AnyObject): void {
@@ -224,7 +224,7 @@ export function ReactiveLayerMixin(
       appendLayerRenderReq(this, effect);
 
       this.updateMatrix();
-      for (const child of this.$$children) {
+      for (const child of this.$$subSystems) {
         child.requestRenderCall(ReactiveLayerRenderEffect.child);
       }
     }
@@ -261,7 +261,7 @@ export function ReactiveLayerMixin(
     }
 
     updateWorldMatrix() {
-      const parent = this.$$parent;
+      const parent = this.$$system;
 
       // 1. calc this world matrix.
       if (parent) {
@@ -287,8 +287,8 @@ export function ReactiveLayerMixin(
       mat3.invert(this.worldMatrixInvert, this.worldMatrix);
 
       // 3. calc children's world matrixes.
-      if (this.$$children) {
-        for (const child of this.$$children) {
+      if (this.$$subSystems) {
+        for (const child of this.$$subSystems) {
           child.updateWorldMatrix();
         }
       }

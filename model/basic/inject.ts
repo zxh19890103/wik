@@ -61,26 +61,17 @@ type GraphNodeDep = {
 };
 
 const graphNodes: Map<GraphNodeTarget | InjectToken, GraphNode> = new Map();
+const providers: Map<AbstractConstructor, Record<symbol, Constructor>> = new Map();
+
 namespace injector {
   export function $new<T>(c: Constructor, ...args: any[]): T {
     if (isInjectable(c)) {
       throw new Error(`no, ${c.name} should not be injectable.`);
     }
 
-    const _injector = new Injector();
-    const ctorArgs = getCtorInjectArgs(c);
-    const instance = new c(...ctorArgs, ...args) as unknown as T;
-
-    let ctor = c as Constructor;
-
-    while (ctor) {
-      if (graphNodes.has(ctor)) {
-        const n = graphNodes.get(ctor);
-        writeDeps(n);
-      }
-
-      ctor = Object.getPrototypeOf(ctor.prototype)?.constructor;
-    }
+    const params = getParamsDeps(c);
+    const instance = new c(...params, ...args) as unknown as T;
+    writeDeps(instance);
 
     return instance;
   }
@@ -90,7 +81,7 @@ namespace injector {
     // constructorToTokenMapping.set(value, key);
   }
 
-  function getCtorInjectArgs(c: Constructor) {
+  function getParamsDeps(c: Constructor) {
     const node = graphNodes.get(c);
 
     if (!node || node.paramsDeps.length === 0) {
@@ -98,21 +89,39 @@ namespace injector {
     }
 
     return node.paramsDeps.map((x) => {
-      return getInstanceOfNode(x.child);
+      return getInstanceOfDep(x);
     });
   }
 
-  function writeDeps(n: GraphNode) {
-    const instance = getInstanceOfNode(n);
+  function writeDeps(target: any) {
+    const deps = getDeps(target.constructor);
 
-    for (const dep of n.deps) {
-      const { child } = dep;
+    for (const dep of deps) {
       // we create the value if it does not exists
-      const value = getInstanceOfNode(child);
+      const value = getInstanceOfDep(target, dep);
       // write the deps on the proto, so that all the subclass instances can access them.
-      writeProp(instance, dep.symbol, value);
-      writeDeps(child);
+      writeProp(target, dep.symbol, value);
+      writeDeps(value);
     }
+  }
+
+  /**
+   * resolve all dependencies
+   */
+  function getDeps(c: AbstractConstructor) {
+    let ctor = c;
+
+    const deps: GraphNodeDep[] = [];
+
+    while (ctor) {
+      if (graphNodes.has(ctor)) {
+        deps.push(...graphNodes.get(ctor).deps);
+      }
+
+      ctor = Object.getPrototypeOf(ctor.prototype)?.constructor;
+    }
+
+    return deps;
   }
 
   export function injectable(o: AbstractConstructor) {
@@ -134,6 +143,11 @@ namespace injector {
       enumerable: false,
       configurable: false,
     });
+  }
+
+  function getInstanceOfDep(_injector: Injector, dep: GraphNodeDep) {
+    const { child, parent, symbol } = dep;
+    return _injector.get(child.token);
   }
 }
 
@@ -165,6 +179,12 @@ function inject(token: InjectToken) {
         node.deps.push(dep);
       },
     });
+  };
+}
+
+function provides(config: Record<symbol, Constructor>) {
+  return function (target: any) {
+    providers.set(target, config);
   };
 }
 

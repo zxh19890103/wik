@@ -2,6 +2,7 @@ import { EventEmitter, EventNames } from 'eventemitter3';
 import { AnyObject } from '../interfaces/types';
 import { writeReadonlyProp } from '../model/basic/mixin';
 import { HrEvent } from '../model/basic/Event.class';
+import { WithParent } from '../interfaces/WithParent';
 
 writeReadonlyProp(window, 'EventEmitter3', EventEmitter);
 
@@ -25,7 +26,7 @@ export function setEventChild(this: any, child: any, rm = false) {
 /**
  * When you use this methods mixin, please keep in mind that the target Class you want mix must be inherited from EventEmitter
  */
-export abstract class WithEmitterMix {
+export abstract class WithEmitterMix implements WithParent<WithEmitterMix> {
   __super__: any;
   /**
    * This field has the name $$parent declared, which keep consistent with /model/basic/Base.class

@@ -5,13 +5,27 @@ import { WithLayerID } from '../interfaces/WithLayerID';
 import { ReactiveLayerRenderEffect } from './effects';
 import { WithClickCancel } from './ClickCancel';
 import { IList } from '../model';
+import { WithParent } from '../interfaces/WithParent';
 
-export interface ReactiveLayer extends WithSnapshot, WithClickCancel, WithLayerID {
+export interface ReactiveLayer
+  extends WithSnapshot,
+    WithClickCancel,
+    WithLayerID,
+    WithParent<IList<ReactiveLayer>> {
   readonly $$isReactive: symbol;
 
-  $$list: IList<ReactiveLayer>;
-  $$parent: ReactiveLayer;
-  $$children: ReactiveLayer[];
+  /**
+   * container object
+   */
+  $$parent: IList<ReactiveLayer>;
+  /**
+   * reactive layer under which this layer is in.
+   */
+  $$system: ReactiveLayer;
+  /**
+   * systems which are all under this.
+   */
+  $$subSystems: ReactiveLayer[];
 
   /**
    * 图形的顶点坐标

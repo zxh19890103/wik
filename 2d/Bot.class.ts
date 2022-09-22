@@ -83,7 +83,7 @@ export class Bot
       }
       case 'copy': {
         const copy = this.clone();
-        this.$$list.add(copy);
+        this.$$parent.add(copy);
         break;
       }
     }
