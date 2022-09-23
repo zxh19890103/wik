@@ -1,6 +1,6 @@
-import { Interactive } from '../interfaces/Interactive';
-import { StateActionManager } from '../model/basic/StateActionManager.class';
-import { injectable } from '../model/basic/inject';
+import { Interactive } from '../../interfaces/Interactive';
+import { StateActionManager } from '../../model/state/StateActionManager.class';
+import { injectable } from '../../model/basic/inject';
 import { InteractiveStateAction, InteractiveStateActionName } from './InteractiveStateAction.class';
 
 const SAFE = 5;

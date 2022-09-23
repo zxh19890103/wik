@@ -1,5 +1,6 @@
 import { Constructor, AbstractConstructor } from '../../interfaces/Constructor';
 import { IInjector, WithInjector } from '../../interfaces/Injector';
+import * as Interfaces from '../../interfaces/symbols';
 
 /**
  * If parent-child relation has not created, we cannot access injector Hierarchically.
@@ -19,32 +20,46 @@ import { IInjector, WithInjector } from '../../interfaces/Injector';
  */
 
 export class Injector implements IInjector {
+  parent: Injector;
+
   private values: Map<Symbol, any> = new Map();
   private providers: Map<Symbol, Constructor> = new Map();
 
   readonly own: WithInjector;
   readonly writeProp: (o: object, prop: string, value: any) => void;
-  parent: Injector;
+  private C: Constructor;
 
-  constructor(c: Constructor) {
-    const symbols = Object.getOwnPropertySymbols(providers.get(c) || {});
-    for (const name of symbols) {
-      this.providers.set(name, providers[name]);
-    }
-
+  constructor(C: Constructor) {
+    this.C = C;
+    this.loadProviders();
     this.writeProp = writeProp;
+  }
+
+  /**
+   * load or reload providers,
+   * keep in mind! we don't  re-bind the dependencies that have already bound.
+   */
+  loadProviders() {
+    const _providers = globalProviders.get(this.C) || {};
+    const symbols = Object.getOwnPropertySymbols(_providers);
+    for (const name of symbols) {
+      this.providers.set(name, _providers[name]);
+    }
   }
 
   $new<T>(C: Constructor<object>, ...args: any[]): T {
     // Firstly, we create the injector if C is a provider.
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let inj: Injector = this;
-    if (providers.has(C)) {
+    if (globalProviders.has(C)) {
       inj = new Injector(C);
       inj.parent = this;
     }
 
     const params = getParamsDeps(C, inj);
+    /**
+     * What IF we need access injector in construtor ?
+     */
     const instance = new C(...params, ...args) as unknown as T;
 
     writeProp(instance as object, 'injector', inj);
@@ -71,8 +86,8 @@ export class Injector implements IInjector {
       const C = this.providers.get(token);
 
       const params = getParamsDeps(C, this);
-
       value = new C(...params);
+      writeProp(value, 'injector', this);
       writeDeps(value, this);
 
       this.values.set(token, value);
@@ -82,6 +97,10 @@ export class Injector implements IInjector {
     // find on parent.
     if (this.parent) {
       return this.parent.get(token);
+    }
+
+    if (!__PROD__) {
+      throw new Error(`No any provider provides ${token.description}`);
     }
 
     return null;
@@ -136,7 +155,7 @@ export type GraphNodeDep = {
 class Root {}
 
 const graphNodes: Map<GraphNodeTarget | InjectToken, GraphNode> = new Map();
-const providers: Map<AbstractConstructor, Record<symbol, Constructor>> = new Map();
+const globalProviders: Map<AbstractConstructor, Record<symbol, Constructor>> = new Map();
 
 export const rootInjector = new Injector(Root);
 
@@ -145,8 +164,12 @@ export function configProviders(
   config: Record<symbol, Constructor>,
 ) {
   const _target = target === 'root' ? Root : target;
-  const _config = providers.get(_target);
-  providers.set(_target, { ..._config, ...config });
+  const _config = globalProviders.get(_target);
+  globalProviders.set(_target, { ..._config, ...config });
+
+  if (target === 'root') {
+    rootInjector.loadProviders();
+  }
 }
 
 function getParamsDeps(c: Constructor, _injector: IInjector) {
@@ -157,6 +180,9 @@ function getParamsDeps(c: Constructor, _injector: IInjector) {
   }
 
   return node.paramsDeps.map((x) => {
+    if (x.child.token === Interfaces.IInjector) {
+      return _injector;
+    }
     return _injector.get(x.child.token);
   });
 }

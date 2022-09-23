@@ -1,15 +1,12 @@
 import { IHighlightManager } from '../../interfaces/Highlight';
 import { Interactive } from '../../interfaces/Interactive';
-import { InteractiveStateAction } from '../../mixins/InteractiveStateAction.class';
-import {
-  InteractiveStateActionManager,
-  WithInteractiveStateActionManager,
-} from '../../mixins/InteractiveStateActionManager.class';
+import { InteractiveStateAction } from './InteractiveStateAction.class';
+import { InteractiveStateActionManager } from './InteractiveStateActionManager.class';
 import { inject, injectable } from '../../model/basic/inject';
 import * as Interface from '../../interfaces/symbols';
 
 @injectable()
-export class HighlightManager implements IHighlightManager, WithInteractiveStateActionManager {
+export class HighlightManager implements IHighlightManager {
   @inject(Interface.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 

@@ -1,10 +1,12 @@
+import { IInjector, WithInjector } from '../../interfaces/Injector';
 import { BehaviorCallback, IBehavior, IMode, IModeManager } from '../../interfaces/Mode';
-import { injectable, injector } from '../basic/inject';
+import { injectable } from '../basic/inject';
 import { Behavior } from '../behaviors';
 import { Mode } from './Mode.class';
 
 @injectable()
-export class ModeManager implements IModeManager {
+export class ModeManager implements IModeManager, WithInjector {
+  readonly injector: IInjector;
   modes: Map<string, IMode> = new Map();
 
   private _mode: IMode = null;
@@ -46,7 +48,7 @@ export class ModeManager implements IModeManager {
 
     const mode = new Mode(name, ...behaviors);
     this.modes.set(name, mode);
-    injector.writeProp(mode, 'modeMgr', this);
+    this.injector.writeProp(mode, 'modeMgr', this);
     return mode;
   }
 

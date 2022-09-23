@@ -6,8 +6,8 @@ import { mixin } from '../../model/basic/mixin';
 import { WithEmitter, WithEmitterMix } from '../../mixins/Emitter';
 import { LayerWithID } from '../../interfaces/WithLayerID';
 import { Interactive } from '../../interfaces/Interactive';
-import { InteractiveStateActionManager } from '../../mixins/InteractiveStateActionManager.class';
-import { inject, injector } from '../../model/basic/inject';
+import { InteractiveStateActionManager } from '../state/InteractiveStateActionManager.class';
+import { inject } from '../../model/basic/inject';
 import * as Interface from '../../interfaces/symbols';
 import { WithClickCancel } from '../../mixins/ClickCancel';
 import { IInjector, WithInjector } from '../../interfaces/Injector';
@@ -34,6 +34,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 {
   $$parent: IWarehouse;
   injector: IInjector;
+
   items: Set<M> = new Set();
   index: Map<string, M> = new Map();
   size = 0;
@@ -217,7 +218,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
   mount(parent: HrMap) {
     this._map = parent;
     parent.addLayer(this.featureGroup);
-    injector.writeProp(this, 'mounted', true);
+    this.injector.writeProp(this, 'mounted', true);
   }
 
   fit() {

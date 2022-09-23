@@ -1,8 +1,8 @@
 import { Behavior } from '../../model/behaviors';
 import { inject } from '../../model/basic/inject';
 import { SelectionManager } from '../basic';
-import { InteractiveStateActionManager } from '../../mixins/InteractiveStateActionManager.class';
-import { InteractiveStateAction } from '../../mixins/InteractiveStateAction.class';
+import { InteractiveStateActionManager } from '../state/InteractiveStateActionManager.class';
+import { InteractiveStateAction } from '../state/InteractiveStateAction.class';
 import { Interactive } from '../../interfaces/Interactive';
 import * as Interface from '../../interfaces/symbols';
 

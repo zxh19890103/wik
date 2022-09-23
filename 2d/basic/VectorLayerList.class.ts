@@ -4,7 +4,7 @@ import { writeReadonlyProp } from '../../model/basic';
 import { inject } from '../../model/basic/inject';
 import { LayerList } from './LayerList.class';
 import { HrMap } from './Map.class';
-import { PaneManager, PaneName, PaneObject, RendererType } from './PaneManager.class';
+import { PaneManager, PaneName, PaneObject, RendererType } from '../state/PaneManager.class';
 import * as Interface from '../../interfaces/symbols';
 
 let __pane_z_seed = 402;

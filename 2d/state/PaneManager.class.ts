@@ -1,8 +1,8 @@
 import L from 'leaflet';
 import { IDisposable } from '../../interfaces/Disposable';
 import { injectable } from '../../model/basic/inject';
-import { BUILTIN_LEAFLET_PANES } from './constants';
-import { HrMap } from './Map.class';
+import { BUILTIN_LEAFLET_PANES } from '../basic/constants';
+import { HrMap } from '../basic/Map.class';
 
 /**
  * default z-index of built-in panes:

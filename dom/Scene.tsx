@@ -6,6 +6,7 @@ import './Scene.scss';
 
 interface SceneProps {
   warehouse: IWarehouse;
+  bgColor?: string;
   afterMount: (root: HrMap) => void;
 }
 
@@ -19,6 +20,10 @@ export const Scene = (props: SceneProps) => {
     warehouse.mount(root);
 
     props.afterMount && props.afterMount(root);
+
+    if (props.bgColor) {
+      element.current.style.background = props.bgColor;
+    }
   }, [warehouse]);
 
   return <div className="hrScene" ref={element} />;

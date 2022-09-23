@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { Warehouse, basic, Bot } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { injector, ModeManager, injectCtor } from '../model';
+import { ModeManager, injectCtor, rootInjector } from '../model';
 import { HrMap, VectorLayerList } from '../2d/basic';
 import { IModeManager } from '../interfaces/symbols';
 
@@ -21,10 +21,10 @@ class MyWarehouse extends Warehouse<any, 'bot2'> {
     // const point = new basic.Circle([0, 0], { radius: 3000, color: '#097' });
     // this.add('point', point);
 
-    this.regTypeList('bot2', injector.$new(VectorLayerList, 'bot2', 'canvas'));
+    this.addLayerList('bot2', this.injector.$new(VectorLayerList, 'bot2', 'canvas'));
 
     const rect = new basic.Rectangle([0, 0], 8000, 1000, { opacity: 0.34, fillOpacity: 0.3 });
-    injector.writeProp(rect, 'animationMgr', this.animationManager);
+    this.injector.writeProp(rect, 'animationMgr', this.animationManager);
 
     this.add('bot2', rect);
 
@@ -38,7 +38,7 @@ class MyWarehouse extends Warehouse<any, 'bot2'> {
 
 export default () => {
   const [warehouse] = useState(() => {
-    return injector.$new(MyWarehouse) as MyWarehouse;
+    return rootInjector.$new(MyWarehouse) as MyWarehouse;
   });
 
   const handleAfter = async (root: HrMap) => {

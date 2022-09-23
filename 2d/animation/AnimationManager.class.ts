@@ -1,9 +1,10 @@
 import { GlobalConstManager } from '../../model';
-import { inject, injectable, injector } from '../../model/basic/inject';
+import { inject, injectable } from '../../model/basic/inject';
 import { HrAnimation } from './Animation.class';
 import { AnimationState } from './AnimationState.enum';
 import * as Interfaces from '../../interfaces/symbols';
 import { IDisposable } from '../../interfaces/Disposable';
+import { IInjector, WithInjector } from '../../interfaces/Injector';
 
 export enum AnimationManagerState {
   idle = 0,
@@ -12,9 +13,10 @@ export enum AnimationManagerState {
 }
 
 @injectable()
-export class AnimationManager implements IDisposable {
+export class AnimationManager implements IDisposable, WithInjector {
   @inject(Interfaces.IGlobalConstManager)
   readonly globalConstMgr: GlobalConstManager;
+  readonly injector: IInjector;
 
   animations: HrAnimation[] = [];
   private state: AnimationManagerState = AnimationManagerState.idle;
@@ -23,6 +25,8 @@ export class AnimationManager implements IDisposable {
   private onIsPageHiddenChange: (...args) => void;
 
   constructor() {
+    console.log('AnimationManager is constructed');
+
     this.onIsPageHiddenChange = () => {
       this.isPageHidden = document.visibilityState === 'hidden';
       if (this.isPageHidden) {
@@ -45,7 +49,7 @@ export class AnimationManager implements IDisposable {
     }
 
     this.animations.push(animtion);
-    injector.writeProp(animtion, 'globalConstMgr', this.globalConstMgr);
+    this.injector.writeProp(animtion, 'globalConstMgr', this.globalConstMgr);
     animtion.state = AnimationState.added;
     animtion.addedAt = performance.now();
     animtion.m.currentAnimation = animtion;

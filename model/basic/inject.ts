@@ -15,7 +15,7 @@ import {
 /**
  * just mark a class as an injectable one.
  */
-function injectable() {
+function injectable(config?: { providedIn: 'root' }) {
   return function (target: AbstractConstructor) {
     // see the last implementation as the valid one.
     writeProp(target, '__injectable__', true);
@@ -43,9 +43,20 @@ function inject(token: InjectToken) {
   };
 }
 
-function provides(config: Record<symbol, Constructor>) {
+function provides(
+  config: Record<symbol, Constructor> | Array<{ key: Symbol; value: Constructor }>,
+) {
   return function (target: any) {
-    configProviders(target, config);
+    configProviders(
+      target,
+      config instanceof Array
+        ? Object.fromEntries(
+            config.map((c) => {
+              return [c.key, c.value];
+            }),
+          )
+        : config,
+    );
   };
 }
 

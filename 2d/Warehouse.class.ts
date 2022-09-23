@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { Interactive } from '../interfaces/Interactive';
 import { LayerWithID } from '../interfaces/WithLayerID';
 import { WithEmitter, WithEmitterMix } from '../mixins/Emitter';
-import { InteractiveStateActionManager } from '../mixins/InteractiveStateActionManager.class';
+import { InteractiveStateActionManager } from './state/InteractiveStateActionManager.class';
 import { ObjectType, IWarehouse, GlobalConstManager } from '../model';
 import { HrEvent } from '../model/basic/Event.class';
 import { mixin } from '../model/basic/mixin';
@@ -16,7 +16,7 @@ import {
   VectorLayerList,
 } from './basic';
 import { AnimationManager } from './animation/AnimationManager.class';
-import { HighlightManager } from './basic/HighlightManager.class';
+import { HighlightManager } from './state/HighlightManager.class';
 import { Bot } from './Bot.class';
 import { CacheShelf } from './CacheShelf.class';
 import { Chargepile } from './Chargepile.class';
@@ -27,13 +27,13 @@ import { Location } from './Location.class';
 import { Point } from './Point.class';
 import { Shelf } from './Shelf.class';
 
-import { inject, injector } from '../model/basic/inject';
+import { inject } from '../model/basic/inject';
 import * as Interfaces from '../interfaces/symbols';
 import { ModeManager } from '../model/modes/ModeManager.class';
 import * as behaviors from './behaviors';
 import { GraphicObject } from '../interfaces/GraghicObject';
 import { IBehavior } from '../interfaces/Mode';
-import { IInjector, WithInjector } from '../interfaces/Injector';
+import { IInjector } from '../interfaces/Injector';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'mounted';
 
@@ -47,7 +47,6 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   extends EventEmitter3<WarehouseEventType, any>
   implements IWarehouse
 {
-  $$parent: WithInjector;
   injector: IInjector;
 
   private updateDeps: Partial<Record<ObjectType<OT>, ItemUpdateFn<LayerWithID, any>>> = {};
@@ -87,7 +86,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   conveyors: LayerList<Conveyor>;
   locations: LayerList<Location>;
 
-  constructor() {
+  constructor(injector: IInjector) {
     super();
 
     this.points = injector.$new(VectorLayerList, 'pointPane', 'canvas');
@@ -100,14 +99,14 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     this.locations = injector.$new(LayerList);
 
     //#region set
-    this.regTypeList('point', this.points);
-    this.regTypeList('shelf', this.shelfs);
-    this.regTypeList('haiport', this.haiports);
-    this.regTypeList('chargepile', this.chargepiles);
-    this.regTypeList('bot', this.bots);
-    this.regTypeList('cacheShelf', this.cacheShelfs);
-    this.regTypeList('conveyor', this.conveyors);
-    this.regTypeList('location', this.locations);
+    this.addLayerList('point', this.points);
+    this.addLayerList('shelf', this.shelfs);
+    this.addLayerList('haiport', this.haiports);
+    this.addLayerList('chargepile', this.chargepiles);
+    this.addLayerList('bot', this.bots);
+    this.addLayerList('cacheShelf', this.cacheShelfs);
+    this.addLayerList('conveyor', this.conveyors);
+    this.addLayerList('location', this.locations);
     //#endregion
   }
 
@@ -172,7 +171,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     that.onRemove && that.onRemove(_item);
   }
 
-  regTypeList(type: ObjectType<OT>, list: LayerList<LayerWithID> | ListCtorArgs) {
+  addLayerList(type: ObjectType<OT>, list: LayerList<LayerWithID> | ListCtorArgs) {
     if (!__PROD__ && this.layouted) {
       throw new Error('you can not register new list after layouted! reg in layout method.');
     }
@@ -182,6 +181,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     if (!__PROD__ && this.typeListMapping.has(type)) {
       throw new Error(`list type ${type} has been registered!`);
     }
+
+    const injector = this.injector;
 
     if (list instanceof LayerList) {
       _list = list;
@@ -220,6 +221,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
   mount(map: HrMap) {
     if (this.mounted) return;
+
+    const injector = this.injector;
 
     // inject
     injector.writeProp(this, 'map', map);
@@ -340,8 +343,6 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     this.updateDeps[type] = fn as any;
   }
 
-  abstract layout(data?: LayoutData): void | Promise<void>;
-
   /**
    * retains the data for layouting ,which is the initial data. default is null, you can't overrides it in subclass.
    */
@@ -355,6 +356,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   configModes(): Record<string, IBehavior[]> {
     return {};
   }
+
+  abstract layout(data?: LayoutData): void | Promise<void>;
 }
 
 export interface Warehouse<LayoutData> extends WithEmitter<WarehouseEventType> {}

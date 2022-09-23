@@ -1,6 +1,6 @@
 import L, { DomEvent } from 'leaflet';
 import { IDisposable } from '../interfaces/Disposable';
-import { injector } from '../model';
+import { writeProp } from '../model/basic/Injector.class';
 import { HrMap, PaneManager } from './basic';
 
 // @see https://github.com/Leaflet/Leaflet/blob/main/src/layer/vector/Canvas.js
@@ -116,7 +116,7 @@ export class RenderersManager implements IDisposable {
     const { renderer } = paneMgr.get('proxyPane', 'canvas', 499);
     const container = renderer._container;
 
-    injector.writeProp(this.map, '__canvas_renderers_size__', this.size);
+    writeProp(this.map, '__canvas_renderers_size__', this.size);
     paneMgr.onZChange = this.order;
     this.order();
 

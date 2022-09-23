@@ -1,6 +1,6 @@
 import { toCapital } from '../../utils';
 import { Base } from './Base.class';
-import { injector } from './inject';
+import { writeProp } from './Injector.class';
 
 export type EffectCallReq = {
   /**
@@ -61,7 +61,7 @@ export function appendEffectCallReq(this: Base, _req: EffectCallReq | string) {
   queueMicrotask(flush);
 }
 
-injector.writeProp(Base.prototype, 'reqEffectCall', appendEffectCallReq);
+writeProp(Base.prototype, 'reqEffectCall', appendEffectCallReq);
 
 const flush = () => {
   isEffectsApplying = true;

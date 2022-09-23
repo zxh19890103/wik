@@ -1,18 +1,34 @@
 import L from 'leaflet';
-import { Warehouse, Route } from '../2d';
+import { Warehouse, Route, basic } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { injector } from '../model';
+import { injectCtor, provides, rootInjector } from '../model';
+import * as Interfaces from '../interfaces/symbols';
 import { HrMap } from '../2d/basic';
+import { PaneManager } from '../2d/state/PaneManager.class';
+import { HighlightManager } from '../2d/state/HighlightManager.class';
+import { AnimationManager } from '../2d/animation/AnimationManager.class';
+import { ModeManager } from '../model/modes/ModeManager.class';
+import { InteractiveStateActionManager } from '../2d/state/InteractiveStateActionManager.class';
+import { SelectionManager } from '../2d/state/SelectionManager.class';
 
 import './ioc.config';
-import { randomLatLng } from '../utils';
+import { randomColor, randomLatLng } from '../utils';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
+@injectCtor(Interfaces.IInjector)
+@provides({
+  [Interfaces.IPaneManager]: PaneManager,
+  [Interfaces.IStateActionManager]: InteractiveStateActionManager,
+  [Interfaces.IModeManager]: ModeManager,
+  [Interfaces.IAnimationManager]: AnimationManager,
+  [Interfaces.IHighlightManager]: HighlightManager,
+  [Interfaces.ISelectionManager]: SelectionManager,
+})
 class MyWarehouse extends Warehouse<any, 'routes'> {
   async layout(data: any) {
-    this.regTypeList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
+    this.addLayerList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
 
     const route = new Route([], {});
 
@@ -28,9 +44,18 @@ class MyWarehouse extends Warehouse<any, 'routes'> {
   }
 }
 
+@injectCtor(Interfaces.IInjector)
+@provides({
+  [Interfaces.IPaneManager]: PaneManager,
+  [Interfaces.IStateActionManager]: InteractiveStateActionManager,
+  [Interfaces.IModeManager]: ModeManager,
+  [Interfaces.IAnimationManager]: AnimationManager,
+  [Interfaces.IHighlightManager]: HighlightManager,
+  [Interfaces.ISelectionManager]: SelectionManager,
+})
 class MyWarehouse2 extends Warehouse<any, 'routes'> {
   async layout(data: any) {
-    this.regTypeList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
+    this.addLayerList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
 
     const route = new Route([], {});
 
@@ -48,7 +73,10 @@ class MyWarehouse2 extends Warehouse<any, 'routes'> {
 
 export default () => {
   const [warehouses] = useState(() => {
-    return [injector.$new(MyWarehouse) as MyWarehouse, injector.$new(MyWarehouse2) as MyWarehouse];
+    return [
+      rootInjector.$new(MyWarehouse) as MyWarehouse,
+      rootInjector.$new(MyWarehouse2) as MyWarehouse,
+    ];
   });
 
   const handleAfter = (root: HrMap) => {};
@@ -56,8 +84,8 @@ export default () => {
 
   return (
     <div>
-      <Scene warehouse={wh0} afterMount={handleAfter} />
-      {/* <Scene warehouse={wh1} afterMount={handleAfter} /> */}
+      <Scene bgColor={randomColor()} warehouse={wh0} afterMount={handleAfter} />
+      <Scene bgColor={randomColor()} warehouse={wh1} afterMount={handleAfter} />
     </div>
   );
 };

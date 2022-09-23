@@ -1,11 +1,8 @@
 import { Interactive } from '../../interfaces/Interactive';
 import { ISelectionManager } from '../../interfaces/Selection';
 import { WithEmitter, WithEmitterMix } from '../../mixins/Emitter';
-import { InteractiveStateAction } from '../../mixins/InteractiveStateAction.class';
-import {
-  InteractiveStateActionManager,
-  WithInteractiveStateActionManager,
-} from '../../mixins/InteractiveStateActionManager.class';
+import { InteractiveStateAction } from './InteractiveStateAction.class';
+import { InteractiveStateActionManager } from './InteractiveStateActionManager.class';
 import { mixin } from '../../model/basic';
 import { inject, injectable } from '../../model/basic/inject';
 import * as Interface from '../../interfaces/symbols';
@@ -16,7 +13,7 @@ type SelectionManagerEventType = 'item' | 'items';
 @injectable()
 export class SelectionManager
   extends EventEmitter3<SelectionManagerEventType>
-  implements ISelectionManager, WithInteractiveStateActionManager
+  implements ISelectionManager
 {
   private item: Interactive = null;
   private items: Interactive[] = [];

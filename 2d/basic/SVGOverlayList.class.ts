@@ -4,7 +4,7 @@ import { writeReadonlyProp } from '../../model/basic';
 import { inject } from '../../model/basic/inject';
 import { LayerList } from './LayerList.class';
 import { HrMap } from './Map.class';
-import { PaneManager, PaneName } from './PaneManager.class';
+import { PaneManager, PaneName } from '../state/PaneManager.class';
 import { ReactSVGOverlayAppServer } from './ReactSVGOverlayApp';
 import * as Interface from '../../interfaces/symbols';
 

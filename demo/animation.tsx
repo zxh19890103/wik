@@ -7,7 +7,7 @@ import * as hrGUIBasic from '../2d/basic';
 import * as hrGUI from '../2d';
 import * as Utils from '../utils';
 import { SVG_KUBOT } from '../2d/images';
-import { injectCtor, injector, ObjectType } from '../model';
+import { injectCtor, rootInjector } from '../model';
 import { Warehouse } from '../2d';
 
 import './ioc.config';
@@ -27,7 +27,7 @@ async function bootstrap(container: HTMLDivElement) {
 
   const root = new HrMap(container, { zoom: 1.5 });
 
-  const warehouse = injector.$new<MyWarehouse>(MyWarehouse);
+  const warehouse = rootInjector.$new<MyWarehouse>(MyWarehouse);
   warehouse.mount(root);
 
   await hrGUIBasic.setDefaultImage(hrGUI.Bot, SVG_KUBOT);
@@ -36,7 +36,7 @@ async function bootstrap(container: HTMLDivElement) {
   const initial_state = {};
 
   for (let i = 0; i < 60; i++) {
-    const bot = injector.$new<hrGUI.Bot>(hrGUI.Bot, null, 1000, 1000);
+    const bot = warehouse.injector.$new<hrGUI.Bot>(hrGUI.Bot, null, 1000, 1000);
     bot.position = L.latLng(Utils.randomInt(-500, 500), Utils.randomInt(-500, 500));
     warehouse.add('bot', bot);
     const srcid = ROBOT_IDS_IN_110[i];
