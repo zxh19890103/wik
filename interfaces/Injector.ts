@@ -2,6 +2,8 @@ import { AbstractConstructor, Constructor } from './Constructor';
 import { WithParent } from './WithParent';
 
 export interface IInjector {
+  parent: IInjector;
+  readonly own: WithInjector;
   $new<T>(c: Constructor, ...args: any[]): T;
   get<T>(token: symbol): T;
 }

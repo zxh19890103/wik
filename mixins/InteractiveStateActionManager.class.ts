@@ -70,7 +70,3 @@ export class InteractiveStateActionManager extends StateActionManager {
     return this;
   }
 }
-
-export interface WithInteractiveStateActionManager {
-  readonly interactiveStateActionManager: InteractiveStateActionManager;
-}

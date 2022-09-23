@@ -33,6 +33,7 @@ import { ModeManager } from '../model/modes/ModeManager.class';
 import * as behaviors from './behaviors';
 import { GraphicObject } from '../interfaces/GraghicObject';
 import { IBehavior } from '../interfaces/Mode';
+import { IInjector, WithInjector } from '../interfaces/Injector';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'mounted';
 
@@ -46,6 +47,9 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   extends EventEmitter3<WarehouseEventType, any>
   implements IWarehouse
 {
+  $$parent: WithInjector;
+  injector: IInjector;
+
   private updateDeps: Partial<Record<ObjectType<OT>, ItemUpdateFn<LayerWithID, any>>> = {};
 
   @inject(Interfaces.IAnimationManager)
@@ -82,8 +86,6 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   cacheShelfs: LayerList<CacheShelf>;
   conveyors: LayerList<Conveyor>;
   locations: LayerList<Location>;
-
-  public injector = injector;
 
   constructor() {
     super();

@@ -1,6 +1,7 @@
 import { GraphicObject } from '../interfaces/GraghicObject';
+import { WithInjector } from '../interfaces/Injector';
 
-export interface IWarehouse {
+export interface IWarehouse extends WithInjector {
   mount(root: any): void;
   layout(data?: unknown): void | Promise<void>;
 

@@ -2,6 +2,18 @@ import { Constructor, AbstractConstructor } from '../../interfaces/Constructor';
 import { IInjector, WithInjector } from '../../interfaces/Injector';
 
 /**
+ * If parent-child relation has not created, we cannot access injector Hierarchically.
+ *
+ * You try to create a Child, which is a child of a Parent.
+ * Both Parent and Child are providers, which means both have injector.
+ * Child has dependencies of parameters and properties, some of which should come from Parent's providers.
+ * Now. you firstly create an injector for Child, that's OK.
+ * But how the dependencies on Parent are obtained ?
+ *
+ * Q: How about services are depended by each other?
+ */
+
+/**
  * be inspired of Angular2.
  * @see https://angular.io/guide/hierarchical-dependency-injection
  */
@@ -10,60 +22,66 @@ export class Injector implements IInjector {
   private values: Map<Symbol, any> = new Map();
   private providers: Map<Symbol, Constructor> = new Map();
 
-  withInjector: WithInjector;
+  readonly own: WithInjector;
+  readonly writeProp: (o: object, prop: string, value: any) => void;
+  parent: Injector;
 
   constructor(c: Constructor) {
     const symbols = Object.getOwnPropertySymbols(providers.get(c) || {});
     for (const name of symbols) {
       this.providers.set(name, providers[name]);
     }
+
+    this.writeProp = writeProp;
   }
 
-  $new<T>(c: Constructor<object>, ...args: any[]): T {
-    const params = getParamsDeps(c, this);
-    const instance = new c(...params, ...args) as unknown as T;
+  $new<T>(C: Constructor<object>, ...args: any[]): T {
+    // Firstly, we create the injector if C is a provider.
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let inj: Injector = this;
+    if (providers.has(C)) {
+      inj = new Injector(C);
+      inj.parent = this;
+    }
 
-    const child = this.createChild();
-    writeProp(instance as object, 'injector', child);
-    writeProp(child, 'withInjector', instance);
+    const params = getParamsDeps(C, inj);
+    const instance = new C(...params, ...args) as unknown as T;
 
-    writeDeps(instance);
+    writeProp(instance as object, 'injector', inj);
+
+    if (inj !== this) {
+      writeProp(inj, 'own', instance);
+    }
+
+    writeDeps(instance, inj);
 
     return instance;
   }
 
-  createChild(): Injector {
-    return null;
-  }
-
   get<T>(token: symbol): T {
     let value = this.values.get(token);
-    if (value) return value;
 
+    // if created.
+    if (value) {
+      return value;
+    }
+
+    // if there is no value, we create it now.
     if (this.providers.has(token)) {
       const C = this.providers.get(token);
 
-      value = new C();
+      const params = getParamsDeps(C, this);
 
-      if (providers.has(C)) {
-        const _injector = new Injector(C);
-        writeProp(value as object, 'injector', _injector);
-        writeProp(_injector, 'withInjector', value);
-      }
+      value = new C(...params);
+      writeDeps(value, this);
 
-      writeDeps(value);
       this.values.set(token, value);
       return value;
     }
 
-    let wi = this.withInjector;
-
-    while (wi) {
-      if (wi.injector) {
-        return wi.injector.get(token);
-      }
-
-      wi = wi.$$parent;
+    // find on parent.
+    if (this.parent) {
+      return this.parent.get(token);
     }
 
     return null;
@@ -116,37 +134,42 @@ export type GraphNodeDep = {
 };
 
 class Root {}
-export const rootInjector = new Injector(Root);
-export const graphNodes: Map<GraphNodeTarget | InjectToken, GraphNode> = new Map();
-export const providers: Map<AbstractConstructor, Record<symbol, Constructor>> = new Map();
 
-function getInstanceOfDep(dep: GraphNodeDep, _injector: IInjector) {
-  const { child } = dep;
-  return _injector.get(child.token);
+const graphNodes: Map<GraphNodeTarget | InjectToken, GraphNode> = new Map();
+const providers: Map<AbstractConstructor, Record<symbol, Constructor>> = new Map();
+
+export const rootInjector = new Injector(Root);
+
+export function configProviders(
+  target: AbstractConstructor | 'root',
+  config: Record<symbol, Constructor>,
+) {
+  const _target = target === 'root' ? Root : target;
+  const _config = providers.get(_target);
+  providers.set(_target, { ..._config, ...config });
 }
 
 function getParamsDeps(c: Constructor, _injector: IInjector) {
   const node = graphNodes.get(c);
 
-  if (!node || node.paramsDeps.length === 0) {
+  if (!node) {
     return [];
   }
 
   return node.paramsDeps.map((x) => {
-    return getInstanceOfDep(x, _injector);
+    return _injector.get(x.child.token);
   });
 }
 
-function writeDeps(target: any) {
+function writeDeps(target: any, _injector: IInjector) {
   const deps = getDeps(target.constructor);
-  const _injector = getInjector(target);
 
   for (const dep of deps) {
     // we create the value if it does not exists
-    const value = getInstanceOfDep(dep, _injector);
+    const value = _injector.get(dep.child.token);
     // write the deps on the proto, so that all the subclass instances can access them.
     writeProp(target, dep.symbol, value);
-    writeDeps(value);
+    writeDeps(value, _injector);
   }
 }
 
@@ -170,21 +193,48 @@ function getDeps(c: AbstractConstructor) {
   return deps;
 }
 
-function getInjector(target: any): IInjector {
-  let o = target;
+export function getGraphNode(key: GraphNodeTarget | InjectToken) {
+  if (!key) return null;
 
-  while (o) {
-    if (Object.hasOwn(o, 'injector')) {
-      return o.injector;
-    }
-
-    o = o.$$parent;
+  if (graphNodes.has(key)) {
+    return graphNodes.get(key);
   }
 
-  return rootInjector;
+  let node: GraphNode;
+
+  if (typeof key === 'symbol') {
+    node = {
+      token: key,
+      _dev_label: `${key.description}`,
+      deps: null,
+      paramsDeps: null,
+    } as TokenGraphNode;
+  } else {
+    node = {
+      target: key,
+      _dev_label: `${key.name}`,
+      deps: [],
+      paramsDeps: [],
+    } as TargetGraphNode;
+  }
+
+  graphNodes.set(key, node);
+  return node;
 }
 
-function writeProp(o: object, prop: string, value: any) {
+export function createGraphNodeDep(
+  parent: TargetGraphNode,
+  child: TokenGraphNode,
+  symbol?: string | number,
+): GraphNodeDep {
+  return {
+    parent,
+    child,
+    symbol: String(symbol),
+  };
+}
+
+export function writeProp(o: object, prop: string, value: any) {
   Object.defineProperty(o, prop, {
     value,
     writable: false,

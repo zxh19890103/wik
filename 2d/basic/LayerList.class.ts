@@ -6,13 +6,12 @@ import { mixin } from '../../model/basic/mixin';
 import { WithEmitter, WithEmitterMix } from '../../mixins/Emitter';
 import { LayerWithID } from '../../interfaces/WithLayerID';
 import { Interactive } from '../../interfaces/Interactive';
-import {
-  InteractiveStateActionManager,
-  WithInteractiveStateActionManager,
-} from '../../mixins/InteractiveStateActionManager.class';
+import { InteractiveStateActionManager } from '../../mixins/InteractiveStateActionManager.class';
 import { inject, injector } from '../../model/basic/inject';
 import * as Interface from '../../interfaces/symbols';
 import { WithClickCancel } from '../../mixins/ClickCancel';
+import { IInjector, WithInjector } from '../../interfaces/Injector';
+import { IWarehouse } from '../../model';
 
 type LayerListEventType =
   | 'add'
@@ -31,8 +30,10 @@ type LayerListEventType =
 @mixin(WithEmitterMix)
 export class LayerList<M extends LayerWithID, E extends string = never>
   extends EventEmitter3<E | LayerListEventType, any>
-  implements IList<M>, IDisposable, WithInteractiveStateActionManager
+  implements IList<M>, IDisposable, WithInjector
 {
+  $$parent: IWarehouse;
+  injector: IInjector;
   items: Set<M> = new Set();
   index: Map<string, M> = new Map();
   size = 0;
