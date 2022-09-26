@@ -1,14 +1,17 @@
 import { ReactiveLayer } from './ReactiveLayer';
 import { ReactiveLayerRenderEffect, LAYER_DATA_UPDATE_EFFECTS, TRANSFORM_EFFECT } from './effects';
 
-const __RENDER_REQUESTS__: ReactiveLayer[] = [];
+const __RENDER_REQUESTS__: Set<ReactiveLayer> = new Set();
 const __RENDER_REQUEST_EFFECTS__: Map<string, ReactiveLayerRenderEffect> = new Map();
+const __MIN__ = 300;
 
 let isFlushScheduled = false;
 /**
  * 当线程正在进行 render 的时候，appendLayerRenderReq 需要缓存请求，然后等待下一轮微任务执行
  */
 let isRendering = false;
+let postRenderSchedule: NodeJS.Timeout = null;
+let lastFlushCallAt: number = null;
 
 const appendLayerRenderReq = (context: ReactiveLayer, effect: ReactiveLayerRenderEffect) => {
   if (isRendering) {
@@ -28,7 +31,7 @@ const appendLayerRenderReq = (context: ReactiveLayer, effect: ReactiveLayerRende
     __RENDER_REQUEST_EFFECTS__.set(id, effect);
   }
 
-  __RENDER_REQUESTS__.push(context);
+  __RENDER_REQUESTS__.add(context);
 
   // one cycle, one task.
   if (isFlushScheduled) return;
@@ -82,36 +85,54 @@ const flush = () => {
   }
 
   isRendering = false;
-
-  // After render
-  setTimeout(() => {
-    let item: ReactiveLayer = null;
-    while ((item = __RENDER_REQUESTS__.shift())) {
-      const id = item.layerId;
-
-      const effect = __RENDER_REQUEST_EFFECTS__.get(id);
-
-      const layer = item as unknown as L.Layer;
-
-      if (effect & ReactiveLayerRenderEffect.state) {
-        layer.fire('layerstate', {});
-      }
-
-      if (effect & ReactiveLayerRenderEffect.translate) {
-        layer.fire('position', {});
-      }
-
-      if (effect & ReactiveLayerRenderEffect.rotate) {
-        layer.fire('rotate', {});
-      }
-
-      item.afterRender && item.afterRender(effect);
-
-      __RENDER_REQUEST_EFFECTS__.delete(id);
-    }
-  }, 10);
-
   isFlushScheduled = false;
+
+  const now = performance.now();
+
+  if (lastFlushCallAt !== null && now - lastFlushCallAt > __MIN__) {
+    console.log('haha we got called');
+    /**
+     * If there's a schedule, we cancel it firstly, and then schdule a new plan for post rendering.
+     */
+    if (postRenderSchedule) clearTimeout(postRenderSchedule);
+    postRenderSchedule = setTimeout(afterFlush, 10);
+  } else {
+    __RENDER_REQUESTS__.clear();
+    __RENDER_REQUEST_EFFECTS__.clear();
+  }
+
+  lastFlushCallAt = now;
+};
+
+const afterFlush = () => {
+  for (const item of __RENDER_REQUESTS__) {
+    const id = item.layerId;
+
+    const effect = __RENDER_REQUEST_EFFECTS__.get(id);
+
+    const layer = item as unknown as L.Layer;
+
+    if (effect & ReactiveLayerRenderEffect.state) {
+      layer.fire('layerstate', {});
+    }
+
+    if (effect & ReactiveLayerRenderEffect.translate) {
+      layer.fire('position', {});
+    }
+
+    if (effect & ReactiveLayerRenderEffect.rotate) {
+      layer.fire('rotate', {});
+    }
+
+    item.afterRender && item.afterRender(effect);
+
+    __RENDER_REQUEST_EFFECTS__.delete(id);
+  }
+
+  __RENDER_REQUESTS__.clear();
+  __RENDER_REQUEST_EFFECTS__.clear();
+
+  postRenderSchedule = null;
 };
 
 export { appendLayerRenderReq };

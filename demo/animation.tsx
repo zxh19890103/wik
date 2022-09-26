@@ -37,7 +37,7 @@ async function bootstrap(container: HTMLDivElement) {
 
   for (let i = 0; i < 60; i++) {
     const bot = warehouse.injector.$new<hrGUI.Bot>(hrGUI.Bot, null, 1000, 1000);
-    bot.position = L.latLng(Utils.randomInt(-500, 500), Utils.randomInt(-500, 500));
+    bot.position = L.latLng(Utils.random2(-500, 500), Utils.random2(-500, 500));
     warehouse.add('bot', bot);
     const srcid = ROBOT_IDS_IN_110[i];
     id_mapping[bot.layerId] = srcid;

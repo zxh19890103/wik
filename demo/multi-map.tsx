@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, Route, basic } from '../2d';
+import { Warehouse, Route, basic, Bot } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { injectCtor, provides, rootInjector } from '../model';
@@ -13,7 +13,8 @@ import { InteractiveStateActionManager } from '../2d/state/InteractiveStateActio
 import { SelectionManager } from '../2d/state/SelectionManager.class';
 
 import './ioc.config';
-import { randomColor, randomLatLng } from '../utils';
+import { randomLatLng } from '../utils';
+import { SVG_KUBOT } from '../2d/images';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -55,9 +56,12 @@ class MyWarehouse extends Warehouse<any, 'routes'> {
 })
 class MyWarehouse2 extends Warehouse<any, 'routes'> {
   async layout(data: any) {
+    await this.imageManager.load(SVG_KUBOT);
+
     this.addLayerList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
 
     const route = new Route([], {});
+    const bot = this.injector.$new<Bot>(Bot, this.imageManager.get(SVG_KUBOT), 1000, 1000);
 
     for (let r = 0; r < 5; r++) {
       route
@@ -68,6 +72,7 @@ class MyWarehouse2 extends Warehouse<any, 'routes'> {
     }
 
     this.add('routes', route);
+    this.add('bot', bot);
   }
 }
 
@@ -79,13 +84,14 @@ export default () => {
     ];
   });
 
-  const handleAfter = (root: HrMap) => {};
   const [wh0, wh1] = warehouses;
 
+  const handleAfter = (root: HrMap) => {};
+
   return (
-    <div>
-      <Scene bgColor={randomColor()} warehouse={wh0} afterMount={handleAfter} />
-      <Scene bgColor={randomColor()} warehouse={wh1} afterMount={handleAfter} />
-    </div>
+    <Scene.Layout flow="horizontal" w="100vw" h="100vh">
+      <Scene w="50%" h="100%" border warehouse={wh0} afterMount={handleAfter} />
+      <Scene w="50%" h="100%" border warehouse={wh1} afterMount={handleAfter} />
+    </Scene.Layout>
   );
 };

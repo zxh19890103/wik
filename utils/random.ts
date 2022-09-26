@@ -1,6 +1,6 @@
 const { random } = Math;
 
-export const randomInt = (min = 0, max = 1) => {
+export const random2 = (min = 0, max = 1) => {
   return min + random() * (max - min);
 };
 

@@ -17,6 +17,7 @@ const pages = {
   edge: React.lazy(() => import('./edge')),
   route: React.lazy(() => import('./route')),
   'multiple-map': React.lazy(() => import('./multi-map')),
+  ess: React.lazy(() => import('./ess')),
 };
 
 const Route = () => {

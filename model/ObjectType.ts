@@ -7,4 +7,7 @@ export type ObjectType<O extends string = never> =
   | 'cacheShelf'
   | 'conveyor'
   | 'location'
+  | 'labor'
+  | 'rest'
+  | 'maintain'
   | O;

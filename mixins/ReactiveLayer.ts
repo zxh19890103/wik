@@ -6,24 +6,33 @@ import { ReactiveLayerRenderEffect } from './effects';
 import { WithClickCancel } from './ClickCancel';
 import { IList } from '../model';
 import { WithParent } from '../interfaces/WithParent';
+import { WithRef } from '../interfaces/WithRef';
 
 export interface ReactiveLayer
   extends WithSnapshot,
     WithClickCancel,
     WithLayerID,
-    WithParent<IList<ReactiveLayer>> {
+    WithParent<IList<ReactiveLayer>>,
+    WithRef {
   readonly $$isReactive: symbol;
+
+  /**
+   * If you want to disable matrix transformation.
+   *
+   * which means it is an object exsiting in the root system without any sub-system.
+   */
+  readonly disableMatrix: boolean;
 
   /**
    * container object
    */
   $$parent: IList<ReactiveLayer>;
   /**
-   * reactive layer under which this layer is in.
+   * reactive layer in which this layer is.
    */
   $$system: ReactiveLayer;
   /**
-   * systems which are all under this.
+   * systems which are all in this.
    */
   $$subSystems: ReactiveLayer[];
 

@@ -26,7 +26,7 @@ export class GlobalConstManager {
   /**
    * Animation effects play rate. default = 1
    */
-  robotAnimationRate = 0.4;
+  robotAnimationRate = 0.1;
 
   getVal(k: string, defaultVal = null) {
     if (this[k] === undefined) return defaultVal;

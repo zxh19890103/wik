@@ -31,7 +31,7 @@ async function bootstrap(container: HTMLDivElement) {
   await hrGUIBasic.setDefaultImage(hrGUI.Bot, SVG_KUBOT);
 
   for (let i = 0; i < 1000; i++) {
-    const position = L.latLng(Utils.randomInt(-500, 500), Utils.randomInt(-500, 500));
+    const position = L.latLng(Utils.random2(-500, 500), Utils.random2(-500, 500));
     const bot = new hrGUI.basic.Circle(position, { radius: 1000 });
     injector.writeProp(bot, 'animationMgr', warehouse.animationManager);
     warehouse.add('bot', bot);

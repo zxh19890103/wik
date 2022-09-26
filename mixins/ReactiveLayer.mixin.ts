@@ -58,6 +58,10 @@ export function ReactiveLayerMixin(
     $$system: ReactiveLayer = null;
     $$subSystems: ReactiveLayer[] = [];
 
+    $$ref = null;
+
+    readonly disableMatrix = false;
+
     layerId = uniqueLayerId();
     latlngs: PolylineLatLngs = [];
     angle = 0;
@@ -70,6 +74,7 @@ export function ReactiveLayerMixin(
     ifRender = true;
 
     isObjClickEventCancelled = false;
+
     cancelObjClickEvent() {
       this.isObjClickEventCancelled = true;
       requestAnimationFrame(() => {

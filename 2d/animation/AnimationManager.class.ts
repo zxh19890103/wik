@@ -15,10 +15,10 @@ export enum AnimationManagerState {
 @injectable()
 export class AnimationManager implements IDisposable, WithInjector {
   @inject(Interfaces.IGlobalConstManager)
-  readonly globalConstMgr: GlobalConstManager;
+  readonly constantsManager: GlobalConstManager;
   readonly injector: IInjector;
 
-  animations: HrAnimation[] = [];
+  private animations: HrAnimation[] = [];
   private state: AnimationManagerState = AnimationManagerState.idle;
 
   private isPageHidden = false;
@@ -30,8 +30,7 @@ export class AnimationManager implements IDisposable, WithInjector {
     this.onIsPageHiddenChange = () => {
       this.isPageHidden = document.visibilityState === 'hidden';
       if (this.isPageHidden) {
-        this.final();
-        this.state = AnimationManagerState.idle;
+        this.flush();
       }
     };
 
@@ -49,7 +48,7 @@ export class AnimationManager implements IDisposable, WithInjector {
     }
 
     this.animations.push(animtion);
-    this.injector.writeProp(animtion, 'globalConstMgr', this.globalConstMgr);
+    this.injector.writeProp(animtion, 'globalConstMgr', this.constantsManager);
     animtion.state = AnimationState.added;
     animtion.addedAt = performance.now();
     animtion.m.currentAnimation = animtion;
@@ -86,7 +85,6 @@ export class AnimationManager implements IDisposable, WithInjector {
 
       switch (item.state) {
         case AnimationState.finished: {
-          console.log('item finished');
           deleted += 1;
           continue;
         }
@@ -113,11 +111,9 @@ export class AnimationManager implements IDisposable, WithInjector {
           item.start(now);
           item.state = AnimationState.running;
           item.startAt = now;
-          console.log('item start');
           break;
         }
         case AnimationState.stop: {
-          console.log('item stop req');
           this.end1(item);
           continue;
         }
@@ -186,6 +182,11 @@ export class AnimationManager implements IDisposable, WithInjector {
     }
 
     this.animations = [];
+  }
+
+  flush() {
+    this.final();
+    this.state = AnimationManagerState.idle;
   }
 
   bootstrap() {

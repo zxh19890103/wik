@@ -2,4 +2,34 @@
   width: 100vw;
   height: 100vh;
   background: white;
+  box-sizing: border-box;
+
+  &Flex {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &Detail {
+    width: 200px;
+    height: 100%;
+    background-color: #fefefe;
+    border: 1px dashed #000;
+    padding: 6px 8px;
+    box-sizing: border-box;
+  }
+
+  &:after {
+    content: 'phase: --';
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 4px 7px;
+    border: 2px solid #000;
+    background-color: rgba(0, 0, 0, 0.86);
+    color: white;
+    z-index: 999;
+  }
 }

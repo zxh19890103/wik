@@ -1,11 +1,14 @@
 import L from 'leaflet';
 
-export const boundToLatLngs = (latLngBoundsExpr: any) => {
+/**
+ *
+ * @param latLngBoundsExpr
+ * @returns
+ */
+export const boundToLatLngs = (latLngBoundsExpr: any): L.LatLng[] => {
   const bounds = L.latLngBounds(latLngBoundsExpr);
-  return [
-    bounds.getSouthWest(),
-    bounds.getNorthWest(),
-    bounds.getNorthEast(),
-    bounds.getSouthEast(),
-  ];
+
+  const { _northEast, _southWest } = bounds;
+
+  return [_northEast, bounds.getNorthWest(), _southWest, bounds.getSouthEast()];
 };

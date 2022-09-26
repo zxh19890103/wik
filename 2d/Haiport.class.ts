@@ -12,7 +12,7 @@ import { ContextMenuItem } from '../interfaces/types';
 export class Haiport extends ReactSVGOverlay implements OnContextMenu {
   constructor(
     latlng: L.LatLngExpression,
-    svgServer: ReactSVGOverlayAppServer,
+    svgServer?: ReactSVGOverlayAppServer,
     meta?: meta.Haiport,
   ) {
     super(ImageSVG, svgServer, 1000, 1000);
@@ -39,9 +39,5 @@ export class Haiport extends ReactSVGOverlay implements OnContextMenu {
         break;
       }
     }
-  }
-
-  onClick() {
-    this.rotate(10);
   }
 }

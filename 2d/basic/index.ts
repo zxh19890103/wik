@@ -9,7 +9,6 @@ export * from './ImageOverlay.class';
 export * from './ReactSVGOverlayApp';
 export * from './ReactSVGOverlay.class';
 export * from './SVGComponentFactory';
-export * from '../state/SelectionManager.class';
 export * from './ImageLayer.class';
 
 export * from './Map.class';
@@ -17,6 +16,3 @@ export * from './Map.class';
 export * from './LayerList.class';
 export * from './SVGOverlayList.class';
 export * from './VectorLayerList.class';
-
-export * from '../state/PaneManager.class';
-export * from './ImageManager.class';

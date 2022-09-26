@@ -1,10 +1,11 @@
-import * as Inferfaces from '../interfaces/symbols';
+import * as Interfaces from '../interfaces/symbols';
 
-import { ImageManager } from '../2d/basic';
 import { GlobalConstManager } from '../model/basic/GlobalConstManager.class';
 import { configProviders } from '../model/basic/Injector.class';
+import { ImageManager } from '../2d/state';
 
 configProviders('root', {
-  [Inferfaces.IImageManager]: ImageManager,
-  [Inferfaces.IGlobalConstManager]: GlobalConstManager,
+  [Interfaces.IImageManager]: ImageManager,
+  [Interfaces.IGlobalConstManager]: GlobalConstManager,
+  // [Interfaces.ILogger]: console,
 });

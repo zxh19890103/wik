@@ -10,7 +10,7 @@ export class Location extends Marker {
 
   constructor(latlng: L.LatLngExpression, meta?: meta.Location) {
     super(latlng, {
-      ...createDefaultOptions(meta),
+      ...createDefaultOptions(meta || { type: 'labor' }),
     });
 
     this.type = meta?.type || 'rest';
@@ -30,7 +30,7 @@ const createDefaultOptions = (meta: meta.Location): L.MarkerOptions => {
         icon: new L.Icon({
           className: 'hr-marker-icon',
           iconUrl: iconURL || svg.SVG_LABOR,
-          shadowUrl: L.Icon.Default.imagePath + 'marker-shadow.png',
+          shadowUrl: null,
           shadowAnchor: [5, 20],
         }),
       };

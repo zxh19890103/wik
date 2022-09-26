@@ -23,6 +23,17 @@ declare module 'leaflet' {
   interface Popup {
     _element: HTMLDivElement;
   }
+
+  interface LatLngBounds {
+    /**
+     * the left-bottom position
+     */
+    _southWest: L.LatLng;
+    /**
+     * the right-top position
+     */
+    _northEast: L.LatLng;
+  }
 }
 
 declare module 'eventemitter3' {

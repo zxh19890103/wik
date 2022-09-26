@@ -1,6 +1,6 @@
+import L from 'leaflet';
 import { mix } from '../../model/basic';
 import { boundToLatLngs, D2R, leafletOptions, mapLatLng } from '../../utils';
-import L from 'leaflet';
 import { ReactiveLayer } from '../../mixins/ReactiveLayer';
 import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
 import { Constructor } from '../../interfaces/Constructor';
@@ -13,10 +13,10 @@ import { DEFAULT_PATH_STYLE } from './constants';
   fill: true,
 })
 export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(ReactiveLayerMixin) {
-  protected image: HTMLImageElement = null;
+  protected image: HTMLImageElement | HTMLCanvasElement = null;
   protected width = 0;
   protected height = 0;
-  protected isDrawingBounds = false;
+  protected needDrawBound = false;
   protected anglePhase = 0;
 
   constructor(private imgSrc: string | HTMLImageElement, width: number, height: number) {
@@ -40,7 +40,7 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
     }
 
     if (!this.image) {
-      this.image = (this.constructor as any).__default_image__ || null;
+      this.image = this.__DEFAULT_IMAGE__ || null;
     }
   }
 
@@ -58,10 +58,9 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
     return this;
   }
 
-  setImage(imgSrc: string | HTMLImageElement, draw = false) {
+  setImage(imgSrc: string | HTMLImageElement | HTMLCanvasElement, draw = false) {
     if (typeof imgSrc === 'string') {
-      // no need to assign.
-      if (this.image?.src === imgSrc) return;
+      if (this.image instanceof Image && this.image?.src === imgSrc) return;
       this.imgSrc = imgSrc;
       this.image = new Image();
       this.image.src = imgSrc;
@@ -69,25 +68,25 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
       this.image = imgSrc;
     }
 
-    if (draw) {
+    if (!draw) return;
+
+    if (this.image instanceof Image) {
       reqRedraw(this.image, this);
+    } else {
+      this.redraw();
     }
   }
 
-  getImage() {
+  getImage(): HTMLImageElement | HTMLCanvasElement {
     if (this.image) {
       return this.image;
     }
 
-    if ((this.constructor as any).__default_image__) {
-      return (this.constructor as any).__default_image__;
-    }
-
-    return null;
+    return this.__DEFAULT_IMAGE__ || null;
   }
 
   showBounds(show = true) {
-    this.isDrawingBounds = show;
+    this.needDrawBound = show;
     this.redraw();
   }
 
@@ -103,13 +102,11 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
     );
   }
 
+  /**
+   * @see https://web.dev/canvas-performance/
+   */
   _updatePath() {
-    const ctx = this._renderer._ctx;
-    const { max, min } = this._pxBounds;
-    const cx = (max.x + min.x) / 2;
-    const cy = (max.y + min.y) / 2;
-
-    if (this.isDrawingBounds) {
+    if (this.needDrawBound) {
       this._renderer._updatePoly(this, true);
     }
 
@@ -117,12 +114,66 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
     const image = this.getImage();
     if (!image) return;
 
-    const { x: sx, y: sy } = this._map.project([-this.height, this.width]);
+    const ctx = this._renderer._ctx;
+
+    const { max, min } = this._pxBounds;
+
+    const tX = (max.x + min.x) / 2;
+    const tY = (max.y + min.y) / 2;
+
+    const size = this._map.project([-this.height, this.width]);
+
+    const dW = size.x;
+    const dH = size.y;
+
+    const dX = -size.x / 2;
+    const dY = -size.y / 2;
+
+    const sW = image.width;
+    const sH = image.height;
 
     ctx.save();
-    ctx.translate(cx, cy);
+    ctx.translate(tX, tY);
     ctx.rotate(-(this.angle + this.anglePhase) * D2R);
-    ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, -sx / 2, -sy / 2, sx, sy);
+    ctx.drawImage(image, 0, 0, sW, sH, dX, dY, dW, dH);
+    ctx.restore();
+  }
+
+  /**
+   * @see https://web.dev/canvas-performance/
+   *
+   * I cannot inspect the performance improvement
+   */
+  x_updatePath() {
+    if (this.needDrawBound) {
+      this._renderer._updatePoly(this, true);
+    }
+
+    const image = this.getImage();
+    if (!image) return;
+
+    const ctx = this._renderer._ctx;
+
+    const { max, min } = this._pxBounds;
+
+    const tX = (0.5 + (max.x + min.x) / 2) << 0;
+    const tY = (0.5 + (max.y + min.y) / 2) << 0;
+
+    const size = this._map.project([-this.height, this.width]);
+
+    const dW = (0.5 + size.x) << 0;
+    const dH = (0.5 + size.y) << 0;
+
+    const dX = (0.5 + -size.x / 2) << 0;
+    const dY = (0.5 + -size.y / 2) << 0;
+
+    const sW = image.width;
+    const sH = image.height;
+
+    ctx.save();
+    ctx.translate(tX, tY);
+    ctx.rotate(-(this.angle + this.anglePhase) * D2R);
+    ctx.drawImage(image, 0, 0, sW, sH, dX, dY, dW, dH);
     ctx.restore();
   }
 }
@@ -130,6 +181,7 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
 export interface ImageLayer {
   _renderer: L.Canvas;
   _pxBounds: L.Bounds;
+  readonly __DEFAULT_IMAGE__: HTMLImageElement;
 }
 
 const redrawReqs: Map<HTMLImageElement, ImageLayer> = new Map();
@@ -140,6 +192,7 @@ function onImageLoad({ target }) {
     layer.redraw();
     redrawReqs.delete(target);
   }
+
   target.onload = null;
 }
 
@@ -154,14 +207,18 @@ const reqRedraw = (image: HTMLImageElement, context: ImageLayer) => {
 
 export function setDefaultImage<T extends ImageLayer>(C: Constructor<T>, src: string) {
   return new Promise((done) => {
-    if ((C as any).__default_image__) {
-      (C as any).__default_image__.src = src;
+    let img = C.prototype.__DEFAULT_IMAGE__ as HTMLImageElement;
+
+    if (img) {
+      img.src = src;
+      img.onload = done;
       return done(null);
     }
 
-    const img = new Image();
+    img = new Image();
     img.src = src;
     img.onload = done;
-    (C as any).__default_image__ = img;
+
+    C.prototype.__DEFAULT_IMAGE__ = img;
   });
 }

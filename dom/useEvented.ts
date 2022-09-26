@@ -1,8 +1,10 @@
-import EventEmitter from 'eventemitter3';
 import { useEffect } from 'react';
 import { useGlobalTick } from './useGlobalTick';
 
-export const useEvented = (evented: EventEmitter, events: string) => {
+/**
+ * @todo Type it.
+ */
+export const useEvented = (evented: any, events: string) => {
   const tick = useGlobalTick();
 
   useEffect(() => {

@@ -20,7 +20,8 @@
     "@types/three": "^0.143.0",
     "eventemitter3": "^4.0.7",
     "gl-matrix": "^3.4.3",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "stats.js": "^0.17.0"
   },
   "peerDependencies": {
     "leaflet": "~1.7.1"

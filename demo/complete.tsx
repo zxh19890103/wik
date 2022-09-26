@@ -102,9 +102,9 @@ export default () => {
 
     for (let i = 0; i < 30; i++) {
       const bot = new hrModel.Robot();
-      bot.px = Util.randomInt(-1000, 1000);
-      bot.py = Util.randomInt(-1000, 1000);
-      bot.theta = Util.randomInt(0, 360);
+      bot.px = Util.random2(-1000, 1000);
+      bot.py = Util.random2(-1000, 1000);
+      bot.theta = Util.random2(0, 360);
       bots.add(bot);
     }
 
@@ -114,7 +114,7 @@ export default () => {
       theta += 1;
       let b = null;
       for (const bot of bots) {
-        bot.setPosition(Util.randomInt(-10000, 10000), Util.randomInt(-10000, 10000));
+        bot.setPosition(Util.random2(-10000, 10000), Util.random2(-10000, 10000));
         bot.setTheta(theta);
         b = bot;
       }

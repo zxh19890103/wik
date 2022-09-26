@@ -9,7 +9,7 @@ export const BUILTIN_LEAFLET_PANES =
 export const DEFAULT_PATH_STYLE: L.PolylineOptions = {
   color: '#004caa',
   opacity: 1,
-  fillColor: '#004caa',
+  fillColor: null,
   fillOpacity: 0.6,
   fill: false,
   weight: 1,

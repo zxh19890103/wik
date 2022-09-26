@@ -221,10 +221,16 @@ export class LayerList<M extends LayerWithID, E extends string = never>
     this.injector.writeProp(this, 'mounted', true);
   }
 
-  fit() {
+  fit(immediately = false) {
     const b = this.featureGroup.getBounds();
     if (!b.isValid()) return;
-    this._map.fitBounds(b);
+    if (immediately) {
+      this._map.fitBounds(b, { animate: true });
+    } else {
+      setTimeout(() => {
+        this._map.fitBounds(b, { animate: true });
+      }, 10);
+    }
   }
 
   dispose(): void {

@@ -1,22 +1,9 @@
-import L from 'leaflet';
-import { Interactive } from '../interfaces/Interactive';
 import { LayerWithID } from '../interfaces/WithLayerID';
 import { WithEmitter, WithEmitterMix } from '../mixins/Emitter';
 import { InteractiveStateActionManager } from './state/InteractiveStateActionManager.class';
 import { ObjectType, IWarehouse, GlobalConstManager } from '../model';
-import { HrEvent } from '../model/basic/Event.class';
 import { mixin } from '../model/basic/mixin';
-import {
-  HrMap,
-  ImageManager,
-  LayerList,
-  PaneManager,
-  SelectionManager,
-  SVGOverlayList,
-  VectorLayerList,
-} from './basic';
-import { AnimationManager } from './animation/AnimationManager.class';
-import { HighlightManager } from './state/HighlightManager.class';
+import { Circle, HrMap, LayerList, SVGOverlayList, VectorLayerList } from './basic';
 import { Bot } from './Bot.class';
 import { CacheShelf } from './CacheShelf.class';
 import { Chargepile } from './Chargepile.class';
@@ -29,13 +16,17 @@ import { Shelf } from './Shelf.class';
 
 import { inject } from '../model/basic/inject';
 import * as Interfaces from '../interfaces/symbols';
-import { ModeManager } from '../model/modes/ModeManager.class';
 import * as behaviors from './behaviors';
 import { GraphicObject } from '../interfaces/GraghicObject';
 import { IBehavior } from '../interfaces/Mode';
 import { IInjector } from '../interfaces/Injector';
+import { tryInvokingOwn } from '../utils';
 
-type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'mounted';
+import { ModeManager } from '../model/modes/ModeManager.class';
+import { AnimationManager } from './animation/AnimationManager.class';
+import { ImageManager, PaneManager, SelectionManager, HighlightManager } from './state';
+
+type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 
 type ListCtorArgs = {
   pane: string;
@@ -47,7 +38,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   extends EventEmitter3<WarehouseEventType, any>
   implements IWarehouse
 {
-  injector: IInjector;
+  readonly injector: IInjector;
 
   private updateDeps: Partial<Record<ObjectType<OT>, ItemUpdateFn<LayerWithID, any>>> = {};
 
@@ -81,6 +72,9 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   haiports: SVGOverlayList<Haiport>;
   chargepiles: SVGOverlayList<Chargepile>;
   bots: VectorLayerList<Bot>;
+  labors: VectorLayerList<Circle>;
+  rests: VectorLayerList<Circle>;
+  maintains: VectorLayerList<Circle>;
 
   cacheShelfs: LayerList<CacheShelf>;
   conveyors: LayerList<Conveyor>;
@@ -93,6 +87,9 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     this.shelfs = injector.$new(VectorLayerList, 'shelfPane', 'canvas');
     this.haiports = injector.$new(SVGOverlayList, 'haiportPane');
     this.chargepiles = injector.$new(SVGOverlayList, 'chargepilePane');
+    this.labors = injector.$new(VectorLayerList, 'laborsPane', 'canvas');
+    this.rests = injector.$new(VectorLayerList, 'restsPane', 'canvas');
+    this.maintains = injector.$new(VectorLayerList, 'maintainsPane', 'canvas');
     this.bots = injector.$new(VectorLayerList, 'botsPane', 'canvas');
     this.cacheShelfs = injector.$new(LayerList);
     this.conveyors = injector.$new(LayerList);
@@ -103,7 +100,13 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     this.addLayerList('shelf', this.shelfs);
     this.addLayerList('haiport', this.haiports);
     this.addLayerList('chargepile', this.chargepiles);
+
+    this.addLayerList('labor', this.labors);
+    this.addLayerList('rest', this.rests);
+    this.addLayerList('maintain', this.maintains);
+
     this.addLayerList('bot', this.bots);
+
     this.addLayerList('cacheShelf', this.cacheShelfs);
     this.addLayerList('conveyor', this.conveyors);
     this.addLayerList('location', this.locations);
@@ -222,12 +225,13 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   mount(map: HrMap) {
     if (this.mounted) return;
 
+    this.emit('phase', { phase: WarehousePhase.mount });
+
     const injector = this.injector;
 
     // inject
     injector.writeProp(this, 'map', map);
     injector.writeProp(this.paneManager, 'map', map);
-    injector.writeProp(this, 'mounted', true);
 
     this.renderersMgr = new RenderersManager(this.paneManager, map);
 
@@ -250,7 +254,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     // dev html
     if (!__PROD__) {
       const div = document.createElement('div');
-      div.style.cssText = 'position: fixed; z-index: 9999; top: 0; left: 0; width: 1080px;';
+      div.style.cssText = 'position: absolute; z-index: 9999; top: 0; left: 0; width: 1080px;';
 
       for (const [_, mode] of this.modeManager.modes) {
         const btn = document.createElement('button');
@@ -262,75 +266,79 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
         btn.innerHTML = mode.name;
       }
 
-      document.body.appendChild(div);
+      this.map._container.appendChild(div);
     }
 
     //#endregion
 
     //#region events & mode apply
     {
-      const invokeCallbackOnSubClass = (e: HrEvent, onCall: string, ...args: any[]) => {
-        const layer = e.payload.layer as Interactive;
-        if (Object.hasOwn(this, onCall)) {
-          this[onCall](layer, ...args);
-        }
-        return layer;
-      };
-
       this.on('click', (e) => {
         const { layer, leafletEvt } = e.payload;
-        invokeCallbackOnSubClass(e, 'onClick', leafletEvt);
+        tryInvokingOwn(this, 'onClick', layer, leafletEvt);
         this.modeManager.apply('onClick', layer, e);
       });
 
       this.on('dblclick', (e) => {
         const { layer, leafletEvt } = e.payload;
-        invokeCallbackOnSubClass(e, 'onDblClick', leafletEvt);
+        tryInvokingOwn(this, 'onDblClick', layer, leafletEvt);
         this.modeManager.apply('onDblClick', layer, e);
       });
 
       this.on('hover', (e) => {
         const { layer, on, leafletEvt } = e.payload;
-        invokeCallbackOnSubClass(e, 'onHover', on, leafletEvt);
+        tryInvokingOwn(this, 'onHover', layer, on, leafletEvt);
         this.modeManager.apply('onHover', layer, on, leafletEvt);
       });
 
       this.on('press', (e) => {
         const { layer, leafletEvt } = e.payload;
-        invokeCallbackOnSubClass(e, 'onPress', leafletEvt);
+        tryInvokingOwn(this, 'onPress', layer, leafletEvt);
         this.modeManager.apply('onPress', layer, leafletEvt);
       });
 
       this.on('contextmenu', (e) => {
         const { layer, leafletEvt } = e.payload;
-        invokeCallbackOnSubClass(e, 'onContextMenu', leafletEvt);
+        tryInvokingOwn(this, 'onContextMenu', layer, leafletEvt);
         this.modeManager.apply('onContextMenu', layer, leafletEvt);
       });
 
       /**
        * event bind on map seems like that it can't read the actual propagatedFrom layer, no this field.
        */
-      this.map.on('mousedown mousemove mouseup click', (evt) => {
-        if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
-        this.modeManager.apply(eventName_behaviorCallback_mapping[evt.type], evt);
-      });
+      this.map
+        .on('mousedown mousemove mouseup click', (evt) => {
+          if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
+          this.modeManager.apply(eventName_behaviorCallback_mapping[evt.type], evt);
+        })
+        .on('zoom drag', () => {
+          this.animationManager.flush();
+        });
     }
 
     //#endregion
 
+    injector.writeProp(this, 'mounted', true);
+    tryInvokingOwn(this, 'onMounted');
+    this.emit('phase', { phase: WarehousePhase.mounted });
+
     //#region layout
 
     (async () => {
+      this.emit('phase', { phase: WarehousePhase.data });
+      console.time('phase:data');
       const d = await this.getLayoutData();
+      console.timeEnd('phase:data');
+      this.emit('phase', { phase: WarehousePhase.layout });
+      console.time('phase:layout');
       await this.layout(d);
-      injector.writeProp(this, 'layouted', true);
+      console.timeEnd('phase:layout');
 
       this.renderersMgr.interactAll();
 
-      this.emit('mounted');
-      if (Object.hasOwn(this, 'onMounted')) {
-        this['onMounted']();
-      }
+      injector.writeProp(this, 'layouted', true);
+      tryInvokingOwn(this, 'onLayouted');
+      this.emit('phase', { phase: WarehousePhase.ready });
     })();
 
     //#endregion
@@ -363,6 +371,14 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 export interface Warehouse<LayoutData> extends WithEmitter<WarehouseEventType> {}
 
 export type ItemUpdateFn<M extends LayerWithID, D> = (item: M, data: D) => void;
+
+export enum WarehousePhase {
+  mount = 1,
+  mounted = 5,
+  data = 10,
+  layout = 20,
+  ready = 40,
+}
 
 const eventName_behaviorCallback_mapping = {
   dragstart: 'onDragStart',

@@ -7,3 +7,4 @@ export const IPaneManager = Symbol.for('IPaneManager');
 export const IModeManager = Symbol.for('IModeManager');
 export const IGlobalConstManager = Symbol.for('IGlobalConstManager');
 export const IInjector = Symbol.for('IInjector');
+export const ILogger = Symbol.for('ILogger');

@@ -14,40 +14,8 @@ export class Point extends Circle {
   type: meta.PointPresetType = 'normal';
 
   constructor(latlng: L.LatLngExpression, meta?: meta.Point) {
-    super(latlng, {
-      ...createCircleStyle(meta?.type),
-    });
+    super(latlng, {});
     this.type = meta?.type || 'normal';
     this.position = L.latLng(latlng);
   }
-
-  onMouseOver(evt: L.LeafletMouseEvent): void {
-    this.setStyle({ fillColor: '#999' });
-  }
-
-  onMouseOut(evt: L.LeafletMouseEvent): void {
-    this.setStyle({ fillColor: '#d9d9d9' });
-  }
-
-  drawArrowTo(p: Point) {
-    return L.polyline([this.position, p.position]).addTo(this._map);
-  }
 }
-
-const createCircleStyle = (t: meta.PointPresetType): L.CircleMarkerOptions => {
-  switch (t) {
-    case 'rest':
-      return {
-        fillColor: '#542',
-      };
-    case 'charge':
-      return {
-        fillColor: '#a0d',
-      };
-    case 'normal':
-    default:
-      return {
-        fillColor: '#d9d9d9',
-      };
-  }
-};
