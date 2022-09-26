@@ -152,6 +152,8 @@ export type GraphNodeDep = {
   symbol: string;
 };
 
+export type Provider = Constructor | (() => object);
+
 class Root {}
 
 const graphNodes: Map<GraphNodeTarget | InjectToken, GraphNode> = new Map();

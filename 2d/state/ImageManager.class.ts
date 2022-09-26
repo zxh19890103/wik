@@ -1,15 +1,16 @@
 import { IDisposable } from '../../interfaces/Disposable';
 import { injectable } from '../../model/basic/inject';
+import { createOffscreenCanvas } from '../../utils';
 
 @injectable()
 export class ImageManager implements IDisposable {
-  private pool: Record<string, HTMLImageElement> = {};
-  private pool2: Record<string, HTMLCanvasElement> = {};
+  private images: Record<string, HTMLImageElement> = {};
+  private offscreencanvases: Record<string, HTMLCanvasElement> = {};
 
   private _load(src: string) {
     return new Promise((r, e) => {
-      if (this.pool[src]) {
-        return r(this.pool[src]);
+      if (this.images[src]) {
+        return r(this.images[src]);
       }
 
       const image = new Image();
@@ -20,7 +21,7 @@ export class ImageManager implements IDisposable {
       image.addEventListener('error', onImageLoad);
 
       image.src = src;
-      this.pool[src] = image;
+      this.images[src] = image;
     });
   }
 
@@ -29,50 +30,26 @@ export class ImageManager implements IDisposable {
   }
 
   get(src: string) {
-    if (!this.pool[src]) {
+    if (!this.images[src]) {
       return null;
     }
-    return this.pool[src];
+    return this.images[src];
   }
 
-  getOffscreenCanvas(src: string) {
-    if (!this.pool[src]) {
+  getOffscreenCanvas(src: string, scale = 1) {
+    if (!this.images[src]) {
       return null;
     }
 
-    if (this.pool2[src]) {
-      return this.pool2[src];
+    if (this.offscreencanvases[src]) {
+      return this.offscreencanvases[src];
     }
 
-    const canvas = this.createOffscreenCanvas(src);
+    const canvas = createOffscreenCanvas(this.images[src], scale);
 
-    this.pool2[src] = canvas;
+    this.offscreencanvases[src] = canvas;
 
     return canvas;
-  }
-
-  private createOffscreenCanvas(src) {
-    const img = this.pool[src];
-
-    const cav = document.createElement('canvas');
-
-    const w = img.naturalWidth;
-    const h = img.naturalHeight;
-
-    cav.width = w;
-    cav.height = h;
-
-    cav.width = img.width * devicePixelRatio;
-    cav.height = img.height * devicePixelRatio;
-    cav.style.width = img.width + 'px';
-    cav.style.height = img.height + 'px';
-
-    const ctx = cav.getContext('2d');
-
-    ctx.scale(devicePixelRatio, devicePixelRatio);
-    ctx.drawImage(img, 0, 0, w, h, 0, 0, w, h);
-
-    return cav;
   }
 
   dispose(): void {

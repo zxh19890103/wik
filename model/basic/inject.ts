@@ -19,6 +19,9 @@ function injectable(config?: { providedIn: 'root' }) {
   return function (target: AbstractConstructor) {
     // see the last implementation as the valid one.
     writeProp(target, '__injectable__', true);
+    if (config?.providedIn === 'root') {
+      // configProviders('root', {  })
+    }
   };
 }
 

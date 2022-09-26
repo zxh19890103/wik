@@ -95,7 +95,8 @@ class MyWarehouse extends Warehouse {
 
     setDefaultImage(
       Bot,
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhbjVnbSRk4uulOjSqr_LUTYyNEJahqAGT41eH7F_wcA5CVPeXI4DidiGk9FcCam7hhO4&usqp=CAU',
+      'https://pic4.zhimg.com/v2-e39d39daf24cadba1d70dd06e2152350_r.jpg?source=1940ef5c',
+      { offscreenCanvas: true, scale: 0.1 },
     );
 
     /**

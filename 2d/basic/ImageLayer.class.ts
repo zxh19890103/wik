@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { mix } from '../../model/basic';
-import { boundToLatLngs, D2R, leafletOptions, mapLatLng } from '../../utils';
+import { boundToLatLngs, createOffscreenCanvas, D2R, leafletOptions, mapLatLng } from '../../utils';
 import { ReactiveLayer } from '../../mixins/ReactiveLayer';
 import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
 import { Constructor } from '../../interfaces/Constructor';
@@ -42,20 +42,6 @@ export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(Re
     if (!this.image) {
       this.image = this.__DEFAULT_IMAGE__ || null;
     }
-  }
-
-  override onAdd(map: L.Map): this {
-    if (this.image !== null) {
-      super.onAdd(map);
-      return this;
-    }
-
-    if (!this.getImage()) {
-      throw new Error('no src nor image given.');
-    }
-
-    super.onAdd(map);
-    return this;
   }
 
   setImage(imgSrc: string | HTMLImageElement | HTMLCanvasElement, draw = false) {
@@ -205,20 +191,33 @@ const reqRedraw = (image: HTMLImageElement, context: ImageLayer) => {
   image.onload = onImageLoad;
 };
 
-export function setDefaultImage<T extends ImageLayer>(C: Constructor<T>, src: string) {
+interface SetDefaultImageOptions {
+  offscreenCanvas: boolean;
+  scale: number;
+}
+
+export function setDefaultImage<T extends ImageLayer>(
+  C: Constructor<T>,
+  src: string,
+  options: SetDefaultImageOptions = {
+    offscreenCanvas: false,
+    scale: 1,
+  },
+) {
   return new Promise((done) => {
-    let img = C.prototype.__DEFAULT_IMAGE__ as HTMLImageElement;
+    const img = new Image();
 
-    if (img) {
-      img.src = src;
-      img.onload = done;
-      return done(null);
-    }
+    img.onload = () => {
+      if (options.offscreenCanvas) {
+        C.prototype.__DEFAULT_IMAGE__ = createOffscreenCanvas(img, options.scale);
+      } else {
+        C.prototype.__DEFAULT_IMAGE__ = img;
+      }
 
-    img = new Image();
+      img.onload = null;
+      done(null);
+    };
+
     img.src = src;
-    img.onload = done;
-
-    C.prototype.__DEFAULT_IMAGE__ = img;
   });
 }

@@ -8,3 +8,4 @@ export * from './vector';
 export * from './capital';
 export * from './queueTask';
 export * from './invoke';
+export * from './offscreenCanvas';
