@@ -10,17 +10,18 @@ import {
   configProviders,
   GraphNodeDep,
   writeProp,
+  ConfigProviderConfigValue,
 } from './Injector.class';
 
 /**
  * just mark a class as an injectable one.
  */
-function injectable(config?: { providedIn: 'root' }) {
+function injectable(config?: { providedIn: 'root'; provide: symbol }) {
   return function (target: AbstractConstructor) {
     // see the last implementation as the valid one.
     writeProp(target, '__injectable__', true);
     if (config?.providedIn === 'root') {
-      // configProviders('root', {  })
+      configProviders('root', [{ provide: config.provide, useClass: target as Constructor }]);
     }
   };
 }
@@ -46,20 +47,9 @@ function inject(token: InjectToken) {
   };
 }
 
-function provides(
-  config: Record<symbol, Constructor> | Array<{ key: Symbol; value: Constructor }>,
-) {
+function provides(config: Record<symbol, ConfigProviderConfigValue>) {
   return function (target: any) {
-    configProviders(
-      target,
-      config instanceof Array
-        ? Object.fromEntries(
-            config.map((c) => {
-              return [c.key, c.value];
-            }),
-          )
-        : config,
-    );
+    configProviders(target, config);
   };
 }
 

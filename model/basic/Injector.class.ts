@@ -1,6 +1,7 @@
 import { Constructor, AbstractConstructor } from '../../interfaces/Constructor';
 import { IInjector, WithInjector } from '../../interfaces/Injector';
 import * as Interfaces from '../../interfaces/symbols';
+import { Entries, fromEntries, toEntries } from '../../utils';
 
 /**
  * If parent-child relation has not created, we cannot access injector Hierarchically.
@@ -167,7 +168,9 @@ export type GraphNodeDep = {
   symbol: string;
 };
 
-export type Provider = { useClass: Constructor; useValue: any; useFactory: () => any };
+export type Provider = { useClass?: Constructor; useValue?: any; useFactory?: () => any };
+export type ConfigProviderConfigValue = Provider | Constructor;
+type ProviderWithSymbol = Provider & { provide: symbol };
 
 class Root {}
 
@@ -178,12 +181,38 @@ export const rootInjector = new Injector(Root);
 
 export function configProviders(
   target: AbstractConstructor | 'root',
-  config: Record<symbol, Provider>,
+  config: Record<symbol, ConfigProviderConfigValue> | Array<ProviderWithSymbol>,
 ) {
   const _target = target === 'root' ? Root : target;
   const _config = globalProviders.get(_target);
 
-  globalProviders.set(_target, { ..._config, ...config });
+  let more = {};
+
+  const proto = Object.getPrototypeOf(config);
+
+  if (proto === Object.prototype) {
+    // Object
+    const entries = toEntries(config);
+
+    for (const [key, value] of entries) {
+      if (Object.getPrototypeOf(value) === Object.prototype) {
+        // It's Provider
+        more[key] = value;
+      } else {
+        // It's Constructor
+        more[key] = { useClass: value };
+      }
+    }
+  } else if (proto === Array.prototype) {
+    // Array
+    more = fromEntries(
+      Array.prototype.map.call(config, (c: ProviderWithSymbol) => {
+        return [c.provide, c];
+      }) as Entries<symbol, Provider>,
+    );
+  }
+
+  globalProviders.set(_target, { ..._config, ...more });
 
   if (target === 'root') {
     rootInjector.loadProviders();

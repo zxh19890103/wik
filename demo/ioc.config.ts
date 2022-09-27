@@ -7,5 +7,5 @@ import { ImageManager } from '../2d/state';
 configProviders('root', {
   [Interfaces.IImageManager]: ImageManager,
   [Interfaces.IGlobalConstManager]: GlobalConstManager,
-  // [Interfaces.ILogger]: console,
+  [Interfaces.ILogger]: { useFactory: () => console },
 });

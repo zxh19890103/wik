@@ -9,3 +9,4 @@ export * from './capital';
 export * from './queueTask';
 export * from './invoke';
 export * from './offscreenCanvas';
+export * from './entries';

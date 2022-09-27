@@ -25,6 +25,7 @@ import { tryInvokingOwn } from '../utils';
 import { ModeManager } from '../model/modes/ModeManager.class';
 import { AnimationManager } from './animation/AnimationManager.class';
 import { ImageManager, PaneManager, SelectionManager, HighlightManager } from './state';
+import { ILogger } from '../interfaces/Logger';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 
@@ -58,6 +59,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   readonly modeManager: ModeManager;
   @inject(Interfaces.IGlobalConstManager)
   readonly globalConsts: GlobalConstManager;
+  @inject(Interfaces.ILogger)
+  readonly logger: ILogger;
 
   private renderersMgr: RenderersManager;
 
@@ -326,13 +329,13 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
     (async () => {
       this.emit('phase', { phase: WarehousePhase.data });
-      console.time('phase:data');
+      let time = performance.now();
       const d = await this.getLayoutData();
-      console.timeEnd('phase:data');
+      console.log('getLayoutData takes:', performance.now() - time);
       this.emit('phase', { phase: WarehousePhase.layout });
-      console.time('phase:layout');
+      time = performance.now();
       await this.layout(d);
-      console.timeEnd('phase:layout');
+      console.log('layout takes:', performance.now() - time);
 
       this.renderersMgr.interactAll();
 

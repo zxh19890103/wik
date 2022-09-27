@@ -4,7 +4,6 @@ import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { injectCtor, provides, rootInjector } from '../model';
 import * as Interfaces from '../interfaces/symbols';
-import { HrMap } from '../2d/basic';
 import { PaneManager } from '../2d/state/PaneManager.class';
 import { HighlightManager } from '../2d/state/HighlightManager.class';
 import { AnimationManager } from '../2d/animation/AnimationManager.class';
@@ -86,12 +85,10 @@ export default () => {
 
   const [wh0, wh1] = warehouses;
 
-  const handleAfter = (root: HrMap) => {};
-
   return (
     <Scene.Layout flow="horizontal" w="100vw" h="100vh">
-      <Scene w="50%" h="100%" border warehouse={wh0} afterMount={handleAfter} />
-      <Scene w="50%" h="100%" border warehouse={wh1} afterMount={handleAfter} />
+      <Scene w="50%" h="100%" border warehouse={wh0} />
+      <Scene w="50%" h="100%" border warehouse={wh1} />
     </Scene.Layout>
   );
 };
