@@ -23,14 +23,12 @@ export class Injector implements IInjector {
   parent: Injector;
 
   private values: Map<Symbol, any> = new Map();
-  private providers: Map<Symbol, Constructor> = new Map();
+  private providers: Map<Symbol, Provider> = new Map();
 
   readonly own: WithInjector;
   readonly writeProp: (o: object, prop: string, value: any) => void;
-  private C: Constructor;
 
-  constructor(C: Constructor) {
-    this.C = C;
+  constructor(private C: Constructor) {
     this.loadProviders();
     this.writeProp = writeProp;
   }
@@ -83,12 +81,9 @@ export class Injector implements IInjector {
 
     // if there is no value, we create it now.
     if (this.providers.has(token)) {
-      const C = this.providers.get(token);
+      const provider = this.providers.get(token);
 
-      const params = getParamsDeps(C, this);
-      value = new C(...params);
-      writeProp(value, 'injector', this);
-      writeDeps(value, this);
+      value = this.getService(provider);
 
       this.values.set(token, value);
       return value;
@@ -104,6 +99,26 @@ export class Injector implements IInjector {
     }
 
     return null;
+  }
+
+  /**
+   * get a service from a provider.
+   */
+  private getService(provider: Provider) {
+    if (provider.useClass !== undefined) {
+      const C = provider.useClass;
+      const params = getParamsDeps(C, this);
+      const value = new C(...params);
+      writeProp(value, 'injector', this);
+      writeDeps(value, this);
+      return value;
+    } else if (provider.useFactory !== undefined) {
+      return provider.useFactory();
+    } else if (provider.useValue !== undefined) {
+      return provider.useValue;
+    } else {
+      return null;
+    }
   }
 }
 
@@ -152,21 +167,22 @@ export type GraphNodeDep = {
   symbol: string;
 };
 
-export type Provider = Constructor | (() => object);
+export type Provider = { useClass: Constructor; useValue: any; useFactory: () => any };
 
 class Root {}
 
 const graphNodes: Map<GraphNodeTarget | InjectToken, GraphNode> = new Map();
-const globalProviders: Map<AbstractConstructor, Record<symbol, Constructor>> = new Map();
+const globalProviders: Map<AbstractConstructor, Record<symbol, Provider>> = new Map();
 
 export const rootInjector = new Injector(Root);
 
 export function configProviders(
   target: AbstractConstructor | 'root',
-  config: Record<symbol, Constructor>,
+  config: Record<symbol, Provider>,
 ) {
   const _target = target === 'root' ? Root : target;
   const _config = globalProviders.get(_target);
+
   globalProviders.set(_target, { ..._config, ...config });
 
   if (target === 'root') {
