@@ -1,5 +1,6 @@
 import { Base, View } from './basic/Base.class';
 import { effect } from './basic/effect';
+import { EssModel } from './EssModel.class';
 
 export enum RobotEffect {
   translate = 'Translate',
@@ -7,20 +8,16 @@ export enum RobotEffect {
   state = 'State',
 }
 
-export class Robot extends Base {
+export class Robot extends EssModel {
   px = 0;
   py = 0;
   pz = 0;
   theta = 0;
   error = false;
-
-  fromJSON(d: any): this {
-    return this;
-  }
-
-  toJSON() {
-    return { ...this };
-  }
+  /**
+   * plan path
+   */
+  path = null;
 
   @effect(RobotEffect.translate)
   setPosition(x: number, y: number) {

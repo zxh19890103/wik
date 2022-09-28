@@ -5,4 +5,4 @@ export * from './inject';
 export * from './Injector.class';
 export * from '../state/StateAction.class';
 export * from '../state/StateActionManager.class';
-export * from './GlobalConstManager.class';
+export * from '../state/GlobalConstManager.class';

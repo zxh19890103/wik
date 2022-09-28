@@ -9,12 +9,14 @@ import * as hrGUIBasic from '../2d/basic';
 
 import * as hrModel from '../model';
 import { Scene } from '../dom/Scene';
-import { injector, List } from '../model';
+import { injectCtor, List, provides, rootInjector } from '../model';
 import { MyWarehouse } from './MyWarehouse.class';
 
 import './ioc.config';
 import { Views } from '../model/basic/Views.class';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
+import { DEFAULT_WAREHOUSE_DEPENDENCIES, Warehouse } from '../2d';
+import * as Interfaces from '../interfaces/symbols';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -72,31 +74,29 @@ class MyRobotView3 extends hrGUIBasic.Circle implements hrModel.RobotView {
   }
 }
 
-export default () => {
-  const [warehouse] = useState(() => {
-    return injector.$new<MyWarehouse>(MyWarehouse);
-  });
-
-  const handleAfter = async (root: HrMap) => {
+@provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
+@injectCtor(Interfaces.IInjector)
+class Warehouse007 extends Warehouse {
+  async layout(data?: any) {
     const bots = new List(hrModel.Robot, []);
 
-    await warehouse.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
+    await this.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
 
     new Views({
       source: bots,
-      views: warehouse.bots as any,
+      views: this.bots as any,
       make: (m) => new MyRobotView2([]),
     });
 
     new Views({
       source: bots,
-      views: warehouse.shelfs as any,
-      make: (m) => new MyRobotView(warehouse.imageManager.get(SVG_KUBOT), 1000, 1000),
+      views: this.shelfs as any,
+      make: (m) => new MyRobotView(this.imageManager.get(SVG_KUBOT), 1000, 1000),
     });
 
     new Views({
       source: bots,
-      views: warehouse.points as any,
+      views: this.points as any,
       make: (m) => new MyRobotView3([0, 0]),
     });
 
@@ -123,7 +123,13 @@ export default () => {
     };
 
     loop();
-  };
+  }
+}
 
-  return <Scene warehouse={warehouse} afterMount={handleAfter} />;
+export default () => {
+  const [warehouse] = useState(() => {
+    return rootInjector.$new<MyWarehouse>(Warehouse007);
+  });
+
+  return <Scene warehouse={warehouse} />;
 };

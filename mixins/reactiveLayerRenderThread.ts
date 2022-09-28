@@ -90,7 +90,6 @@ const flush = () => {
   const now = performance.now();
 
   if (lastFlushCallAt !== null && now - lastFlushCallAt > __MIN__) {
-    console.log('haha we got called');
     /**
      * If there's a schedule, we cancel it firstly, and then schdule a new plan for post rendering.
      */

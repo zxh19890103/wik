@@ -6,3 +6,4 @@ export * from './Robot.class';
 export * from './RobotView';
 export * from './IWarehouse';
 export * from './ObjectType';
+export * from './EssModel.class';

@@ -1,4 +1,4 @@
-import { injectable } from './inject';
+import { injectable } from '../basic/inject';
 
 /**
  * 

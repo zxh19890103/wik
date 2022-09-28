@@ -1,6 +1,6 @@
 import * as Interfaces from '../interfaces/symbols';
 
-import { GlobalConstManager } from '../model/basic/GlobalConstManager.class';
+import { GlobalConstManager } from '../model/state/GlobalConstManager.class';
 import { configProviders } from '../model/basic/Injector.class';
 import { ImageManager } from '../2d/state';
 

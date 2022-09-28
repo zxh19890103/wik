@@ -1,6 +1,6 @@
 import { Interactive } from '../../interfaces/Interactive';
 import { ISelectionManager } from '../../interfaces/Selection';
-import { WithEmitter, WithEmitterMix } from '../../mixins/Emitter';
+import { WithEmitter, EmitterMix } from '../../mixins/Emitter';
 import { InteractiveStateAction } from './InteractiveStateAction.class';
 import { InteractiveStateActionManager } from './InteractiveStateActionManager.class';
 import { mixin } from '../../model/basic';
@@ -9,7 +9,7 @@ import * as Interface from '../../interfaces/symbols';
 
 type SelectionManagerEventType = 'item' | 'items';
 
-@mixin(WithEmitterMix)
+@mixin(EmitterMix)
 @injectable()
 export class SelectionManager
   extends EventEmitter3<SelectionManagerEventType>

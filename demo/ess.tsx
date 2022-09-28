@@ -96,7 +96,7 @@ class MyWarehouse extends Warehouse {
     setDefaultImage(
       Bot,
       'https://pic4.zhimg.com/v2-e39d39daf24cadba1d70dd06e2152350_r.jpg?source=1940ef5c',
-      { offscreenCanvas: true, scale: 0.1 },
+      { offscreenCanvas: true, scale: 1 },
     );
 
     /**

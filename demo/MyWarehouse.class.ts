@@ -1,13 +1,15 @@
-import { Warehouse } from '../2d/Warehouse.class';
+import { DEFAULT_WAREHOUSE_DEPENDENCIES, Warehouse } from '../2d/Warehouse.class';
 import * as hrGUI from '../2d';
-import { injectCtor } from '../model/basic/inject';
+import { injectCtor, provides } from '../model/basic/inject';
 import * as Interface from '../interfaces/symbols';
 import { ModeManager } from '../model/modes/ModeManager.class';
+import { IInjector } from '../interfaces/Injector';
 
-@injectCtor(Interface.IModeManager)
+@provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
+@injectCtor(Interface.IModeManager, Interface.IInjector)
 export class MyWarehouse extends Warehouse<any, 'bot2'> {
-  constructor(public readonly modeMgr: ModeManager) {
-    super();
+  constructor(public readonly modeMgr: ModeManager, inj: IInjector) {
+    super(inj);
 
     this.addUpdateDep('location', (item: hrGUI.Location, data) => {
       item.position = data.position;

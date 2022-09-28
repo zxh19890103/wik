@@ -30,7 +30,7 @@ const effectCallReqs = new Map<Base, EffectCallReq[]>();
 let isFlushScheduled = false;
 let isEffectsApplying = false;
 
-export function appendEffectCallReq(this: Base, _req: EffectCallReq | string) {
+function appendEffectCallReq(this: Base, _req: EffectCallReq | string) {
   if (isEffectsApplying) {
     // eslint-disable-next-line quotes
     console.warn("You can't call appendEffectCallReq while effects applying...");

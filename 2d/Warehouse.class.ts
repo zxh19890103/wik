@@ -1,7 +1,7 @@
 import { LayerWithID } from '../interfaces/WithLayerID';
-import { WithEmitter, WithEmitterMix } from '../mixins/Emitter';
+import { WithEmitter, EmitterMix } from '../mixins/Emitter';
 import { InteractiveStateActionManager } from './state/InteractiveStateActionManager.class';
-import { ObjectType, IWarehouse, GlobalConstManager } from '../model';
+import { ObjectType, IWarehouse, GlobalConstManager, ConfigProviderConfigValue } from '../model';
 import { mixin } from '../model/basic/mixin';
 import { Circle, HrMap, LayerList, SVGOverlayList, VectorLayerList } from './basic';
 import { Bot } from './Bot.class';
@@ -34,7 +34,7 @@ type ListCtorArgs = {
   rendererBy?: 'canvas' | 'svg' | 'overlay';
 };
 
-@mixin(WithEmitterMix)
+@mixin(EmitterMix)
 export abstract class Warehouse<LayoutData = any, OT extends string = never>
   extends EventEmitter3<WarehouseEventType, any>
   implements IWarehouse
@@ -312,7 +312,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
       this.map
         .on('mousedown mousemove mouseup click', (evt) => {
           if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
-          this.modeManager.apply(eventName_behaviorCallback_mapping[evt.type], evt);
+          this.modeManager.apply(leafletEventNameBehaviorCallbackMapping[evt.type], evt);
         })
         .on('zoom drag', () => {
           this.animationManager.flush();
@@ -383,7 +383,16 @@ export enum WarehousePhase {
   ready = 40,
 }
 
-const eventName_behaviorCallback_mapping = {
+export const DEFAULT_WAREHOUSE_DEPENDENCIES: Record<symbol, ConfigProviderConfigValue> = {
+  [Interfaces.IPaneManager]: PaneManager,
+  [Interfaces.IStateActionManager]: InteractiveStateActionManager,
+  [Interfaces.IModeManager]: ModeManager,
+  [Interfaces.IAnimationManager]: AnimationManager,
+  [Interfaces.IHighlightManager]: HighlightManager,
+  [Interfaces.ISelectionManager]: SelectionManager,
+};
+
+const leafletEventNameBehaviorCallbackMapping = {
   dragstart: 'onDragStart',
   drag: 'onDrag',
   dragend: 'onDragEnd',

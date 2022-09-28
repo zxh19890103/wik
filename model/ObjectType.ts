@@ -1,4 +1,4 @@
-export type ObjectType<O extends string = never> =
+export type ObjectType<Extra extends string = never> =
   | 'point'
   | 'shelf'
   | 'haiport'
@@ -10,4 +10,4 @@ export type ObjectType<O extends string = never> =
   | 'labor'
   | 'rest'
   | 'maintain'
-  | O;
+  | Extra;

@@ -3,7 +3,7 @@ import { IList } from '../../model/basic/List.class';
 import { HrMap } from './Map.class';
 import { IDisposable } from '../../interfaces/Disposable';
 import { mixin } from '../../model/basic/mixin';
-import { WithEmitter, WithEmitterMix } from '../../mixins/Emitter';
+import { WithEmitter, EmitterMix } from '../../mixins/Emitter';
 import { LayerWithID } from '../../interfaces/WithLayerID';
 import { Interactive } from '../../interfaces/Interactive';
 import { InteractiveStateActionManager } from '../state/InteractiveStateActionManager.class';
@@ -27,7 +27,7 @@ type LayerListEventType =
   | 'press'
   | 'contextmenu';
 
-@mixin(WithEmitterMix)
+@mixin(EmitterMix)
 export class LayerList<M extends LayerWithID, E extends string = never>
   extends EventEmitter3<E | LayerListEventType, any>
   implements IList<M>, IDisposable, WithInjector
