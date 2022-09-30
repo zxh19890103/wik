@@ -28,7 +28,7 @@ L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-stati
 })
 class MyWarehouse extends Warehouse<any, 'routes'> {
   async layout(data: any) {
-    this.addLayerList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
+    this.addList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
 
     const route = new Route([], {});
 
@@ -57,7 +57,7 @@ class MyWarehouse2 extends Warehouse<any, 'routes'> {
   async layout(data: any) {
     await this.imageManager.load(SVG_KUBOT);
 
-    this.addLayerList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
+    this.addList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
 
     const route = new Route([], {});
     const bot = this.injector.$new<Bot>(Bot, this.imageManager.get(SVG_KUBOT), 1000, 1000);

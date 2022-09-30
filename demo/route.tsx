@@ -18,7 +18,7 @@ class MyWarehouse extends Warehouse<any, 'routes'> {
   }
 
   async layout(data: any) {
-    this.addLayerList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
+    this.addList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
 
     const route = new Route([], {});
 

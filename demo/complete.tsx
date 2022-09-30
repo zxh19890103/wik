@@ -17,6 +17,7 @@ import { Views } from '../model/basic/Views.class';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 import { DEFAULT_WAREHOUSE_DEPENDENCIES, Warehouse } from '../2d';
 import * as Interfaces from '../interfaces/symbols';
+import { render } from '../2d/renderer/layer';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -81,6 +82,16 @@ class Warehouse007 extends Warehouse {
     const bots = new List(hrModel.Robot, []);
 
     await this.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
+
+    /**
+     * <Warehouse>
+     * {
+     *  bots.map(bot => {
+     *    return <MyRobotView2 model={bot} />;
+     *  })
+     * }
+     * </Warehouse>
+     */
 
     new Views({
       source: bots,

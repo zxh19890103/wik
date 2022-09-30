@@ -1,7 +1,14 @@
 import { LayerWithID } from '../interfaces/WithLayerID';
 import { WithEmitter, EmitterMix } from '../mixins/Emitter';
 import { InteractiveStateActionManager } from './state/InteractiveStateActionManager.class';
-import { ObjectType, IWarehouse, GlobalConstManager, ConfigProviderConfigValue } from '../model';
+import {
+  ObjectType,
+  IWarehouse,
+  GlobalConstManager,
+  ConfigProviderConfigValue,
+  ListCtorArgs,
+  IList,
+} from '../model';
 import { mixin } from '../model/basic/mixin';
 import { Circle, HrMap, LayerList, SVGOverlayList, VectorLayerList } from './basic';
 import { Bot } from './Bot.class';
@@ -28,11 +35,6 @@ import { ImageManager, PaneManager, SelectionManager, HighlightManager } from '.
 import { ILogger } from '../interfaces/Logger';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
-
-type ListCtorArgs = {
-  pane: string;
-  rendererBy?: 'canvas' | 'svg' | 'overlay';
-};
 
 @mixin(EmitterMix)
 export abstract class Warehouse<LayoutData = any, OT extends string = never>
@@ -99,21 +101,33 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     this.locations = injector.$new(LayerList);
 
     //#region set
-    this.addLayerList('point', this.points);
-    this.addLayerList('shelf', this.shelfs);
-    this.addLayerList('haiport', this.haiports);
-    this.addLayerList('chargepile', this.chargepiles);
+    this.addList('point', this.points);
+    this.addList('shelf', this.shelfs);
+    this.addList('haiport', this.haiports);
+    this.addList('chargepile', this.chargepiles);
 
-    this.addLayerList('labor', this.labors);
-    this.addLayerList('rest', this.rests);
-    this.addLayerList('maintain', this.maintains);
+    this.addList('labor', this.labors);
+    this.addList('rest', this.rests);
+    this.addList('maintain', this.maintains);
 
-    this.addLayerList('bot', this.bots);
+    this.addList('bot', this.bots);
 
-    this.addLayerList('cacheShelf', this.cacheShelfs);
-    this.addLayerList('conveyor', this.conveyors);
-    this.addLayerList('location', this.locations);
+    this.addList('cacheShelf', this.cacheShelfs);
+    this.addList('conveyor', this.conveyors);
+    this.addList('location', this.locations);
     //#endregion
+  }
+
+  getListAll() {
+    const entries = [];
+    for (const [type, value] of this.typeListMapping) {
+      entries.push({ type, value });
+    }
+    return entries;
+  }
+
+  getList(type: string) {
+    return this.typeListMapping.get(type as ObjectType<OT>);
   }
 
   each(fn: (item: GraphicObject, type: ObjectType<OT>) => void, type?: ObjectType<OT>): void {
@@ -177,7 +191,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     that.onRemove && that.onRemove(_item);
   }
 
-  addLayerList(type: ObjectType<OT>, list: LayerList<LayerWithID> | ListCtorArgs) {
+  addList(type: ObjectType<OT>, list: LayerList<LayerWithID> | ListCtorArgs) {
     if (!__PROD__ && this.layouted) {
       throw new Error('you can not register new list after layouted! reg in layout method.');
     }

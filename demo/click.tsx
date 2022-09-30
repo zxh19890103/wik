@@ -21,7 +21,7 @@ class MyWarehouse extends Warehouse<any, 'bot2'> {
     // const point = new basic.Circle([0, 0], { radius: 3000, color: '#097' });
     // this.add('point', point);
 
-    this.addLayerList('bot2', this.injector.$new(VectorLayerList, 'bot2', 'canvas'));
+    this.addList('bot2', this.injector.$new(VectorLayerList, 'bot2', 'canvas'));
 
     const rect = new basic.Rectangle([0, 0], 8000, 1000, { opacity: 0.34, fillOpacity: 0.3 });
     this.injector.writeProp(rect, 'animationMgr', this.animationManager);

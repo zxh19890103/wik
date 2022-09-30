@@ -1,12 +1,20 @@
 import { GraphicObject } from '../interfaces/GraghicObject';
 import { WithInjector } from '../interfaces/Injector';
+import { IModeManager } from '../interfaces/Mode';
 import { ISelectionManager } from '../interfaces/Selection';
+import { IList } from './basic';
+import { ObjectType } from './ObjectType';
 
 export interface IWarehouse extends WithInjector {
   selectionManager: ISelectionManager;
+  modeManager: IModeManager;
 
   mount(root: any): void;
   layout(data?: unknown): void | Promise<void>;
+
+  getListAll(): Array<{ type: string; value: IList<GraphicObject> }>;
+  getList(type: string): IList<GraphicObject>;
+  addList(type: string, list: ListCtorArgs): void;
 
   each(fn: (item: GraphicObject, type: string) => void, type?: string): void;
 
@@ -29,3 +37,8 @@ export interface IWarehouse extends WithInjector {
   onRemove?(item: GraphicObject): void;
   onUpdate?(item: GraphicObject, data: any): void;
 }
+
+export type ListCtorArgs = {
+  pane: string;
+  rendererBy?: 'canvas' | 'svg' | 'overlay';
+};

@@ -1,6 +1,7 @@
 import { IDisposable } from '../../interfaces/Disposable';
+import { WithID } from '../../interfaces/WithID';
 import { quequeTask } from '../../utils';
-import { Base, View, WithID } from './Base.class';
+import { Base, View } from './Base.class';
 import { IList, List } from './List.class';
 
 export type ViewMake<M, V> = (m: M) => V;
