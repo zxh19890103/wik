@@ -25,18 +25,6 @@ export class SVGOverlay extends mix(L.SVGOverlay).with<L.SVGOverlay, ReactiveLay
    */
   __preSize: L.Point = null;
 
-  /**
-   * ??
-   */
-  isStaticSVG = true;
-
-  /**
-   * 设置 svg 的角度偏移，deg 角度制
-   *
-   * 比如：橘子提供的 svg 图片默认朝向“下”，但是 0 度的含义是 -90 度，那么你就需要设置这个值为 -90
-   */
-  readonly angleOffset: number = 0;
-
   get size(): L.Point {
     return this._size;
   }
@@ -143,23 +131,14 @@ export class SVGOverlay extends mix(L.SVGOverlay).with<L.SVGOverlay, ReactiveLay
    * @returns
    */
   getVisibleObjectTransformStyle(scale = 1, _r = 0) {
-    const { angle, angleOffset } = this;
-    let style = '';
+    const { angle, anglePhase } = this;
 
     const r = _r || this.computesSvgBoxRadius();
     const [offsetX, offsetY] = this.computesVisibleObjectOffset(r);
 
-    style += `rotate(${angle + angleOffset} ${r} ${r})`;
+    const deg = angle + anglePhase;
 
-    if (this.isStaticSVG) {
-      style += ` translate(${offsetX} ${offsetY})`;
-    }
-
-    if (scale !== 1) {
-      style += ` scale(${scale} ${scale})`;
-    }
-
-    return style;
+    return `rotate(${deg} ${r} ${r}) translate(${offsetX} ${offsetY}) scale(${scale} ${scale})`;
   }
 
   getSvgViewboxProp() {

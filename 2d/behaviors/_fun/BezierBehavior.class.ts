@@ -1,10 +1,10 @@
 import L from 'leaflet';
-import { IWarehouse, ObjectType } from '../../model';
-import { Behavior } from '../../model/behaviors';
-import { appendAnimation, RotationAnimation, TranslationAnimation } from '../animation';
-import { BezierTranslationAnimation } from '../animation/BezierTranslationAnimation.class';
-import { HrMap } from '../basic/Map.class';
-import { Bot } from '../Bot.class';
+import { IWarehouse, ObjectType } from '../../../model';
+import { Behavior } from '../../../model/behaviors';
+import { appendAnimation, RotationAnimation, TranslationAnimation } from '../../animation';
+import { BezierTranslationAnimation } from '../../animation/BezierTranslationAnimation.class';
+import { HrMap } from '../../basic/Map.class';
+import { Bot } from '../../Bot.class';
 
 export class BezierBehavior extends Behavior {
   constructor(private map: HrMap, private wh: IWarehouse) {

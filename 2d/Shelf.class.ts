@@ -21,14 +21,7 @@ const default_latlngs = [
   fillColor: '#f2f2f2',
   fillOpacity: 1,
 })
-export class Shelf
-  extends Polygon
-  implements
-    WithInput,
-    OnSelect<{ color: string }>,
-    OnMouseOverOut<{ color: string }>,
-    OnHighlight<{ color: string }>
-{
+export class Shelf extends Polygon {
   constructor(latlng: L.LatLngExpression, meta?: meta.Shelf) {
     const latlngs = meta ? calcLatlngsByShelfMeta(meta) : default_latlngs;
     super(latlngs, {});
@@ -36,59 +29,9 @@ export class Shelf
     this.position = L.latLng(latlng);
     this.angle = meta?.angle || 0;
   }
-
-  onHighlight(): { color: string } {
-    const color = this.options.color;
-    this.setStyle({ color: '#f10' });
-    return { color };
-  }
-
-  onUnHighlight(state?: { color: string }): void {
-    this.setStyle(state);
-  }
-
-  onHover(): { color: string } {
-    const color = this.options.color;
-    this.setStyle({ color: '#900' });
-    return { color };
-  }
-
-  onUnHover(state?: { color: string }): void {
-    this.setStyle({ color: state?.color });
-  }
-
-  onSelect() {
-    const color = this.options.color;
-    this.setStyle({ color: '#09f' });
-    return { color };
-  }
-
-  onUnSelect(state: { color: string }): void {
-    this.setStyle({ color: state.color });
-  }
-
-  onInitInput?(data: any): void {
-    throw new Error('Method not implemented.');
-  }
-
-  onInput(data: any): void {
-    this.setLayerState({ error: Boolean(data.error) });
-  }
-
-  onRender(effect: ReactiveLayerRenderEffect): void {
-    if (this.layerState.error) {
-      this.setStyle({ color: '#f00' });
-    } else {
-      this.setStyle({ color: '#0f0' });
-    }
-  }
 }
 
-interface ShelfState {
-  error: boolean;
-}
-
-export interface Shelf extends WithLayerState<ShelfState> {
+export interface Shelf {
   _renderer: L.Canvas;
   _pxBounds: L.Bounds;
 }

@@ -1,15 +1,9 @@
 import L from 'leaflet';
-import { Warehouse, Route, basic, Bot } from '../2d';
+import { Warehouse, Route, basic, Bot, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { injectCtor, provides, rootInjector } from '../model';
+import { inject, provides, rootInjector } from '../model';
 import * as Interfaces from '../interfaces/symbols';
-import { PaneManager } from '../2d/state/PaneManager.class';
-import { HighlightManager } from '../2d/state/HighlightManager.class';
-import { AnimationManager } from '../2d/animation/AnimationManager.class';
-import { ModeManager } from '../model/modes/ModeManager.class';
-import { InteractiveStateActionManager } from '../2d/state/InteractiveStateActionManager.class';
-import { SelectionManager } from '../2d/state/SelectionManager.class';
 
 import './ioc.config';
 import { randomLatLng } from '../utils';
@@ -17,15 +11,8 @@ import { SVG_KUBOT } from '../2d/images';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
-@injectCtor(Interfaces.IInjector)
-@provides({
-  [Interfaces.IPaneManager]: PaneManager,
-  [Interfaces.IStateActionManager]: InteractiveStateActionManager,
-  [Interfaces.IModeManager]: ModeManager,
-  [Interfaces.IAnimationManager]: AnimationManager,
-  [Interfaces.IHighlightManager]: HighlightManager,
-  [Interfaces.ISelectionManager]: SelectionManager,
-})
+@inject(Interfaces.IInjector)
+@provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse extends Warehouse<any, 'routes'> {
   async layout(data: any) {
     this.addList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
@@ -44,15 +31,8 @@ class MyWarehouse extends Warehouse<any, 'routes'> {
   }
 }
 
-@injectCtor(Interfaces.IInjector)
-@provides({
-  [Interfaces.IPaneManager]: PaneManager,
-  [Interfaces.IStateActionManager]: InteractiveStateActionManager,
-  [Interfaces.IModeManager]: ModeManager,
-  [Interfaces.IAnimationManager]: AnimationManager,
-  [Interfaces.IHighlightManager]: HighlightManager,
-  [Interfaces.ISelectionManager]: SelectionManager,
-})
+@inject(Interfaces.IInjector)
+@provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse2 extends Warehouse<any, 'routes'> {
   async layout(data: any) {
     await this.imageManager.load(SVG_KUBOT);

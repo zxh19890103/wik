@@ -3,18 +3,18 @@ import { WithInjector } from '../interfaces/Injector';
 import { IModeManager } from '../interfaces/Mode';
 import { ISelectionManager } from '../interfaces/Selection';
 import { IList } from './basic';
-import { ObjectType } from './ObjectType';
 
-export interface IWarehouse extends WithInjector {
+export interface IWarehouse extends WithInjector, Iterable<GraphicObject> {
   selectionManager: ISelectionManager;
   modeManager: IModeManager;
 
   mount(root: any): void;
   layout(data?: unknown): void | Promise<void>;
 
-  getListAll(): Array<{ type: string; value: IList<GraphicObject> }>;
-  getList(type: string): IList<GraphicObject>;
-  addList(type: string, list: ListCtorArgs): void;
+  queryListAll(): Array<{ type: string; value: IList<GraphicObject> }>;
+  queryList(type: string): IList<GraphicObject>;
+  addList(type: string, list: ListCtorArgs): IList<any>;
+  removeList(type: string): void;
 
   each(fn: (item: GraphicObject, type: string) => void, type?: string): void;
 
@@ -28,7 +28,8 @@ export interface IWarehouse extends WithInjector {
   onClick?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
   onDblClick?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
   onPress?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
-  onHover?(item: GraphicObject, on: boolean, evt: L.LeafletMouseEvent): void;
+  onHover?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
+  onUnHover?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
   onContextMenu?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
   onMounted?(): void;
   onLayouted?(): void;

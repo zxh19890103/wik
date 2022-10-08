@@ -1,18 +1,12 @@
 import { LayerWithID } from '../interfaces/WithLayerID';
-import { WithEmitter, EmitterMix } from '../mixins/Emitter';
+import { WithEmitter, EmitterMix, __emit__, __on__ } from '../mixins/Emitter';
 import { InteractiveStateActionManager } from './state/InteractiveStateActionManager.class';
-import {
-  ObjectType,
-  IWarehouse,
-  GlobalConstManager,
-  ConfigProviderConfigValue,
-  ListCtorArgs,
-  IList,
-} from '../model';
-import { mixin } from '../model/basic/mixin';
+import { ObjectType, IWarehouse, ListCtorArgs } from '../model';
+import { ModeManager } from '../model/modes';
+import { GlobalConstManager, ConfigProviderConfigValue } from '../model/basic';
+import { mixin } from '../model/basic';
 import { Circle, HrMap, LayerList, SVGOverlayList, VectorLayerList } from './basic';
 import { Bot } from './Bot.class';
-import { CacheShelf } from './CacheShelf.class';
 import { Chargepile } from './Chargepile.class';
 import { Conveyor } from './Conveyor.class';
 import { RenderersManager } from './leafletCanvasOverrides';
@@ -29,10 +23,10 @@ import { IBehavior } from '../interfaces/Mode';
 import { IInjector } from '../interfaces/Injector';
 import { tryInvokingOwn } from '../utils';
 
-import { ModeManager } from '../model/modes/ModeManager.class';
 import { AnimationManager } from './animation/AnimationManager.class';
 import { ImageManager, PaneManager, SelectionManager, HighlightManager } from './state';
 import { ILogger } from '../interfaces/Logger';
+import { HrEvent } from '../model/basic/Event.class';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 
@@ -64,7 +58,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   @inject(Interfaces.ILogger)
   readonly logger: ILogger;
 
-  private renderersMgr: RenderersManager;
+  @inject(Interfaces.IRendererManager)
+  readonly renderersMgr: RenderersManager;
 
   readonly map: HrMap = null;
   readonly mounted: boolean = false;
@@ -72,33 +67,33 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
   private typeListMapping: Map<ObjectType<OT>, LayerList<LayerWithID>> = new Map();
 
-  points: VectorLayerList<Point>;
-  shelfs: VectorLayerList<Shelf>;
-  haiports: SVGOverlayList<Haiport>;
-  chargepiles: SVGOverlayList<Chargepile>;
-  bots: VectorLayerList<Bot>;
-  labors: VectorLayerList<Circle>;
-  rests: VectorLayerList<Circle>;
-  maintains: VectorLayerList<Circle>;
+  readonly points: VectorLayerList<Point>;
+  readonly shelfs: VectorLayerList<Shelf>;
+  readonly haiports: SVGOverlayList<Haiport>;
+  readonly chargepiles: SVGOverlayList<Chargepile>;
+  readonly bots: VectorLayerList<Bot>;
+  readonly labors: VectorLayerList<Circle>;
+  readonly rests: VectorLayerList<Circle>;
+  readonly maintains: VectorLayerList<Circle>;
 
-  cacheShelfs: LayerList<CacheShelf>;
-  conveyors: LayerList<Conveyor>;
-  locations: LayerList<Location>;
+  readonly locations: LayerList<Location>;
+  readonly conveyors: VectorLayerList<Conveyor>;
 
   constructor(injector: IInjector) {
     super();
 
-    this.points = injector.$new(VectorLayerList, 'pointPane', 'canvas');
-    this.shelfs = injector.$new(VectorLayerList, 'shelfPane', 'canvas');
-    this.haiports = injector.$new(SVGOverlayList, 'haiportPane');
-    this.chargepiles = injector.$new(SVGOverlayList, 'chargepilePane');
-    this.labors = injector.$new(VectorLayerList, 'laborsPane', 'canvas');
-    this.rests = injector.$new(VectorLayerList, 'restsPane', 'canvas');
-    this.maintains = injector.$new(VectorLayerList, 'maintainsPane', 'canvas');
-    this.bots = injector.$new(VectorLayerList, 'botsPane', 'canvas');
-    this.cacheShelfs = injector.$new(LayerList);
-    this.conveyors = injector.$new(LayerList);
-    this.locations = injector.$new(LayerList);
+    this.points = injector.$new<any>(VectorLayerList, 'pointPane', 'canvas');
+    this.shelfs = injector.$new<any>(VectorLayerList, 'shelfPane', 'canvas');
+    this.haiports = injector.$new<any>(SVGOverlayList, 'haiportPane');
+    this.chargepiles = injector.$new<any>(SVGOverlayList, 'chargepilePane');
+    this.labors = injector.$new<any>(VectorLayerList, 'laborsPane', 'canvas');
+    this.rests = injector.$new<any>(VectorLayerList, 'restsPane', 'canvas');
+    this.maintains = injector.$new<any>(VectorLayerList, 'maintainsPane', 'canvas');
+    this.bots = injector.$new<any>(VectorLayerList, 'botsPane', 'canvas');
+    // this.cacheShelfs = injector.$new<any>(LayerList);
+    this.conveyors = injector.$new<any>(VectorLayerList, 'conveyorPane', 'canvas');
+    ///
+    this.locations = injector.$new<any>(LayerList);
 
     //#region set
     this.addList('point', this.points);
@@ -112,13 +107,21 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
     this.addList('bot', this.bots);
 
-    this.addList('cacheShelf', this.cacheShelfs);
+    // this.addList('cacheShelf', this.cacheShelfs);
     this.addList('conveyor', this.conveyors);
     this.addList('location', this.locations);
     //#endregion
   }
 
-  getListAll() {
+  *[Symbol.iterator]() {
+    for (const [_, list] of this.typeListMapping) {
+      for (const item of list) {
+        yield item;
+      }
+    }
+  }
+
+  queryListAll() {
     const entries = [];
     for (const [type, value] of this.typeListMapping) {
       entries.push({ type, value });
@@ -126,7 +129,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     return entries;
   }
 
-  getList(type: string) {
+  queryList(type: string) {
     return this.typeListMapping.get(type as ObjectType<OT>);
   }
 
@@ -227,16 +230,13 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     this.typeListMapping.set(type, _list);
     this.setEventChild(_list);
 
-    this.mounted && this.onListMount(_list);
+    this.mounted && _list.mount(this.map);
 
     return _list;
   }
 
-  private onListMount(list: LayerList<LayerWithID>) {
-    list.mount(this.map);
-    if (list instanceof VectorLayerList) {
-      this.renderersMgr.add(list.pane, list.paneObj.renderer);
-    }
+  removeList(type: ObjectType<OT>) {
+    throw new Error('not implemented!');
   }
 
   mount(map: HrMap) {
@@ -249,75 +249,52 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     // inject
     injector.writeProp(this, 'map', map);
     injector.writeProp(this.paneManager, 'map', map);
-
-    this.renderersMgr = new RenderersManager(this.paneManager, map);
+    injector.writeProp(this.renderersMgr, 'map', map);
 
     // mount list
     for (const [_, list] of this.typeListMapping) {
       if (list.mounted) continue;
-      this.onListMount(list);
+      list.mount(this.map);
     }
 
     //#region modes
-    this.modeManager.create('default', injector.$new(behaviors.DefaultBehavior));
+    this.modeManager.create(
+      'readonly',
+      injector.$new(behaviors.ReadonlyBehavior),
+      injector.$new(behaviors.DragBehavior, map),
+    );
+
+    this.modeManager.create(
+      'default',
+      injector.$new(behaviors.DefaultBehavior),
+      injector.$new(behaviors.DragBehavior, map),
+    );
+
+    this.modeManager.create(
+      'edit',
+      injector.$new(behaviors.DefaultBehavior),
+      injector.$new(behaviors.SpaceDragBehavior, map),
+      injector.$new(behaviors.RectDrawSelectBehavior, this, map),
+      injector.$new(behaviors.EditBehavior, this, map),
+    );
 
     const modes = this.configModes();
     for (const m in modes) {
       this.modeManager.create(m, ...modes[m]);
     }
 
-    this.modeManager.mode = 'default';
-
-    // dev html
-    if (!__PROD__) {
-      const div = document.createElement('div');
-      div.style.cssText = 'position: absolute; z-index: 9999; top: 0; left: 0; width: 1080px;';
-
-      for (const [_, mode] of this.modeManager.modes) {
-        const btn = document.createElement('button');
-        btn.style.cssText = 'border: 1px solid #000; margin: 0 1px';
-        btn.onclick = () => {
-          this.modeManager.mode = mode;
-        };
-        div.appendChild(btn);
-        btn.innerHTML = mode.name;
-      }
-
-      this.map._container.appendChild(div);
-    }
+    this.modeManager.mode = 'readonly';
 
     //#endregion
 
     //#region events & mode apply
     {
-      this.on('click', (e) => {
-        const { layer, leafletEvt } = e.payload;
-        tryInvokingOwn(this, 'onClick', layer, leafletEvt);
-        this.modeManager.apply('onClick', layer, e);
-      });
-
-      this.on('dblclick', (e) => {
-        const { layer, leafletEvt } = e.payload;
-        tryInvokingOwn(this, 'onDblClick', layer, leafletEvt);
-        this.modeManager.apply('onDblClick', layer, e);
-      });
-
-      this.on('hover', (e) => {
-        const { layer, on, leafletEvt } = e.payload;
-        tryInvokingOwn(this, 'onHover', layer, on, leafletEvt);
-        this.modeManager.apply('onHover', layer, on, leafletEvt);
-      });
-
-      this.on('press', (e) => {
-        const { layer, leafletEvt } = e.payload;
-        tryInvokingOwn(this, 'onPress', layer, leafletEvt);
-        this.modeManager.apply('onPress', layer, leafletEvt);
-      });
-
-      this.on('contextmenu', (e) => {
-        const { layer, leafletEvt } = e.payload;
-        tryInvokingOwn(this, 'onContextMenu', layer, leafletEvt);
-        this.modeManager.apply('onContextMenu', layer, leafletEvt);
+      __on__(this, 'click dblclick hover unhover press contextmenu', (evt: HrEvent) => {
+        if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
+        const { layer, leafletEvt } = evt.payload;
+        const cb = eventName2BehaviorCallback[`item@${evt.type}`];
+        tryInvokingOwn(this, cb, layer, leafletEvt);
+        this.modeManager.apply(cb, layer, leafletEvt);
       });
 
       /**
@@ -326,7 +303,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
       this.map
         .on('mousedown mousemove mouseup click', (evt) => {
           if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
-          this.modeManager.apply(leafletEventNameBehaviorCallbackMapping[evt.type], evt);
+          this.modeManager.apply(eventName2BehaviorCallback[evt.type], evt);
         })
         .on('zoom drag', () => {
           this.animationManager.flush();
@@ -369,7 +346,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   }
 
   /**
-   * retains the data for layouting ,which is the initial data. default is null, you can't overrides it in subclass.
+   * retains the data for layouting ,which is the initial data. default is null, you can overrides it in subclass.
    */
   getLayoutData(): Promise<LayoutData> {
     return Promise.resolve(null);
@@ -399,17 +376,19 @@ export enum WarehousePhase {
 
 export const DEFAULT_WAREHOUSE_DEPENDENCIES: Record<symbol, ConfigProviderConfigValue> = {
   [Interfaces.IPaneManager]: PaneManager,
-  [Interfaces.IStateActionManager]: InteractiveStateActionManager,
   [Interfaces.IModeManager]: ModeManager,
   [Interfaces.IAnimationManager]: AnimationManager,
   [Interfaces.IHighlightManager]: HighlightManager,
-  [Interfaces.ISelectionManager]: SelectionManager,
+  [Interfaces.IRendererManager]: RenderersManager,
 };
 
-const leafletEventNameBehaviorCallbackMapping = {
-  dragstart: 'onDragStart',
-  drag: 'onDrag',
-  dragend: 'onDragEnd',
+const eventName2BehaviorCallback = {
+  'item@click': 'onClick',
+  'item@dblclick': 'onDblClick',
+  'item@hover': 'onHover',
+  'item@unhover': 'onUnHover',
+  'item@press': 'onPress',
+  'item@contextmenu': 'onContextMenu',
   mousedown: 'onMouseDown',
   mousemove: 'onMouseMove',
   mouseup: 'onMouseUp',

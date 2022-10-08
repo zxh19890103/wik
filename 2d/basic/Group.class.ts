@@ -1,69 +1,79 @@
 import L from 'leaflet';
 import { ReactiveLayer } from '../../mixins/ReactiveLayer';
-import { OnSelect, OnInteractName, OnMouseOverOut } from '../../interfaces/Interactive';
-import { uniqueLayerId, WithLayerID } from '../../interfaces/WithLayerID';
+import {
+  OnSelect,
+  OnInteractName,
+  OnMouseOverOut,
+  OnClick,
+  Interactive,
+} from '../../interfaces/Interactive';
+import { WithLayerID } from '../../interfaces/WithLayerID';
+import { inject, mix, writeReadonlyProp } from '../../model/basic';
+import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
+import { PaneManager, PaneName, PaneObject } from '../state';
+import { IModeManager, IPaneManager, IRendererManager } from '../../interfaces/symbols';
+import { leafletOptions } from '../../utils';
+import { RenderersManager } from '../leafletCanvasOverrides';
+import { ModeManager } from '../../model/modes';
 
-export class Group<M extends ReactiveLayer = ReactiveLayer>
-  extends L.FeatureGroup
-  implements OnSelect, OnMouseOverOut, WithLayerID
-{
-  layerId: string = uniqueLayerId();
-  children: M[] = [];
+const leafletEvent2OnCallback = {
+  click: 'onClick',
+  dblclick: 'onDblClick',
+  mouseover: 'onHover',
+  mouseout: 'onUnHover',
+  contextmenu: 'onContextMenu',
+  mousedown: 'onPress',
+};
 
-  constructor(layers: M[] = []) {
-    super(layers as unknown as L.Layer[], {});
-    this.children = layers;
+interface GroupOptions {
+  /**
+   * @default group
+   */
+  pane?: PaneName;
+}
 
-    this.on('click mouseover mouseout', (e) => {
-      switch (e.type) {
-        case 'click':
-          this.onClick(e as L.LeafletMouseEvent);
-          break;
-        case 'mouseover':
-          this.onHover();
-          break;
-        case 'mouseout':
-          this.onUnHover();
-          break;
-        default:
-          break;
-      }
+@leafletOptions<GroupOptions>({
+  pane: 'groupPane',
+})
+export class Group extends mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLayerMixin) {
+  @inject(IPaneManager)
+  readonly paneMgr: PaneManager;
+  @inject(IRendererManager)
+  readonly rendererMgr: RenderersManager;
+  @inject(IModeManager)
+  readonly modeMgr: ModeManager;
+
+  readonly paneObj: PaneObject;
+  readonly options: GroupOptions;
+
+  constructor(layers: ReactiveLayer[] = [], options?: GroupOptions) {
+    super();
+    this.addChild(...layers);
+    L.Util.setOptions(this, options);
+
+    this.on('click dblclick mousedown mouseover mouseout contextmenu', (evt) => {
+      L.DomEvent.stop(evt);
+      const onCb = leafletEvent2OnCallback[evt.type];
+      this.broadcastEventCallback(evt.type);
+      this.modeMgr.apply(onCb, this);
     });
   }
 
-  protected broadcastEvent(name: OnInteractName, e: L.LeafletMouseEvent) {
-    for (const child of this.children) {
-      if (child === e.propagatedFrom) continue;
-      if (!child[name]) continue;
-      child[name](e as any);
-    }
+  override onAdd(map: L.Map): this {
+    const paneObj = this.paneMgr.get(this.options.pane, 'canvas', __pane_z_seed++);
+    L.Util.setOptions(this, { renderer: paneObj.renderer });
+    writeReadonlyProp(this, 'paneObj', paneObj);
+    this.rendererMgr.add(paneObj.name, paneObj.renderer);
+    super.onAdd(map);
+    return this;
   }
 
-  onSelect(): void {
-    this.broadcastEvent('onSelect', null);
-  }
-
-  onUnSelect(): void {
-    this.broadcastEvent('onUnSelect', null);
-  }
-
-  onHover(): void {
-    this.broadcastEvent('onHover', null);
-  }
-
-  onUnHover(state?: any): void {
-    this.broadcastEvent('onUnHover', null);
-  }
-
-  onClick(e: L.LeafletMouseEvent) {
-    this.broadcastEvent('onClick', e);
-  }
-
-  addLayers(...layers: M[]) {
-    this.children.push(...layers);
-
-    for (const layer of layers) {
-      super.addLayer(layer as unknown as L.Layer);
+  protected broadcastEventCallback(type: string) {
+    const onCb = leafletEvent2OnCallback[type];
+    for (const child of this.$$subSystems) {
+      child[onCb] && child[onCb]();
     }
   }
 }
+
+let __pane_z_seed = 451;

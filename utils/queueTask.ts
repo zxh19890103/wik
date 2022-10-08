@@ -16,7 +16,7 @@ let flushing = false;
 /**
  * 用于函数的异步调度
  */
-export const quequeTask = (task: Task) => {
+export const queueTask = (task: Task) => {
   if (flushing) return;
 
   if (tasksIndex.has(task.key)) {

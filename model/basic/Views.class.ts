@@ -1,6 +1,6 @@
 import { IDisposable } from '../../interfaces/Disposable';
 import { WithID } from '../../interfaces/WithID';
-import { quequeTask } from '../../utils';
+import { queueTask } from '../../utils';
 import { Base, View } from './Base.class';
 import { IList, List } from './List.class';
 
@@ -28,10 +28,7 @@ export class Views<M extends Base, V extends View<M>> implements WithID, IDispos
 
     this.views = options.views || null;
 
-    this.source.on('add', this.lazyRender, this);
-    this.source.on('add.r', this.lazyRender, this);
-    this.source.on('remove', this.lazyRender, this);
-    this.source.on('remove.r', this.lazyRender, this);
+    this.source.on('size', this.lazyRender, this);
 
     this.render();
   }
@@ -54,7 +51,7 @@ export class Views<M extends Base, V extends View<M>> implements WithID, IDispos
   }
 
   private lazyRender() {
-    quequeTask({ run: this.render, context: this, key: this.id });
+    queueTask({ run: this.render, context: this, key: this.id });
   }
 
   private render() {

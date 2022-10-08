@@ -5,6 +5,8 @@ import { Polyline } from './basic';
 
 @leafletOptions<L.PolylineOptions>({
   weight: 1,
+  interactive: false,
+  stroke: true,
 })
 export class Route extends Polyline {
   private part: L.LatLngExpression[] = null;

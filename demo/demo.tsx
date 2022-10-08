@@ -6,10 +6,10 @@ import './dev.scss';
 import * as hrGUI from '../2d';
 import * as Utils from '../utils';
 import { MyWarehouse } from './MyWarehouse.class';
-import { injector } from '../model/basic/inject';
 
 import './ioc.config';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
+import { rootInjector } from '../model';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -17,7 +17,7 @@ async function bootstrap(container: HTMLDivElement, initialData: any) {
   document.title = 'animation test.';
 
   const root = new HrMap(container, { zoom: 1.5 });
-  const warehouse = injector.$new<MyWarehouse>(MyWarehouse);
+  const warehouse = rootInjector.$new<MyWarehouse>(MyWarehouse);
   warehouse.mount(root);
 
   const { imageManager } = warehouse;
@@ -26,7 +26,12 @@ async function bootstrap(container: HTMLDivElement, initialData: any) {
 
   const bots: hrGUI.Bot[] = [];
   for (let i = 0; i < 10; i++) {
-    const bot = injector.$new<hrGUI.Bot>(hrGUI.Bot, imageManager.get(SVG_KUBOT), 1000, 1000);
+    const bot = warehouse.injector.$new<hrGUI.Bot>(
+      hrGUI.Bot,
+      imageManager.get(SVG_KUBOT),
+      1000,
+      1000,
+    );
     bot.position = L.latLng(Utils.randomLatLng(9000));
     bots.push(bot);
     warehouse.add('bot', bot);

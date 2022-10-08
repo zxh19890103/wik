@@ -9,7 +9,7 @@ import * as hrGUIBasic from '../2d/basic';
 
 import * as hrModel from '../model';
 import { Scene } from '../dom/Scene';
-import { injectCtor, List, provides, rootInjector } from '../model';
+import { inject, List, provides, rootInjector } from '../model';
 import { MyWarehouse } from './MyWarehouse.class';
 
 import './ioc.config';
@@ -37,6 +37,10 @@ class MyRobotView extends hrGUI.Bot implements hrModel.RobotView {
 
 class MyRobotView2 extends hrGUIBasic.Polygon implements hrModel.RobotView {
   model: hrModel.Robot;
+
+  constructor() {
+    super([]);
+  }
 
   whenTranslate() {
     this.setPosition(this.model.py, this.model.px);
@@ -76,7 +80,7 @@ class MyRobotView3 extends hrGUIBasic.Circle implements hrModel.RobotView {
 }
 
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
-@injectCtor(Interfaces.IInjector)
+@inject(Interfaces.IInjector)
 class Warehouse007 extends Warehouse {
   async layout(data?: any) {
     const bots = new List(hrModel.Robot, []);
@@ -96,7 +100,7 @@ class Warehouse007 extends Warehouse {
     new Views({
       source: bots,
       views: this.bots as any,
-      make: (m) => new MyRobotView2([]),
+      make: (m) => new MyRobotView2(),
     });
 
     new Views({
@@ -139,7 +143,7 @@ class Warehouse007 extends Warehouse {
 
 export default () => {
   const [warehouse] = useState(() => {
-    return rootInjector.$new<MyWarehouse>(Warehouse007);
+    return rootInjector.$new(Warehouse007);
   });
 
   return <Scene warehouse={warehouse} />;

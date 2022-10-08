@@ -10,7 +10,7 @@ export const DEFAULT_PATH_STYLE: L.PolylineOptions = {
   color: '#004caa',
   opacity: 1,
   fillColor: null,
-  fillOpacity: 0.6,
+  fillOpacity: 1,
   fill: false,
   weight: 1,
 };

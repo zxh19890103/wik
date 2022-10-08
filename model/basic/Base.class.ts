@@ -16,16 +16,16 @@ const uniqueId = (prefix = 'model') => {
 @mixin(EmitterMix)
 export abstract class Base<E extends string = string>
   extends EventEmitter3<E, any>
-  implements WithSnapshot, WithID, WithParent<IList<Base>>, Serializable
+  implements Model
 {
-  id: string = uniqueId();
+  readonly id: string = uniqueId();
   private lastSnapshot = null;
 
   /**
    * 考虑多种渲染
    */
-  $$views: View<Base>[] = [];
-  $$parent: IList<Base> = null;
+  readonly $$views: View<Base>[] = [];
+  readonly $$parent: IList<Base> = null;
 
   abstract fromJSON(d: any): this;
   abstract toJSON(): any;
@@ -38,6 +38,10 @@ export abstract class Base<E extends string = string>
   getSnapshot() {
     return this.lastSnapshot;
   }
+
+  remove(): void {
+    this.$$parent?.remove(this);
+  }
 }
 
 export interface Base<E extends string = string> extends WithEmitter<E> {
@@ -47,8 +51,15 @@ export interface Base<E extends string = string> extends WithEmitter<E> {
   reqEffectCall(req: EffectCallReq | string): void;
 }
 
-export interface View<M extends Base = Base, E extends string = string> {
+export interface Model extends WithSnapshot, WithID, WithParent<IList<Model>>, Serializable {
+  $$views: View<Model>[];
+
+  remove(): void;
+}
+
+export interface View<M extends Model = Model, E extends string = string> {
   model: M;
   whenInit(): void;
+  whenUnInit?(): void;
   whenEffect?(effect: E): void;
 }

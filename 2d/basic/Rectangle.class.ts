@@ -19,14 +19,6 @@ export class Rectangle extends mix(L.Rectangle).with<L.Rectangle, ReactiveLayer>
     ]);
   }
 
-  onMouseOver(e: L.LeafletMouseEvent): void {
-    this.setAngle(45);
-  }
-
-  onMouseOut(e: L.LeafletMouseEvent): void {
-    this.setAngle(0);
-  }
-
   onTransform(snapshot: any): void {
     this.setLatLngs(
       mapLatLng(

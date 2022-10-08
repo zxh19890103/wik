@@ -24,7 +24,6 @@ export class EditBehavior extends Behavior {
   }
 
   onLoad(): void {
-    console.log('load edit behavior');
     this.ogirin = L.marker([0, 0]).addTo(this.map);
 
     this.contextmenuPopup = new L.Popup({
@@ -43,14 +42,6 @@ export class EditBehavior extends Behavior {
     this.ogirin?.remove();
     this.ogirin = null;
     console.log('unload edit behavior');
-  }
-
-  onClick(obj: GraphicObject): void {
-    console.log('clicked');
-  }
-
-  onNoopClick(evt: unknown): void {
-    console.log('noop clicked');
   }
 
   private handleContextMenuClick = (e) => {

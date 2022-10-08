@@ -2,10 +2,11 @@ import { Interactive } from '../../interfaces/Interactive';
 import { StateActionManager } from '../../model/state/StateActionManager.class';
 import { injectable } from '../../model/basic/inject';
 import { InteractiveStateAction, InteractiveStateActionName } from './InteractiveStateAction.class';
+import { IStateActionManager } from '../../interfaces/symbols';
 
 const SAFE = 5;
 
-@injectable()
+@injectable({ providedIn: 'root', provide: IStateActionManager })
 export class InteractiveStateActionManager extends StateActionManager {
   private _ctx: Interactive = null;
   private _type: InteractiveStateActionName = null;

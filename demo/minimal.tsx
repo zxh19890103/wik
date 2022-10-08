@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { Warehouse, basic, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { injectCtor, rootInjector, provides } from '../model';
+import { inject, rootInjector, provides } from '../model';
 import { IInjector } from '../interfaces/symbols';
 import { Bot } from '../2d/Bot.class';
 
@@ -11,7 +11,7 @@ import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
-@injectCtor(IInjector)
+@inject(IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse extends Warehouse {
   async layout(data: any) {

@@ -10,6 +10,7 @@ export * from './ReactSVGOverlayApp';
 export * from './ReactSVGOverlay.class';
 export * from './SVGComponentFactory';
 export * from './ImageLayer.class';
+export * from './Group.class';
 
 export * from './Map.class';
 

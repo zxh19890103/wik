@@ -4,8 +4,11 @@ import { AnimationManager } from './AnimationManager.class';
 
 export interface WithAnimate {
   currentAnimation: HrAnimation;
-  animationMgr: AnimationManager;
+  animationManager: AnimationManager;
 
+  /**
+   * This method spec is not required.
+   */
   animate(type: string, ...args: any[]): this;
 }
 
@@ -15,7 +18,7 @@ export function appendAnimation<A extends HrAnimation>(this: WithAnimate, a: A) 
     while (tail.next) tail = tail.next;
     tail.next = a;
   } else {
-    this.animationMgr.add(a);
+    this.animationManager.add(a);
   }
 }
 

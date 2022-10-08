@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import { Behavior } from '../../model/behaviors/Behavior.class';
-import { HrMap } from '../basic';
+import { Behavior } from '../../../model/behaviors/Behavior.class';
+import { HrMap } from '../../basic';
 
 export class DrawBehavior extends Behavior {
   private polyline: L.Polyline = null;

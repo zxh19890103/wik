@@ -4,7 +4,8 @@ export interface IBehavior {
   onLoad(): void;
   onUnload(): void;
 
-  onHover(obj: GraphicObject, on: boolean, evt: unknown): void;
+  onHover(obj: GraphicObject, evt: unknown): void;
+  onUnHover(obj: GraphicObject, evt: unknown): void;
   onClick(obj: GraphicObject, evt: unknown): void;
   onDblClick(obj: GraphicObject, evt: unknown): void;
   onPress(obj: GraphicObject, evt: unknown): void;

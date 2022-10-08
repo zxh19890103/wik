@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { IList } from '../../model/basic/List.class';
+import { IList, List } from '../../model/basic/List.class';
 import { HrMap } from './Map.class';
 import { IDisposable } from '../../interfaces/Disposable';
 import { mixin } from '../../model/basic/mixin';
@@ -24,6 +24,7 @@ type LayerListEventType =
   | 'click'
   | 'dblclick'
   | 'hover'
+  | 'unhover'
   | 'press'
   | 'contextmenu';
 
@@ -69,11 +70,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
   }
 
   map<R>(project: (item: M) => R): R[] {
-    const results = [];
-    for (const item of this.items) {
-      results.push(project(item));
-    }
-    return results;
+    return List.prototype.map.call(this, project) as R[];
   }
 
   add(item: M): void {
@@ -211,6 +208,10 @@ export class LayerList<M extends LayerWithID, E extends string = never>
     return items;
   }
 
+  filter(pipe: (m: M) => boolean): M[] {
+    return List.prototype.filter.call(this, pipe);
+  }
+
   create(...args: any[]): M {
     throw new Error('Method not implemented.');
   }
@@ -232,6 +233,8 @@ export class LayerList<M extends LayerWithID, E extends string = never>
       }, 10);
     }
   }
+
+  setZ(z: number) {}
 
   dispose(): void {
     this._map = null;
@@ -269,7 +272,11 @@ function onItemHover(this: LayerList<any>, e) {
   L.DomEvent.stop(e);
   const layer = e.propagatedFrom as Interactive;
 
-  this.emit('hover', { layer, on: e.type === 'mouseover', leafletEvt: e });
+  if (e.type === 'mouseover') {
+    this.emit('hover', { layer, leafletEvt: e });
+  } else {
+    this.emit('unhover', { layer, leafletEvt: e });
+  }
 }
 
 function onItemContextMenu(this: LayerList<any>, e) {

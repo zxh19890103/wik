@@ -9,7 +9,7 @@ import { mapLatLng } from '../utils/mapLatLng';
 import { boundToLatLngs } from '../utils/boundToLatLngs';
 import { ReactiveLayer } from './ReactiveLayer';
 import { uniqueLayerId } from '../interfaces/WithLayerID';
-import { IList } from '../model';
+import { IList } from '../model/basic';
 
 const { mat3, vec2 } = glMatrix;
 const D2R = 180 / Math.PI;
@@ -65,6 +65,7 @@ export function ReactiveLayerMixin(
     layerId = uniqueLayerId();
     latlngs: PolylineLatLngs = [];
     angle = 0;
+    anglePhase = 0;
     position: L.LatLng = new L.LatLng(0, 0);
     scale: L.LatLngLiteral = { lat: 1, lng: 1 };
 
@@ -103,30 +104,109 @@ export function ReactiveLayerMixin(
     }
 
     override onAdd(map: L.Map): this {
-      super.onAdd(map);
+      for (const child of this.$$subSystems) {
+        map.addLayer(child as unknown as L.Layer);
+      }
+
+      if (super.onAdd) {
+        super.onAdd(map);
+      }
+
       this.requestRenderCall(ReactiveLayerRenderEffect.init);
       return this;
     }
 
+    override onRemove(map: L.Map): this {
+      // remove
+      for (const child of this.$$subSystems) {
+        map.removeLayer(child as unknown as L.Layer);
+      }
+
+      // remove self.
+      if (super.onRemove) {
+        super.onRemove(map);
+      }
+
+      return this;
+    }
+
     override remove(): this {
+      // If it is in a IList
       if (this.$$parent) {
         this.$$parent.remove(this);
-      } else {
-        super.remove();
+        return this;
       }
+
+      // If it's in a system.
+      if (this.$$system) {
+        this.$$system.removeChild(this);
+        return this;
+      }
+
+      super.remove();
       return this;
     }
 
     addChild(...children: ReactiveLayer[]): void {
-      throw new Error('Method not implemented.');
+      if (children.length === 0) return;
+
+      for (const child of children) {
+        if (!__PROD__ && child.$$parent) {
+          throw new Error('If the child is in a IList, then it should not be under a system.');
+        }
+
+        if (child.$$system === this) continue;
+
+        // remove from the origin system.
+        if (child.$$system) {
+          child.$$system.removeChild(child);
+        }
+
+        // add to new one.
+        this.$$subSystems.push(child);
+        child.$$system = this;
+        child.isMatrixNeedsUpdate = true;
+
+        // pass renderer or pane
+        const asPath = this as unknown as L.Path;
+        const { renderer, pane } = asPath.options;
+        L.Util.setOptions(child, { renderer, pane });
+
+        // Of course it is a layer, so we add it to map if this is added.
+        const root = this._map || this._mapToAdd;
+        root?.addLayer(child as unknown as L.Layer);
+
+        // parent should be set after child added.
+        (child as unknown as L.Layer).addEventParent(this);
+      }
     }
 
     removeChild(...children: ReactiveLayer[]): void {
-      throw new Error('Method not implemented.');
+      if (children.length === 0) return;
+
+      for (const child of children) {
+        const i = this.$$subSystems.indexOf(child);
+        if (i === -1) continue;
+
+        this.$$subSystems[i] = null;
+        child.$$system = null;
+        child.isMatrixNeedsUpdate = true;
+
+        // of course , it is also a layer, So, we remove it from map finally.
+        const root = this._map || this._mapToAdd;
+        root?.removeLayer(child as unknown as L.Layer);
+
+        (child as unknown as L.Layer).removeEventParent(this);
+      }
+
+      this.$$subSystems = this.$$subSystems.filter(Boolean);
     }
 
     traverse(every: (item: ReactiveLayer) => void): void {
-      throw new Error('Method not implemented.');
+      for (const child of this.$$subSystems) {
+        every(child);
+        child.traverse(every);
+      }
     }
 
     isChild(): boolean {
@@ -229,8 +309,9 @@ export function ReactiveLayerMixin(
       appendLayerRenderReq(this, effect);
 
       this.updateMatrix();
+      console.log('effect', this.constructor.name);
       for (const child of this.$$subSystems) {
-        child.requestRenderCall(ReactiveLayerRenderEffect.child);
+        child.requestRenderCall(effect);
       }
     }
 
@@ -253,7 +334,7 @@ export function ReactiveLayerMixin(
       const { position, angle, scale } = this;
 
       const translation = mat3.fromTranslation(mat3.create(), [position.lng, position.lat]);
-      const rotation = mat3.fromRotation(mat3.create(), angle * D2R);
+      const rotation = mat3.fromRotation(mat3.create(), -(angle + this.anglePhase) * D2R);
       const scaling = mat3.fromScaling(mat3.create(), [scale.lng, scale.lat]);
 
       mat3.multiply(this.matrix, this.matrix, translation);
@@ -318,7 +399,7 @@ export function ReactiveLayerMixin(
 
     //#endregion
 
-    //#region default OnXXX
+    //#region default OnCallback
     onTransform(snapshot: any): void {
       if (this instanceof L.Polyline) {
         this.setLatLngs(

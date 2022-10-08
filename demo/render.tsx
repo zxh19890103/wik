@@ -1,111 +1,160 @@
 import L from 'leaflet';
-import { Warehouse, basic, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
-import { Scene } from '../dom/Scene';
-import React, { useEffect, useMemo, useState } from 'react';
-import { injectCtor, rootInjector, provides, View, IWarehouse, IList } from '../model';
+import { Warehouse, DEFAULT_WAREHOUSE_DEPENDENCIES, Bot } from '../2d';
+import { useEffect, useState } from 'react';
+import {
+  rootInjector,
+  provides,
+  List,
+  Robot,
+  RobotView,
+  RobotEffect,
+  IWarehouse,
+  Point,
+  inject,
+} from '../model';
 import { IInjector } from '../interfaces/symbols';
-import { Bot } from '../2d/Bot.class';
+import * as DOM from '../dom';
+import Stats from 'stats.js';
 
 import './ioc.config';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
-import { render } from '../2d/renderer/layer';
-import { VectorLayerList } from '../2d/basic';
-import { GraphicObject } from '../interfaces/GraghicObject';
-import { LayerWithID, WithLayerID } from '../interfaces/WithLayerID';
+import { Circle, setDefaultImage } from '../2d/basic';
+import { appendAnimation, RotationAnimation, TranslationAnimation } from '../2d/animation';
+import * as Utils from '../utils';
+import { PointView } from '../model/PointView';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
-@injectCtor(IInjector)
+@inject(IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse extends Warehouse {
   async layout(data: any) {
-    const point = new basic.Circle([0, 0], { radius: 1000, color: '#097' });
-    this.add('point', point);
-
     await this.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
+    setDefaultImage(Bot, SVG_KUBOT, { offscreenCanvas: false, scale: 1 });
+  }
 
-    const bot = this.injector.$new<Bot>(Bot, this.imageManager.get(SVG_KUBOT_RED), 1000, 1000);
-    this.add('bot', bot);
+  onLayouted() {
+    const stats = new Stats();
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(stats.dom);
+
+    function animate() {
+      stats.begin();
+
+      // monitored code goes here
+
+      stats.end();
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+
+    this.shelfs.fit();
   }
 }
 
+class Bot2 extends Bot implements RobotView {
+  model: Robot;
+
+  constructor() {
+    super(null, 1000, 1000);
+  }
+
+  whenTranslate() {
+    const { px, py } = this.model;
+    appendAnimation.call(this, new TranslationAnimation(this, py, px));
+    // this.setPosition(py, px);
+  }
+
+  whenRotate() {
+    appendAnimation.call(this, new RotationAnimation(this, this.model.theta));
+  }
+
+  whenInit(): void {
+    const { px, py, theta } = this.model;
+    this.setPosition(py, px);
+    this.setAngle(theta);
+  }
+
+  whenEffect?(effect: RobotEffect): void {}
+}
+
+class Dot extends Circle implements PointView {
+  model: Point;
+
+  whenInit(): void {}
+
+  whenEffect?(effect: string): void {}
+}
+
 export default () => {
-  const [warehouse] = useState(() => {
-    return rootInjector.$new(MyWarehouse) as MyWarehouse;
+  const [warehouses] = useState(() => {
+    return [
+      rootInjector.$new(MyWarehouse) as MyWarehouse,
+      rootInjector.$new(MyWarehouse) as MyWarehouse,
+    ];
   });
 
-  render(<Stage warehouse={warehouse} />, null);
+  const [warehouse, warehouse01] = warehouses;
 
-  return <Scene warehouse={warehouse} />;
-};
-
-interface WarehouseProps {
-  model: IWarehouse;
-}
-
-const Warehouse007 = (props: React.PropsWithChildren<WarehouseProps>) => {
-  useEffect(() => {
-    // add
-    return () => {
-      // remove
+  const [state] = useState(() => {
+    return {
+      bots: new List(Robot, []),
+      dots: new List(Point, []),
     };
-  }, []);
-
-  return <>{props.children}</>;
-};
-
-interface ViewProps {
-  model: WithLayerID;
-}
-
-const View = (props: ViewProps) => {
-  useEffect(() => {
-    // add
-    return () => {
-      // remove
-    };
-  }, []);
-  return null;
-};
-
-interface ViewListProps {
-  model: IList<GraphicObject>;
-}
-
-const ViewList = (props: ViewListProps) => {
-  const { model } = props;
+  });
 
   useEffect(() => {
-    // add
-    console.log((model as any).pane);
-    return () => {
-      // remove
-    };
+    setTimeout(() => {
+      const bot = state.bots.create();
+
+      const dots = [];
+      for (let x = 0; x < 200; x++) {
+        for (let y = 0; y < 200; y++) {
+          const dot = new Point();
+          dot.px = x * 1000;
+          dot.py = y * 1000;
+          dots.push(dot);
+        }
+      }
+
+      state.dots.addArr(dots);
+
+      Utils.loop(
+        () => {
+          const px = Utils.random2(0, 3000);
+          const py = Utils.random2(0, 1000);
+          bot.setPosition(px, py);
+        },
+        {
+          auto: true,
+        },
+      );
+    }, 4000);
   }, []);
 
   return (
-    <>
-      {model.map((m) => {
-        const m2 = m as WithLayerID;
-        return <View key={m2.layerId} model={m2} />;
-      })}
-    </>
+    <DOM.Scene.Layout flow="horizontal" w="100vw" h="100vh">
+      <DOM.Scene flex={1} border warehouse={warehouse}>
+        <DOM.Warehouse modelViewMapping={modelViewMapping}>
+          <DOM.ViewSet renderer="canvas" type="bot2" model={state.bots} />
+          <DOM.ViewSet renderer="canvas" type="dot" model={state.dots} fit />
+        </DOM.Warehouse>
+      </DOM.Scene>
+    </DOM.Scene.Layout>
   );
 };
 
-interface StageProps {
-  warehouse: IWarehouse;
-}
-
-const Stage = (props: StageProps) => {
-  const { warehouse } = props;
-  const dataSets = useMemo(() => warehouse.getListAll(), []);
-
-  return (
-    <Warehouse007 model={warehouse}>
-      {dataSets.map(({ type, value }) => {
-        return <ViewList key={type} model={value} />;
-      })}
-    </Warehouse007>
-  );
+const modelViewMapping = {
+  bot2: (m: any, w: IWarehouse) => w.injector.$new(Bot2),
+  dot: (m: any, w: IWarehouse) => {
+    return new Dot([m.py, m.px], {
+      radius: 300,
+      color: 'green',
+      fill: true,
+      opacity: 1, // This cause frames drop for latest version of Chrome.
+      fillOpacity: 1, // This cause frames drop for latest version of Chrome.
+    });
+  },
 };

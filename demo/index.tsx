@@ -19,6 +19,8 @@ const pages = {
   'multiple-map': React.lazy(() => import('./multi-map')),
   ess: React.lazy(() => import('./ess')),
   render: React.lazy(() => import('./render')),
+  'cross-zone': React.lazy(() => import('./cross-zone')),
+  group: React.lazy(() => import('./group')),
 };
 
 const Route = () => {

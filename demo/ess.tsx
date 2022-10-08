@@ -1,37 +1,32 @@
 import L from 'leaflet';
-import { Warehouse, Point, Chargepile, Haiport, Location } from '../2d';
-import { Scene } from '../dom/Scene';
+import {
+  Warehouse,
+  Point,
+  Chargepile,
+  Haiport,
+  Location,
+  DEFAULT_WAREHOUSE_DEPENDENCIES,
+} from '../2d';
+import { LayerSelectProps, LayerMultipleSelectProps, Scene } from '../dom/Scene';
 import { useEffect, useState } from 'react';
-import { ModeManager, injectCtor, rootInjector, provides } from '../model';
+import { rootInjector, provides, inject } from '../model/basic';
+import { ModeManager } from '../model/modes';
 import * as Interfaces from '../interfaces/symbols';
 import { Bot } from '../2d/Bot.class';
 
 import { SVG_CHARGEPILE, SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 import { IInjector } from '../interfaces/Injector';
-import { PaneManager } from '../2d/state/PaneManager.class';
-import { HighlightManager } from '../2d/state/HighlightManager.class';
-import { AnimationManager } from '../2d/animation/AnimationManager.class';
-import { InteractiveStateActionManager } from '../2d/state/InteractiveStateActionManager.class';
-import { SelectionManager } from '../2d/state/SelectionManager.class';
 
 import './ioc.config';
 import { Circle, Rectangle, setDefaultImage } from '../2d/basic';
 import { random2 } from '../utils';
-import Stats from 'stats.js';
 import { appendAnimation, TranslationAnimation } from '../2d/animation';
-import { useSelection } from '../dom/useSelection';
+import { FPS } from '../dom';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
-@provides({
-  [Interfaces.IPaneManager]: PaneManager,
-  [Interfaces.IStateActionManager]: InteractiveStateActionManager,
-  [Interfaces.IModeManager]: ModeManager,
-  [Interfaces.IAnimationManager]: AnimationManager,
-  [Interfaces.IHighlightManager]: HighlightManager,
-  [Interfaces.ISelectionManager]: SelectionManager,
-})
-@injectCtor(Interfaces.IModeManager, Interfaces.IInjector)
+@provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
+@inject(Interfaces.IModeManager, Interfaces.IInjector)
 class MyWarehouse extends Warehouse {
   constructor(public readonly modeMgr: ModeManager, inj: IInjector) {
     super(inj);
@@ -93,19 +88,13 @@ class MyWarehouse extends Warehouse {
       console.log('location total', total);
     }
 
-    setDefaultImage(
-      Bot,
-      'https://pic4.zhimg.com/v2-e39d39daf24cadba1d70dd06e2152350_r.jpg?source=1940ef5c',
-      { offscreenCanvas: true, scale: 1 },
-    );
+    setDefaultImage(Bot, SVG_KUBOT, { offscreenCanvas: true, scale: 1 });
 
     /**
      * draw image is very expensive.
      */
     for (let i = 0; i < 100; i++) {
       const bot = this.injector.$new<Bot>(Bot, null, 5000, 5000);
-      // const bot = new Circle([0, 0], { color: '#f20' });
-      // this.injector.writeProp(bot, 'animationMgr', this.animationManager);
       this.add('bot', bot);
       this._bots.push(bot);
       this._bots_size += 1;
@@ -142,22 +131,6 @@ class MyWarehouse extends Warehouse {
   }
 
   onLayouted() {
-    const stats = new Stats();
-    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    document.body.appendChild(stats.dom);
-
-    function animate() {
-      stats.begin();
-
-      // monitored code goes here
-
-      stats.end();
-
-      requestAnimationFrame(animate);
-    }
-
-    requestAnimationFrame(animate);
-
     this.shelfs.fit();
   }
 
@@ -226,18 +199,20 @@ export default () => {
 
   return (
     <Scene.Layout flow="horizontal">
-      <Scene flex={1} warehouse={warehouse} onPhase={null} />
-      <Scene.Detail>
+      <FPS off />
+      <Scene modes flex={1} warehouse={warehouse} onPhase={null} />
+      {/* <Scene.SelectShell w={340}>
         <Detail />
-      </Scene.Detail>
+      </Scene.SelectShell> */}
+      <Scene.MultipleSelectShell w={100}>
+        <Batch />
+      </Scene.MultipleSelectShell>
     </Scene.Layout>
   );
 };
 
-const Detail = () => {
-  const model = useSelection() as Bot;
-
-  if (!model) return null;
+const Detail = (props: LayerSelectProps) => {
+  const { model } = props;
 
   const { position, layerId, angle } = model;
 
@@ -245,9 +220,13 @@ const Detail = () => {
     <div>
       ID: {layerId}
       <br />
-      Coordinates: {position.lng}, {position.lat}
+      Coordinates: {Math.round(position.lng)}, {Math.round(position.lat)}
       <br />
-      Angle: {angle}
+      Angle: {angle.toFixed(2)}
     </div>
   );
+};
+
+const Batch = (props: LayerMultipleSelectProps) => {
+  return <div>{props.model?.length} items</div>;
 };

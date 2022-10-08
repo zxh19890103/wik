@@ -1,5 +1,5 @@
-import { Base, View } from './basic/Base.class';
 import { effect } from './basic/effect';
+import { prop } from './basic/prop';
 import { EssModel } from './EssModel.class';
 
 export enum RobotEffect {
@@ -12,12 +12,12 @@ export class Robot extends EssModel {
   px = 0;
   py = 0;
   pz = 0;
+
   theta = 0;
   error = false;
-  /**
-   * plan path
-   */
   path = null;
+
+  @prop('0') zone: string;
 
   @effect(RobotEffect.translate)
   setPosition(x: number, y: number) {

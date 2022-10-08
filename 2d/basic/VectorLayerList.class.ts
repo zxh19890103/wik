@@ -6,8 +6,7 @@ import { LayerList } from './LayerList.class';
 import { HrMap } from './Map.class';
 import { PaneManager, PaneName, PaneObject, RendererType } from '../state/PaneManager.class';
 import * as Interface from '../../interfaces/symbols';
-
-let __pane_z_seed = 402;
+import { RenderersManager } from '../leafletCanvasOverrides';
 
 export class VectorLayerList<M extends LayerWithID, E extends string = never> extends LayerList<
   M,
@@ -15,6 +14,8 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
 > {
   @inject(Interface.IPaneManager)
   readonly paneMgr: PaneManager;
+  @inject(Interface.IRendererManager)
+  readonly rendererMgr: RenderersManager;
 
   readonly pane: PaneName;
   readonly rendererType: RendererType;
@@ -34,12 +35,22 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
 
   onItemAdd(item: M): void {
     L.Util.setOptions(item, { renderer: this.paneObj.renderer });
-    writeReadonlyProp(item, '$$list', this);
+  }
+
+  override setZ(z: number) {
+    if (!__PROD__ && z > 499) {
+      console.error('z should not be greater than 500');
+      return;
+    }
+    this.paneMgr.setZ(this.pane, z);
   }
 
   override mount(parent: HrMap): void {
     super.mount(parent);
     const paneObj = this.paneMgr.get(this.pane, this.rendererType, __pane_z_seed++);
     writeReadonlyProp(this, 'paneObj', paneObj);
+    this.rendererMgr.add(paneObj.name, paneObj.renderer);
   }
 }
+
+let __pane_z_seed = 402;

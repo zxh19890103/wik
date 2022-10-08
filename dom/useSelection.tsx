@@ -8,6 +8,7 @@ interface Props {
 }
 
 const itemSetters: Set<React.Dispatch<any>> = new Set();
+const itemsSetters: Set<React.Dispatch<any>> = new Set();
 
 export const useSelection = () => {
   const [item, setItem] = useState(null);
@@ -22,6 +23,19 @@ export const useSelection = () => {
   return item as unknown;
 };
 
+export const useMultipleSelection = () => {
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    itemsSetters.add(setItems);
+    return () => {
+      itemsSetters.delete(setItems);
+    };
+  }, []);
+
+  return items as unknown;
+};
+
 export const SelectionContext = memo((props: Props) => {
   const { warehouse } = props;
   const selection = warehouse.selectionManager as any;
@@ -34,10 +48,19 @@ export const SelectionContext = memo((props: Props) => {
       }
     };
 
+    const onItems = (event: HrEvent) => {
+      const item = event.payload.items;
+      for (const setter of itemsSetters) {
+        setter(item);
+      }
+    };
+
     selection.on('item', onItem);
+    selection.on('items', onItems);
 
     return () => {
       selection.off('item', onItem);
+      selection.off('items', onItems);
     };
   }, [warehouse]);
 

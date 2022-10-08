@@ -8,7 +8,7 @@ export const useEvented = (evented: any, events: string) => {
   const tick = useGlobalTick();
 
   useEffect(() => {
-    const eventsArr = events.split(/[\s,]/g);
+    const eventsArr = events.split(/[\s,]/g).filter(Boolean);
 
     for (const event of eventsArr) {
       evented.on(event, tick);

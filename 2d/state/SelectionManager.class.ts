@@ -10,7 +10,7 @@ import * as Interface from '../../interfaces/symbols';
 type SelectionManagerEventType = 'item' | 'items';
 
 @mixin(EmitterMix)
-@injectable()
+@injectable({ providedIn: 'root', provide: Interface.ISelectionManager })
 export class SelectionManager
   extends EventEmitter3<SelectionManagerEventType>
   implements ISelectionManager
@@ -31,29 +31,16 @@ export class SelectionManager
 
   protected setItem(item: Interactive) {
     this.item = item;
-
-    if (this.noEmit) {
-      this.noEmit = false;
-      return;
-    }
-
     this.emit('item', { item });
   }
 
   protected setItems(items: Interactive[]) {
     this.items = items;
-
-    if (this.noEmit) {
-      this.noEmit = false;
-      return;
-    }
-
     this.emit('items', { items });
   }
 
   current(item: Interactive) {
     if (item === this.item) return;
-    if (!item.onSelect || !item.onUnSelect) return;
 
     if (this.item) {
       this.interactiveStateActionManager.pop(this.item, 'Select');
@@ -66,7 +53,6 @@ export class SelectionManager
   all(layers: Interactive[]): void {
     const items = [];
     for (const layer of layers) {
-      if (!layer.onSelect || !layer.onUnSelect) continue;
       items.push(layer);
       this.interactiveStateActionManager.push(new InteractiveStateAction(layer, 'Select'));
     }
@@ -76,9 +62,12 @@ export class SelectionManager
 
   append(item: Interactive) {
     if (this.items.indexOf(item) > -1) return;
-    if (!item.onSelect || !item.onUnSelect) return;
     this.interactiveStateActionManager.push(new InteractiveStateAction(item, 'Select'));
     this.setItems([...this.items, item]);
+  }
+
+  isSelectable(item: Interactive) {
+    return !!item.onSelect && !!item.onUnSelect;
   }
 
   clearCurrent() {
@@ -96,11 +85,8 @@ export class SelectionManager
   }
 
   clear(): void {
-    if (!this.item) return;
-
-    this.interactiveStateActionManager.pop(this.item, 'Select');
-
-    this.setItem(null);
+    this.clearCurrent();
+    this.clearAll();
   }
 }
 

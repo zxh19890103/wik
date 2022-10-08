@@ -2,21 +2,16 @@ import L from 'leaflet';
 import { Warehouse, Route } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { injector, ModeManager, injectCtor } from '../model';
-import { HrMap } from '../2d/basic';
-import { IModeManager } from '../interfaces/symbols';
+import { rootInjector, inject } from '../model';
+import { IInjector } from '../interfaces/symbols';
 
 import './ioc.config';
 import { randomLatLng } from '../utils';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
-@injectCtor(IModeManager)
+@inject(IInjector)
 class MyWarehouse extends Warehouse<any, 'routes'> {
-  constructor(public readonly modeMgr: ModeManager) {
-    super();
-  }
-
   async layout(data: any) {
     this.addList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
 
@@ -36,10 +31,8 @@ class MyWarehouse extends Warehouse<any, 'routes'> {
 
 export default () => {
   const [warehouse] = useState(() => {
-    return injector.$new(MyWarehouse) as MyWarehouse;
+    return rootInjector.$new(MyWarehouse) as MyWarehouse;
   });
 
-  const handleAfter = (root: HrMap) => {};
-
-  return <Scene warehouse={warehouse} afterMount={handleAfter} />;
+  return <Scene warehouse={warehouse} />;
 };

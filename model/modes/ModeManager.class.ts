@@ -1,11 +1,14 @@
 import { IInjector, WithInjector } from '../../interfaces/Injector';
 import { BehaviorCallback, IBehavior, IMode, IModeManager } from '../../interfaces/Mode';
+import { EmitterMix, WithEmitter } from '../../mixins/Emitter';
+import { mixin } from '../basic';
 import { injectable } from '../basic/inject';
 import { Behavior } from '../behaviors';
 import { Mode } from './Mode.class';
 
 @injectable()
-export class ModeManager implements IModeManager, WithInjector {
+@mixin(EmitterMix)
+export class ModeManager extends EventEmitter3<string, any> implements IModeManager, WithInjector {
   readonly injector: IInjector;
   modes: Map<string, IMode> = new Map();
 
@@ -22,7 +25,9 @@ export class ModeManager implements IModeManager, WithInjector {
 
     nm.load();
     this._mode = nm;
+    this.emit('change', null);
 
+    // add if it does not exist
     if (!this.modes.has(nm.name)) {
       this.modes.set(nm.name, nm);
     }
@@ -60,3 +65,5 @@ export class ModeManager implements IModeManager, WithInjector {
     throw new Error('Method not implemented.');
   }
 }
+
+export interface ModeManager extends WithEmitter<string> {}

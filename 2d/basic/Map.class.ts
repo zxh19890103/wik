@@ -11,7 +11,7 @@ import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
  */
 
 @leafletOptions<L.MapOptions>({
-  dragging: true,
+  dragging: false,
   boxZoom: false,
   crs: HR_CRS,
   center: [0, 0],

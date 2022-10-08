@@ -14,8 +14,4 @@ export class Circle extends mix(L.Circle).with<L.Circle, ReactiveLayer>(Reactive
     super(latlng, options);
     this.position = L.latLng(latlng);
   }
-
-  onTransform(snapshot: any): void {
-    this.setLatLng(this.position);
-  }
 }

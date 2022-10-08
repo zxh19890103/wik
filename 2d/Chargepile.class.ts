@@ -8,7 +8,7 @@ import svgURL from './images/chargepile.svg';
 
 @leafletOptions<L.ImageOverlayOptions>({})
 export class Chargepile extends ReactSVGOverlay {
-  readonly angleOffset = 0;
+  readonly anglePhase = 0;
 
   constructor(
     latlng: L.LatLngExpression,

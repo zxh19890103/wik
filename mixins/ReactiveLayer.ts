@@ -4,7 +4,7 @@ import { PolylineLatLngs } from '../interfaces/types';
 import { WithLayerID } from '../interfaces/WithLayerID';
 import { ReactiveLayerRenderEffect } from './effects';
 import { WithClickCancel } from './ClickCancel';
-import { IList } from '../model';
+import { IList } from '../model/basic';
 import { WithParent } from '../interfaces/WithParent';
 import { WithRef } from '../interfaces/WithRef';
 
@@ -44,6 +44,10 @@ export interface ReactiveLayer
    * 控制图形的旋转角度
    */
   angle: number;
+  /**
+   * the start angle.
+   */
+  anglePhase: number;
   /**
    * 控制图形的位置
    */
@@ -104,6 +108,7 @@ export interface ReactiveLayer
 
   // martix
   worldMatrix: glMatrix.mat3;
+  isMatrixNeedsUpdate: boolean;
   updateMatrix(): void;
   updateWorldMatrix(): void;
   localToWorld(latlng: L.LatLngExpression): L.LatLng;

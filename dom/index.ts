@@ -3,3 +3,7 @@ export * from './useLeafletEvented';
 export * from './useGlobalTick';
 export * from './Scene';
 export * from './Fetch';
+export * from './View';
+export * from './ViewSet';
+export * from './Warehouse';
+export * from './FPS';

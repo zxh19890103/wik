@@ -3,7 +3,7 @@ import { ReactiveLayerRenderEffect, LAYER_DATA_UPDATE_EFFECTS, TRANSFORM_EFFECT 
 
 const __RENDER_REQUESTS__: Set<ReactiveLayer> = new Set();
 const __RENDER_REQUEST_EFFECTS__: Map<string, ReactiveLayerRenderEffect> = new Map();
-const __MIN__ = 300;
+const __MIN__ = Math.ceil(1000 / 16); // 1 / 16 s
 
 let isFlushScheduled = false;
 /**
@@ -89,7 +89,7 @@ const flush = () => {
 
   const now = performance.now();
 
-  if (lastFlushCallAt !== null && now - lastFlushCallAt > __MIN__) {
+  if (lastFlushCallAt === null || now - lastFlushCallAt > __MIN__) {
     /**
      * If there's a schedule, we cancel it firstly, and then schdule a new plan for post rendering.
      */
@@ -104,6 +104,7 @@ const flush = () => {
 };
 
 const afterFlush = () => {
+  console.log('afterflush');
   for (const item of __RENDER_REQUESTS__) {
     const id = item.layerId;
 

@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import { Behavior } from '../../model/behaviors/Behavior.class';
-import { HrMap } from '../basic';
+import { Behavior } from '../../../model/behaviors/Behavior.class';
+import { HrMap } from '../../basic';
 
 export class WaterDropBehavior extends Behavior {
   private cirlce: L.Circle = null;

@@ -34,8 +34,9 @@ export interface IList<M> extends Iterable<M> {
    */
   has(key: string | M): boolean;
   find(key: string): M;
-  map<R>(project: (item: M) => R): R[];
   query(predicate: (item: M) => boolean): M[];
+  map<R>(project: (item: M) => R): R[];
+  filter(pipe: (m: M) => boolean): M[];
   /**
    * 创建一个默认的对象，并且将其添加至数据集
    */
@@ -117,6 +118,7 @@ export class List<M extends Base> extends Base implements IList<M> {
     if (this.isBatching) return;
 
     this.emit('add', { item });
+    this.emit('size');
   }
 
   addRange(...items: M[]): void {
@@ -133,6 +135,7 @@ export class List<M extends Base> extends Base implements IList<M> {
     this.isBatching = false;
 
     this.emit('add.r', { items });
+    this.emit('size');
   }
 
   remove(item?: M): void {
@@ -156,6 +159,7 @@ export class List<M extends Base> extends Base implements IList<M> {
     if (this.isBatching) return;
 
     this.emit('remove', { item });
+    this.emit('size');
   }
 
   removeById(key: string): void {
@@ -185,6 +189,7 @@ export class List<M extends Base> extends Base implements IList<M> {
     this.isBatching = false;
 
     this.emit('remove.r', { items });
+    this.emit('size');
   }
 
   clear() {
@@ -196,7 +201,8 @@ export class List<M extends Base> extends Base implements IList<M> {
     this.index.clear();
     this.size = 0;
 
-    this.emit('clear', null);
+    this.emit('clear');
+    this.emit('size');
   }
 
   update(item: M): void {
@@ -244,6 +250,14 @@ export class List<M extends Base> extends Base implements IList<M> {
       results.push(project(item));
     }
     return results;
+  }
+
+  filter(pipe: (m: M) => boolean): M[] {
+    const result = [];
+    for (const item of this.items) {
+      if (!pipe || pipe(item)) result.push(item);
+    }
+    return result;
   }
 
   create(...args: any[]): M {

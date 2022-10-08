@@ -66,6 +66,7 @@ export class PaneManager implements IDisposable {
 
     const pane = this.pool[name];
     if (!pane) return;
+
     pane.z = z;
     this.onZChange && this.onZChange();
     this.requestRender();

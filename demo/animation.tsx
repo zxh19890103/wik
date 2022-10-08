@@ -7,7 +7,7 @@ import * as hrGUIBasic from '../2d/basic';
 import * as hrGUI from '../2d';
 import * as Utils from '../utils';
 import { SVG_KUBOT } from '../2d/images';
-import { injectCtor, rootInjector } from '../model';
+import { inject, rootInjector } from '../model';
 import { Warehouse } from '../2d';
 
 import './ioc.config';
@@ -17,7 +17,6 @@ import { appendAnimation, RotationAnimation, TranslationAnimation } from '../2d/
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
-@injectCtor()
 class MyWarehouse extends Warehouse {
   layout(data: any): void {}
 }

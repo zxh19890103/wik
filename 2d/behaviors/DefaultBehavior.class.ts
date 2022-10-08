@@ -1,10 +1,11 @@
 import { Behavior } from '../../model/behaviors';
 import { inject } from '../../model/basic/inject';
-import { SelectionManager } from '../basic';
 import { InteractiveStateActionManager } from '../state/InteractiveStateActionManager.class';
 import { InteractiveStateAction } from '../state/InteractiveStateAction.class';
 import { Interactive } from '../../interfaces/Interactive';
 import * as Interface from '../../interfaces/symbols';
+import { SelectionManager } from '../state';
+import { GraphicObject } from '../../interfaces/GraghicObject';
 
 export class DefaultBehavior extends Behavior {
   @inject(Interface.ISelectionManager)
@@ -13,20 +14,14 @@ export class DefaultBehavior extends Behavior {
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
   override onLoad(): void {}
-
   override onUnload(): void {}
 
-  override onHover(layer: Interactive, on: boolean): void {
-    if (!layer.onHover || !layer.onUnHover) return;
-    if (on) {
-      this.interactiveStateActionManager.push(new InteractiveStateAction(layer, 'Hover'));
-    } else {
-      this.interactiveStateActionManager.pop(layer, 'Hover');
-    }
+  override onHover(layer: Interactive, e: L.LeafletMouseEvent): void {
+    this.interactiveStateActionManager.push(new InteractiveStateAction(layer, 'Hover'));
   }
 
-  onNoopClick(evt: unknown): void {
-    console.log('noop clicked');
+  override onUnHover(layer: Interactive, e: L.LeafletMouseEvent): void {
+    this.interactiveStateActionManager.pop(layer, 'Hover');
   }
 
   override onDblClick(layer: Interactive, e: L.LeafletMouseEvent): void {
@@ -34,11 +29,11 @@ export class DefaultBehavior extends Behavior {
   }
 
   override onClick(layer: Interactive, e: L.LeafletMouseEvent): void {
-    console.log('ha you clicked', layer);
     layer.onClick && layer.onClick(e);
 
-    if (layer.onSelect && layer.onUnSelect) {
-      this.selectionManager.current(layer);
-    }
+    if (!this.selectionManager.isSelectable(layer)) return;
+
+    this.selectionManager.clearAll();
+    this.selectionManager.current(layer);
   }
 }

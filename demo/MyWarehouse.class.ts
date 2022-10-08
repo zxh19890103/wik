@@ -1,12 +1,12 @@
 import { DEFAULT_WAREHOUSE_DEPENDENCIES, Warehouse } from '../2d/Warehouse.class';
 import * as hrGUI from '../2d';
-import { injectCtor, provides } from '../model/basic/inject';
+import { inject, provides } from '../model/basic/inject';
 import * as Interface from '../interfaces/symbols';
 import { ModeManager } from '../model/modes/ModeManager.class';
 import { IInjector } from '../interfaces/Injector';
 
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
-@injectCtor(Interface.IModeManager, Interface.IInjector)
+@inject(Interface.IModeManager, Interface.IInjector)
 export class MyWarehouse extends Warehouse<any, 'bot2'> {
   constructor(public readonly modeMgr: ModeManager, inj: IInjector) {
     super(inj);

@@ -21,6 +21,8 @@ export class InteractiveStateAction extends StateActionBase implements IStateAct
   private _do: string;
   private _undo: string;
 
+  private applied = false;
+
   constructor(public context: Interactive, type: InteractiveStateActionName) {
     super();
 
@@ -45,18 +47,24 @@ export class InteractiveStateAction extends StateActionBase implements IStateAct
   }
 
   apply() {
+    if (this.applied) return;
+
     if (this.context[this._do]) {
       this.data = this.context[this._do]();
     }
 
     this.setIsValue(true);
+    this.applied = true;
   }
 
   revert() {
+    if (!this.applied) return;
+
     if (this.context[this._undo]) {
       this.context[this._undo](this.data);
     }
 
     this.setIsValue(false);
+    this.applied = false;
   }
 }

@@ -17,22 +17,31 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
 
   noEmit = false;
 
-  emit(event, payload) {
+  emit(event: string, payload: any) {
     if (this.noEmit) {
       this.noEmit = false;
       return;
     }
+
+    if (isEmitBatchly) {
+      emitObjLag = {
+        target: this,
+        event,
+      };
+      return;
+    }
+
     const eventObj = payload instanceof HrEvent ? payload : new HrEvent(this, event, payload);
     EmitterMix.event = eventObj;
-    // skip this.emit access super.
+
     const r = this.__super__.emit.call(this, event, eventObj);
+
     if (!eventObj.stopped && this.$$parent) {
       this.$$parent.emit(event, eventObj);
     } else {
-      Promise.resolve().then(() => {
-        EmitterMix.event = null;
-      });
+      queueMicrotask(clearGlobalEvent);
     }
+
     return r;
   }
 
@@ -48,6 +57,54 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
     return this;
   }
 }
+
+export const __emit__ = (context: any, event: string, payload: any) => {
+  const parts = event.split(/[\s,]/g).filter(Boolean);
+  if (parts.length === 0) return;
+  for (const part of parts) {
+    EmitterMix.prototype.emit.call(context, part, payload);
+  }
+};
+
+export const __on__ = (context: any, event: string, handler: (event: HrEvent) => void) => {
+  const parts = event.split(/[\s,]/g).filter(Boolean);
+  if (parts.length === 0) return;
+
+  for (const part of parts) {
+    EventEmitter.prototype.on.call(context, part, handler);
+  }
+};
+
+export const __off__ = (context: any, event: string, handler?: (event: HrEvent) => void) => {
+  const parts = event.split(/[\s,]/g).filter(Boolean);
+  if (parts.length === 0) return;
+
+  for (const part of parts) {
+    EventEmitter.prototype.off.call(context, part, handler);
+  }
+};
+
+const clearGlobalEvent = () => {
+  EmitterMix.event = null;
+};
+
+let isEmitBatchly = false;
+let emitObjLag: { target: any; event: string } = null;
+
+export const batchedEmits = <R = any>(fn: () => R | Promise<R>, event?: string) => {
+  isEmitBatchly = true;
+  const p = fn();
+  if (p instanceof Promise) {
+    return p.then(() => {
+      isEmitBatchly = false;
+      emitObjLag?.target.emit(event || emitObjLag.event);
+    });
+  } else {
+    isEmitBatchly = false;
+    emitObjLag?.target.emit(event || emitObjLag.event);
+    return p;
+  }
+};
 
 export interface WithEmitter<E extends string> {
   /**

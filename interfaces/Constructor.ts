@@ -1,5 +1,5 @@
-export type AbstractConstructor<I = object> = abstract new (...args: any[]) => I;
+export type AbstractConstructor<I extends object = object> = abstract new (...args: any[]) => I;
 
-export interface Constructor<I = object> {
+export interface Constructor<I extends object = object> {
   new (...args: any[]): I;
 }

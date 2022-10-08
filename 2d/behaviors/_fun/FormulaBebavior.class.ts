@@ -1,7 +1,7 @@
 import L from 'leaflet';
-import { IWarehouse, ObjectType } from '../../model';
-import { Behavior } from '../../model/behaviors';
-import { HrMap } from '../basic/Map.class';
+import { IWarehouse, ObjectType } from '../../../model';
+import { Behavior } from '../../../model/behaviors';
+import { HrMap } from '../../basic/Map.class';
 
 const scale = 1000;
 

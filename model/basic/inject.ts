@@ -1,5 +1,5 @@
 import { Constructor, AbstractConstructor } from '../../interfaces/Constructor';
-import { quequeTask } from '../../utils';
+import { queueTask } from '../../utils';
 import {
   InjectDecratorArgs,
   TokenGraphNode,
@@ -29,21 +29,37 @@ function injectable(config?: { providedIn: 'root'; provide: symbol }) {
 /**
  * inject a service according to the token, which binds with a constructor.
  */
-function inject(token: InjectToken) {
+function inject(token: InjectToken, ...tokens: InjectToken[]) {
   return function (...args: any[]) {
-    quequeTask({
-      key: 'inject' + injectRunIdSeed++,
-      run: () => {
-        const [target, prop, _] = args as InjectDecratorArgs;
+    // Args.length === 1 means it's a class inject
+    if (args.length === 1) {
+      queueTask({
+        key: 'inject' + injectRunIdSeed++,
+        run: () => {
+          const node = getGraphNode(args[0] as Constructor) as TargetGraphNode;
+          let index = 0;
+          for (const item of [token, ...tokens]) {
+            const child = getGraphNode(item) as TokenGraphNode;
+            node.paramsDeps.push(createGraphNodeDep(node, child, index));
+            index++;
+          }
+        },
+      });
+    } else {
+      queueTask({
+        key: 'inject' + injectRunIdSeed++,
+        run: () => {
+          const [target, prop, _] = args as InjectDecratorArgs;
 
-        const node = getGraphNode(target.constructor as Constructor) as TargetGraphNode;
-        const node1 = getGraphNode(token) as TokenGraphNode;
+          const node = getGraphNode(target.constructor as Constructor) as TargetGraphNode;
+          const node1 = getGraphNode(token) as TokenGraphNode;
 
-        const dep: GraphNodeDep = createGraphNodeDep(node, node1, prop);
+          const dep: GraphNodeDep = createGraphNodeDep(node, node1, prop);
 
-        node.deps.push(dep);
-      },
-    });
+          node.deps.push(dep);
+        },
+      });
+    }
   };
 }
 
@@ -53,23 +69,6 @@ function provides(config: Record<symbol, ConfigProviderConfigValue>) {
   };
 }
 
-function injectCtor(...tokens: InjectToken[]) {
-  return function (target: any) {
-    quequeTask({
-      key: 'injectCtor' + injectRunIdSeed++,
-      run: () => {
-        const node = getGraphNode(target as Constructor) as TargetGraphNode;
-        let index = 0;
-        for (const token of tokens) {
-          const child = getGraphNode(token) as TokenGraphNode;
-          node.paramsDeps.push(createGraphNodeDep(node, child, index));
-          index++;
-        }
-      },
-    });
-  };
-}
-
 let injectRunIdSeed = 1992;
 
-export { injectable, inject, injectCtor, provides };
+export { injectable, inject, provides };

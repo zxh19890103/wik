@@ -21,7 +21,7 @@ import { Entries, fromEntries, toEntries } from '../../utils';
  */
 
 export class Injector implements IInjector {
-  parent: Injector;
+  parent: IInjector;
 
   private values: Map<Symbol, any> = new Map();
   private providers: Map<Symbol, Provider> = new Map();
@@ -46,7 +46,7 @@ export class Injector implements IInjector {
     }
   }
 
-  $new<T>(C: Constructor<object>, ...args: any[]): T {
+  $new<T extends object>(C: Constructor<T>, ...args: any[]): T {
     // Firstly, we create the injector if C is a provider.
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let inj: Injector = this;
@@ -234,7 +234,7 @@ function getParamsDeps(c: Constructor, _injector: IInjector) {
   });
 }
 
-function writeDeps(target: any, _injector: IInjector) {
+function writeDeps(target: any, _injector: Injector) {
   const deps = getDeps(target.constructor);
 
   for (const dep of deps) {

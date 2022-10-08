@@ -5,7 +5,8 @@ export abstract class Behavior implements IBehavior {
   abstract onLoad(): void;
   abstract onUnload(): void;
 
-  onHover(obj: GraphicObject, on: boolean, evt: unknown): void {}
+  onHover(obj: GraphicObject, evt: unknown): void {}
+  onUnHover(obj: GraphicObject, evt: unknown): void {}
   onClick(obj: GraphicObject, evt: unknown): void {}
   onDblClick(obj: GraphicObject, evt: unknown): void {}
 

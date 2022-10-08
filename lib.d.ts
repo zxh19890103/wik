@@ -15,6 +15,10 @@ declare module 'leaflet' {
     _onClick(e): void;
   }
 
+  interface Layer {
+    _mapToAdd: HrMap;
+  }
+
   interface Canvas {
     _ctx: CanvasRenderingContext2D;
     _updatePoly(...args): any;

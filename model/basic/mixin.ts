@@ -40,16 +40,19 @@ export function invokeMethod(o: object, name: string, ...args: any[]) {
  *
  * @see https://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/
  */
-export type Mixin<B, M> = (b: Constructor<B>) => Constructor<B & M>;
+export type Mixin<B extends object, M> = (b: Constructor<B>) => Constructor<B & M>;
 
-function _with<B, M0>(m0: Mixin<B, M0>): Constructor<B & M0>;
-function _with<B, M0, M1>(m0: Mixin<B, M0>, m1: Mixin<B, M1>): Constructor<B & M0 & M1>;
-function _with<B, M0, M1, M2>(
+function _with<B extends object, M0>(m0: Mixin<B, M0>): Constructor<B & M0>;
+function _with<B extends object, M0, M1>(
+  m0: Mixin<B, M0>,
+  m1: Mixin<B, M1>,
+): Constructor<B & M0 & M1>;
+function _with<B extends object, M0, M1, M2>(
   m0: Mixin<B, M0>,
   m1: Mixin<B, M1>,
   m2: Mixin<B, M2>,
 ): Constructor<B & M0 & M1 & M2>;
-function _with<B, M0, M1, M2, M3>(
+function _with<B extends object, M0, M1, M2, M3>(
   m0: Mixin<B, M0>,
   m1: Mixin<B, M1>,
   m2: Mixin<B, M2>,
@@ -67,7 +70,7 @@ const singleton: { with: typeof _with } = { with: _with };
  * @mix
  * A language-suger for mix-with
  */
-export function mix<B>(b: Constructor<B>) {
+export function mix<B extends object>(b: Constructor<B>) {
   (singleton as any).b = b;
   return singleton;
 }

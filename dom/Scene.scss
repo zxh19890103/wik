@@ -21,6 +21,36 @@
     box-sizing: border-box;
   }
 
+  &Modes {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.618);
+  }
+
+  &Mode {
+    padding: 0 3px;
+    cursor: pointer;
+
+    a {
+      color: inherit;
+      display: block;
+    }
+
+    &--active {
+      color: #888;
+      cursor: not-allowed;
+    }
+
+    &--normal {
+      color: #fff;
+    }
+  }
+
   &:after {
     content: 'phase: --';
     position: absolute;

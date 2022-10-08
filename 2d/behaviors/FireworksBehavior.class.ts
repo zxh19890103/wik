@@ -1,9 +1,10 @@
-import L, { LatLngTuple } from 'leaflet';
+import L from 'leaflet';
 import { IDisposable } from '../../interfaces/Disposable';
 import { Behavior } from '../../model/behaviors/Behavior.class';
 import { randomColor } from '../../utils';
-import { inject, injectCtor } from '../../model/basic/inject';
-import { HrMap, PaneManager, PaneObject } from '../basic';
+import { inject } from '../../model/basic/inject';
+import { HrMap } from '../basic';
+import { PaneManager, PaneObject } from '../state';
 import * as Interface from '../../interfaces/symbols';
 
 const { random, PI, sin, cos } = Math;

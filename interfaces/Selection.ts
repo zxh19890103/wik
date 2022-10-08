@@ -11,4 +11,6 @@ export interface ISelectionManager {
   clearCurrent(): void;
   clearAll(): void;
   clear(): void;
+
+  isSelectable(layer: Interactive): boolean;
 }

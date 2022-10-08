@@ -1,7 +1,10 @@
 import L, { DomEvent } from 'leaflet';
 import { IDisposable } from '../interfaces/Disposable';
+import { IPaneManager } from '../interfaces/symbols';
+import { inject, injectable } from '../model/basic';
 import { writeProp } from '../model/basic/Injector.class';
-import { HrMap, PaneManager } from './basic';
+import { HrMap } from './basic';
+import { PaneManager } from './state';
 
 // @see https://github.com/Leaflet/Leaflet/blob/main/src/layer/vector/Canvas.js
 // overrides
@@ -44,12 +47,16 @@ import { HrMap, PaneManager } from './basic';
 let phaseOfMouseEventHandleLoopFrame = 0;
 let fireEvtCall = 0; // on called counter.
 
+@injectable()
+@inject(IPaneManager)
 export class RenderersManager implements IDisposable {
   private renderers: Map<string, L.Renderer> = new Map();
   private renderersInOrder = [];
   private size = 0; // count of renderer
 
-  constructor(private paneMgr: PaneManager, private map: HrMap) {}
+  readonly map: HrMap;
+
+  constructor(private paneMgr: PaneManager) {}
 
   add(key: string, renderer: L.Renderer) {
     this.renderers.set(key, renderer);

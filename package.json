@@ -5,11 +5,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite dev --host",
-    "build": "tsc --project tsconfig.prod.json",
     "lint": "eslint . --fix",
     "prebuild": "yarn lint && node ./scripts/build --stage=pre",
+    "build": "tsc --project tsconfig.prod.json",
     "postbuild": "node ./scripts/build --stage=post",
     "docg": "typedoc",
+    "tsCheck": "tsc --noEmit",
     "postdocg": "scp -r doc/* hairou@172.20.8.54:/data/workspace/hrgui-doc"
   },
   "dependencies": {

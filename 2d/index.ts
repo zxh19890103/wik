@@ -1,6 +1,8 @@
 import * as basic from './basic';
 import * as behaviors from './behaviors';
-import * as meta from '../model/meta';
+import * as state from './state';
+import * as modes from './modes';
+import * as animation from './animation';
 
 import './styles/index.scss';
 
@@ -20,4 +22,4 @@ export * from './Route.class';
 
 export * from './leafletCanvasOverrides';
 
-export { basic, behaviors, meta };
+export { basic, behaviors, state, modes, animation };

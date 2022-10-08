@@ -7,15 +7,16 @@ import * as hrGUIBasic from '../2d/basic';
 import * as hrGUI from '../2d';
 import * as Utils from '../utils';
 import { SVG_KUBOT } from '../2d/images';
-import { injectCtor, injector, ObjectType } from '../model';
+import { inject, rootInjector } from '../model';
 import { Warehouse } from '../2d';
 
 import './ioc.config';
 import { appendAnimation, TranslationAnimation } from '../2d/animation';
+import { IInjector } from '../interfaces/symbols';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
-@injectCtor()
+@inject(IInjector)
 class MyWarehouse extends Warehouse {
   layout(data: any): void {}
 }
@@ -25,7 +26,7 @@ async function bootstrap(container: HTMLDivElement) {
 
   const root = new HrMap(container, { zoom: 1.5 });
 
-  const warehouse = injector.$new<MyWarehouse>(MyWarehouse);
+  const warehouse = rootInjector.$new<MyWarehouse>(MyWarehouse);
   warehouse.mount(root);
 
   await hrGUIBasic.setDefaultImage(hrGUI.Bot, SVG_KUBOT);
@@ -33,7 +34,7 @@ async function bootstrap(container: HTMLDivElement) {
   for (let i = 0; i < 1000; i++) {
     const position = L.latLng(Utils.random2(-500, 500), Utils.random2(-500, 500));
     const bot = new hrGUI.basic.Circle(position, { radius: 1000 });
-    injector.writeProp(bot, 'animationMgr', warehouse.animationManager);
+    rootInjector.writeProp(bot, 'animationMgr', warehouse.animationManager);
     warehouse.add('bot', bot);
   }
 
