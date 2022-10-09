@@ -92,6 +92,8 @@ export class EditBehavior extends Behavior {
   }
 
   onPress(layer: ReactiveLayer, evt: L.LeafletMouseEvent): void {
+    // const leaf = evt.propagatedFrom; //
+
     const startPoint = evt.containerPoint.clone();
     const mapDragging = this.map.dragging;
     const isMapDraggingDisabled = mapDragging.enabled();
@@ -113,7 +115,12 @@ export class EditBehavior extends Behavior {
 
       if (dx || dy) {
         const dLatLng = this.map.unproject([dx, dy]);
-        layer.translate(dLatLng.lat, dLatLng.lng);
+
+        if (layer.$$system) {
+          layer.$$system.translate(dLatLng.lat, dLatLng.lng);
+        } else {
+          layer.translate(dLatLng.lat, dLatLng.lng);
+        }
 
         startPoint.x = x;
         startPoint.y = y;
@@ -130,7 +137,11 @@ export class EditBehavior extends Behavior {
       }
 
       if (dragged) {
-        layer.cancelObjClickEvent();
+        if (layer.$$system) {
+          layer.$$system.cancelObjClickEvent();
+        } else {
+          layer.cancelObjClickEvent();
+        }
       }
 
       document.removeEventListener('mousemove', onMove);

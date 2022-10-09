@@ -136,20 +136,24 @@ Scene.SelectShell = memo((props: DetailShellProps) => {
 
   const layer = useSelection() as ReactiveLayer;
 
-  const children = React.Children.map(props.children, (child) => {
-    if (!child.props.C || layer instanceof child.props.C) {
-      return (
-        <child.type
-          {...child.props}
-          key={child.key}
-          position={<LayerPosition model={layer} />}
-          model={layer}
-        />
-      );
-    } else {
-      return null;
-    }
-  }).filter(Boolean);
+  const children = layer ? (
+    React.Children.map(props.children, (child) => {
+      if (!child.props.C || layer instanceof child.props.C) {
+        return (
+          <child.type
+            {...child.props}
+            key={child.key}
+            position={<LayerPosition model={layer} />}
+            model={layer}
+          />
+        );
+      } else {
+        return null;
+      }
+    }).filter(Boolean)
+  ) : (
+    <div>no item selected.</div>
+  );
 
   return (
     <div style={css} className="hrSceneDetail">

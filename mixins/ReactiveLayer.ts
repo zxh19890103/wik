@@ -60,7 +60,7 @@ export interface ReactiveLayer
   addChild(...children: ReactiveLayer[]): void;
   removeChild(...children: ReactiveLayer[]): void;
   isChild(): boolean;
-  traverse(every: (item: ReactiveLayer) => void): void;
+  traverse<T = ReactiveLayer>(every: (item: T) => void): void;
 
   setPosition(latlng: L.LatLngExpression): void;
   setPosition(lat: number, lng: number): void;

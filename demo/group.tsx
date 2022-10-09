@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { Warehouse, basic, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
-import { Scene } from '../dom/Scene';
+import { LayerSelectProps, Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { inject, rootInjector, provides } from '../model/basic';
 import { IInjector } from '../interfaces/symbols';
@@ -81,6 +81,17 @@ export default () => {
   return (
     <Scene.Layout flow="horizontal">
       <Scene view={[3000, 6000, 3]} modes flex={1} warehouse={warehouse} />
+      <Scene.SelectShell w={256}>
+        <GroupDetail />
+      </Scene.SelectShell>
     </Scene.Layout>
+  );
+};
+
+const GroupDetail = (props: LayerSelectProps) => {
+  return (
+    <div>
+      group#{props.model.layerId} {props.position}
+    </div>
   );
 };

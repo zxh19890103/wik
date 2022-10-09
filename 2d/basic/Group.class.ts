@@ -1,20 +1,25 @@
 import L from 'leaflet';
 import { ReactiveLayer } from '../../mixins/ReactiveLayer';
-import {
-  OnSelect,
-  OnInteractName,
-  OnMouseOverOut,
-  OnClick,
-  Interactive,
-} from '../../interfaces/Interactive';
-import { WithLayerID } from '../../interfaces/WithLayerID';
+import { Interactive, OnInteractive } from '../../interfaces/Interactive';
 import { inject, mix, writeReadonlyProp } from '../../model/basic';
 import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
-import { PaneManager, PaneName, PaneObject } from '../state';
-import { IModeManager, IPaneManager, IRendererManager } from '../../interfaces/symbols';
+import {
+  InteractiveStateAction,
+  InteractiveStateActionManager,
+  PaneManager,
+  PaneName,
+  PaneObject,
+} from '../state';
+import {
+  IModeManager,
+  IPaneManager,
+  IRendererManager,
+  IStateActionManager,
+} from '../../interfaces/symbols';
 import { leafletOptions } from '../../utils';
 import { RenderersManager } from '../leafletCanvasOverrides';
 import { ModeManager } from '../../model/modes';
+import { ContextMenuItem } from '../../interfaces/types';
 
 const leafletEvent2OnCallback = {
   click: 'onClick',
@@ -35,13 +40,18 @@ interface GroupOptions {
 @leafletOptions<GroupOptions>({
   pane: 'groupPane',
 })
-export class Group extends mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLayerMixin) {
+export class Group
+  extends mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLayerMixin)
+  implements OnInteractive
+{
   @inject(IPaneManager)
   readonly paneMgr: PaneManager;
   @inject(IRendererManager)
   readonly rendererMgr: RenderersManager;
   @inject(IModeManager)
   readonly modeMgr: ModeManager;
+  @inject(IStateActionManager)
+  readonly interactiveStateActionManager: InteractiveStateActionManager;
 
   readonly paneObj: PaneObject;
   readonly options: GroupOptions;
@@ -54,8 +64,79 @@ export class Group extends mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLay
     this.on('click dblclick mousedown mouseover mouseout contextmenu', (evt) => {
       L.DomEvent.stop(evt);
       const onCb = leafletEvent2OnCallback[evt.type];
-      this.broadcastEventCallback(evt.type);
-      this.modeMgr.apply(onCb, this);
+      this.modeMgr.apply(onCb, this, evt);
+    });
+  }
+
+  onClick(e?: L.LeafletMouseEvent): void {
+    this.traverse<Interactive>((child) => {
+      child.onClick && child.onClick(e);
+    });
+  }
+
+  onDblClick(e?: L.LeafletMouseEvent): void {
+    this.traverse<Interactive>((child) => {
+      child.onDblClick && child.onDblClick(e);
+    });
+  }
+
+  onDragEnd(e?: L.LeafletMouseEvent, latlng?: L.LatLng): void {}
+
+  onDragStart(e?: L.LeafletMouseEvent): void {}
+
+  onDragging(e?: L.LeafletMouseEvent, latlng?: L.LatLng): void {}
+
+  onContextMenu(evt?: L.LeafletMouseEvent): ContextMenuItem[] {
+    return [
+      {
+        text: 'Del',
+        value: 'del',
+      },
+    ];
+  }
+
+  onContextMenuClick(key: string): void | Promise<any> {
+    switch (key) {
+      case 'del': {
+        alert('del?');
+        break;
+      }
+    }
+  }
+
+  onHighlight() {
+    this.traverse<Interactive>((child) => {
+      this.interactiveStateActionManager.push(new InteractiveStateAction(child, 'Highlight'));
+    });
+  }
+
+  onUnHighlight(state?: any): void {
+    this.traverse<Interactive>((child) => {
+      this.interactiveStateActionManager.pop(child, 'Highlight');
+    });
+  }
+
+  onHover() {
+    this.traverse<Interactive>((child) => {
+      this.interactiveStateActionManager.push(new InteractiveStateAction(child, 'Hover'));
+    });
+  }
+
+  onUnHover(state?: any): void {
+    this.traverse<Interactive>((child) => {
+      this.interactiveStateActionManager.pop(child, 'Hover');
+    });
+  }
+
+  onSelect() {
+    this.traverse<Interactive>((child) => {
+      this.interactiveStateActionManager.push(new InteractiveStateAction(child, 'Select'));
+    });
+  }
+
+  onUnSelect(state?: any): void {
+    this.traverse<Interactive>((child) => {
+      this.interactiveStateActionManager.pop(child, 'Select');
     });
   }
 
@@ -66,13 +147,6 @@ export class Group extends mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLay
     this.rendererMgr.add(paneObj.name, paneObj.renderer);
     super.onAdd(map);
     return this;
-  }
-
-  protected broadcastEventCallback(type: string) {
-    const onCb = leafletEvent2OnCallback[type];
-    for (const child of this.$$subSystems) {
-      child[onCb] && child[onCb]();
-    }
   }
 }
 

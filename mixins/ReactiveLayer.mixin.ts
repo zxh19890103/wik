@@ -202,9 +202,9 @@ export function ReactiveLayerMixin(
       this.$$subSystems = this.$$subSystems.filter(Boolean);
     }
 
-    traverse(every: (item: ReactiveLayer) => void): void {
+    traverse<T = ReactiveLayer>(every: (item: T) => void): void {
       for (const child of this.$$subSystems) {
-        every(child);
+        every(child as unknown as T);
         child.traverse(every);
       }
     }

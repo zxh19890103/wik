@@ -43,3 +43,6 @@
 3. 提供一个 EssWarehouse extends Warehouse
 4. 支持选择若干元素，创建一个组
 5. 支持将一个组解散
+6. Interactive.onDrag... 由 behavior 下的 onPress 衍生出来
+7. LayerList 下的 onItemXXX 应该合并为一个函数逻辑
+8. 思考：是否需要将 Group 放到一个 List 进行管理？
