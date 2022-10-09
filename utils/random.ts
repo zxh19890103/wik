@@ -8,6 +8,14 @@ export const randomColor = () => {
   return '#' + random().toString(16).substring(2, 8);
 };
 
+/**
+ * around the origin [0, 0]
+ *
+ * r should be greater than zero
+ */
 export const randomLatLng = (r = 1000): L.LatLngTuple => {
-  return [random() * r, random() * r];
+  const base = -r;
+  const factor = 2 * r;
+
+  return [base + random() * factor, base + random() * factor];
 };

@@ -105,6 +105,9 @@ export function ReactiveLayerMixin(
 
     override onAdd(map: L.Map): this {
       for (const child of this.$$subSystems) {
+        const { renderer, pane } = (this as unknown as L.Path).options;
+        L.Util.setOptions(child, { renderer, pane });
+
         map.addLayer(child as unknown as L.Layer);
       }
 
@@ -167,14 +170,17 @@ export function ReactiveLayerMixin(
         child.$$system = this;
         child.isMatrixNeedsUpdate = true;
 
-        // pass renderer or pane
-        const asPath = this as unknown as L.Path;
-        const { renderer, pane } = asPath.options;
-        L.Util.setOptions(child, { renderer, pane });
-
         // Of course it is a layer, so we add it to map if this is added.
         const root = this._map || this._mapToAdd;
-        root?.addLayer(child as unknown as L.Layer);
+        if (root) {
+          // pass renderer or pane
+          const asPath = this as unknown as L.Path;
+          const { renderer, pane } = asPath.options;
+          L.Util.setOptions(child, { renderer, pane });
+
+          // add cuz system already added.
+          root.addLayer(child as unknown as L.Layer);
+        }
 
         // parent should be set after child added.
         (child as unknown as L.Layer).addEventParent(this);

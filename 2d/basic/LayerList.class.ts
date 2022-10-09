@@ -54,11 +54,32 @@ export class LayerList<M extends LayerWithID, E extends string = never>
   constructor(layers?: M[]) {
     super();
     this.featureGroup = new L.FeatureGroup([], {});
-    this.featureGroup.on('click', onItemClick, this);
-    this.featureGroup.on('dblclick', onItemDblClick, this);
-    this.featureGroup.on('mouseover mouseout', onItemHover, this);
-    this.featureGroup.on('mousedown', onItemPress, this);
-    this.featureGroup.on('contextmenu', onItemContextMenu, this);
+
+    const leaflet2list = {
+      click: 'click',
+      dblclick: 'dblclick',
+      mousedown: 'press',
+      mouseover: 'hover',
+      mouseout: 'unhover',
+      contextmenu: 'contextmenu',
+    };
+
+    this.featureGroup.on(
+      'click dblclick mousedown mouseover mouseout contextmenu',
+      (evt) => {
+        L.DomEvent.stop(evt);
+
+        const layer = evt.propagatedFrom as WithClickCancel;
+
+        if (evt.type === 'click' && layer.isObjClickEventCancelled) return;
+
+        this.emit(leaflet2list[evt.type], {
+          layer,
+          leafletEvt: evt,
+        });
+      },
+      this,
+    );
 
     layers && this.addArr(layers);
   }
@@ -244,44 +265,4 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 export interface LayerList<M extends LayerWithID, E extends string = never>
   extends WithEmitter<E | LayerListEventType> {
   onItemAdd?(item: M): void;
-}
-
-function onItemClick(this: any, e) {
-  L.DomEvent.stop(e);
-  const layer = e.propagatedFrom as Interactive;
-  if ((layer as unknown as WithClickCancel).isObjClickEventCancelled) return;
-
-  this.emit('click', { layer, leafletEvt: e });
-}
-
-function onItemDblClick(this: any, e) {
-  L.DomEvent.stop(e);
-  const layer = e.propagatedFrom as Interactive;
-
-  this.emit('dblclick', { layer, leafletEvt: e });
-}
-
-function onItemPress(this: any, e) {
-  L.DomEvent.stop(e);
-  const layer = e.propagatedFrom as Interactive;
-
-  this.emit('press', { layer, leafletEvt: e });
-}
-
-function onItemHover(this: LayerList<any>, e) {
-  L.DomEvent.stop(e);
-  const layer = e.propagatedFrom as Interactive;
-
-  if (e.type === 'mouseover') {
-    this.emit('hover', { layer, leafletEvt: e });
-  } else {
-    this.emit('unhover', { layer, leafletEvt: e });
-  }
-}
-
-function onItemContextMenu(this: LayerList<any>, e) {
-  L.DomEvent.stop(e);
-  const layer = e.propagatedFrom as Interactive;
-
-  this.emit('contextmenu', { layer, leafletEvt: e });
 }

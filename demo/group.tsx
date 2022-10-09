@@ -7,28 +7,33 @@ import { IInjector } from '../interfaces/symbols';
 
 import './ioc.config';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
-import { loop } from '../utils';
+import { loop, randomColor, randomLatLng } from '../utils';
 import { OnMouseOverOut } from '../interfaces/Interactive';
+import { FPS } from '../dom';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
 class Circle1 extends basic.Circle implements OnMouseOverOut {
   onHover() {
-    this.setStyle({ color: '#000' });
+    const color = this.options.color;
+    this.setStyle({ color: '#987' });
+    return color;
   }
 
   onUnHover(state?: any): void {
-    this.setStyle({ color: '#f09' });
+    this.setStyle({ color: state });
   }
 }
 
 class RECT extends basic.Rectangle implements OnMouseOverOut {
   onHover() {
+    const c = this.options.color;
     this.setStyle({ color: '#999' });
+    return c;
   }
 
   onUnHover(state?: any): void {
-    this.setStyle({ color: '#ad6' });
+    this.setStyle({ color: state });
   }
 }
 
@@ -36,36 +41,43 @@ class RECT extends basic.Rectangle implements OnMouseOverOut {
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse extends Warehouse {
   async layout(data: any) {
-    const point = new basic.Circle([3000, 6000], { radius: 60, color: 'red' });
+    const point = new basic.Circle([0, 0], { radius: 60, color: 'red' });
     this.add('point', point);
 
     await this.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
 
     const g0 = this.injector.$new(basic.Group, [], { pane: 'group01' });
-    const p1 = new Circle1([300, 900], {
-      radius: 100,
-      color: '#097',
-      fill: true,
-      interactive: true,
-    });
-    const p2 = new Circle1([800, 900], { radius: 100, color: '#876', fill: true });
-    const r2 = new RECT([300, 600], 200, 100, { color: '#f90', fill: true });
+    // const p1 = new Circle1([300, 900], {
+    //   radius: 100,
+    //   color: '#097',
+    //   fill: true,
+    //   interactive: true,
+    // });
+
+    // performance
+    for (let i = 0; i < 1000; i++) {
+      const layer =
+        Math.random() > 0.5
+          ? new Circle1(randomLatLng(7000), {
+              radius: 100,
+              color: randomColor(),
+              fill: true,
+            })
+          : new RECT(randomLatLng(7000), 300, 300, { fill: true, color: randomColor() });
+      g0.addChild(layer);
+    }
 
     this.map.addLayer(g0);
 
-    g0.addChild(p1, r2, p2);
-
-    g0.translate(3000, 6000);
-
-    // let a = 0;
+    // g0.translate(3000, 6000);
 
     loop(
       () => {
-        g0.rotate(1);
+        g0.rotate(0.1);
       },
       {
         auto: false,
-        duration: 1000,
+        duration: 100,
       },
     );
 
@@ -80,7 +92,8 @@ export default () => {
 
   return (
     <Scene.Layout flow="horizontal">
-      <Scene view={[3000, 6000, 3]} modes flex={1} warehouse={warehouse} />
+      <FPS />
+      <Scene modes flex={1} warehouse={warehouse} />
       <Scene.SelectShell w={256}>
         <GroupDetail />
       </Scene.SelectShell>

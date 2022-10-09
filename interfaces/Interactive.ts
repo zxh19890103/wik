@@ -19,9 +19,9 @@ export interface OnDblClick {
 }
 
 export interface OnDrag {
-  onDragEnd(e?: L.LeafletMouseEvent, latlng?: L.LatLng): void;
-  onDragStart(e?: L.LeafletMouseEvent): void;
-  onDragging(e?: L.LeafletMouseEvent, latlng?: L.LatLng): void;
+  onDragEnd(latlng?: L.LatLng): void;
+  onDragStart(): void;
+  onDragging(latlng?: L.LatLng): void;
 }
 
 export interface OnHighlight<S = any> {

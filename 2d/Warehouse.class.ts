@@ -289,10 +289,26 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
     //#region events & mode apply
     {
+      /**
+       * mapping from event of emitter or lealfet to behavior's callbacks.
+       */
+      const event2cb = {
+        'item@click': 'onClick',
+        'item@dblclick': 'onDblClick',
+        'item@hover': 'onHover',
+        'item@unhover': 'onUnHover',
+        'item@press': 'onPress',
+        'item@contextmenu': 'onContextMenu',
+        mousedown: 'onMouseDown',
+        mousemove: 'onMouseMove',
+        mouseup: 'onMouseUp',
+        click: 'onNoopClick',
+      };
+
       __on__(this, 'click dblclick hover unhover press contextmenu', (evt: HrEvent) => {
         if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
         const { layer, leafletEvt } = evt.payload;
-        const cb = eventName2BehaviorCallback[`item@${evt.type}`];
+        const cb = event2cb[`item@${evt.type}`];
         tryInvokingOwn(this, cb, layer, leafletEvt);
         this.modeManager.apply(cb, layer, leafletEvt);
       });
@@ -303,7 +319,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
       this.map
         .on('mousedown mousemove mouseup click', (evt) => {
           if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
-          this.modeManager.apply(eventName2BehaviorCallback[evt.type], evt);
+          this.modeManager.apply(event2cb[evt.type], evt);
         })
         .on('zoom drag', () => {
           this.animationManager.flush();
@@ -380,17 +396,4 @@ export const DEFAULT_WAREHOUSE_DEPENDENCIES: Record<symbol, ConfigProviderConfig
   [Interfaces.IAnimationManager]: AnimationManager,
   [Interfaces.IHighlightManager]: HighlightManager,
   [Interfaces.IRendererManager]: RenderersManager,
-};
-
-const eventName2BehaviorCallback = {
-  'item@click': 'onClick',
-  'item@dblclick': 'onDblClick',
-  'item@hover': 'onHover',
-  'item@unhover': 'onUnHover',
-  'item@press': 'onPress',
-  'item@contextmenu': 'onContextMenu',
-  mousedown: 'onMouseDown',
-  mousemove: 'onMouseMove',
-  mouseup: 'onMouseUp',
-  click: 'onNoopClick',
 };

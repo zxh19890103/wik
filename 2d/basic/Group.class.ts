@@ -20,6 +20,7 @@ import { leafletOptions } from '../../utils';
 import { RenderersManager } from '../leafletCanvasOverrides';
 import { ModeManager } from '../../model/modes';
 import { ContextMenuItem } from '../../interfaces/types';
+import { WithClickCancel } from '../../mixins/ClickCancel';
 
 const leafletEvent2OnCallback = {
   click: 'onClick',
@@ -63,9 +64,23 @@ export class Group
 
     this.on('click dblclick mousedown mouseover mouseout contextmenu', (evt) => {
       L.DomEvent.stop(evt);
+      if (
+        evt.type === 'click' &&
+        (evt.propagatedFrom as unknown as WithClickCancel).isObjClickEventCancelled
+      )
+        return;
       const onCb = leafletEvent2OnCallback[evt.type];
       this.modeMgr.apply(onCb, this, evt);
     });
+  }
+
+  override onAdd(map: L.Map): this {
+    const paneObj = this.paneMgr.get(this.options.pane, 'canvas', __pane_z_seed++);
+    L.Util.setOptions(this, { renderer: paneObj.renderer });
+    writeReadonlyProp(this, 'paneObj', paneObj);
+    this.rendererMgr.add(paneObj.name, paneObj.renderer);
+    super.onAdd(map);
+    return this;
   }
 
   onClick(e?: L.LeafletMouseEvent): void {
@@ -80,11 +95,9 @@ export class Group
     });
   }
 
-  onDragEnd(e?: L.LeafletMouseEvent, latlng?: L.LatLng): void {}
-
-  onDragStart(e?: L.LeafletMouseEvent): void {}
-
-  onDragging(e?: L.LeafletMouseEvent, latlng?: L.LatLng): void {}
+  onDragStart(): void {}
+  onDragging(latlng?: L.LatLng): void {}
+  onDragEnd(latlng?: L.LatLng): void {}
 
   onContextMenu(evt?: L.LeafletMouseEvent): ContextMenuItem[] {
     return [
@@ -138,15 +151,6 @@ export class Group
     this.traverse<Interactive>((child) => {
       this.interactiveStateActionManager.pop(child, 'Select');
     });
-  }
-
-  override onAdd(map: L.Map): this {
-    const paneObj = this.paneMgr.get(this.options.pane, 'canvas', __pane_z_seed++);
-    L.Util.setOptions(this, { renderer: paneObj.renderer });
-    writeReadonlyProp(this, 'paneObj', paneObj);
-    this.rendererMgr.add(paneObj.name, paneObj.renderer);
-    super.onAdd(map);
-    return this;
   }
 }
 

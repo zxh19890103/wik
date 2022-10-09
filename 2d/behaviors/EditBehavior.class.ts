@@ -6,7 +6,6 @@ import { ReactiveLayer } from '../../mixins/ReactiveLayer';
 import { IWarehouse } from '../../model';
 import { Behavior } from '../../model/behaviors';
 import { HrMap } from '../basic';
-import { Warehouse } from '../Warehouse.class';
 
 /**
  * @todo
@@ -94,6 +93,12 @@ export class EditBehavior extends Behavior {
   onPress(layer: ReactiveLayer, evt: L.LeafletMouseEvent): void {
     // const leaf = evt.propagatedFrom; //
 
+    /**
+     * the target to translate or call on-methods.
+     */
+    const target = layer.$$system || layer;
+    const asInteractive = target as unknown as Interactive;
+
     const startPoint = evt.containerPoint.clone();
     const mapDragging = this.map.dragging;
     const isMapDraggingDisabled = mapDragging.enabled();
@@ -116,16 +121,16 @@ export class EditBehavior extends Behavior {
       if (dx || dy) {
         const dLatLng = this.map.unproject([dx, dy]);
 
-        if (layer.$$system) {
-          layer.$$system.translate(dLatLng.lat, dLatLng.lng);
-        } else {
-          layer.translate(dLatLng.lat, dLatLng.lng);
-        }
+        target.translate(dLatLng.lat, dLatLng.lng);
+        asInteractive.onDragging && asInteractive.onDragging();
 
         startPoint.x = x;
         startPoint.y = y;
 
-        dragged = true;
+        if (!dragged) {
+          asInteractive.onDragStart && asInteractive.onDragStart();
+          dragged = true;
+        }
       }
     };
 
@@ -137,11 +142,8 @@ export class EditBehavior extends Behavior {
       }
 
       if (dragged) {
-        if (layer.$$system) {
-          layer.$$system.cancelObjClickEvent();
-        } else {
-          layer.cancelObjClickEvent();
-        }
+        asInteractive.onDragEnd && asInteractive.onDragEnd();
+        target.cancelObjClickEvent();
       }
 
       document.removeEventListener('mousemove', onMove);
