@@ -23,7 +23,7 @@ interface SceneProps {
    * If display modes list
    */
   modes?: boolean;
-  view?: [number, number, number];
+  view?: [number, number, number] | `${number},${number},${number}`;
   onPhase?: (phase: WarehousePhase) => void;
 }
 
@@ -44,7 +44,8 @@ export const Scene = (props: SceneProps) => {
 
   useEffect(() => {
     if (!props.view) return;
-    const [lat, lng, zoom] = props.view;
+    const [lat, lng, zoom] =
+      typeof props.view === 'string' ? props.view.split(',').map(Number) : props.view;
     if (lat !== undefined && lng !== undefined) {
       root?.setView([lat, lng], zoom ?? 1);
     } else if (zoom !== undefined) {

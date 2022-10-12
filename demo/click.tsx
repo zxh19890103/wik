@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, basic, Bot } from '../2d';
+import { EssWarehouse, basic, Bot } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { inject, rootInjector } from '../model/basic';
@@ -12,7 +12,7 @@ import { SVG_KUBOT } from '../2d/images';
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
 inject(IInjector);
-class MyWarehouse extends Warehouse<any, 'bot2'> {
+class MyWarehouse extends EssWarehouse<any, 'bot2'> {
   layout(data: any): void {
     // const point = new basic.Circle([0, 0], { radius: 3000, color: '#097' });
     // this.add('point', point);

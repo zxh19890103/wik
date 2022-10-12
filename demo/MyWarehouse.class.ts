@@ -1,4 +1,4 @@
-import { DEFAULT_WAREHOUSE_DEPENDENCIES, Warehouse } from '../2d/Warehouse.class';
+import { DEFAULT_WAREHOUSE_DEPENDENCIES, EssWarehouse } from '../2d/';
 import * as hrGUI from '../2d';
 import { inject, provides } from '../model/basic/inject';
 import * as Interface from '../interfaces/symbols';
@@ -7,7 +7,7 @@ import { IInjector } from '../interfaces/Injector';
 
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 @inject(Interface.IModeManager, Interface.IInjector)
-export class MyWarehouse extends Warehouse<any, 'bot2'> {
+export class MyWarehouse extends EssWarehouse<any, 'bot2'> {
   constructor(public readonly modeMgr: ModeManager, inj: IInjector) {
     super(inj);
 

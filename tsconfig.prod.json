@@ -6,6 +6,7 @@
     "module": "ESNext",
     "noEmit": false,
     "declaration": false,
+    "emitDeclarationOnly": false,
     "declarationMap": false,
     "sourceMap": false
   },
@@ -17,7 +18,7 @@
     "mixins/**/*",
     "model/**/*",
     "utils/**/*",
-    "global.d.ts",
+    "lib.internal.d.ts",
     "lib.d.ts",
     "index.ts"
   ]

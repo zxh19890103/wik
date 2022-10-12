@@ -1,5 +1,5 @@
 import { memo, useContext, useEffect, useMemo, useState } from 'react';
-import { LayerList, VectorLayerList } from '../2d/basic';
+import { LayerList } from '../2d/basic';
 import { LayerWithID } from '../interfaces/WithLayerID';
 import { Base, IList } from '../model/basic';
 import { useEvented } from './useEvented';
@@ -29,7 +29,12 @@ export const ViewSet = memo(
     useEvented(model, `size ${props.reactOn}`);
 
     const [viewSet] = useState(() => {
-      const vs = warehouse.addList(type, {
+      let vs: IList<any>;
+
+      vs = warehouse.queryList(type);
+      if (vs) return vs;
+
+      vs = warehouse.addList(type, {
         rendererBy: renderer,
         pane: `${type}Pane`,
       });

@@ -1,12 +1,5 @@
 import L from 'leaflet';
-import {
-  Warehouse,
-  Point,
-  Chargepile,
-  Haiport,
-  Location,
-  DEFAULT_WAREHOUSE_DEPENDENCIES,
-} from '../2d';
+import { EssWarehouse, Point, Chargepile, Haiport, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
 import { LayerSelectProps, LayerMultipleSelectProps, Scene } from '../dom/Scene';
 import { useEffect, useState } from 'react';
 import { rootInjector, provides, inject } from '../model/basic';
@@ -27,7 +20,7 @@ L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-stati
 
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 @inject(Interfaces.IModeManager, Interfaces.IInjector)
-class MyWarehouse extends Warehouse {
+class MyWarehouse extends EssWarehouse {
   constructor(public readonly modeMgr: ModeManager, inj: IInjector) {
     super(inj);
   }

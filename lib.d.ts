@@ -3,6 +3,7 @@ import { EventEmitterStatic3 } from 'eventemitter3';
 import { HrMap } from './2d/basic';
 
 declare global {
+  const __PROD__: boolean;
   const EventEmitter3: EventEmitterStatic3;
 }
 

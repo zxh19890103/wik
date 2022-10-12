@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, DEFAULT_WAREHOUSE_DEPENDENCIES, Bot, Route } from '../2d';
+import { EssWarehouse, DEFAULT_WAREHOUSE_DEPENDENCIES, Bot, Route } from '../2d';
 import { useEffect, useState } from 'react';
 import { Robot, RobotView, IWarehouse, Point } from '../model';
 import { rootInjector, provides, List, inject } from '../model/basic';
@@ -12,7 +12,7 @@ import { Circle, Polyline, setDefaultImage } from '../2d/basic';
 import { appendAnimation, RotationAnimation, TranslationAnimation } from '../2d/animation';
 import * as Utils from '../utils';
 import { PointView } from '../model/PointView';
-import { batchedEmits } from '../mixins/Emitter';
+import { __batched_emits__ } from '../mixins/Emitter';
 import { random2 } from '../utils';
 import { FPS, LayerSelectProps, LayerMultipleSelectProps } from '../dom';
 import { OnContextMenu, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
@@ -23,7 +23,7 @@ L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-stati
 
 @inject(IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
-class MyWarehouse extends Warehouse {
+class MyWarehouse extends EssWarehouse {
   async layout(data: any) {
     await this.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
     await setDefaultImage(Bot, SVG_KUBOT, { offscreenCanvas: false, scale: 1 });
@@ -131,7 +131,7 @@ export default () => {
 
   useEffect(() => {
     setTimeout(() => {
-      const bots = batchedEmits(() => {
+      const bots = __batched_emits__(() => {
         return Array(3)
           .fill(0)
           .map((x) => {
@@ -139,7 +139,7 @@ export default () => {
           });
       }, 'size') as Robot[];
 
-      batchedEmits(() => {
+      __batched_emits__(() => {
         for (let x = 0; x < 30; x++) {
           for (let y = 0; y < 30; y++) {
             const dot = state.dots.create();

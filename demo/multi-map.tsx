@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, Route, basic, Bot, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
+import { EssWarehouse, Route, basic, Bot, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { inject, provides, rootInjector } from '../model/basic';
@@ -13,7 +13,7 @@ L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-stati
 
 @inject(Interfaces.IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
-class MyWarehouse extends Warehouse<any, 'routes'> {
+class MyWarehouse extends EssWarehouse<any, 'routes'> {
   async layout(data: any) {
     this.addList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
 
@@ -33,7 +33,7 @@ class MyWarehouse extends Warehouse<any, 'routes'> {
 
 @inject(Interfaces.IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
-class MyWarehouse2 extends Warehouse<any, 'routes'> {
+class MyWarehouse2 extends EssWarehouse<any, 'routes'> {
   async layout(data: any) {
     await this.imageManager.load(SVG_KUBOT);
 

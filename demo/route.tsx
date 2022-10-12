@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, Route } from '../2d';
+import { EssWarehouse, Route } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { rootInjector, inject } from '../model/basic';
@@ -11,7 +11,7 @@ import { randomLatLng } from '../utils';
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
 @inject(IInjector)
-class MyWarehouse extends Warehouse<any, 'routes'> {
+class MyWarehouse extends EssWarehouse<any, 'routes'> {
   async layout(data: any) {
     this.addList('routes', { pane: 'routesPane', rendererBy: 'canvas' });
 

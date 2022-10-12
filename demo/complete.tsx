@@ -13,7 +13,7 @@ import { inject, List, provides, rootInjector } from '../model/basic';
 import './ioc.config';
 import { Views } from '../model/basic/Views.class';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
-import { DEFAULT_WAREHOUSE_DEPENDENCIES, Warehouse } from '../2d';
+import { DEFAULT_WAREHOUSE_DEPENDENCIES, EssWarehouse } from '../2d';
 import * as Interfaces from '../interfaces/symbols';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
@@ -78,7 +78,7 @@ class MyRobotView3 extends hrGUIBasic.Circle implements hrModel.RobotView {
 
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 @inject(Interfaces.IInjector)
-class Warehouse007 extends Warehouse {
+class Warehouse007 extends EssWarehouse {
   async layout(data?: any) {
     const bots = new List(hrModel.Robot, []);
 

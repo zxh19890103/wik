@@ -6,7 +6,6 @@
     "jsx": "react-jsx",
     "strict": true,
     "allowJs": true,
-    "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": false,
     "forceConsistentCasingInFileNames": true,
@@ -24,6 +23,9 @@
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
     "noEmit": true,
+    "sourceMap": false,
+    "declaration": false,
+    "declarationMap": false,
     "typeRoots": ["./node_modules/@types"]
   },
   "exclude": ["node_modules", "**/*.spec.ts", "**/*.js", "**/dist", "**/doc"]

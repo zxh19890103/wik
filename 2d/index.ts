@@ -15,10 +15,11 @@ export * from './Location.class';
 export * from './Point.class';
 export * from './Robot.class';
 export * from './Shelf.class';
-export * from './Warehouse.class';
 export * from './Bot.class';
 export * from './Edge.class';
 export * from './Route.class';
+export * from './Warehouse.class';
+export * from './EssWarehouse.class';
 
 export * from './leafletCanvasOverrides';
 

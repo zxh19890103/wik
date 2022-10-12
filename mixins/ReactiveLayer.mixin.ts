@@ -10,6 +10,7 @@ import { boundToLatLngs } from '../utils/boundToLatLngs';
 import { ReactiveLayer } from './ReactiveLayer';
 import { uniqueLayerId } from '../interfaces/WithLayerID';
 import { IList } from '../model/basic';
+import D from '../3d';
 
 const { mat3, vec2 } = glMatrix;
 const D2R = 180 / Math.PI;
@@ -301,8 +302,9 @@ export function ReactiveLayerMixin(
       this.setAngle(this.angle + dDeg);
     }
 
-    scales(dLat: number, dLng = 1) {
+    scales(dLat: number, _dLng?: number) {
       const { lat, lng } = this.scale;
+      const dLng = _dLng === undefined ? dLat : _dLng;
       this.setScale(lat * dLat, lng * dLng);
     }
 
@@ -315,7 +317,7 @@ export function ReactiveLayerMixin(
       appendLayerRenderReq(this, effect);
 
       this.updateMatrix();
-      console.log('effect', this.constructor.name);
+
       for (const child of this.$$subSystems) {
         child.requestRenderCall(effect);
       }

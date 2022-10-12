@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, Edge } from '../2d';
+import { EssWarehouse, Edge } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { rootInjector } from '../model/basic';
@@ -8,7 +8,7 @@ import './ioc.config';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
-class MyWarehouse extends Warehouse {
+class MyWarehouse extends EssWarehouse {
   async layout(data: any) {
     const edge = new Edge().move([0, 0]).forwards([-8002, 3400], [1200, 9091], [0, 1000]);
     // const edge = new Edge().move([0, 0]).forwards([-8002, 3400]);

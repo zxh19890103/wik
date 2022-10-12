@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-const dtsG = require('dts-generator').default;
 
 const { join } = path;
 
@@ -24,20 +23,14 @@ const pre = () => {
 };
 
 const post = () => {
-  dtsG({
-    prefix: 'hrGraphic',
-    project: join(__dirname, '../'),
-    out: 'hrGraphic.d.ts',
-  });
-
   pubPkg.version = devPkg.version;
 
   fs.writeFileSync(join(distPath, './package.json'), JSON.stringify(pubPkg, '  \n'));
 
   // copy d.ts files
-  // for (const file of ['global.d.ts', 'lib.d.ts']) {
-  //   fs.copyFileSync(join(rootPath, file), join(distPath, file));
-  // }
+  for (const file of ['lib.d.ts']) {
+    fs.copyFileSync(join(rootPath, file), join(distPath, file));
+  }
 
   // Copy assets like css/image.
   copyInFolder('2d');

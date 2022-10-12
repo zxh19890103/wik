@@ -91,7 +91,7 @@ const clearGlobalEvent = () => {
 let isEmitBatchly = false;
 let emitObjLag: { target: any; event: string } = null;
 
-export const batchedEmits = <R = any>(fn: () => R | Promise<R>, event?: string) => {
+export const __batched_emits__ = <R = any>(fn: () => R | Promise<R>, event?: string) => {
   isEmitBatchly = true;
   const p = fn();
   if (p instanceof Promise) {

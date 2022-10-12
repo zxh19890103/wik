@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, basic, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
+import { EssWarehouse, basic, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { inject, rootInjector, provides } from '../model/basic';
@@ -13,7 +13,7 @@ L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-stati
 
 @inject(IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
-class MyWarehouse extends Warehouse {
+class MyWarehouse extends EssWarehouse {
   async layout(data: any) {
     const point = new basic.Circle([0, 0], { radius: 1000, color: '#097' });
     this.add('point', point);

@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, DEFAULT_WAREHOUSE_DEPENDENCIES, Bot } from '../2d';
+import { EssWarehouse, DEFAULT_WAREHOUSE_DEPENDENCIES, Bot } from '../2d';
 import { useEffect, useState } from 'react';
 import { rootInjector, provides, List, inject } from '../model/basic';
 
@@ -19,7 +19,7 @@ L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-stati
 
 @inject(IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
-class MyWarehouse extends Warehouse {
+class MyWarehouse extends EssWarehouse {
   async layout(data: any) {
     await this.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
     setDefaultImage(Bot, SVG_KUBOT, { offscreenCanvas: false, scale: 1 });

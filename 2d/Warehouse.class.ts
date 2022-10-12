@@ -5,15 +5,8 @@ import { ObjectType, IWarehouse, ListCtorArgs } from '../model';
 import { ModeManager } from '../model/modes';
 import { ConfigProviderConfigValue, mixin } from '../model/basic';
 import { GlobalConstManager } from '../model/state';
-import { Circle, HrMap, LayerList, SVGOverlayList, VectorLayerList } from './basic';
-import { Bot } from './Bot.class';
-import { Chargepile } from './Chargepile.class';
-import { Conveyor } from './Conveyor.class';
+import { HrMap, LayerList, SVGOverlayList, VectorLayerList } from './basic';
 import { RenderersManager } from './leafletCanvasOverrides';
-import { Haiport } from './Haiport.class';
-import { Location } from './Location.class';
-import { Point } from './Point.class';
-import { Shelf } from './Shelf.class';
 
 import { inject } from '../model/basic/inject';
 import * as Interfaces from '../interfaces/symbols';
@@ -66,52 +59,6 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   readonly layouted: boolean = false;
 
   private typeListMapping: Map<ObjectType<OT>, LayerList<LayerWithID>> = new Map();
-
-  readonly points: VectorLayerList<Point>;
-  readonly shelfs: VectorLayerList<Shelf>;
-  readonly haiports: SVGOverlayList<Haiport>;
-  readonly chargepiles: SVGOverlayList<Chargepile>;
-  readonly bots: VectorLayerList<Bot>;
-  readonly labors: VectorLayerList<Circle>;
-  readonly rests: VectorLayerList<Circle>;
-  readonly maintains: VectorLayerList<Circle>;
-
-  readonly locations: LayerList<Location>;
-  readonly conveyors: VectorLayerList<Conveyor>;
-
-  constructor(injector: IInjector) {
-    super();
-
-    this.points = injector.$new<any>(VectorLayerList, 'pointPane', 'canvas');
-    this.shelfs = injector.$new<any>(VectorLayerList, 'shelfPane', 'canvas');
-    this.haiports = injector.$new<any>(SVGOverlayList, 'haiportPane');
-    this.chargepiles = injector.$new<any>(SVGOverlayList, 'chargepilePane');
-    this.labors = injector.$new<any>(VectorLayerList, 'laborsPane', 'canvas');
-    this.rests = injector.$new<any>(VectorLayerList, 'restsPane', 'canvas');
-    this.maintains = injector.$new<any>(VectorLayerList, 'maintainsPane', 'canvas');
-    this.bots = injector.$new<any>(VectorLayerList, 'botsPane', 'canvas');
-    // this.cacheShelfs = injector.$new<any>(LayerList);
-    this.conveyors = injector.$new<any>(VectorLayerList, 'conveyorPane', 'canvas');
-    ///
-    this.locations = injector.$new<any>(LayerList);
-
-    //#region set
-    this.addList('point', this.points);
-    this.addList('shelf', this.shelfs);
-    this.addList('haiport', this.haiports);
-    this.addList('chargepile', this.chargepiles);
-
-    this.addList('labor', this.labors);
-    this.addList('rest', this.rests);
-    this.addList('maintain', this.maintains);
-
-    this.addList('bot', this.bots);
-
-    // this.addList('cacheShelf', this.cacheShelfs);
-    this.addList('conveyor', this.conveyors);
-    this.addList('location', this.locations);
-    //#endregion
-  }
 
   *[Symbol.iterator]() {
     for (const [_, list] of this.typeListMapping) {

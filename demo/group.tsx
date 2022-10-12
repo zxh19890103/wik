@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { Warehouse, basic, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
+import { EssWarehouse, basic, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
 import { LayerSelectProps, Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { inject, rootInjector, provides } from '../model/basic';
@@ -39,7 +39,7 @@ class RECT extends basic.Rectangle implements OnMouseOverOut {
 
 @inject(IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
-class MyWarehouse extends Warehouse {
+class MyWarehouse extends EssWarehouse {
   async layout(data: any) {
     const point = new basic.Circle([0, 0], { radius: 60, color: 'red' });
     this.add('point', point);
@@ -47,15 +47,9 @@ class MyWarehouse extends Warehouse {
     await this.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
 
     const g0 = this.injector.$new(basic.Group, [], { pane: 'group01' });
-    // const p1 = new Circle1([300, 900], {
-    //   radius: 100,
-    //   color: '#097',
-    //   fill: true,
-    //   interactive: true,
-    // });
 
     // performance
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 4000; i++) {
       const layer =
         Math.random() > 0.5
           ? new Circle1(randomLatLng(7000), {
@@ -69,15 +63,16 @@ class MyWarehouse extends Warehouse {
 
     this.map.addLayer(g0);
 
-    // g0.translate(3000, 6000);
+    // g0.translate(3000, 6000)
 
     loop(
       () => {
         g0.rotate(0.1);
+        g0.scales(1.01);
       },
       {
         auto: true,
-        duration: 100,
+        duration: 30,
       },
     );
 

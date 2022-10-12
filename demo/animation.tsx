@@ -8,7 +8,7 @@ import * as hrGUI from '../2d';
 import * as Utils from '../utils';
 import { SVG_KUBOT } from '../2d/images';
 import { inject, rootInjector } from '../model/basic';
-import { Warehouse } from '../2d';
+import { EssWarehouse } from '../2d';
 
 import './ioc.config';
 import { ESSS } from './esss';
@@ -17,7 +17,7 @@ import { appendAnimation, RotationAnimation, TranslationAnimation } from '../2d/
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
-class MyWarehouse extends Warehouse {
+class MyWarehouse extends EssWarehouse {
   layout(data: any): void {}
 }
 

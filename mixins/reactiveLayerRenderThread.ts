@@ -104,7 +104,6 @@ const flush = () => {
 };
 
 const afterFlush = () => {
-  console.log('afterflush');
   for (const item of __RENDER_REQUESTS__) {
     const id = item.layerId;
 

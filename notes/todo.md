@@ -33,7 +33,7 @@
 
 1. Group
 
-- 仿照 ThreeJS 的设置，从 Layer 继承✅
+- 仿照 ThreeJS 的设置，从 Layer 继承 ✅
 - 子元素均设置相对位置和角度
 - 需要对子元素的交互行为/事件需要作联动处理，即 A，B 都是属于 G，那个 Hover A，同时也会 Hover B✅
 - 选中（只能选中 Group， 而不能选中其下子元素，但是子元素需要执行样式变化）
@@ -43,15 +43,25 @@
 3. 提供一个 EssWarehouse extends Warehouse
 4. 支持选择若干元素，创建一个组
 5. 支持将一个组解散
-6. Interactive.onDrag... 由 behavior 下的 onPress 衍生出来✅
+6. Interactive.onDrag... 由 behavior 下的 onPress 衍生出来 ✅
 7. LayerList 下的 onItemXXX 应该合并为一个函数逻辑 ✅
 8. 思考：是否需要将 Group 放到一个 List 进行管理？
 9. 组的框选选中
-10. Group, 是在 add 的时候才创建 pane 和 renderer，需要支持 add 之前可添加 child  ✅
-11. Scene 组件支持 view 
-12. 搞一个类似 LayerGroup 的一个 Group
-13. 元素拖动性能问题方案：使用 svg renderer
-14. model 需要 Group？
-11. Scene 组件支持 view 的字符串格式
-12. 撤销/恢复
-13. tsc
+10. Group, 是在 add 的时候才创建 pane 和 renderer，需要支持 add 之前可添加 child ✅
+11. 搞一个类似 LayerGroup 的一个 Group
+12. 元素拖动性能问题方案：使用 svg renderer
+13. model 需要 Group？
+14. Scene 组件支持 view 的字符串格式 ✅
+15. 撤销/恢复
+16. tsc
+17. ViewSet 支持传入 viewset 实例 ✅
+
+18. 支持多级元素上下文菜单
+
+## 撤销/恢复
+
+## 文档
+
+- 使用 hexo 生成 readme，guide
+- 使用 typedoc 生成 api
+- 合成二者
