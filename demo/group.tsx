@@ -55,7 +55,7 @@ class MyWarehouse extends Warehouse {
     // });
 
     // performance
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 10; i++) {
       const layer =
         Math.random() > 0.5
           ? new Circle1(randomLatLng(7000), {
@@ -76,7 +76,7 @@ class MyWarehouse extends Warehouse {
         g0.rotate(0.1);
       },
       {
-        auto: false,
+        auto: true,
         duration: 100,
       },
     );

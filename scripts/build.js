@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const dtsG = require('dts-generator');
 
 const { join } = path;
 
@@ -23,13 +24,20 @@ const pre = () => {
 };
 
 const post = () => {
+  dtsG({
+    name: 'hrGraphic',
+    project: path.join(__dirname, '../'),
+    out: 'hrGraphic.d.ts',
+  });
+
   pubPkg.version = devPkg.version;
 
   fs.writeFileSync(join(distPath, './package.json'), JSON.stringify(pubPkg, '  \n'));
 
-  for (const file of ['global.d.ts', 'lib.d.ts']) {
-    fs.copyFileSync(join(rootPath, file), join(distPath, file));
-  }
+  // copy d.ts files
+  // for (const file of ['global.d.ts', 'lib.d.ts']) {
+  //   fs.copyFileSync(join(rootPath, file), join(distPath, file));
+  // }
 
   // Copy assets like css/image.
   copyInFolder('2d');
@@ -42,7 +50,7 @@ const post = () => {
   console.log('Now you should come in ./dist folder and run `npm publish`');
 };
 
-const END_WITH_PATTERN = /.(css|scss|svg|png|gif|jpg|jpeg)$/;
+const ASSET_FILE_END_WITH_PATTERN = /.(css|scss|svg|png|gif|jpg|jpeg)$/;
 
 const copyInFolder = (folder) => {
   const dir = fs.opendirSync(join(rootPath, folder));
@@ -55,7 +63,7 @@ const copyInFolder = (folder) => {
   while ((ent = dir.readSync())) {
     if (ent.isDirectory()) {
       copyInFolder(folder + '/' + ent.name);
-    } else if (ent.isFile() && END_WITH_PATTERN.test(ent.name)) {
+    } else if (ent.isFile() && ASSET_FILE_END_WITH_PATTERN.test(ent.name)) {
       const destDir = join(distPath, folder);
       const dest = join(destDir, ent.name);
 

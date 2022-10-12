@@ -3,9 +3,9 @@
   "compilerOptions": {
     "outDir": "dist",
     "target": "ESNext",
-    "module": "ES2015",
+    "module": "ESNext",
     "noEmit": false,
-    "declaration": true,
+    "declaration": false,
     "declarationMap": false,
     "sourceMap": false
   },

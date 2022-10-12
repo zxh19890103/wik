@@ -48,4 +48,7 @@
 8. 思考：是否需要将 Group 放到一个 List 进行管理？
 9. 组的框选选中
 10. Group, 是在 add 的时候才创建 pane 和 renderer，需要支持 add 之前可添加 child  ✅
-11. Scene 组件支持 view 的字符串格式
+11. Scene 组件支持 view 
+12. 搞一个类似 LayerGroup 的一个 Group
+13. 元素拖动性能问题方案：使用 svg renderer
+14. model 需要 Group？
