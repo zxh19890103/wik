@@ -1,6 +1,5 @@
 import L from 'leaflet';
 import { useEffect, useRef, useState } from 'react';
-import { HrMap } from '../2d/basic/Map.class';
 import './dev.scss';
 
 import * as Util from '../utils';
@@ -9,15 +8,13 @@ import * as hrGUIBasic from '../2d/basic';
 
 import * as hrModel from '../model';
 import { Scene } from '../dom/Scene';
-import { inject, List, provides, rootInjector } from '../model';
-import { MyWarehouse } from './MyWarehouse.class';
+import { inject, List, provides, rootInjector } from '../model/basic';
 
 import './ioc.config';
 import { Views } from '../model/basic/Views.class';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 import { DEFAULT_WAREHOUSE_DEPENDENCIES, Warehouse } from '../2d';
 import * as Interfaces from '../interfaces/symbols';
-import { render } from '../2d/renderer/layer';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 

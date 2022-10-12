@@ -25,7 +25,7 @@ export class SelectionManager
     return this.item;
   }
 
-  getAll(): Interactive[] {
+  getMany(): Interactive[] {
     return this.items || [];
   }
 
@@ -46,15 +46,15 @@ export class SelectionManager
       this.interactiveStateActionManager.pop(this.item, 'Select');
     }
 
-    this.interactiveStateActionManager.push(new InteractiveStateAction(item, 'Select'));
+    this.interactiveStateActionManager.push(item, 'Select');
     this.setItem(item);
   }
 
-  all(layers: Interactive[]): void {
+  many(layers: Interactive[]): void {
     const items = [];
     for (const layer of layers) {
       items.push(layer);
-      this.interactiveStateActionManager.push(new InteractiveStateAction(layer, 'Select'));
+      this.interactiveStateActionManager.push(layer, 'Select');
     }
 
     this.setItems(items);
@@ -62,7 +62,7 @@ export class SelectionManager
 
   append(item: Interactive) {
     if (this.items.indexOf(item) > -1) return;
-    this.interactiveStateActionManager.push(new InteractiveStateAction(item, 'Select'));
+    this.interactiveStateActionManager.push(item, 'Select');
     this.setItems([...this.items, item]);
   }
 
@@ -76,7 +76,7 @@ export class SelectionManager
     this.setItem(null);
   }
 
-  clearAll() {
+  clearMany() {
     for (const item of this.items) {
       this.interactiveStateActionManager.pop(item, 'Select');
     }
@@ -86,7 +86,7 @@ export class SelectionManager
 
   clear(): void {
     this.clearCurrent();
-    this.clearAll();
+    this.clearMany();
   }
 }
 

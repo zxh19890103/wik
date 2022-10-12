@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { Warehouse, basic, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { inject, rootInjector, provides } from '../model';
+import { inject, rootInjector, provides } from '../model/basic';
 import { IInjector } from '../interfaces/symbols';
 import { Bot } from '../2d/Bot.class';
 

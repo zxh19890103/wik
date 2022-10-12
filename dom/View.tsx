@@ -1,5 +1,5 @@
 import { memo, useContext, useEffect } from 'react';
-import { IList, Model, View as ModelView } from '../model';
+import { IList, Model, View as ModelView } from '../model/basic';
 import { Warehouse } from './Warehouse';
 
 interface Props {

@@ -16,9 +16,4 @@ export class Robot extends ReactSVGOverlay {
     };
     this.svgStyleElement = 'circle';
   }
-
-  onClick() {
-    this.rotate(10);
-    this.translate(500, 500);
-  }
 }

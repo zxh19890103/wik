@@ -14,7 +14,6 @@ import * as Utils from '../utils';
 import { PointView } from '../model/PointView';
 import { batchedEmits } from '../mixins/Emitter';
 import { random2 } from '../utils';
-import { useSelection } from '../dom/useSelection';
 import { FPS, LayerSelectProps, LayerMultipleSelectProps } from '../dom';
 import { OnContextMenu, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
 import { ScheduledPathView } from '../model/ScheduledPathView';
@@ -141,8 +140,8 @@ export default () => {
       }, 'size') as Robot[];
 
       batchedEmits(() => {
-        for (let x = 0; x < 4; x++) {
-          for (let y = 0; y < 6; y++) {
+        for (let x = 0; x < 30; x++) {
+          for (let y = 0; y < 30; y++) {
             const dot = state.dots.create();
             dot.px = x * 700;
             dot.py = y * 600;
@@ -153,8 +152,8 @@ export default () => {
       Utils.loop(
         () => {
           const bot = bots[0 ^ random2(0, bots.length)];
-          // const ra = Math.random();
-          // bot.zone = ra > 0.7 ? '0' : ra > 0.4 ? '1' : '2';
+          const ra = Math.random();
+          bot.zone = ra > 0.7 ? '0' : ra > 0.4 ? '1' : '2';
           const px = Utils.random2(-10000, 10000);
           const py = Utils.random2(-10000, 10000);
           bot.setPosition(px, py);
@@ -185,11 +184,27 @@ export default () => {
       </DOM.Scene>
       <DOM.Scene modes flex={1} border warehouse={warehouse01}>
         <DOM.Warehouse modelViewMapping={modelViewMapping}>
+          <DOM.ViewSet
+            renderer="canvas"
+            type="bot2"
+            model={state.bots}
+            reactOn="zone"
+            filter="zone=1"
+            zIndex={490}
+          />
           <DOM.ViewSet renderer="canvas" type="dot" model={state.dots} zIndex={489} fit />
         </DOM.Warehouse>
       </DOM.Scene>
       <DOM.Scene modes flex={1} border warehouse={warehouse02}>
         <DOM.Warehouse modelViewMapping={modelViewMapping}>
+          <DOM.ViewSet
+            renderer="canvas"
+            type="bot2"
+            model={state.bots}
+            reactOn="zone"
+            filter="zone=2"
+            zIndex={490}
+          />
           <DOM.ViewSet renderer="canvas" type="dot2" model={state.dots} zIndex={489} fit />
         </DOM.Warehouse>
       </DOM.Scene>

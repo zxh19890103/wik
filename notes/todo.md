@@ -52,3 +52,6 @@
 12. 搞一个类似 LayerGroup 的一个 Group
 13. 元素拖动性能问题方案：使用 svg renderer
 14. model 需要 Group？
+11. Scene 组件支持 view 的字符串格式
+12. 撤销/恢复
+13. tsc

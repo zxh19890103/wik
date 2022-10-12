@@ -1,17 +1,9 @@
 import L from 'leaflet';
 import { Warehouse, DEFAULT_WAREHOUSE_DEPENDENCIES, Bot } from '../2d';
 import { useEffect, useState } from 'react';
-import {
-  rootInjector,
-  provides,
-  List,
-  Robot,
-  RobotView,
-  RobotEffect,
-  IWarehouse,
-  Point,
-  inject,
-} from '../model';
+import { rootInjector, provides, List, inject } from '../model/basic';
+
+import { Robot, RobotView, RobotEffect, IWarehouse, Point } from '../model';
 import { IInjector } from '../interfaces/symbols';
 import * as DOM from '../dom';
 import Stats from 'stats.js';

@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { Warehouse, Route } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { rootInjector, inject } from '../model';
+import { rootInjector, inject } from '../model/basic';
 import { IInjector } from '../interfaces/symbols';
 
 import './ioc.config';

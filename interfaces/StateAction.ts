@@ -5,7 +5,7 @@ export interface IStateAction {
 }
 
 export interface IStateActionManager {
-  push(sa: IStateAction): this;
+  push(...args: any[]): this;
   pop(...args: any[]): this;
   delete(tag: number): this;
 }

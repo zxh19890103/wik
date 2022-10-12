@@ -119,7 +119,7 @@ export class Group
 
   onHighlight() {
     this.traverse<Interactive>((child) => {
-      this.interactiveStateActionManager.push(new InteractiveStateAction(child, 'Highlight'));
+      this.interactiveStateActionManager.push(child, 'Highlight');
     });
   }
 
@@ -131,7 +131,7 @@ export class Group
 
   onHover() {
     this.traverse<Interactive>((child) => {
-      this.interactiveStateActionManager.push(new InteractiveStateAction(child, 'Hover'));
+      this.interactiveStateActionManager.push(child, 'Hover');
     });
   }
 
@@ -143,7 +143,7 @@ export class Group
 
   onSelect() {
     this.traverse<Interactive>((child) => {
-      this.interactiveStateActionManager.push(new InteractiveStateAction(child, 'Select'));
+      this.interactiveStateActionManager.push(child, 'Select');
     });
   }
 

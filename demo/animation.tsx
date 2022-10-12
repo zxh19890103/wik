@@ -7,7 +7,7 @@ import * as hrGUIBasic from '../2d/basic';
 import * as hrGUI from '../2d';
 import * as Utils from '../utils';
 import { SVG_KUBOT } from '../2d/images';
-import { inject, rootInjector } from '../model';
+import { inject, rootInjector } from '../model/basic';
 import { Warehouse } from '../2d';
 
 import './ioc.config';

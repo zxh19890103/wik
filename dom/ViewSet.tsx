@@ -1,7 +1,7 @@
 import { memo, useContext, useEffect, useMemo, useState } from 'react';
 import { LayerList, VectorLayerList } from '../2d/basic';
 import { LayerWithID } from '../interfaces/WithLayerID';
-import { Base, IList } from '../model';
+import { Base, IList } from '../model/basic';
 import { useEvented } from './useEvented';
 import { View } from './View';
 import { Warehouse } from './Warehouse';

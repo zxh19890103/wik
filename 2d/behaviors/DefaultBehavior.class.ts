@@ -1,11 +1,9 @@
 import { Behavior } from '../../model/behaviors';
 import { inject } from '../../model/basic/inject';
 import { InteractiveStateActionManager } from '../state/InteractiveStateActionManager.class';
-import { InteractiveStateAction } from '../state/InteractiveStateAction.class';
 import { Interactive } from '../../interfaces/Interactive';
 import * as Interface from '../../interfaces/symbols';
 import { SelectionManager } from '../state';
-import { GraphicObject } from '../../interfaces/GraghicObject';
 
 export class DefaultBehavior extends Behavior {
   @inject(Interface.ISelectionManager)
@@ -17,7 +15,7 @@ export class DefaultBehavior extends Behavior {
   override onUnload(): void {}
 
   override onHover(layer: Interactive, e: L.LeafletMouseEvent): void {
-    this.interactiveStateActionManager.push(new InteractiveStateAction(layer, 'Hover'));
+    this.interactiveStateActionManager.push(layer, 'Hover');
   }
 
   override onUnHover(layer: Interactive, e: L.LeafletMouseEvent): void {
@@ -33,7 +31,7 @@ export class DefaultBehavior extends Behavior {
 
     if (!this.selectionManager.isSelectable(layer)) return;
 
-    this.selectionManager.clearAll();
+    this.selectionManager.clearMany();
     this.selectionManager.current(layer);
   }
 }

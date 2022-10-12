@@ -2,9 +2,7 @@ import L from 'leaflet';
 import { Warehouse, Edge } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { ModeManager, rootInjector } from '../model';
-import { HrMap } from '../2d/basic';
-import { IModeManager } from '../interfaces/symbols';
+import { rootInjector } from '../model/basic';
 
 import './ioc.config';
 

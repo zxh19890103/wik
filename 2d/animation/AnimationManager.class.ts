@@ -1,4 +1,4 @@
-import { GlobalConstManager } from '../../model';
+import { GlobalConstManager } from '../../model/state';
 import { inject, injectable } from '../../model/basic/inject';
 import { HrAnimation } from './Animation.class';
 import { AnimationState } from './AnimationState.enum';

@@ -1,18 +1,22 @@
 import { Interactive } from '../../interfaces/Interactive';
-import { StateActionManager } from '../../model/state/StateActionManager.class';
 import { injectable } from '../../model/basic/inject';
 import { InteractiveStateAction, InteractiveStateActionName } from './InteractiveStateAction.class';
-import { IStateActionManager } from '../../interfaces/symbols';
+import * as Interfacces from '../../interfaces/symbols';
+import { IStateActionManager } from '../../interfaces/StateAction';
 
 const SAFE = 5;
 
-@injectable({ providedIn: 'root', provide: IStateActionManager })
-export class InteractiveStateActionManager extends StateActionManager {
+@injectable({ providedIn: 'root', provide: Interfacces.IStateActionManager })
+export class InteractiveStateActionManager implements IStateActionManager {
   private _ctx: Interactive = null;
   private _type: InteractiveStateActionName = null;
 
-  push(sa: InteractiveStateAction): this {
-    const { context } = sa;
+  push(context: Interactive, type: InteractiveStateActionName): this {
+    if (!(context[`on${type}`] && context[`onUn${type}`])) {
+      return this;
+    }
+
+    const sa = new InteractiveStateAction(context, type);
     if (!context.changeHistory) {
       context.changeHistory = [sa];
     } else {
@@ -30,6 +34,10 @@ export class InteractiveStateActionManager extends StateActionManager {
   };
 
   pop(context: Interactive, type: InteractiveStateActionName): this {
+    if (!(context[`on${type}`] && context[`onUn${type}`])) {
+      return this;
+    }
+
     this._ctx = context;
     this._type = type;
 
@@ -69,5 +77,9 @@ export class InteractiveStateActionManager extends StateActionManager {
     }
 
     return this;
+  }
+
+  delete(tag: number): this {
+    throw new Error('Method not implemented.');
   }
 }

@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const dtsG = require('dts-generator');
+const dtsG = require('dts-generator').default;
 
 const { join } = path;
 
@@ -25,8 +25,8 @@ const pre = () => {
 
 const post = () => {
   dtsG({
-    name: 'hrGraphic',
-    project: path.join(__dirname, '../'),
+    prefix: 'hrGraphic',
+    project: join(__dirname, '../'),
     out: 'hrGraphic.d.ts',
   });
 

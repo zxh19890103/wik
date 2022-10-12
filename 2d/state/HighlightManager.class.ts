@@ -16,7 +16,7 @@ export class HighlightManager implements IHighlightManager {
     for (const layer of layers) {
       if (layer.onHighlight && layer.onUnHighlight) {
         this.layers.add(layer);
-        this.interactiveStateActionManager.push(new InteractiveStateAction(layer, 'Highlight'));
+        this.interactiveStateActionManager.push(layer, 'Highlight');
       }
     }
   }

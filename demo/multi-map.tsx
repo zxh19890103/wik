@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { Warehouse, Route, basic, Bot, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { inject, provides, rootInjector } from '../model';
+import { inject, provides, rootInjector } from '../model/basic';
 import * as Interfaces from '../interfaces/symbols';
 
 import './ioc.config';

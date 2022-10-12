@@ -103,7 +103,7 @@ export class RectDrawSelectBehavior extends Behavior {
 
     this.map.cancelObjClickEvent();
 
-    this.selectionMgr.all(results);
+    this.selectionMgr.many(results);
 
     this.rect.remove();
     this.rect = null;

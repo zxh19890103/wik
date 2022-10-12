@@ -2,9 +2,9 @@ import L from 'leaflet';
 import { Warehouse, basic, Bot } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
-import { ModeManager, inject, rootInjector } from '../model';
+import { inject, rootInjector } from '../model/basic';
 import { HrMap, VectorLayerList } from '../2d/basic';
-import { IInjector, IModeManager } from '../interfaces/symbols';
+import { IInjector } from '../interfaces/symbols';
 
 import './ioc.config';
 import { SVG_KUBOT } from '../2d/images';
@@ -36,10 +36,6 @@ export default () => {
   const [warehouse] = useState(() => {
     return rootInjector.$new(MyWarehouse) as MyWarehouse;
   });
-
-  const handleAfter = async (root: HrMap) => {
-    await basic.setDefaultImage(Bot, SVG_KUBOT);
-  };
 
   return <Scene warehouse={warehouse} />;
 };

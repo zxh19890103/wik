@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "module": "esnext",
+    "module": "ESNext",
+    "target": "ESNext",
     "moduleResolution": "node",
-    "target": "es2018",
     "jsx": "react-jsx",
     "strict": true,
     "allowJs": true,
@@ -27,5 +26,5 @@
     "noEmit": true,
     "typeRoots": ["./node_modules/@types"]
   },
-  "exclude": ["node_modules", "**/*.spec.ts", "**/*.js", "**/dist"]
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.js", "**/dist", "**/doc"]
 }

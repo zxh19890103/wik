@@ -2,14 +2,14 @@ import { Interactive } from './Interactive';
 
 export interface ISelectionManager {
   getCurrent(): Interactive;
-  getAll(): Interactive[];
+  getMany(): Interactive[];
 
   current(layer: Interactive): void;
-  all(layers: Interactive[]): void;
+  many(layers: Interactive[]): void;
   append(...layers: Interactive[]): void;
 
   clearCurrent(): void;
-  clearAll(): void;
+  clearMany(): void;
   clear(): void;
 
   isSelectable(layer: Interactive): boolean;

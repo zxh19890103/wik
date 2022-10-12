@@ -9,7 +9,7 @@ import { MyWarehouse } from './MyWarehouse.class';
 
 import './ioc.config';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
-import { rootInjector } from '../model';
+import { rootInjector } from '../model/basic';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
