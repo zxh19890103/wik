@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+  <%- partial('_partial/head') %>
 
-<head>
-  <title>Doc</title>
-  <meta charset="UTF-8">
-</head>
-
-<body>
-  <%- body %>
-</body>
-
+  <body>
+    <div class="root">
+      <%- partial('_partial/header') %>
+      <div class="focus">
+        <%- partial('_partial/aside') %>
+        <main><%- body %></main>
+        <%- partial('_partial/aside-r') %>
+      </div>
+      <%- partial('_partial/footer') %>
+    </div>
+  </body>
 </html>
