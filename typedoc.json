@@ -1,68 +1,16 @@
 {
   "$schema": "https://typedoc.org/schema.json",
   "name": "Graphic Library Documentation",
-  "entryPoints": [
-    "2d",
-    "3d",
-    "dom",
-    "interfaces",
-    "mixins",
-    "model",
-    "utils"
-  ],
+  "entryPoints": ["2d", "3d", "dom", "interfaces", "mixins", "model", "utils"],
   "exclude": ["demo"],
   "entryPointStrategy": "expand",
   "readme": "README.md",
   "out": "doc",
-  "theme": "default",
-  "customCss": "./scripts/doc.css",
-  "externalPattern": [
-    "**/node_modules/**/*"
-  ],
+  "theme": "hierarchy",
+  "customCss": "./document/themes/typedoc.css",
+  "externalPattern": ["**/node_modules/**/*"],
   "includeVersion": true,
   "excludeExternals": true,
   "cleanOutputDir": true,
-  "plugin": [
-    "@knodes/typedoc-plugin-pages",
-    "typedoc-plugin-missing-exports"
-  ],
-  "pluginPages": {
-    "pages": [
-      {
-        "title": "Tutorials",
-        "moduleRoot": false,
-        "childrenDir": "./tutorials",
-        "children": [
-          {
-            "title": "Mixins",
-            "source": "./mixins.md"
-          },
-          {
-            "title": "Modes",
-            "source": "./modes.md"
-          },
-          {
-            "title": "Animations",
-            "source": "./animation.md"
-          },
-          {
-            "title": "Model-View",
-            "source": "./model-view.md"
-          },
-          {
-            "title": "Model-DOM",
-            "source": "./model-dom.md"
-          },
-          {
-            "title": "React SVGOverlay",
-            "source": "./react-svgoverlay.md"
-          },
-          {
-            "title": "Dependency Inject",
-            "source": "./inject.md"
-          },
-        ]
-      }
-    ]
-  }
+  "plugin": ["typedoc-plugin-missing-exports", "typedoc-theme-hierarchy"]
 }
