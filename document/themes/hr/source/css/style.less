@@ -9,11 +9,47 @@ body {
   margin: 0;
   padding: 0;
   background-color: white;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
+}
+
+:root {
+  --site-theme-color: rgb(8 126 164);
+  --site-blockquote-bg-color: antiquewhite;
+}
+
+ul,
+ol {
+  padding: 0;
+  margin: 2rem 0;
+  list-style-position: inside;
+
+  li {
+    display: list-item;
+    margin: 0.5rem 0;
+
+    > ul,
+    > ol {
+      margin: 0.5rem 0;
+      padding-left: 1rem;
+    }
+  }
+}
+
+a {
+  color: var(--site-theme-color);
+  text-decoration: none;
+  &:hover {
+    color: var(--site-theme-color);
+    border-bottom: 1px solid var(--site-theme-color);
+  }
+}
+
+code {
+  padding: 0 0.2rem;
 }
 
 blockquote {
-  background-color: antiquewhite;
+  background-color: var(--site-blockquote-bg-color);
   margin: 0;
   padding: 1rem;
   border-radius: 4px 6px;
