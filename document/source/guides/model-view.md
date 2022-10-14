@@ -3,8 +3,6 @@ layout: category
 title: Model View
 ---
 
-### 1. 定义业务模型
-
 <a href="#">AAA</a>
 
 > Yes
@@ -33,6 +31,8 @@ _Hello_
 - 90
 - 4
 - 873
+
+### 1. 定义业务模型
 
 业务模型都基于 Base 扩展出来，比如要定一个机器人的业务模型：
 
