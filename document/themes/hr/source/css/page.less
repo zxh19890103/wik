@@ -1,5 +1,7 @@
 .page {
   padding: 2rem;
+  width: var(--page-width);
+  margin: 0 auto;
   border-left: 1px dashed #ddd;
   box-sizing: border-box;
 
@@ -12,8 +14,6 @@
   }
 
   &__content {
-    max-width: 21cm;
-
     > h1,
     > h2,
     > h3,
@@ -21,6 +21,7 @@
     > h5,
     > h6 {
       position: relative;
+      cursor: pointer;
 
       .headerlink {
         position: absolute;
@@ -63,29 +64,36 @@
           transform: translateY(-50%) rotate(-45deg);
         }
       }
-
-      cursor: pointer;
     }
 
     > h2 {
       font-size: 2.8rem;
       line-height: 2.8rem;
+      margin: 4rem 0;
     }
 
     > h3 {
       font-size: 2.4rem;
+      line-height: 2.4rem;
+      margin: 3rem 0;
     }
 
     > h4 {
       font-size: 2.1rem;
+      line-height: 2.1rem;
+      margin: 2rem 0;
     }
 
     > h5 {
       font-size: 1.8rem;
+      line-height: 1.8rem;
+      margin: 2rem 0;
     }
 
     > h6 {
       font-size: 1.6rem;
+      line-height: 1.6rem;
+      margin: 2rem 0;
     }
 
     > table {
@@ -122,6 +130,23 @@
 
       td {
         color: var(--secondary-color);
+      }
+    }
+
+    > p {
+      line-height: 3.6rem;
+      margin: 2rem 0;
+      > code {
+        background-color: rgb(245, 238, 229);
+        color: var(--secondary-color);
+        border-radius: 4px;
+        margin: 0 6px;
+      }
+
+      > code,
+      > em,
+      > strong {
+        padding: 0 6px;
       }
     }
   }

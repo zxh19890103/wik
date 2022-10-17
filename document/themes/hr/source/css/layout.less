@@ -54,8 +54,21 @@ ul.menu {
 }
 
 .menubar {
+  position: relative;
+  width: var(--page-width);
+  margin: 0 auto;
   display: flex;
   justify-content: center;
+
+  .logo {
+    position: absolute;
+    top: 50%;
+    left: -3rem;
+    color: var(--link-active-color);
+    font-weight: bold;
+    font-size: 2rem;
+    transform: translateY(-50%);
+  }
 }
 
 ul.menu {

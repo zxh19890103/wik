@@ -3,8 +3,6 @@ layout: page
 title: 简介
 ---
 
-
-
 ## 特点
 
 ### 业务模型驱动视图
@@ -55,7 +53,6 @@ title: 简介
 
 提供了强大的交互扩展能力
 
-
 ## 相关文档
 
 - <a href="https://reactjs.org/docs/getting-started.html">react</a>
@@ -70,7 +67,8 @@ title: 简介
 ## TODO
 
 1. 选择一个网站图标
-2. 完善指导手册文档
-3. 完成快速入门文档
-4. 完成首页内容
-5. 将 typedoc 移入 document
+2. 选择一个名字（HRWGUI - 海柔仓库图形库）
+3. 完善指导手册文档
+4. 完成快速入门文档
+5. 完成首页内容
+6. 将 typedoc 移入 document

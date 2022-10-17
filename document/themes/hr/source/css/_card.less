@@ -12,16 +12,26 @@
     padding: 0;
 
     > p {
-      border: 1px solid #ddd;
       box-sizing: border-box;
       height: 100%;
       padding: 2rem;
       margin: 0 0.5rem;
       border-radius: 4px;
+      border: 1px solid #ddd;
       background-color: #fefefe;
+      color: var(--secondary-color);
+
+      // as title
+      > strong:first-child {
+        display: block;
+        font-weight: bold;
+        font-size: 1.3em;
+        margin-bottom: 1.6rem;
+      }
 
       &:hover {
-        color: var(--secondary-color);
+        color: var(--primary-color);
+        border-color: #aaa;
       }
     }
 

@@ -1,13 +1,12 @@
 <header>
   <div role="menubar" class="menubar">
+    <div class="logo"><i>&lt; <%= config.name %> /&gt;</i></div>
     <ul role="menu" class="menu">
       <% config.menu.forEach((item) => { %>
-        <li role="menuitem">
-          <a href="<%= item.path %>">
-            <%= item.text %>
-          </a>
-        </li>
-        <% }) %>
+      <li role="menuitem">
+        <a href="<%= item.path %>"> <%= item.text %> </a>
+      </li>
+      <% }) %>
     </ul>
   </div>
 </header>
