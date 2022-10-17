@@ -8,7 +8,7 @@
   "scripts": {
     "clr": "hexo clean",
     "dev": "hexo server -p 3000",
-    "gen": "hexo generate"
+    "gen": "hexo clean && hexo generate"
   },
   "hexo": {
     "version": "6.3.0"
