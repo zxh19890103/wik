@@ -1,6 +1,5 @@
 ---
 layout: page
-title: hahha
+title: 概念
 ---
 
-Intro

@@ -1,5 +1,16 @@
-title: 'Warehouse visiualization'
-description: 'Wahrehouse graphic library documentation'
+title: Warehouse visiualization
+description: Wahrehouse graphic library documentation
 author: ronnie
 public_dir: dist
 theme: hr
+menu:
+  - text: 简介
+    path: /
+  - text: 入门
+    path: /quick.html
+  - text: 教程
+    path: /guides
+  - text: 博客
+    path: /posts.html
+  - text: API
+    path: /api.html

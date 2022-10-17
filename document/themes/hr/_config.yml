@@ -1,6 +1,2 @@
-# menu
-menu:
-  Intro: /
-  Quick: /quick
-  Referrences: /references
-  Guides: /guides
+less:
+  paths: ['source/css/**/*.less']

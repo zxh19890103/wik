@@ -1,4 +1,4 @@
-@import url('//fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+// @import url('//fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
 /* highlight */
 :root {
@@ -15,10 +15,6 @@
 
 code {
   font-family: var(--highlight-stack);
-}
-
-.highlight {
-  background: whitesmoke;
 }
 
 .highlight td,
@@ -56,6 +52,9 @@ pre::-webkit-scrollbar-thumb {
 .highlight {
   margin: 1em 0;
   width: 100%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 3px 4px;
 }
 
 .highlight .gutter pre {
@@ -72,8 +71,7 @@ pre::-webkit-scrollbar-thumb {
 }
 
 .highlight .code pre {
-  max-width: 30rem;
-  width: calc(100vw - 4rem);
+  width: 100%;
 }
 
 pre .comment,
@@ -148,12 +146,7 @@ pre .javascript .function {
 @media all and (min-width: 620px) {
   .highlight .gutter,
   .highlight .code {
-    left: -2em;
     position: relative;
-  }
-
-  .highlight .code pre {
-    max-width: 37.5em;
   }
 
   .article-entry {

@@ -1,1 +1,15 @@
-<%- site.pages.map(p => p.source).join(',') -%>
+<% var articles=site.pages.filter(x=> !page.category || (!x.path.endsWith('index.html') && x.path.startsWith(page.category))); %>
+
+  <div class="page page-index">
+    <ul>
+      <% articles.each(function (art) { %>
+        <li><a href="/<%= art.path %>">
+            <%= art.title || art.path %>
+          </a></li>
+        <% }) %>
+    </ul>
+
+    <div class="page__content">
+      <%- page.content %>
+    </div>
+  </div>

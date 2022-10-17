@@ -1,3 +1,13 @@
 <header>
-  header
+  <div role="menubar" class="menubar">
+    <ul role="menu" class="menu">
+      <% config.menu.forEach((item) => { %>
+        <li role="menuitem">
+          <a href="<%= item.path %>">
+            <%= item.text %>
+          </a>
+        </li>
+        <% }) %>
+    </ul>
+  </div>
 </header>

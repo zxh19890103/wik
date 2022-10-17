@@ -9,9 +9,10 @@
     "prebuild": "yarn lint && node ./scripts/build --stage=pre",
     "build": "tsc --project tsconfig.prod.json",
     "postbuild": "node ./scripts/build --stage=post",
-    "docg": "typedoc",
+    "doc:gen": "cd document && yarn gen && cd .. && typedoc",
+    "doc:dev": "cd document && yarn dev",
     "tsCheck": "tsc --noEmit",
-    "postdocg": "scp -r doc/* hairou@172.20.8.54:/data/workspace/hrgui-doc"
+    "postdoc:gen": "node ./scripts/doc && scp -r document/dist/* hairou@172.20.8.54:/data/workspace/hrgui-doc"
   },
   "dependencies": {
     "@types/leaflet": "^1.7.11",

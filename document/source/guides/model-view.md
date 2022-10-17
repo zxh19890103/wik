@@ -1,46 +1,7 @@
 ---
-layout: category
-title: Model View
+layout: page
+title: 模型与视图的关系
 ---
-
-<a href="#">AAA</a>
-
-> Yes
-
-_Hello_
-
-hello,world
-
-`hello,world`
-
-**Hello**
-
-# Hello
-
-## Heloo
-
-### Hello
-
-#### Hello
-
-##### Hello
-
-###### Hello
-
-1. <a>Importing and exporting context from a file</a>
-2. 1
-3. 2
-    - 981
-    - 20
-    - 91
-4. 6
-
-- <a>Importing and exporting context from a file</a>
-- 4
-  - <a>Importing and exporting context from a file</a>
-  - 11
-  - 1
-- 873
 
 ## 定义业务模型
 
