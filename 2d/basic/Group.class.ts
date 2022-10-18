@@ -14,7 +14,7 @@ import {
   IModeManager,
   IPaneManager,
   IRendererManager,
-  IStateActionManager,
+  IRedoUndoManager,
 } from '../../interfaces/symbols';
 import { leafletOptions } from '../../utils';
 import { RenderersManager } from '../leafletCanvasOverrides';
@@ -51,7 +51,7 @@ export class Group
   readonly rendererMgr: RenderersManager;
   @inject(IModeManager)
   readonly modeMgr: ModeManager;
-  @inject(IStateActionManager)
+  @inject(IRedoUndoManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
   readonly paneObj: PaneObject;

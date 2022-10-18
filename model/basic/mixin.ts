@@ -1,4 +1,4 @@
-import { Constructor } from '../../interfaces/Constructor';
+import { AbstractConstructor, Constructor } from '../../interfaces/Constructor';
 
 const hasOwn = Object.prototype.hasOwnProperty;
 const defineProp = Object.defineProperty;
@@ -12,6 +12,18 @@ export function writeReadonlyProp(o: object, name: string, value: any) {
     configurable: false,
     enumerable: false,
     writable: false,
+  });
+}
+
+/**
+ * 向一个对象写入一个属性，可写，不可删，不可枚举
+ */
+export function writeProp(o: object, name: string, value: any) {
+  defineProp(o, name, {
+    value,
+    configurable: false,
+    enumerable: false,
+    writable: true,
   });
 }
 
@@ -86,20 +98,10 @@ export function mixin(...features: Array<object | Constructor>) {
 }
 
 /**
- * set alias, just methods!
- */
-export function setAlias(to: Constructor, pairs: Record<string, string>) {
-  const proto = to.prototype;
-  for (const key of Object.keys(pairs)) {
-    writeReadonlyProp(to.prototype, pairs[key], proto[key]);
-  }
-}
-
-/**
  * decorator
  */
 export function alias(name: string | Record<string, string>, aliasTo?: string) {
-  return (target: Constructor) => {
+  return (target: AbstractConstructor) => {
     if (typeof name === 'object') {
       if (!__PROD__) {
         if (aliasTo !== undefined) {
@@ -113,6 +115,20 @@ export function alias(name: string | Record<string, string>, aliasTo?: string) {
 
     writeReadonlyProp(target.prototype, aliasTo, target.prototype[name]);
   };
+}
+
+/**
+ * set alias, just methods!
+ */
+export function setAlias(to: AbstractConstructor, pairs: Record<string, string>) {
+  const proto = to.prototype;
+
+  for (const ent of Object.entries(pairs)) {
+    const value = proto[ent[0]];
+    if (!value) continue;
+
+    writeReadonlyProp(proto, ent[1], value);
+  }
 }
 
 /**

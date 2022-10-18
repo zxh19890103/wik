@@ -21,6 +21,7 @@ const pages = {
   render: React.lazy(() => import('./render')),
   'cross-zone': React.lazy(() => import('./cross-zone')),
   group: React.lazy(() => import('./group')),
+  'redo-undo': React.lazy(() => import('./redo-undo')),
 };
 
 const Route = () => {

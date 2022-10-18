@@ -1,7 +1,6 @@
 import { Interactive } from '../../interfaces/Interactive';
 import { ISelectionManager } from '../../interfaces/Selection';
 import { WithEmitter, EmitterMix } from '../../mixins/Emitter';
-import { InteractiveStateAction } from './InteractiveStateAction.class';
 import { InteractiveStateActionManager } from './InteractiveStateActionManager.class';
 import { mixin } from '../../model/basic';
 import { inject, injectable } from '../../model/basic/inject';

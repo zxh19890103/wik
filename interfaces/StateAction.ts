@@ -1,5 +1,6 @@
 export interface IStateAction {
   readonly tag: number;
+  readonly isRedo: number;
   apply(): void;
   revert(): void;
 }

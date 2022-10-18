@@ -9,9 +9,9 @@ import {
   InjectToken,
   configProviders,
   GraphNodeDep,
-  writeProp,
   ConfigProviderConfigValue,
 } from './Injector.class';
+import { writeReadonlyProp } from './mixin';
 
 /**
  * just mark a class as an injectable one.
@@ -19,7 +19,7 @@ import {
 function injectable(config?: { providedIn: 'root'; provide: symbol }) {
   return function (target: AbstractConstructor) {
     // see the last implementation as the valid one.
-    writeProp(target, '__injectable__', true);
+    writeReadonlyProp(target, '__injectable__', true);
     if (config?.providedIn === 'root') {
       configProviders('root', [{ provide: config.provide, useClass: target as Constructor }]);
     }

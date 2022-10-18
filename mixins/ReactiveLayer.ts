@@ -8,8 +8,18 @@ import { IList } from '../model/basic';
 import { WithParent } from '../interfaces/WithParent';
 import { WithRef } from '../interfaces/WithRef';
 
+interface ReactiveLayerSnapshot {
+  id: string;
+  parent: string;
+  angle: number;
+  position: L.LatLng;
+  scale: L.LatLngLiteral;
+  latlngs: PolylineLatLngs;
+  state: any;
+}
+
 export interface ReactiveLayer
-  extends WithSnapshot,
+  extends WithSnapshot<ReactiveLayerSnapshot>,
     WithClickCancel,
     WithLayerID,
     WithParent<IList<ReactiveLayer>>,
@@ -100,7 +110,7 @@ export interface ReactiveLayer
   /**
    * scale changes
    */
-  onScale?(previousScale: L.Point): void;
+  onScale?(previousScale: L.LatLngLiteral): void;
   onLayerUpdate?(snapshot: any): void;
   onLayerStateUpdate?(previousState: unknown): void;
   onRender?(effect: ReactiveLayerRenderEffect): void;

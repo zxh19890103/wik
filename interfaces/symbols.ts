@@ -1,6 +1,7 @@
 export const IHighlightManager = Symbol.for('IHighlightManager');
 export const ISelectionManager = Symbol.for('ISelectionManager');
 export const IStateActionManager = Symbol.for('IStateActionManager');
+export const IRedoUndoManager = Symbol.for('IRedoUndoManager');
 export const IImageManager = Symbol.for('IImageManager');
 export const IAnimationManager = Symbol.for('IAnimationManager');
 export const IPaneManager = Symbol.for('IPaneManager');

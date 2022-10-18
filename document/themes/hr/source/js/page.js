@@ -8,7 +8,9 @@ function extractHeads() {
   for (const child of content.children) {
     if (!name.test(child.tagName)) continue;
     const href = child.firstElementChild.getAttribute('href');
-    html += `<li class="pageNavList__item pageNavList__item--${child.tagName}"><a href="javascript:void(0);" onclick="__scroll_to_anchor__('${href}')">${child.textContent}</a></li>`;
+    html += `<li class="pageNavList__item pageNavList__item--${child.tagName}">
+      <a href="javascript:void(0);" onclick="__scroll_to_anchor__('${href}')">${child.textContent}</a>
+    </li>`;
   }
 
   const doc = document.createElement('ul');

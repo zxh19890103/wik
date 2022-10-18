@@ -1,8 +1,7 @@
 import L, { DomEvent } from 'leaflet';
 import { IDisposable } from '../interfaces/Disposable';
 import { IPaneManager } from '../interfaces/symbols';
-import { inject, injectable } from '../model/basic';
-import { writeProp } from '../model/basic/Injector.class';
+import { inject, injectable, writeReadonlyProp } from '../model/basic';
 import { HrMap } from './basic';
 import { PaneManager } from './state';
 
@@ -123,7 +122,7 @@ export class RenderersManager implements IDisposable {
     const { renderer } = paneMgr.get('proxyPane', 'canvas', 499);
     const container = renderer._container;
 
-    writeProp(this.map, '__canvas_renderers_size__', this.size);
+    writeReadonlyProp(this.map, '__canvas_renderers_size__', this.size);
     paneMgr.onZChange = this.order;
     this.order();
 

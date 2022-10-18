@@ -10,7 +10,6 @@ import { boundToLatLngs } from '../utils/boundToLatLngs';
 import { ReactiveLayer } from './ReactiveLayer';
 import { uniqueLayerId } from '../interfaces/WithLayerID';
 import { IList } from '../model/basic';
-import D from '../3d';
 
 const { mat3, vec2 } = glMatrix;
 const D2R = 180 / Math.PI;
@@ -98,7 +97,7 @@ export function ReactiveLayerMixin(
         parent: this.$$system.layerId,
         angle: this.angle,
         position: this.position.clone(),
-        scale: this.scale,
+        scale: L.LatLng.prototype.clone.call(this.scale),
         latlngs: JSON.parse(JSON.stringify(this.latlngs)),
         state: { ...this.layerState },
       };

@@ -2,6 +2,7 @@ import { Constructor, AbstractConstructor } from '../../interfaces/Constructor';
 import { IInjector, WithInjector } from '../../interfaces/Injector';
 import * as Interfaces from '../../interfaces/symbols';
 import { Entries, fromEntries, toEntries } from '../../utils';
+import { writeReadonlyProp } from './mixin';
 
 /**
  * If parent-child relation has not created, we cannot access injector Hierarchically.
@@ -31,7 +32,7 @@ export class Injector implements IInjector {
 
   constructor(private C: Constructor) {
     this.loadProviders();
-    this.writeProp = writeProp;
+    this.writeProp = writeReadonlyProp;
   }
 
   /**
@@ -61,10 +62,10 @@ export class Injector implements IInjector {
      */
     const instance = new C(...params, ...args) as unknown as T;
 
-    writeProp(instance as object, 'injector', inj);
+    writeReadonlyProp(instance as object, 'injector', inj);
 
     if (inj !== this) {
-      writeProp(inj, 'own', instance);
+      writeReadonlyProp(inj, 'own', instance);
     }
 
     writeDeps(instance, inj);
@@ -110,7 +111,7 @@ export class Injector implements IInjector {
       const C = provider.useClass;
       const params = getParamsDeps(C, this);
       const value = new C(...params);
-      writeProp(value, 'injector', this);
+      writeReadonlyProp(value, 'injector', this);
       writeDeps(value, this);
       return value;
     } else if (provider.useFactory !== undefined) {
@@ -241,7 +242,7 @@ function writeDeps(target: any, _injector: Injector) {
     // we create the value if it does not exists
     const value = _injector.get(dep.child.token);
     // write the deps on the proto, so that all the subclass instances can access them.
-    writeProp(target, dep.symbol, value);
+    writeReadonlyProp(target, dep.symbol, value);
     writeDeps(value, _injector);
   }
 }
@@ -305,13 +306,4 @@ export function createGraphNodeDep(
     child,
     symbol: String(symbol),
   };
-}
-
-export function writeProp(o: object, prop: string, value: any) {
-  Object.defineProperty(o, prop, {
-    value,
-    writable: false,
-    enumerable: false,
-    configurable: false,
-  });
 }
