@@ -9,7 +9,6 @@ import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
 import { ReactiveLayerRenderEffect } from '../../mixins/effects';
 import { WithLayerState } from '../../interfaces/WithLayerState';
 import { AnyObject } from '../../interfaces/types';
-import { Interactive } from '../../interfaces/Interactive';
 
 @leafletOptions<L.ImageOverlayOptions>({
   interactive: true,

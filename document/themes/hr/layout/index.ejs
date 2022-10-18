@@ -1,7 +1,9 @@
 <%
  
  const dirname = page.path.split('/')[0]; 
- const articles=site.pages.filter(x=> !x.path.endsWith('index.html') && x.path.startsWith(dirname));
+ const articles = site.pages.filter(x=> !x.path.endsWith('index.html') && x.path.startsWith(dirname));
+
+ articles.sort((a, b) => Number(a.order) - Number(b.order));
  
 %>
 

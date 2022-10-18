@@ -1,6 +1,7 @@
 ---
 layout: page
 title: 混入
+order: 40
 ---
 
 以下是 wiki 上的定义：

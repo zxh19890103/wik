@@ -1,6 +1,7 @@
 ---
 layout: page
 title: 为什么有这个图形库
+order: 10
 ---
 
 目前 ESS 监控的图形元素均使用 leaflet 原生图形库，无业务性封装。

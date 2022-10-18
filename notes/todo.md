@@ -65,3 +65,7 @@
 - 使用 hexo 生成 readme，guide
 - 使用 typedoc 生成 api
 - 合成二者
+
+## DI
+
+- 属性注入支持服务容器创建
