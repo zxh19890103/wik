@@ -86,7 +86,7 @@ class MyWarehouse extends EssWarehouse {
     /**
      * draw image is very expensive.
      */
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 1000; i++) {
       const bot = this.injector.$new<Bot>(Bot, null, 5000, 5000);
       this.add('bot', bot);
       this._bots.push(bot);
@@ -192,7 +192,7 @@ export default () => {
 
   return (
     <Scene.Layout flow="horizontal">
-      <FPS off />
+      <FPS />
       <Scene modes flex={1} warehouse={warehouse} onPhase={null} />
       {/* <Scene.SelectShell w={340}>
         <Detail />

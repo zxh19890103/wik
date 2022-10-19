@@ -6,35 +6,41 @@ order: 20
 
 ## 开发
 
-本地运行：
+拉取代码：
 
 ```sh
-
 git clone git@git.hairoutech.com:softwaregroup/frontend/common/graphic.git
 
 cd graphic
 
 git checkout dev
+```
+
+安装依赖、运行：
+
+```sh
 
 yarn
 
 yarn dev
 
-# lint
-
-yarn lint
-
 ```
 
-打包并发布：
+打包、发布：
 
 ```sh
+# lint
+yarn lint
+
+
+# important, check type firstly.
+yarn tsCheck
 
 yarn build
 
 cd dist
 
-# modify version firstly.
+# this'll modify version firstly.
 npm publish
 
 ```
@@ -43,10 +49,10 @@ npm publish
 
 ```sh
 
-yarn docg # short for documents generate.
+yarn doc:dev # if you want write documentations.
 
+yarn doc:gen # short for documents generate. it'll generate both hexo and typedoc.
 # then enter password to login host.
-
 ```
 
 ---

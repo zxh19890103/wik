@@ -140,8 +140,8 @@ export default () => {
       }, 'size') as Robot[];
 
       __batched_emits__(() => {
-        for (let x = 0; x < 30; x++) {
-          for (let y = 0; y < 30; y++) {
+        for (let x = 0; x < 200; x++) {
+          for (let y = 0; y < 200; y++) {
             const dot = state.dots.create();
             dot.px = x * 700;
             dot.py = y * 600;
