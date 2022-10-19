@@ -52,14 +52,12 @@ class LayerCreateAction extends StateActionBase {
 }
 
 class LayerUpdateAction extends StateActionBase {
-  layer: WithLayerState<any>;
-
   apply(): void {
     // this.layer.layerState
   }
 
   revert(): void {
-    throw new Error('Method not implemented.');
+    // const snapshot = this.layer.getSnapshot();
   }
 }
 
