@@ -5,16 +5,35 @@ html {
     Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
 }
 
+// theme: light
+
 :root {
-  --bg-color: white;
-  --primary-color: #234;
+  --bg-color: #fff;
+  --page-bg-color: #fff;
+  --header-bg-color: #efefef;
+  --primary-color: #333;
   --secondary-color: #666;
   --code-bg-color: #fff;
+  --code-inline-bg-color: #feedd7;
   --link-text-color: #333;
   --link-active-color: #004caa;
   --page-width: 21cm;
-  --site-blockquote-bg-color: antiquewhite;
+  --site-blockquote-bg-color: #feedd7;
 }
+
+// todo: dark & lite
+// :root {
+//   --bg-color: #444;
+//   --page-bg-color: #333;
+//   --header-bg-color: #444;
+//   --primary-color: #fff;
+//   --secondary-color: #eee;
+//   --code-bg-color: #555;
+//   --link-text-color: #efefef;
+//   --link-active-color: #4c95ee;
+//   --page-width: 21cm;
+//   --site-blockquote-bg-color: rgb(56, 53, 48);
+// }
 
 body {
   margin: 0;
@@ -34,7 +53,7 @@ ol {
     margin: 1rem 0;
 
     &::marker {
-      color: #666;
+      color: var(--secondary-color);
       font-size: 1.4rem;
     }
 
@@ -92,10 +111,6 @@ hr {
   }
 }
 
-footer {
-  display: none;
-}
-
 iframe {
   border: none;
   width: 100%;
@@ -106,4 +121,4 @@ iframe {
 @import './layout';
 @import './list';
 @import './page';
-@import './_card';
+@import './card';

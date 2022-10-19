@@ -16,7 +16,7 @@ https://en.wikipedia.org/wiki/Dependency_injection
 
 https://en.wikipedia.org/wiki/Dependency_injection#Advantages
 
-HRWGUI 自己实现了依赖注入，原理比较简单，后边会补充文档。这里仅对如何使用做出说明。
+WGUI 自己实现了依赖注入，原理比较简单，后边会补充文档。这里仅对如何使用做出说明。
 
 ## 特性
 
@@ -154,7 +154,7 @@ class Warehouse {
 
 ## 注入的继承性
 
-因为类本身具有继承性，HRWGUI 也对注入做了继承性处理，
+因为类本身具有继承性，WGUI 也对注入做了继承性处理，
 
 ```ts
 abstract class Warehouse {

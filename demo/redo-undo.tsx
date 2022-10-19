@@ -11,7 +11,6 @@ import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 import { StateActionBase, StateActionManager } from '../model/state';
 import { HrMap } from '../2d/basic';
 import { randomLatLng } from '../utils';
-import { ReactiveLayer } from '../mixins/ReactiveLayer';
 import { WithLayerState } from '../interfaces/WithLayerState';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';

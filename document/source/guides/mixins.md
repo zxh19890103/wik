@@ -17,7 +17,7 @@ https://en.wikipedia.org/wiki/Mixin#Advantages
 在 JavaScript 中，常见的混入方式为修改原型，它比较容易实现，但是存在一定的风险。Justin Fagnani 在博客 <a target="_blank" href="https://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/ 
 ">"Real" Mixins with JavaScript Classes</a> 中提出了一种更安全的混入机制，它的基础是类的继承。
 
-HRWGUI 对这两种方式均有采用，基本的原则是，简单的混入使用*修改原型方式*，否则使用*继承的方式*。
+WGUI 对这两种方式均有采用，基本的原则是，简单的混入使用*修改原型方式*，否则使用*继承的方式*。
 
 ## 修改原型
 

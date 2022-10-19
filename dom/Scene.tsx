@@ -87,7 +87,7 @@ export const Scene = (props: SceneProps) => {
   return (
     <div style={css} className="hrScene" ref={element}>
       <SelectionContext warehouse={warehouse} />
-      {props.modes && <Scene.Modes warehouse={warehouse} />}
+      {props.modes && <Modes warehouse={warehouse} />}
       {child && root && <child.type {...child.props} warehouse={warehouse} map={root} />}
     </div>
   );
@@ -193,7 +193,7 @@ Scene.MultipleSelectShell = memo((props: MultipleSelectProps) => {
   );
 });
 
-Scene.Modes = memo((props: { warehouse: IWarehouse }) => {
+const Modes = memo((props: { warehouse: IWarehouse }) => {
   const css = useMemo<React.CSSProperties>(() => {
     return {};
   }, []);
