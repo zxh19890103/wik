@@ -8,25 +8,22 @@ function extractHeads() {
   for (const child of content.children) {
     if (!name.test(child.tagName)) continue;
     const href = child.firstElementChild.getAttribute('href');
-    html += `<li class="pageNavList__item pageNavList__item--${child.tagName}">
+    html += `<li class="${child.tagName}">
       <a href="javascript:void(0);" onclick="__scroll_to_anchor__('${href}')">${child.textContent}</a>
     </li>`;
   }
 
-  const doc = document.createElement('ul');
-  doc.className = 'pageNavList';
-  doc.innerHTML = html;
+  const ul = document.createElement('ul');
+  ul.innerHTML = html;
 
-  const h = document.createElement('h3');
-  h.textContent = '内容';
+  const sections = document.querySelector('aside.right > .page-sections');
 
-  const pageNav = document.querySelector('#pageNav');
+  sections.innerHTML = '';
 
-  pageNav.appendChild(h);
-  pageNav.appendChild(doc);
+  sections.appendChild(ul);
 
   setTimeout(() => {
-    doc.classList.add('visible');
+    sections.classList.add('visible');
   }, 30);
 }
 
@@ -68,3 +65,5 @@ function __scroll_to_anchor__(selector) {
 
   __focus_div__.scrollTo(0, top);
 }
+
+window.__is_page__ = true;

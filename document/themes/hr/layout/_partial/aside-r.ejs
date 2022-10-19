@@ -1,1 +1,12 @@
-<aside id="pageNav" class="right"></aside>
+<aside class="right">
+  <h3>内容</h3>
+  <div class="page-sections">...</div>
+</aside>
+
+<script>
+  setTimeout(() => {
+    if (!window.__is_page__) {
+      document.querySelector('aside.right > h3').setAttribute('hidden', true)
+    }
+  }, 100);
+</script>

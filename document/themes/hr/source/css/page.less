@@ -43,7 +43,7 @@
         display: block;
         position: absolute;
         width: 61.8%;
-        height: 6px;
+        height: 2px;
         bottom: -1rem;
         left: 0px;
         background-color: var(--link-active-color);
@@ -154,7 +154,7 @@
   }
 }
 
-.pageNavList {
+.page-sections {
   padding: 0 1rem 0 0;
   opacity: 0;
   transition: opacity 0.5s linear;
@@ -163,26 +163,30 @@
     opacity: 1;
   }
 
-  &__item {
+  > ul > li {
     background-color: #fff;
 
-    &--H1 {
+    &.H1 {
       padding-left: 0rem;
     }
-    &--H2 {
+    &.H2 {
       padding-left: 0rem;
     }
-    &--H3 {
+    &.H3 {
       padding-left: 2rem;
     }
-    &--H4 {
+    &.H4 {
       padding-left: 3rem;
     }
-    &--H5 {
+    &.H5 {
       padding-left: 4rem;
     }
-    &--H6 {
+    &.H6 {
       padding-left: 5rem;
     }
   }
+}
+
+.leftmenu {
+
 }
