@@ -10,3 +10,18 @@ export const IGlobalConstManager = Symbol.for('IGlobalConstManager');
 export const IInjector = Symbol.for('IInjector');
 export const ILogger = Symbol.for('ILogger');
 export const IRendererManager = Symbol.for('IRendererManager');
+
+export default {
+  IHighlightManager,
+  ISelectionManager,
+  IStateActionManager,
+  IRedoUndoManager,
+  IImageManager,
+  IAnimationManager,
+  IPaneManager,
+  IModeManager,
+  IGlobalConstManager,
+  IInjector,
+  ILogger,
+  IRendererManager,
+};

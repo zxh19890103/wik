@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev --host",
     "lint": "eslint . --fix",
-    "prebuild": "yarn lint && node ./scripts/build --stage=pre",
+    "prebuild": "yarn lint && rm -rf dist && node ./scripts/build --stage=pre",
     "build": "tsc --project tsconfig.prod.json",
     "postbuild": "node ./scripts/build --stage=post",
     "doc:gen": "cd document && yarn gen && cd .. && typedoc",

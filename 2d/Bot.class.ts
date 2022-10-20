@@ -1,9 +1,5 @@
 import L from 'leaflet';
-import { OnContextMenu, OnSelect } from '../interfaces/Interactive';
-import { WithInput } from '../interfaces/WithInput';
-import { WithLayerState } from '../interfaces/WithLayerState';
 import { inject } from '../model/basic/inject';
-
 import { ImageLayer } from './basic';
 
 import {
@@ -17,12 +13,12 @@ import {
 
 import { WithClone } from '../interfaces/WithClone';
 import { ImageManager } from './state';
-import * as Interface from '../interfaces/symbols';
+import Interfaces from '../interfaces/symbols';
 
 export class Bot extends ImageLayer implements WithAnimate, WithClone {
-  @inject(Interface.IAnimationManager)
+  @inject(Interfaces.IAnimationManager)
   readonly animationManager: AnimationManager = null;
-  @inject(Interface.IImageManager)
+  @inject(Interfaces.IImageManager)
   readonly imageManager: ImageManager = null;
   readonly anglePhase = 90;
 
