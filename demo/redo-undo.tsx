@@ -12,6 +12,7 @@ import { StateActionBase, StateActionManager } from '../model/state';
 import { HrMap } from '../2d/basic';
 import { randomLatLng } from '../utils';
 import { WithLayerState } from '../interfaces/WithLayerState';
+import { ReactiveLayer } from '../mixins/ReactiveLayer';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -33,10 +34,13 @@ class MyWarehouse extends EssWarehouse {
 }
 
 class LayerCreateAction extends StateActionBase {
-  map: HrMap;
-  warehouse: Warehouse;
+  readonly map: HrMap;
+  private point: basic.Circle;
 
-  point: basic.Circle;
+  constructor(private warehouse: Warehouse) {
+    super();
+    this.map = warehouse.map;
+  }
 
   apply(): void {
     if (!this.isRedo) {
@@ -51,13 +55,45 @@ class LayerCreateAction extends StateActionBase {
   }
 }
 
-class LayerUpdateAction extends StateActionBase {
+class LayerStateUpdateAction extends StateActionBase {
   apply(): void {
     // this.layer.layerState
   }
 
   revert(): void {
     // const snapshot = this.layer.getSnapshot();
+  }
+}
+
+/**
+ * @todo add createActionFromLayer()
+ */
+class LayerPositionAction extends StateActionBase {
+  private old: L.LatLng = null;
+  private next: L.LatLng = null;
+
+  constructor(private layer: ReactiveLayer, latlng: L.LatLng) {
+    super();
+
+    this.old = layer.position;
+    this.next = latlng;
+  }
+
+  apply(): void {
+    this.layer.setPosition(this.next);
+  }
+
+  revert(): void {
+    this.layer.setPosition(this.old);
+  }
+}
+
+class BatchedLayerCopyAction extends StateActionBase {
+  apply(): void {
+    throw new Error('Method not implemented.');
+  }
+  revert(): void {
+    throw new Error('Method not implemented.');
   }
 }
 
@@ -73,13 +109,22 @@ export default () => {
       <div style={{ width: 300 }}>
         <button
           onClick={() => {
-            const action = new LayerCreateAction();
-            warehouse.injector.writeProp(action, 'map', warehouse.map);
-            warehouse.injector.writeProp(action, 'warehouse', warehouse);
+            const action = new LayerCreateAction(warehouse);
             warehouse.redoUndoMgr.push(action);
           }}
         >
           create
+        </button>
+        <button
+          onClick={() => {
+            // const activeOne = warehouse.selectionManager.getCurrent();
+            // if (!activeOne) return;
+            const point = warehouse.first('point');
+            const action = new LayerPositionAction(point as any, L.latLng(randomLatLng(30000)));
+            warehouse.redoUndoMgr.push(action);
+          }}
+        >
+          move
         </button>
         <button
           onClick={() => {
