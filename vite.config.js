@@ -17,13 +17,15 @@ export default {
   },
   /**
    * We do not use vite's build feature, instead we use TSC to transform TS file to "es6 + d.ts"
+   *
+   * Now we use vite to build.
    */
   build: {
     lib: {
       name: 'hrGUI',
-      entry: './lib.ts',
+      entry: './index.ts',
       formats: ['es', 'umd'],
-      fileName: 'hrgui',
+      fileName: 'index',
     },
   },
   plugins: [

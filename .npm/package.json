@@ -2,6 +2,7 @@
   "name": "@fe/graphic",
   "version": "",
   "main": "index.js",
+  "module": "index.js",
   "license": "MIT",
   "scripts": {},
   "dependencies": {
@@ -12,6 +13,7 @@
     "@types/three": "^0.143.0",
     "eventemitter3": "^4.0.7",
     "gl-matrix": "^3.4.3",
+    "stats.js": "^0.17.0",
     "reflect-metadata": "^0.1.13"
   },
   "peerDependencies": {

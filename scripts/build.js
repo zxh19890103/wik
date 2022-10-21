@@ -6,13 +6,17 @@ const { join } = path;
 const stage = process.argv[2].slice(8);
 
 const devPkg = require('../package.json');
-const pubPkg = require('../.npm/package.json');
-
-console.log('--stage--', stage);
+const tsConfig = require('../tsconfig.prod.json');
 
 const rootPath = join(__dirname, '../');
-const distPath = join(rootPath, './dist');
+const npmPath = join(__dirname, '../.npm');
 
+const distPath = join(rootPath, tsConfig.compilerOptions.outDir);
+const pubPkg = require(join(npmPath, './package.json'));
+
+/**
+ * remove dist folder.
+ */
 const pre = () => {
   if (!fs.existsSync(distPath)) return;
 
@@ -22,55 +26,30 @@ const pre = () => {
   });
 };
 
+/**
+ * use vite and tsc
+ */
 const post = () => {
+  // package file
   pubPkg.version = devPkg.version;
-
   fs.writeFileSync(join(distPath, './package.json'), JSON.stringify(pubPkg, '  \n'));
 
+  // other files in .npm
+  for (const file of ['.npmrc', 'README.md']) {
+    fs.copyFileSync(join(npmPath, file), join(distPath, file));
+  }
+
   // copy d.ts files
-  for (const file of ['lib.d.ts']) {
+  for (const file of ['lib.d.ts', 'lib.internal.d.ts']) {
     fs.copyFileSync(join(rootPath, file), join(distPath, file));
   }
 
-  // Copy assets like css/image.
-  copyInFolder('2d');
-  copyInFolder('3d');
-  copyInFolder('dom');
-  copyInFolder('mixins');
-  copyInFolder('model');
-  copyInFolder('utils');
-
-  console.log('Now you should come in ./dist folder and run `npm publish`');
-};
-
-const ASSET_FILE_END_WITH_PATTERN = /.(css|scss|svg|png|gif|jpg|jpeg)$/;
-
-const copyInFolder = (folder) => {
-  const dir = fs.opendirSync(join(rootPath, folder));
-
-  /**
-   * @type {fs.Dirent}
-   */
-  let ent = null;
-
-  while ((ent = dir.readSync())) {
-    if (ent.isDirectory()) {
-      copyInFolder(folder + '/' + ent.name);
-    } else if (ent.isFile() && ASSET_FILE_END_WITH_PATTERN.test(ent.name)) {
-      const destDir = join(distPath, folder);
-      const dest = join(destDir, ent.name);
-
-      if (!fs.existsSync(destDir)) {
-        fs.mkdirSync(destDir);
-      }
-
-      const src = join(rootPath, folder, ent.name);
-      fs.copyFileSync(src, dest);
-    }
-  }
+  console.log('Now you should open ./dist folder and run `npm publish`');
 };
 
 const main = () => {
+  console.log('--stage--', stage);
+
   switch (stage) {
     case 'pre': {
       pre();

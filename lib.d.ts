@@ -1,6 +1,6 @@
 import { Renderer } from 'leaflet';
 import { EventEmitterStatic3 } from 'eventemitter3';
-import { HrMap } from './2d/basic';
+// import { HrMap } from './2d/basic';
 
 declare global {
   const __PROD__: boolean;

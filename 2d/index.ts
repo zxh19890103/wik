@@ -3,6 +3,7 @@ import * as behaviors from './behaviors';
 import * as state from './state';
 import * as modes from './modes';
 import * as animation from './animation';
+import * as images from './images';
 
 import './styles/index.scss';
 
@@ -23,4 +24,4 @@ export * from './EssWarehouse.class';
 
 export * from './leafletCanvasOverrides';
 
-export { basic, behaviors, state, modes, animation };
+export { basic, behaviors, state, modes, animation, images };

@@ -1,13 +1,13 @@
 {
   "name": "core",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev": "vite dev --host",
     "lint": "eslint . --fix",
-    "prebuild": "yarn lint && rm -rf dist && node ./scripts/build --stage=pre",
-    "build": "tsc --project tsconfig.prod.json",
+    "prebuild": "yarn lint && node ./scripts/build --stage=pre",
+    "build": "vite --config vite.config.prod.js build && tsc --project tsconfig.prod.json",
     "postbuild": "node ./scripts/build --stage=post",
     "doc:gen": "cd document && yarn gen && cd .. && typedoc",
     "doc:dev": "cd document && yarn dev",
@@ -24,9 +24,6 @@
     "gl-matrix": "^3.4.3",
     "reflect-metadata": "^0.1.13",
     "stats.js": "^0.17.0"
-  },
-  "peerDependencies": {
-    "leaflet": "~1.7.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.36.1",

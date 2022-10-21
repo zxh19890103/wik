@@ -153,7 +153,7 @@ function setMixin(destClass: Constructor, srcClass: Constructor, onlyMethods = f
     }
 
     // but those methods defined on the super Class will be override.
-    if (protoDest[key] !== undefined) {
+    if (!__PROD__ && protoDest[key] !== undefined) {
       console.warn(
         `member "${key}" on ${destClass.name} will be overrided! Because it's not on the this prototype.`,
       );
