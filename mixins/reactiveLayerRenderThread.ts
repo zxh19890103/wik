@@ -120,7 +120,7 @@ const afterFlush = () => {
     }
 
     if (effect & ReactiveLayerRenderEffect.rotate) {
-      layer.fire('rotate', {});
+      layer.fire('angle', {});
     }
 
     item.afterRender && item.afterRender(effect);

@@ -1,5 +1,5 @@
-name: WarehouseGUI
-title: Warehouse visiualization
+name: WGUI
+title: Warehouse visiualization, Graphic Library, Quickly build a GUI app of Warehouse
 description: Wahrehouse graphic library documentation
 author: ronnie
 public_dir: dist

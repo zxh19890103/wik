@@ -1,0 +1,55 @@
+.alert {
+  position: relative;
+  color: var(--alert-color-text);
+  padding: 2rem 2rem 2rem 6rem;
+  border-radius: 4px;
+
+  &:before {
+    content: '!';
+    position: absolute;
+    top: 1.5rem;
+    left: 2rem;
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    font-size: 2rem;
+    line-height: 30px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 50%;
+    transform: rotate(90deg);
+  }
+
+  &--info {
+    background-color: var(--color-info);
+    &:before {
+      content: ':1';
+      color: var(--color-info);
+    }
+  }
+  &--warn,
+  &--warning {
+    background-color: var(--color-warn);
+    &:before {
+      content: ':o';
+      color: var(--color-warn);
+    }
+  }
+  &--danger,
+  &--error {
+    background-color: var(--color-error);
+    &:before {
+      content: ':(';
+      color: var(--color-error);
+      transform: rotate(90deg);
+    }
+  }
+  &--done,
+  &--success {
+    background-color: var(--color-success);
+    &:before {
+      content: ':)';
+      color: var(--color-success);
+    }
+  }
+}

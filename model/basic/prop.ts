@@ -40,9 +40,9 @@ function setClassProp(proto: any, name: string, defaultVal?: any) {
       this[`#${name}`] = v;
       queueTask({
         key: `${cName}_prop_event_${name}`,
-        run: () => {
-          this.emit(name);
-        },
+        run: 'emit',
+        context: this,
+        args: [name],
       });
     },
   });

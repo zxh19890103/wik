@@ -72,3 +72,7 @@
 ## 必要的注释
 
 ## build：生成一个 umd 包 + 一个声明文件？
+
+## Group 类可组件化
+## Group 需要受 Warehouse 管理
+## ViewSet 支持声明 model-view-mapping 函数

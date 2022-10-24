@@ -5,7 +5,10 @@ interface Task {
    * 对于相同 key 值的 task，视为同一个，仅仅更新字段
    */
   key: string;
-  run: (...args) => void;
+  /**
+   * method's name or method
+   */
+  run: string | ((...args) => void);
 }
 
 const tasks: Set<Task> = new Set();
@@ -40,8 +43,17 @@ const flush = () => {
 
   for (const task of tasks) {
     const { context, run, args } = task;
-    if (args) run.call(context, ...args);
-    else run.call(context);
+    if (typeof run === 'function') {
+      run.apply(context, args);
+    } else {
+      if (!__PROD__ && (!context || !context[run])) {
+        throw new Error(
+          `you want to call method ${run}, but there's no context or no this method.`,
+        );
+      }
+
+      (context[run] as Function).apply(context, args);
+    }
   }
 
   tasks.clear();

@@ -3,13 +3,7 @@ import { ReactiveLayer } from '../../mixins/ReactiveLayer';
 import { Interactive, OnInteractive } from '../../interfaces/Interactive';
 import { inject, mix, writeReadonlyProp } from '../../model/basic';
 import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
-import {
-  InteractiveStateAction,
-  InteractiveStateActionManager,
-  PaneManager,
-  PaneName,
-  PaneObject,
-} from '../state';
+import { InteractiveStateActionManager, PaneManager, PaneName, PaneObject } from '../state';
 import {
   IModeManager,
   IPaneManager,

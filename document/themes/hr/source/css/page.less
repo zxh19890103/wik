@@ -1,8 +1,9 @@
 .page {
   padding: 2rem;
-  width: var(--page-width);
+  max-width: var(--page-width);
+  min-width: var(--page-width-min);
   margin: 0 auto;
-  border-left: 1px dashed #ddd;
+  border-left: 1px dashed var(--lite-most-color);
   box-sizing: border-box;
   background-color: var(--page-bg-color);
 
@@ -32,7 +33,7 @@
         display: block;
         width: 1rem;
         height: 1rem;
-        background-color: var(--secondary-color);
+        background-color: var(--lite-most-color);
         text-decoration: none;
         transition: transform 0.3s linear;
         text-decoration: none;
@@ -135,9 +136,9 @@
       }
     }
 
-    > p {
-      line-height: 2rem;
-      margin: 2rem 0;
+    > p,
+    ul p,
+    ol p {
       > code {
         background-color: var(--code-inline-bg-color);
         color: var(--secondary-color);
@@ -150,6 +151,11 @@
       > strong {
         padding: 0 4px;
       }
+    }
+
+    > p {
+      line-height: 3.2rem;
+      margin: 2rem 0;
     }
 
     ul,

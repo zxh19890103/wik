@@ -27,7 +27,7 @@ WGUI 自己实现了依赖注入，原理比较简单，后边会补充文档。
 
 ## 注入的层级性
 
-受 <a target="_blank" href="https://angular.io/guide/hierarchical-dependency-injection">Angular</a> 启发，HRWGUI 支持了此特性，目的是为了支持多库区功能。
+受 <a target="_blank" href="https://angular.io/guide/hierarchical-dependency-injection">Angular</a> 启发，WGUI 支持了此特性，目的是为了支持多库区功能。
 
 层级针对的是服务容器（简称“容器”），即容器具有层级性，它形成了一个树结构，我们将容器封装进一个叫 `Injector` 的实现类中，因此可以说容器就是 `Injector` 实例。要将一个被注入目标类声明为一个容器，需要使用到 `provides` 装饰，
 

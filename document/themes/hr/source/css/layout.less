@@ -7,13 +7,15 @@ aside {
   width: 25rem;
   position: sticky;
   top: 0;
+  padding: 1rem;
+  box-sizing: border-box;
 
   ul {
     list-style-type: none;
   }
 
-  &.left {
-    direction: rtl;
+  @media screen and (max-width: 900px) {
+    display: none;
   }
 }
 
@@ -58,7 +60,7 @@ ul.menu {
 
 .menubar {
   position: relative;
-  width: var(--page-width);
+  max-width: var(--page-width);
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -71,6 +73,62 @@ ul.menu {
     font-weight: bold;
     font-size: 2rem;
     transform: translateY(-50%);
+  }
+
+  .theme-toggle {
+    display: block;
+    position: absolute;
+    top: 5px;
+    right: 0;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    box-sizing: border-box;
+    transform: rotate(6deg);
+    text-decoration: none;
+
+    &.light {
+      background-color: var(--primary-color);
+      overflow: hidden;
+
+      &:after {
+        position: absolute;
+        content: '';
+        display: block;
+        top: 0;
+        left: -30px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--bg-color);
+        transition: left 1s linear;
+      }
+
+      &:hover {
+        &:after {
+          left: -10px;
+        }
+      }
+    }
+
+    &.dark {
+      border: 2px dotted var(--primary-color);
+      transition: transform 1s linear;
+
+      &:after {
+        content: '';
+        display: block;
+        margin: 4px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+      }
+
+      &:hover {
+        transform: rotate(360deg);
+      }
+    }
   }
 }
 
