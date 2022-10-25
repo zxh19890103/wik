@@ -1,13 +1,12 @@
 import L from 'leaflet';
-import { EssWarehouse, basic, Bot } from '../2d';
+import { EssWarehouse, basic } from '../2d';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { inject, rootInjector } from '../model/basic';
-import { HrMap, VectorLayerList } from '../2d/basic';
+import { VectorLayerList } from '../2d/basic';
 import { IInjector } from '../interfaces/symbols';
 
 import './ioc.config';
-import { SVG_KUBOT } from '../2d/images';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 

@@ -71,6 +71,7 @@ ol {
   padding: 0;
   margin: 4rem 0;
   list-style-position: inside;
+  list-style-type: decimal-leading-zero;
 
   li {
     margin: 1rem 0;
@@ -96,6 +97,9 @@ a {
   &:hover {
     color: var(--link-active-color);
     border-bottom-color: var(--link-active-color);
+  }
+  &:link, &:active, &:visited {
+    color: var(--link-text-color);
   }
 }
 

@@ -1,4 +1,4 @@
-export type AnyObject = Record<string, any>;
+export type SimpleObject = Record<string, any>;
 
 export type PolylineLatLngs =
   | L.LatLngExpression[]

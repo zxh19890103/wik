@@ -1,7 +1,7 @@
 ---
 layout: page
 title: 动画
-order: 50
+order: 940
 ---
 
 动画是 layer 的状态从 A 变迁到 B 的过程连续性呈现。

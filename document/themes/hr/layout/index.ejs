@@ -1,18 +1,20 @@
 <%
- 
- const dirname = page.path.split('/')[0]; 
- const articles = site.pages.filter(x=> !x.path.endsWith('index.html') && x.path.startsWith(dirname));
-
- articles.sort((a, b) => Number(a.order) - Number(b.order));
- 
+  const dirname = page.path.split('/')[0];
+  const articles = site.pages
+    .filter(x=> !x.path.endsWith('index.html') && x.path.startsWith(dirname))
+    .sort('order', 'desc');
 %>
 
 <div class="page page-index">
   <ul>
     <% articles.each(function (art) { %>
-    <li><a href="/<%= art.path %>"> <%= art.title || art.path %> </a></li>
-    <% }) %>
+      <li><a href="/<%= art.path %>">
+          <%= art.title || art.path %>
+        </a></li>
+      <% }) %>
   </ul>
 
-  <div class="page__content"><%- page.content %></div>
+  <div class="page__content">
+    <%- page.content %>
+  </div>
 </div>

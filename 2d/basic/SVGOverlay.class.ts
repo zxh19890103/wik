@@ -8,7 +8,7 @@ import { ReactiveLayer } from '../../mixins/ReactiveLayer';
 import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
 import { ReactiveLayerRenderEffect } from '../../mixins/effects';
 import { WithLayerState } from '../../interfaces/WithLayerState';
-import { AnyObject } from '../../interfaces/types';
+import { SimpleObject } from '../../interfaces/types';
 
 @leafletOptions<L.ImageOverlayOptions>({
   interactive: true,
@@ -151,7 +151,7 @@ export class SVGOverlay extends mix(L.SVGOverlay).with<L.SVGOverlay, ReactiveLay
   }
 }
 
-export interface SVGOverlay<S = AnyObject> extends WithLayerState<S> {
+export interface SVGOverlay<S = SimpleObject> extends WithLayerState<S> {
   _map: HrMap;
   /**
    * world bounds.

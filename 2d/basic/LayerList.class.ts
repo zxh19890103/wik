@@ -42,8 +42,8 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
   @inject(Interface.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
-
   readonly mounted = false;
+
   protected featureGroup: L.FeatureGroup = null;
   protected isBatching = false;
   /**

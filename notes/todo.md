@@ -39,8 +39,8 @@
 - 选中（只能选中 Group， 而不能选中其下子元素，但是子元素需要执行样式变化）
   - 对 select layer 加工？
 
-2. 提供一个基本 Warehouse，不包含 ESS 相关业务
-3. 提供一个 EssWarehouse extends Warehouse
+2. 提供一个基本 Warehouse，不包含 ESS 相关业务 ✅
+3. 提供一个 EssWarehouse extends Warehouse ✅
 4. 支持选择若干元素，创建一个组
 5. 支持将一个组解散
 6. Interactive.onDrag... 由 behavior 下的 onPress 衍生出来 ✅
@@ -52,12 +52,20 @@
 12. 元素拖动性能问题方案：使用 svg renderer
 13. model 需要 Group？
 14. Scene 组件支持 view 的字符串格式 ✅
-15. 撤销/恢复
-16. tsc
+15. 撤销/恢复 ✅
+16. tsc ✅
 17. ViewSet 支持传入 viewset 实例 ✅
 18. 支持多级元素上下文菜单
-
-## 撤销/恢复
+19. 复合元素的 model-view 映射
+20. 地图的旋转
+21. build：生成一个 umd 包 + 一个声明文件？ ✅
+22. Group 类可组件化
+23. Group 需要受 Warehouse 管理
+24. ViewSet 支持声明 model-view-mapping 函数
+25. 继承 EventEmitter3 之后类型貌似变弱了
+26. 属性注入支持服务容器创建
+27. 对“组”进行重新构思
+28. 修改 layer list 的事件类型的名称，保留原始名称就行，不要重新定义
 
 ## 文档 ✅
 
@@ -65,14 +73,4 @@
 - 使用 typedoc 生成 api
 - 合成二者
 
-## DI
-
-- 属性注入支持服务容器创建
-
-## 必要的注释
-
-## build：生成一个 umd 包 + 一个声明文件？
-
-## Group 类可组件化
-## Group 需要受 Warehouse 管理
-## ViewSet 支持声明 model-view-mapping 函数
+## 单元测试

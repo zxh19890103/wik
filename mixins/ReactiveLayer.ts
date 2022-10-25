@@ -7,6 +7,7 @@ import { WithClickCancel } from './ClickCancel';
 import { IList } from '../model/basic';
 import { WithParent } from '../interfaces/WithParent';
 import { WithRef } from '../interfaces/WithRef';
+import { WithLayerState } from '../interfaces/WithLayerState';
 
 interface ReactiveLayerSnapshot {
   id: string;
@@ -22,6 +23,7 @@ export interface ReactiveLayer
   extends WithSnapshot<ReactiveLayerSnapshot>,
     WithClickCancel,
     WithLayerID,
+    WithLayerState<unknown>,
     WithParent<IList<ReactiveLayer>>,
     WithRef {
   readonly $$isReactive: symbol;

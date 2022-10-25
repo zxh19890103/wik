@@ -4,14 +4,14 @@ import { SVGOverlay } from './SVGOverlay.class';
 import { ReactSVGOverlayAppServer } from './ReactSVGOverlayApp';
 import type { SvgFunctionComponent } from './SVGComponentFactory';
 import { leafletOptions } from '../../utils/leaflet';
-import { AnyObject } from '../../interfaces/types';
+import { SimpleObject } from '../../interfaces/types';
 
 let _svg_id = 1992;
 
 export type SvgStyleElementType = 'rect' | 'circle';
 
 @leafletOptions<L.ImageOverlayOptions>({})
-export class ReactSVGOverlay<S = AnyObject, D = any> extends SVGOverlay<S> {
+export class ReactSVGOverlay<S = SimpleObject, D = any> extends SVGOverlay<S> {
   readonly svgServer: ReactSVGOverlayAppServer = null;
   readonly svgC: SvgFunctionComponent;
   readonly svgId: string;
@@ -55,6 +55,9 @@ export class ReactSVGOverlay<S = AnyObject, D = any> extends SVGOverlay<S> {
     svgUpdateTaskScheduled = true;
   }
 
+  /**
+   * @private
+   */
   doUpdateSVG() {
     if (!this._map || !this._image) return;
     if (!this.svgServer || !this.svgServer.isMounted) return;
@@ -103,7 +106,7 @@ export class ReactSVGOverlay<S = AnyObject, D = any> extends SVGOverlay<S> {
   onTransform() {}
 }
 
-export interface ReactSVGOverlay<S = AnyObject, D = any> {
+export interface ReactSVGOverlay<S = SimpleObject, D = any> {
   _url: HTMLElement;
   _initImage: () => void;
   /**

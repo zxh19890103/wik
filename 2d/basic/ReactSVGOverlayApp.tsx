@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import { BUILTIN_LEAFLET_PANES } from './constants';
 import { HrMap } from './Map.class';

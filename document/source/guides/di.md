@@ -1,7 +1,7 @@
 ---
 layout: page
 title: 依赖注入
-order: 60
+order: 971
 ---
 
 wiki 上对 DI 的定义是，

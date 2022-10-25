@@ -3,7 +3,7 @@ import * as glMatrix from 'gl-matrix';
 import { Constructor } from '../interfaces/Constructor';
 import { ReactiveLayerRenderEffect } from './effects';
 import { appendLayerRenderReq } from './reactiveLayerRenderThread';
-import { AnyObject, PolylineLatLngs } from '../interfaces/types';
+import { SimpleObject, PolylineLatLngs } from '../interfaces/types';
 import symbols from './is';
 import { mapLatLng } from '../utils/mapLatLng';
 import { boundToLatLngs } from '../utils/boundToLatLngs';
@@ -69,7 +69,7 @@ export function ReactiveLayerMixin(
     position: L.LatLng = new L.LatLng(0, 0);
     scale: L.LatLngLiteral = { lat: 1, lng: 1 };
 
-    layerState: AnyObject = {};
+    layerState: SimpleObject = {};
 
     private lastSnapshot = null;
     ifRender = true;
@@ -219,12 +219,20 @@ export function ReactiveLayerMixin(
       return !!this.$$system;
     }
 
-    setLayerState(partial: AnyObject): void {
+    setLayerState(partial: SimpleObject): void {
+      if (!__PROD__ && Object.getPrototypeOf(partial) !== Object.prototype) {
+        throw new Error('partial must be a simple object.');
+      }
+
       const state = this.layerState;
       let diff = false;
 
+      // compare firstly
       for (const k in partial) {
-        if (partial[k] !== state[k]) diff = true;
+        if (partial[k] !== state[k]) {
+          diff = true;
+          break;
+        }
       }
 
       if (diff) {

@@ -1,7 +1,7 @@
 ---
 layout: page
 title: 介绍 Reactive Layer
-order: 100
+order: 940
 ---
 
 `ReactiveLayer` 是对 Leaflet 提供增强特性的 Mixin，它补充了以下功能：

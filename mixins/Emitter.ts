@@ -1,5 +1,5 @@
 import { EventEmitter, EventNames } from 'eventemitter3';
-import { AnyObject } from '../interfaces/types';
+import { SimpleObject } from '../interfaces/types';
 import { writeReadonlyProp } from '../model/basic/mixin';
 import { HrEvent } from '../model/basic/Event.class';
 import { WithParent } from '../interfaces/WithParent';
@@ -112,7 +112,7 @@ export interface WithEmitter<E extends string> {
    */
   noEmit: boolean;
 
-  emit<T extends EventNames<E>>(event: T, payload?: AnyObject): boolean;
+  emit<T extends EventNames<E>>(event: T, payload?: SimpleObject): boolean;
   on<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
   off<T extends EventNames<E>>(event: T, fn?: (event: HrEvent) => void): this;
   once<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;

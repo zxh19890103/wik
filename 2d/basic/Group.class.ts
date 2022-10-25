@@ -56,6 +56,11 @@ export class Group
     this.addChild(...layers);
     L.Util.setOptions(this, options);
 
+    /**
+     * Que: Why do not this block of code just shared the same logic of LayerList?
+     * Ans: Group is extended from leaflet and thus has the L.Evented features,
+     * but List is extended from Emitter3
+     */
     this.on('click dblclick mousedown mouseover mouseout contextmenu', (evt) => {
       L.DomEvent.stop(evt);
       if (

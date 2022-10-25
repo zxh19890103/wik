@@ -12,6 +12,8 @@ import { StateActionBase, StateActionManager } from '../model/state';
 import { HrMap } from '../2d/basic';
 import { randomLatLng } from '../utils';
 import { ReactiveLayer } from '../mixins/ReactiveLayer';
+import { WithLayerState } from '../interfaces/WithLayerState';
+import { ReactiveLayerRenderEffect } from '../mixins/effects';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -19,7 +21,7 @@ L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-stati
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse extends EssWarehouse {
   @inject(IRedoUndoManager)
-  redoUndoMgr: StateActionManager;
+  undoRedoManager: StateActionManager;
 
   async layout(data: any) {
     const point = new basic.Circle([0, 0], { radius: 1000, color: '#097' });
@@ -55,12 +57,20 @@ class LayerCreateAction extends StateActionBase {
 }
 
 class LayerStateUpdateAction extends StateActionBase {
+  private state: any = null;
+
+  constructor(private layer: ReactiveLayer, private nextState: any) {
+    super();
+  }
+
   apply(): void {
-    // this.layer.layerState
+    this.state = this.layer.layerState;
+    this.layer.setLayerState(this.nextState);
   }
 
   revert(): void {
-    // const snapshot = this.layer.getSnapshot();
+    this.layer.layerState = this.state;
+    this.layer.requestRenderCall(ReactiveLayerRenderEffect.state);
   }
 }
 
@@ -87,6 +97,15 @@ class LayerPositionAction extends StateActionBase {
   }
 }
 
+class LayerAngleAction extends StateActionBase {
+  apply(): void {
+    throw new Error('Method not implemented.');
+  }
+  revert(): void {
+    throw new Error('Method not implemented.');
+  }
+}
+
 class BatchedLayerCopyAction extends StateActionBase {
   apply(): void {
     throw new Error('Method not implemented.');
@@ -109,7 +128,7 @@ export default () => {
         <button
           onClick={() => {
             const action = new LayerCreateAction(warehouse);
-            warehouse.redoUndoMgr.push(action);
+            warehouse.undoRedoManager.push(action);
           }}
         >
           create
@@ -120,21 +139,21 @@ export default () => {
             // if (!activeOne) return;
             const point = warehouse.first('point');
             const action = new LayerPositionAction(point as any, L.latLng(randomLatLng(30000)));
-            warehouse.redoUndoMgr.push(action);
+            warehouse.undoRedoManager.push(action);
           }}
         >
           move
         </button>
         <button
           onClick={() => {
-            warehouse.redoUndoMgr.undo();
+            warehouse.undoRedoManager.undo();
           }}
         >
           undo
         </button>
         <button
           onClick={() => {
-            warehouse.redoUndoMgr.redo();
+            warehouse.undoRedoManager.redo();
           }}
         >
           redo
