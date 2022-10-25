@@ -10,7 +10,7 @@
 
   <% if (folder) { %>
     <ul role="menu" class="leftmenu">
-      <% site.pages.filter(p => p.layout !== 'index' && p.source.startsWith(folder)).each((p) => { %>
+      <% site.pages.filter(p => p.layout !== 'index' && p.source.startsWith(folder)).sort('order', 'desc').each((p) => { %>
         <li role="menuitem" class="leftmenu__item"><a href="/<%= p.path %>"><%= p.title %></a></li>
       <% }); %>
     </ul>

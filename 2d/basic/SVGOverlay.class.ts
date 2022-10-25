@@ -151,7 +151,7 @@ export class SVGOverlay extends mix(L.SVGOverlay).with<L.SVGOverlay, ReactiveLay
   }
 }
 
-export interface SVGOverlay<S = SimpleObject> extends WithLayerState<S> {
+export interface SVGOverlay {
   _map: HrMap;
   /**
    * world bounds.

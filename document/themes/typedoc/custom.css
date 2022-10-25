@@ -1,12 +1,9 @@
 body {
-  --color-background: #fff;
-  background-color: #fff !important;
 }
 
 .tsd-page-toolbar {
   display: none;
 }
-
 
 .container-main {
   margin-top: -3rem;

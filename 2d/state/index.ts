@@ -4,3 +4,4 @@ export * from './InteractiveStateAction.class';
 export * from './InteractiveStateActionManager.class';
 export * from './PaneManager.class';
 export * from './SelectionManager.class';
+export * from './UserAction.class';

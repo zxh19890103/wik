@@ -11,7 +11,7 @@ let _svg_id = 1992;
 export type SvgStyleElementType = 'rect' | 'circle';
 
 @leafletOptions<L.ImageOverlayOptions>({})
-export class ReactSVGOverlay<S = SimpleObject, D = any> extends SVGOverlay<S> {
+export class ReactSVGOverlay<D = any> extends SVGOverlay {
   readonly svgServer: ReactSVGOverlayAppServer = null;
   readonly svgC: SvgFunctionComponent;
   readonly svgId: string;
@@ -106,7 +106,7 @@ export class ReactSVGOverlay<S = SimpleObject, D = any> extends SVGOverlay<S> {
   onTransform() {}
 }
 
-export interface ReactSVGOverlay<S = SimpleObject, D = any> {
+export interface ReactSVGOverlay<D = any> {
   _url: HTMLElement;
   _initImage: () => void;
   /**

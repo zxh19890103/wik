@@ -1,3 +1,3 @@
 export interface WithClone {
-  clone(): this;
+  clone(): WithClone;
 }
