@@ -4,6 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "test": "vitest --config vite.config.test.js",
+    "coverage": "vitest run --coverage --config vite.config.test.js",
     "dev": "vite dev --host",
     "lint": "eslint . --fix",
     "prebuild": "yarn lint && node ./scripts/build --stage=pre",
@@ -39,6 +41,7 @@
     "typedoc-theme-hierarchy": "^3.0.0",
     "typescript": "^4.8.2",
     "vite": "^3.0.9",
-    "vite-plugin-externals": "^0.5.1"
+    "vite-plugin-externals": "^0.5.1",
+    "vitest": "^0.24.3"
   }
 }

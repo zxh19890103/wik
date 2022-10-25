@@ -27,7 +27,10 @@ export function writeProp(o: object, name: string, value: any) {
   });
 }
 
-export function invokeMethod(o: object, name: string, ...args: any[]) {
+/**
+ * tryInvoking
+ */
+export function tryInvoking(o: object, name: string, ...args: any[]) {
   if (o[name] && typeof o[name] === 'function') {
     return o[name](...args);
   }

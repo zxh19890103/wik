@@ -54,16 +54,16 @@ export class EditBehavior extends Behavior {
       }
     } else {
       const item = this.currentContextMenuItems.find((x) => x.value === value);
+      const ccmt = this.currentContextMenuTarget;
+
       if (item && item.callback) {
         if (typeof item.callback === 'string') {
-          if (this.currentContextMenuTarget[item.callback]) {
-            this.currentContextMenuTarget[item.callback]();
-          }
+          ccmt[item.callback] && ccmt[item.callback]();
         } else {
           item.callback();
         }
-      } else if (this.currentContextMenuTarget.onContextMenuClick) {
-        this.currentContextMenuTarget.onContextMenuClick(value);
+      } else if (ccmt.onContextMenuClick) {
+        ccmt.onContextMenuClick(value);
       }
     }
 
