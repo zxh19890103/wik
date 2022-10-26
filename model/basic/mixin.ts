@@ -82,6 +82,7 @@ export function mix<B extends object>(b: Constructor<B>): MixReturns {
 
 /**
  * @decorator
+ *
  * Warn! just mix own methods in.
  *
  * constructor IS excluded!
@@ -101,7 +102,9 @@ export function mixin(...features: Array<object | Constructor>) {
 }
 
 /**
- * decorator
+ * 为 class 设置别名
+ * 注意，只对方法成员有效
+ * @decorator
  */
 export function alias(name: string | Record<string, string>, aliasTo?: string) {
   return (target: AbstractConstructor) => {
@@ -121,16 +124,35 @@ export function alias(name: string | Record<string, string>, aliasTo?: string) {
 }
 
 /**
+ * 将 src 上的方法关联到目标 class 上，同时指定一个方法名称，
+ * 注意，只对方法成员有效
+ * @decorator
+ */
+export function link(src: AbstractConstructor, pairs: Record<string, string>) {
+  return (dest: AbstractConstructor) => {
+    const proto = src.prototype;
+    const proto2 = dest.prototype;
+
+    for (const [name, alias] of Object.entries(pairs)) {
+      const value = proto[name];
+      if (!value) continue;
+
+      writeReadonlyProp(proto2, alias, value);
+    }
+  };
+}
+
+/**
  * set alias, just methods!
  */
 export function setAlias(to: AbstractConstructor, pairs: Record<string, string>) {
   const proto = to.prototype;
 
-  for (const ent of Object.entries(pairs)) {
-    const value = proto[ent[0]];
+  for (const [name, alias] of Object.entries(pairs)) {
+    const value = proto[name];
     if (!value) continue;
 
-    writeReadonlyProp(proto, ent[1], value);
+    writeReadonlyProp(proto, alias, value);
   }
 }
 

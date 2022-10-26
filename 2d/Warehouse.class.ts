@@ -1,3 +1,4 @@
+import { EventEmitter } from 'eventemitter3';
 import { LayerWithID } from '../interfaces/WithLayerID';
 import { WithEmitter, EmitterMix, __emit__, __on__ } from '../mixins/Emitter';
 import { InteractiveStateActionManager } from './state/InteractiveStateActionManager.class';
@@ -25,7 +26,7 @@ type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmen
 
 @mixin(EmitterMix)
 export abstract class Warehouse<LayoutData = any, OT extends string = never>
-  extends EventEmitter3<WarehouseEventType, any>
+  extends EventEmitter<WarehouseEventType, any>
   implements IWarehouse
 {
   readonly injector: IInjector;
@@ -189,7 +190,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   mount(map: HrMap) {
     if (this.mounted) return;
 
-    this.emit('phase', { phase: WarehousePhase.mount });
+    this.fire('phase', { phase: WarehousePhase.mount });
 
     const injector = this.injector;
 
@@ -277,16 +278,16 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
     injector.writeProp(this, 'mounted', true);
     tryInvokingOwn(this, 'onMounted');
-    this.emit('phase', { phase: WarehousePhase.mounted });
+    this.fire('phase', { phase: WarehousePhase.mounted });
 
     //#region layout
 
     (async () => {
-      this.emit('phase', { phase: WarehousePhase.data });
+      this.fire('phase', { phase: WarehousePhase.data });
       let time = performance.now();
       const d = await this.getLayoutData();
       console.log('getLayoutData takes:', performance.now() - time);
-      this.emit('phase', { phase: WarehousePhase.layout });
+      this.fire('phase', { phase: WarehousePhase.layout });
       time = performance.now();
       await this.layout(d);
       console.log('layout takes:', performance.now() - time);
@@ -295,7 +296,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
       injector.writeProp(this, 'layouted', true);
       tryInvokingOwn(this, 'onLayouted');
-      this.emit('phase', { phase: WarehousePhase.ready });
+      this.fire('phase', { phase: WarehousePhase.ready });
     })();
 
     //#endregion

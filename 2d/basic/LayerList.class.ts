@@ -1,17 +1,17 @@
 import L from 'leaflet';
+import { EventEmitter } from 'eventemitter3';
 import { IList, List } from '../../model/basic/List.class';
 import { HrMap } from './Map.class';
 import { IDisposable } from '../../interfaces/Disposable';
 import { mixin } from '../../model/basic/mixin';
 import { WithEmitter, EmitterMix } from '../../mixins/Emitter';
 import { LayerWithID } from '../../interfaces/WithLayerID';
-import { Interactive } from '../../interfaces/Interactive';
 import { InteractiveStateActionManager } from '../state/InteractiveStateActionManager.class';
 import { inject } from '../../model/basic/inject';
-import * as Interface from '../../interfaces/symbols';
 import { WithClickCancel } from '../../mixins/ClickCancel';
 import { IInjector, WithInjector } from '../../interfaces/Injector';
 import { IWarehouse } from '../../model';
+import Interface from '../../interfaces/symbols';
 
 type LayerListEventType =
   | 'add'
@@ -30,7 +30,7 @@ type LayerListEventType =
 
 @mixin(EmitterMix)
 export class LayerList<M extends LayerWithID, E extends string = never>
-  extends EventEmitter3<E | LayerListEventType, any>
+  extends EventEmitter<E | LayerListEventType, any>
   implements IList<M>, IDisposable, WithInjector
 {
   $$parent: IWarehouse;
@@ -73,7 +73,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
         if (evt.type === 'click' && layer.isObjClickEventCancelled) return;
 
-        this.emit(leaflet2list[evt.type], {
+        this.fire(leaflet2list[evt.type], {
           layer,
           leafletEvt: evt,
         });
@@ -105,7 +105,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
     if (this.isBatching) return;
 
-    this.emit('add', { item });
+    this.fire('add', { item });
   }
 
   addRange(...items: M[]): void {
@@ -124,7 +124,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
     this.isBatching = false;
 
-    this.emit('add.r', { items });
+    this.fire('add.r', { items });
   }
 
   remove(item?: M) {
@@ -145,7 +145,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
     if (this.isBatching) return;
 
-    this.emit('remove', { item });
+    this.fire('remove', { item });
   }
 
   removeRange(...items: M[]): void {
@@ -161,7 +161,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
     this.isBatching = false;
 
-    this.emit('remove.r', { items });
+    this.fire('remove.r', { items });
   }
 
   removeById(id: string): void {
@@ -186,7 +186,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
     this.featureGroup.clearLayers();
     this.size = 0;
 
-    this.emit('clear', null);
+    this.fire('clear', null);
   }
 
   update(item: M): void {

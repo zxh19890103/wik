@@ -6,6 +6,7 @@ import { EffectCallReq } from './effect';
 import { WithParent } from '../../interfaces/WithParent';
 import { IList } from './List.class';
 import { WithID } from '../../interfaces/WithID';
+import { EventEmitter } from 'eventemitter3';
 
 let _id_seed = 1992;
 
@@ -15,7 +16,7 @@ const uniqueId = (prefix = 'model') => {
 
 @mixin(EmitterMix)
 export abstract class Base<E extends string = string>
-  extends EventEmitter3<E, any>
+  extends EventEmitter<E, any>
   implements Model
 {
   readonly id: string = uniqueId();
@@ -24,8 +25,8 @@ export abstract class Base<E extends string = string>
   /**
    * 考虑多种渲染
    */
-  readonly $$views: View<Base>[] = [];
-  readonly $$parent: IList<Base> = null;
+  readonly $$views: View<Base<E>>[] = [];
+  readonly $$parent: IList<Base<E>> = null;
 
   abstract fromJSON(d: any): this;
   abstract toJSON(): any;

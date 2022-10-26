@@ -1,3 +1,4 @@
+import { EventEmitter } from 'eventemitter3';
 import { IInjector, WithInjector } from '../../interfaces/Injector';
 import { BehaviorCallback, IBehavior, IMode, IModeManager } from '../../interfaces/Mode';
 import { EmitterMix, WithEmitter } from '../../mixins/Emitter';
@@ -8,7 +9,7 @@ import { Mode } from './Mode.class';
 
 @injectable()
 @mixin(EmitterMix)
-export class ModeManager extends EventEmitter3<string, any> implements IModeManager, WithInjector {
+export class ModeManager extends EventEmitter<string, any> implements IModeManager, WithInjector {
   readonly injector: IInjector;
   modes: Map<string, IMode> = new Map();
 
@@ -25,7 +26,7 @@ export class ModeManager extends EventEmitter3<string, any> implements IModeMana
 
     nm.load();
     this._mode = nm;
-    this.emit('change', null);
+    this.fire('change', null);
 
     // add if it does not exist
     if (!this.modes.has(nm.name)) {

@@ -117,8 +117,8 @@ export class List<M extends Base> extends Base implements IList<M> {
 
     if (this.isBatching) return;
 
-    this.emit('add', { item });
-    this.emit('size');
+    this.fire('add', { item });
+    this.fire('size');
   }
 
   addRange(...items: M[]): void {
@@ -134,8 +134,8 @@ export class List<M extends Base> extends Base implements IList<M> {
 
     this.isBatching = false;
 
-    this.emit('add.r', { items });
-    this.emit('size');
+    this.fire('add.r', { items });
+    this.fire('size');
   }
 
   remove(item?: M): void {
@@ -158,8 +158,8 @@ export class List<M extends Base> extends Base implements IList<M> {
 
     if (this.isBatching) return;
 
-    this.emit('remove', { item });
-    this.emit('size');
+    this.fire('remove', { item });
+    this.fire('size');
   }
 
   removeById(key: string): void {
@@ -188,8 +188,8 @@ export class List<M extends Base> extends Base implements IList<M> {
 
     this.isBatching = false;
 
-    this.emit('remove.r', { items });
-    this.emit('size');
+    this.fire('remove.r', { items });
+    this.fire('size');
   }
 
   clear() {
@@ -201,8 +201,8 @@ export class List<M extends Base> extends Base implements IList<M> {
     this.index.clear();
     this.size = 0;
 
-    this.emit('clear');
-    this.emit('size');
+    this.fire('clear');
+    this.fire('size');
   }
 
   update(item: M): void {

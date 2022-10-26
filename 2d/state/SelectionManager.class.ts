@@ -5,13 +5,14 @@ import { InteractiveStateActionManager } from './InteractiveStateActionManager.c
 import { mixin } from '../../model/basic';
 import { inject, injectable } from '../../model/basic/inject';
 import * as Interface from '../../interfaces/symbols';
+import { EventEmitter } from 'eventemitter3';
 
 type SelectionManagerEventType = 'item' | 'items';
 
 @mixin(EmitterMix)
 @injectable({ providedIn: 'root', provide: Interface.ISelectionManager })
 export class SelectionManager
-  extends EventEmitter3<SelectionManagerEventType>
+  extends EventEmitter<SelectionManagerEventType>
   implements ISelectionManager
 {
   private item: Interactive = null;
@@ -30,12 +31,12 @@ export class SelectionManager
 
   protected setItem(item: Interactive) {
     this.item = item;
-    this.emit('item', { item });
+    this.fire('item', { item });
   }
 
   protected setItems(items: Interactive[]) {
     this.items = items;
-    this.emit('items', { items });
+    this.fire('items', { items });
   }
 
   current(item: Interactive) {

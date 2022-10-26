@@ -12,7 +12,7 @@ import { Circle, Polyline, setDefaultImage } from '../2d/basic';
 import { appendAnimation, RotationAnimation, TranslationAnimation } from '../2d/animation';
 import * as Utils from '../utils';
 import { PointView } from '../model/PointView';
-import { __batched_emits__ } from '../mixins/Emitter';
+import { __batched_fires__ } from '../mixins/Emitter';
 import { random2 } from '../utils';
 import { FPS, LayerSelectProps, LayerMultipleSelectProps } from '../dom';
 import { OnContextMenu, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
@@ -131,7 +131,7 @@ export default () => {
 
   useEffect(() => {
     setTimeout(() => {
-      const bots = __batched_emits__(() => {
+      const bots = __batched_fires__(() => {
         return Array(3)
           .fill(0)
           .map((x) => {
@@ -139,7 +139,7 @@ export default () => {
           });
       }, 'size') as Robot[];
 
-      __batched_emits__(() => {
+      __batched_fires__(() => {
         for (let x = 0; x < 200; x++) {
           for (let y = 0; y < 200; y++) {
             const dot = state.dots.create();

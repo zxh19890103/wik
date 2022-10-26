@@ -4,7 +4,6 @@ import { EventEmitterStatic3 } from 'eventemitter3';
 
 declare global {
   const __PROD__: boolean;
-  const EventEmitter3: EventEmitterStatic3;
 }
 
 declare module 'leaflet' {
@@ -39,19 +38,4 @@ declare module 'leaflet' {
      */
     _northEast: L.LatLng;
   }
-}
-
-declare module 'eventemitter3' {
-  export interface EventEmitterStatic3 {
-    new <EventTypes extends ValidEventTypes = string | symbol, Context = any>(): Omit<
-      EventEmitter<EventTypes, Context>,
-      'emit' | 'on' | 'off' | 'once'
-    >;
-  }
-
-  /**
-   * We cannot append export EventEmitter3 in the module.
-   * So define it on the globalThis
-   */
-  // const EventEmitter3: EventEmitterStatic3;
 }

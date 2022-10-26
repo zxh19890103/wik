@@ -79,7 +79,7 @@ const flush = () => {
       }
     }
 
-    cause.emit('effect');
+    cause.fire('effect');
   }
 
   effectCallReqs.clear();

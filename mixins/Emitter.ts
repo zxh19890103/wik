@@ -1,14 +1,17 @@
 import { EventEmitter, EventNames } from 'eventemitter3';
 import { SimpleObject } from '../interfaces/types';
-import { writeReadonlyProp } from '../model/basic/mixin';
 import { HrEvent } from '../model/basic/Event.class';
 import { WithParent } from '../interfaces/WithParent';
-
-writeReadonlyProp(window, 'EventEmitter3', EventEmitter);
+import { link } from '../model/basic';
 
 /**
  * When you use this methods mixin, please keep in mind that the target Class you want mix must be inherited from EventEmitter
  */
+@link(EventEmitter, {
+  on: 'listen',
+  once: 'listen$1',
+  off: 'unlisten',
+})
 export abstract class EmitterMix implements WithParent<EmitterMix> {
   __super__: any;
   $$parent: EmitterMix;
@@ -17,7 +20,10 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
 
   noEmit = false;
 
-  emit(event: string, payload: any) {
+  /**
+   * @overrides
+   */
+  fire(event: string, payload: any) {
     if (this.noEmit) {
       this.noEmit = false;
       return;
@@ -37,7 +43,7 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
     const r = this.__super__.emit.call(this, event, eventObj);
 
     if (!eventObj.stopped && this.$$parent) {
-      this.$$parent.emit(event, eventObj);
+      this.$$parent.fire(event, eventObj);
     } else {
       queueMicrotask(clearGlobalEvent);
     }
@@ -45,9 +51,13 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
     return r;
   }
 
+  emit(...args) {
+    throw new Error('use fire instead');
+  }
+
   setEventChild(child: EmitterMix, rm = false) {
     if (!__PROD__) {
-      if (!(this instanceof EventEmitter3) || !(child instanceof EventEmitter3)) {
+      if (!(this instanceof EventEmitter) || !(child instanceof EventEmitter)) {
         throw new Error('you can not set a non-event emitter as parent or child.');
       }
     }
@@ -62,7 +72,7 @@ export const __emit__ = (context: any, event: string, payload: any) => {
   const parts = event.split(/[\s,]/g).filter(Boolean);
   if (parts.length === 0) return;
   for (const part of parts) {
-    EmitterMix.prototype.emit.call(context, part, payload);
+    EmitterMix.prototype.fire.call(context, part, payload);
   }
 };
 
@@ -91,17 +101,17 @@ const clearGlobalEvent = () => {
 let isEmitBatchly = false;
 let emitObjLag: { target: any; event: string } = null;
 
-export const __batched_emits__ = <R = any>(fn: () => R | Promise<R>, event?: string) => {
+export const __batched_fires__ = <R = any>(fn: () => R | Promise<R>, event?: string) => {
   isEmitBatchly = true;
   const p = fn();
   if (p instanceof Promise) {
     return p.then(() => {
       isEmitBatchly = false;
-      emitObjLag?.target.emit(event || emitObjLag.event);
+      emitObjLag?.target.fire(event || emitObjLag.event);
     });
   } else {
     isEmitBatchly = false;
-    emitObjLag?.target.emit(event || emitObjLag.event);
+    emitObjLag?.target.fire(event || emitObjLag.event);
     return p;
   }
 };
@@ -112,15 +122,14 @@ export interface WithEmitter<E extends string> {
    */
   noEmit: boolean;
 
-  emit<T extends EventNames<E>>(event: T, payload?: SimpleObject): boolean;
-  on<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
-  off<T extends EventNames<E>>(event: T, fn?: (event: HrEvent) => void): this;
-  once<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
+  fire<T extends EventNames<E>>(event: T, payload?: SimpleObject): boolean;
+  listen<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
+  unlisten<T extends EventNames<E>>(event: T, fn?: (event: HrEvent) => void): this;
+  listen$1<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
 
   /**
    * Create parent-child relationships of two evented objects manually.
    * Because this method not mounted on evented object.
-   *
    */
   setEventChild(child: WithEmitter<string>, rm?: boolean): this;
 }
