@@ -7,7 +7,7 @@ import { SimpleObject, PolylineLatLngs } from '../interfaces/types';
 import symbols from './is';
 import { mapLatLng } from '../utils/mapLatLng';
 import { boundToLatLngs } from '../utils/boundToLatLngs';
-import { ReactiveLayer } from './ReactiveLayer';
+import { ReactiveLayer, ReactiveLayerSnapshot } from './ReactiveLayer';
 import { uniqueLayerId } from '../interfaces/WithLayerID';
 import { IList } from '../model/basic';
 
@@ -57,10 +57,10 @@ export function ReactiveLayerMixin(
     $$parent: IList<ReactiveLayer> = null;
     $$system: ReactiveLayer = null;
     $$subSystems: ReactiveLayer[] = [];
-
     $$ref = null;
 
     readonly disableMatrix = false;
+    ifRender = true;
 
     layerId = uniqueLayerId();
     latlngs: PolylineLatLngs = [];
@@ -71,11 +71,7 @@ export function ReactiveLayerMixin(
 
     layerState: SimpleObject = {};
 
-    private lastSnapshot = null;
-    ifRender = true;
-
     isObjClickEventCancelled = false;
-
     cancelObjClickEvent() {
       this.isObjClickEventCancelled = true;
       requestAnimationFrame(() => {
@@ -83,15 +79,7 @@ export function ReactiveLayerMixin(
       });
     }
 
-    getSnapshot() {
-      return this.lastSnapshot;
-    }
-
-    snapshot(): void {
-      this.lastSnapshot = this.toSnapshot();
-    }
-
-    toSnapshot() {
+    toSnapshot(): ReactiveLayerSnapshot {
       return {
         id: this.layerId,
         parent: this.$$system.layerId,

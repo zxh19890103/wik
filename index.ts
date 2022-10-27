@@ -10,4 +10,4 @@ const _default_ = { o2d, o3d, dom, utils, model };
 
 export default _default_;
 
-window['hrGUI'] = _default_;
+window['wik'] = _default_;

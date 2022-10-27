@@ -10,7 +10,7 @@ import { HrMap, LayerList, SVGOverlayList, VectorLayerList } from './basic';
 import { RenderersManager } from './leafletCanvasOverrides';
 
 import { inject } from '../model/basic/inject';
-import * as Interfaces from '../interfaces/symbols';
+import Interfaces from '../interfaces/symbols';
 import * as behaviors from './behaviors';
 import { GraphicObject } from '../interfaces/GraghicObject';
 import { IBehavior } from '../interfaces/Mode';
@@ -243,9 +243,9 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
       const event2cb = {
         'item@click': 'onClick',
         'item@dblclick': 'onDblClick',
-        'item@hover': 'onHover',
-        'item@unhover': 'onUnHover',
-        'item@press': 'onPress',
+        'item@mouseover': 'onHover',
+        'item@mouseout': 'onUnHover',
+        'item@mousedown': 'onPress',
         'item@contextmenu': 'onContextMenu',
         mousedown: 'onMouseDown',
         mousemove: 'onMouseMove',
@@ -253,7 +253,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
         click: 'onNoopClick',
       };
 
-      __on__(this, 'click dblclick hover unhover press contextmenu', (evt: HrEvent) => {
+      __on__(this, 'click dblclick mouseover mouseout mousedown contextmenu', (evt: HrEvent) => {
         if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
         const { layer, leafletEvt } = evt.payload;
         const cb = event2cb[`item@${evt.type}`];

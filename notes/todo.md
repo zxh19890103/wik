@@ -61,11 +61,12 @@
 21. build：生成一个 umd 包 + 一个声明文件？ ✅
 22. Group 类可组件化
 23. Group 需要受 Warehouse 管理
-24. ViewSet 支持声明 model-view-mapping 函数
-25. 继承 EventEmitter3 之后类型貌似变弱了
+24. ViewSet 支持声明 model-view-mapping 函数 ❌ (不做了)
+25. 继承 EventEmitter3 之后类型貌似变弱了 ✅ - 重命名
 26. 属性注入支持服务容器创建
 27. 对“组”进行重新构思
-28. 修改 layer list 的事件类型的名称，保留原始名称就行，不要重新定义
+28. 修改 layer list 的事件类型的名称，保留原始名称就行，不要重新定义 ✅
+30. snapshot mix ✅
 
 ## 文档 ✅
 

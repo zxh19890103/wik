@@ -1,5 +1,6 @@
 import { ReactiveLayer } from './ReactiveLayer';
 import { ReactiveLayerRenderEffect, LAYER_DATA_UPDATE_EFFECTS, TRANSFORM_EFFECT } from './effects';
+import { WithSnapshot } from './Snapshot';
 
 const __RENDER_REQUESTS__: Set<ReactiveLayer> = new Set();
 const __RENDER_REQUEST_EFFECTS__: Map<string, ReactiveLayerRenderEffect> = new Map();
@@ -47,7 +48,8 @@ const flush = () => {
   // Before render & During render
   for (const item of __RENDER_REQUESTS__) {
     const effect = __RENDER_REQUEST_EFFECTS__.get(item.layerId);
-    const snapshot = item.getSnapshot();
+    const asWithSnap = item as unknown as WithSnapshot;
+    const snapshot = asWithSnap.getSnapshot ? asWithSnap.getSnapshot() : null;
 
     item.onRender && item.onRender(effect);
 

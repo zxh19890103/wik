@@ -13,7 +13,6 @@ import { link } from '../model/basic';
   off: 'unlisten',
 })
 export abstract class EmitterMix implements WithParent<EmitterMix> {
-  __super__: any;
   $$parent: EmitterMix;
 
   static event: HrEvent = null;
@@ -40,7 +39,7 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
     const eventObj = payload instanceof HrEvent ? payload : new HrEvent(this, event, payload);
     EmitterMix.event = eventObj;
 
-    const r = this.__super__.emit.call(this, event, eventObj);
+    const r = EventEmitter.prototype.emit.call(this, event, eventObj);
 
     if (!eventObj.stopped && this.$$parent) {
       this.$$parent.fire(event, eventObj);

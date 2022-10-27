@@ -4,7 +4,7 @@ title: 组件
 order: 950
 ---
 
-在 dom 目录下，我们提供了几个 React 组件和 Hooks，它们和 leaflet layer、WGUI model、ess 业务结合紧密，目的是给予用户快速构建 UI 的能力。
+在 dom 目录下，我们提供了几个 React 组件和 Hooks，它们和 leaflet layer、Wik model、ess 业务结合紧密，目的是给予用户快速构建 UI 的能力。
 
 要查阅这些组件、Hooks 的具体 API，你可前往 API 页面并定位至相关模块，此文档主要对它们的组合使用加以说明。
 

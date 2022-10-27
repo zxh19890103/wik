@@ -13,6 +13,7 @@
     "postbuild": "node ./scripts/build --stage=post",
     "doc:gen": "cd document && yarn gen && cd .. && typedoc",
     "doc:dev": "cd document && yarn dev",
+    "release": "",
     "tsCheck": "tsc --noEmit",
     "postdoc:gen": "node ./scripts/doc && scp -r document/dist/* hairou@172.20.8.54:/data/workspace/hrgui-doc"
   },

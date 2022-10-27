@@ -1,5 +1,4 @@
 import * as glMatrix from 'gl-matrix';
-import { WithSnapshot } from '../interfaces/WithSnapshot';
 import { PolylineLatLngs } from '../interfaces/types';
 import { WithLayerID } from '../interfaces/WithLayerID';
 import { ReactiveLayerRenderEffect } from './effects';
@@ -8,8 +7,9 @@ import { IList } from '../model/basic';
 import { WithParent } from '../interfaces/WithParent';
 import { WithRef } from '../interfaces/WithRef';
 import { WithLayerState } from '../interfaces/WithLayerState';
+import { WithSnapshotAbstract } from './Snapshot';
 
-interface ReactiveLayerSnapshot {
+export interface ReactiveLayerSnapshot {
   id: string;
   parent: string;
   angle: number;
@@ -20,7 +20,7 @@ interface ReactiveLayerSnapshot {
 }
 
 export interface ReactiveLayer
-  extends WithSnapshot<ReactiveLayerSnapshot>,
+  extends WithSnapshotAbstract<ReactiveLayerSnapshot>,
     WithClickCancel,
     WithLayerID,
     WithLayerState<unknown>,

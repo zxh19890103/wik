@@ -56,7 +56,7 @@ group.scales(0.618);
 
 ## 视图的更新
 
-视图的更新需要借助一些 API，比如 `translate`、`rotate`，它更改了 layer 的内部状态，但没有立即调用 leaflet 的 `redraw` 逻辑。WGUI 按照以下流程执行更新：
+视图的更新需要借助一些 API，比如 `translate`、`rotate`，它更改了 layer 的内部状态，但没有立即调用 leaflet 的 `redraw` 逻辑。Wik 按照以下流程执行更新：
 
 1.  同步地修改 layer 的状态，比如 `position`、`angle`、`state` 等
 2.  使用 `appendLayerRenderReq` 发起一个更新请求，`appendLayerRenderReq` 会以 layer 为键，收集当前循环中的更新，以 `EffectTag` 的方式记录更新的类型和 payload

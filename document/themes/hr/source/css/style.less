@@ -42,6 +42,16 @@ body {
   font-size: 1.6rem;
 }
 
+body.light {
+  .logo-dark {
+    display: none;
+  }
+
+  .logo-light {
+    display: block;
+  }
+}
+
 // theme: dark
 body.dark {
   --bg-color: #444;
@@ -64,6 +74,13 @@ body.dark {
   --color-error: rgba(207, 38, 38, 0.613);
   --color-success: rgba(16, 152, 23, 0.615);
   --alert-color-text: #fff;
+
+  .logo-dark {
+    display: block;
+  }
+  .logo-light {
+    display: none;
+  }
 }
 
 ul,
@@ -98,7 +115,9 @@ a {
     color: var(--link-active-color);
     border-bottom-color: var(--link-active-color);
   }
-  &:link, &:active, &:visited {
+  &:link,
+  &:active,
+  &:visited {
     color: var(--link-text-color);
   }
 }

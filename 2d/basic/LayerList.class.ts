@@ -23,9 +23,9 @@ type LayerListEventType =
   | 'update.r'
   | 'click'
   | 'dblclick'
-  | 'hover'
-  | 'unhover'
-  | 'press'
+  | 'mouseover'
+  | 'mouseout'
+  | 'mousedown'
   | 'contextmenu';
 
 @mixin(EmitterMix)
@@ -55,15 +55,6 @@ export class LayerList<M extends LayerWithID, E extends string = never>
     super();
     this.featureGroup = new L.FeatureGroup([], {});
 
-    const leaflet2list = {
-      click: 'click',
-      dblclick: 'dblclick',
-      mousedown: 'press',
-      mouseover: 'hover',
-      mouseout: 'unhover',
-      contextmenu: 'contextmenu',
-    };
-
     this.featureGroup.on(
       'click dblclick mousedown mouseover mouseout contextmenu',
       (evt) => {
@@ -73,7 +64,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
         if (evt.type === 'click' && layer.isObjClickEventCancelled) return;
 
-        this.fire(leaflet2list[evt.type], {
+        this.fire(evt.type as LayerListEventType, {
           layer,
           leafletEvt: evt,
         });

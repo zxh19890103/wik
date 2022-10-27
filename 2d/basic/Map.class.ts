@@ -4,12 +4,6 @@ import { mixin } from '../../model/basic';
 import { leafletOptions } from '../../utils/leaflet';
 import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
 
-/**
- *   contextmenu: true,
-  contextmenuWidth: 140,
-  contextmenuItems: [],
- */
-
 @leafletOptions<L.MapOptions>({
   dragging: false,
   boxZoom: false,

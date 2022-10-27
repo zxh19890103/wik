@@ -58,5 +58,5 @@ const App = () => {
 ```
 
 <div class="alert alert--warn">
-请不要进入到目录里面探寻，因为 WGUI 是以 esm 包格式输出的
+请不要进入到目录里面探寻，因为 Wik 是以 esm 包格式输出的
 </div>

@@ -1,5 +1,5 @@
 export abstract class ClickCancelMix implements WithClickCancel {
-  isObjClickEventCancelled = false;
+  isObjClickEventCancelled: boolean;
 
   cancelObjClickEvent() {
     this.isObjClickEventCancelled = true;

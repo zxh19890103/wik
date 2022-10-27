@@ -28,16 +28,6 @@ export function writeProp(o: object, name: string, value: any) {
 }
 
 /**
- * tryInvoking
- */
-export function tryInvoking(o: object, name: string, ...args: any[]) {
-  if (o[name] && typeof o[name] === 'function') {
-    return o[name](...args);
-  }
-  return null;
-}
-
-/**
  * Mixin is a abstract subclass based on a super class.
  *
  * @see https://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/
@@ -89,13 +79,11 @@ export function mix<B extends object>(b: Constructor<B>): MixReturns {
  */
 export function mixin(...features: Array<object | Constructor>) {
   return (to: any) => {
-    writeReadonlyProp(to.prototype, '__super__', Object.getPrototypeOf(to.prototype));
-
     for (const feature of features) {
       if (hasOwn.call(feature, 'prototype')) {
-        setMixin(to, feature as Constructor, true);
+        _internal_mixin(to, feature as Constructor, true);
       } else {
-        setMixin(to, { name: 'FakeClass', prototype: feature } as Constructor, true);
+        _internal_mixin(to, { name: 'FakeClass', prototype: feature } as Constructor, true);
       }
     }
   };
@@ -115,7 +103,7 @@ export function alias(name: string | Record<string, string>, aliasTo?: string) {
         }
       }
 
-      setAlias(target, name);
+      _internal_alias(target, name);
       return;
     }
 
@@ -145,7 +133,7 @@ export function link(src: AbstractConstructor, pairs: Record<string, string>) {
 /**
  * set alias, just methods!
  */
-export function setAlias(to: AbstractConstructor, pairs: Record<string, string>) {
+export function _internal_alias(to: AbstractConstructor, pairs: Record<string, string>) {
   const proto = to.prototype;
 
   for (const [name, alias] of Object.entries(pairs)) {
@@ -159,7 +147,11 @@ export function setAlias(to: AbstractConstructor, pairs: Record<string, string>)
 /**
  * Just mix Own methods in DEST class's prototype.
  */
-function setMixin(destClass: Constructor, srcClass: Constructor, onlyMethods = false) {
+export function _internal_mixin(
+  destClass: AbstractConstructor,
+  srcClass: Constructor,
+  onlyMethods = false,
+) {
   const protoDest = destClass.prototype;
   const protoSrc = srcClass.prototype;
 

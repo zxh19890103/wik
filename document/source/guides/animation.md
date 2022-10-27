@@ -23,7 +23,7 @@ CSS 中的 animation 被定义为几个关键帧加上对元素的动画设定�
 }
 ```
 
-WGUI 与之类似，我们将一个动画以 class 的方式描述出来，然后交由 `AnimationManager` 来调度，`AnimationManager` 调度的基础是 `requestAnimationFrame`。
+Wik 与之类似，我们将一个动画以 class 的方式描述出来，然后交由 `AnimationManager` 来调度，`AnimationManager` 调度的基础是 `requestAnimationFrame`。
 
 ## 基类
 
@@ -80,7 +80,7 @@ appendAnimation.call(layer, new OpacityAnimation(layer, 0));
 注意，其中 layer 必须是 WithAnimate
 </div>
 
-## WGUI 提供的动画
+## Wik 提供的动画
 
 - RotationAnimation
 - TranslationAnimation

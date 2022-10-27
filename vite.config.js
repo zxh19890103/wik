@@ -22,7 +22,7 @@ export default {
    */
   build: {
     lib: {
-      name: 'hrGUI',
+      name: 'wik',
       entry: './index.ts',
       formats: ['es', 'umd'],
       fileName: 'index',

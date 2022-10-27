@@ -14,7 +14,7 @@ order: 965
 
 command 可以实现序列化逻辑，使用户端能够持久化其操作。
 
-WGUI 将这些命令命名为 `StateAction` ，类似 react 对 action 的定义，action 里执行的是系统副作用。
+Wik 将这些命令命名为 `StateAction` ，类似 react 对 action 的定义，action 里执行的是系统副作用。
 
 https://refactoring.guru/design-patterns/command
 
