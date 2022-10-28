@@ -68,6 +68,8 @@
 28. 修改 layer list 的事件类型的名称，保留原始名称就行，不要重新定义 ✅
 29. snapshot mix ✅
 30. 插入一些 demo 的截图，或者部署一个 playground
+31. clickCancel Mixin 需要应用到 reactive layer 上
+32. \_\_on\_\_ 等函数移到 EmiterMix 上
 
 ## 文档 ✅
 

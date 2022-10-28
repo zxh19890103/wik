@@ -8,6 +8,12 @@ export default {
   publicDir: false,
   build: {
     ...configBase.build,
+    lib: {
+      name: 'wik',
+      entry: './index.ts',
+      formats: ['es', 'umd'],
+      fileName: 'index',
+    },
     outDir: tsConfig.compilerOptions.outDir,
     emptyOutDir: false,
   },

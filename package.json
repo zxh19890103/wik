@@ -9,13 +9,13 @@
     "dev": "vite dev --host",
     "lint": "eslint . --fix",
     "prebuild": "yarn lint && node ./scripts/build --stage=pre",
-    "build": "vite --config vite.config.prod.js build && tsc --project tsconfig.prod.json",
+    "build": "vite --config vite.config.lib.js build && tsc --project tsconfig.prod.json",
     "postbuild": "node ./scripts/build --stage=post",
     "doc:gen": "cd document && yarn gen && cd .. && typedoc",
     "doc:dev": "cd document && yarn dev",
-    "release": "",
     "tsCheck": "tsc --noEmit",
-    "postdoc:gen": "node ./scripts/doc && scp -r document/dist/* hairou@172.20.8.54:/data/workspace/hrgui-doc"
+    "postdoc:gen": "node ./scripts/doc && vite --config vite.config.js build && scp -r document/dist/* hairou@172.20.8.54:/data/workspace/hrgui-doc",
+    "release": ""
   },
   "dependencies": {
     "@types/leaflet": "^1.7.11",

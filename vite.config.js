@@ -20,14 +20,7 @@ export default {
    *
    * Now we use vite to build.
    */
-  build: {
-    lib: {
-      name: 'wik',
-      entry: './index.ts',
-      formats: ['es', 'umd'],
-      fileName: 'index',
-    },
-  },
+  build: {},
   plugins: [
     viteExternalsPlugin({
       react: 'React',
