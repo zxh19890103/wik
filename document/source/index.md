@@ -1,11 +1,15 @@
 ---
 layout: page
-title: 简介
 ---
 
-<div class="logo">
+<div style="text-align: center">
   <img class="logo-dark" src="/images/logo-dark.svg" />
   <img class="logo-light" src="/images/logo.svg" />
+  <h3>
+    使用 Wik，完成你的仓库可视化只需
+    <em style="font-size: 1.5em">3</em>
+    分钟！
+  </h3>
 </div>
 
 ## 特点
@@ -19,7 +23,7 @@ title: 简介
   </li>
     <li>
   
-  **视图自驱动** 视图的变化的原因始终为数据的变化，视图模型也可以携带数据
+  **视图状态驱动** 视图的变化的原因始终为数据的变化，视图模型也可以携带数据
 
   </li>
     <li>

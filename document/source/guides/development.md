@@ -59,4 +59,6 @@ yarn doc:gen # short for documents generate. it'll generate both hexo and typedo
 
 ## 单元测试
 
-...
+使用 vitest 写单元测试，
+
+https://vitest.dev/guide/
