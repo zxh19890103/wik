@@ -28,7 +28,7 @@ export class GlobalConstManager {
    */
   robotAnimationRate = 0.1;
 
-  getVal(k: string, defaultVal = null) {
+  getVal<V>(k: string, defaultVal: V = null) {
     if (this[k] === undefined) return defaultVal;
     return this[k];
   }

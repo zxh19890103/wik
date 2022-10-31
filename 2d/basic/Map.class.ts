@@ -19,7 +19,7 @@ import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
   maxZoom: 10,
   zoomControl: false,
   doubleClickZoom: false,
-  attributionControl: false,
+  attributionControl: true,
   preferCanvas: true,
   tapTolerance: 100,
 })

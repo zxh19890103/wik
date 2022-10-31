@@ -70,6 +70,7 @@
 30. 插入一些 demo 的截图，或者部署一个 playground
 31. clickCancel Mixin 需要应用到 reactive layer 上
 32. \_\_on\_\_ 等函数移到 EmiterMix 上
+33. OT
 
 ## 文档 ✅
 

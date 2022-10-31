@@ -22,28 +22,55 @@ const pages = {
   'cross-zone': React.lazy(() => import('./cross-zone')),
   group: React.lazy(() => import('./group')),
   'redo-undo': React.lazy(() => import('./redo-undo')),
+  '2d3d': React.lazy(() => import('./2d3d')),
+  general: React.lazy(() => import('./general')),
 };
 
 const Route = () => {
-  if (!pages[route]) {
-    return <h3>404</h3>;
+  const Page = pages[route];
+
+  if (!Page) {
+    return <Home />;
   }
 
-  const P = pages[route];
-
   return (
-    <Suspense fallback={<div>page loading...</div>}>
-      <P />
+    <Suspense fallback={<div>loading...</div>}>
+      <Page />
+      <Back />
     </Suspense>
+  );
+};
+
+const Back = () => {
+  return (
+    <a className="App__topbar" href="/demo/index.html">
+      back to home
+    </a>
+  );
+};
+
+const Home = () => {
+  return (
+    <div style={{ background: 'white' }}>
+      <h3>Welcome!</h3>
+      <div>
+        <ol>
+          {Object.entries(pages).map((page) => {
+            return (
+              <li key={page[0]}>
+                <a href={`?route=${page[0]}`}>{page[0]}</a>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </div>
   );
 };
 
 const App = () => {
   return (
     <div className="App">
-      <div className="App__topbar">
-        <a href="/">回到目录</a>
-      </div>
       <Route />
     </div>
   );

@@ -344,4 +344,5 @@ export const DEFAULT_WAREHOUSE_DEPENDENCIES: Record<symbol, ConfigProviderConfig
   [Interfaces.IAnimationManager]: AnimationManager,
   [Interfaces.IHighlightManager]: HighlightManager,
   [Interfaces.IRendererManager]: RenderersManager,
+  [Interfaces.IImageManager]: ImageManager,
 };
