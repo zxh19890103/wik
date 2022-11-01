@@ -1,12 +1,8 @@
 import L from 'leaflet';
-import { OnHighlight, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
 import { PolylineLatLngs } from '../interfaces/types';
-import { WithInput } from '../interfaces/WithInput';
-import { WithLayerState } from '../interfaces/WithLayerState';
-import { ReactiveLayerRenderEffect } from '../mixins/effects';
 import { leafletOptions } from '../utils/leaflet';
 import { Polygon } from './basic';
-import type { meta } from '../model/meta';
+import type * as meta from '../model/meta';
 
 const default_latlngs = [
   [-300, -300],

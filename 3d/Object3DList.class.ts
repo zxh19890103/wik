@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { GraphicObject } from '../interfaces/GraghicObject';
 import { IList } from '../model/basic';
 
@@ -5,15 +6,19 @@ export class Object3DList<M extends GraphicObject> implements IList<M> {
   items: Set<M>;
   index: Map<string, M>;
   size: number;
+
   add(item: M): void {
     throw new Error('Method not implemented.');
   }
+
   addRange(...items: M[]): void {
     throw new Error('Method not implemented.');
   }
+
   addArr(items: M[]): void {
     throw new Error('Method not implemented.');
   }
+
   remove(item?: M): void {
     throw new Error('Method not implemented.');
   }

@@ -8,8 +8,8 @@ import { IList } from '../model/basic';
 export abstract class Warehouse3D implements IWarehouse {
   protected readonly scene: THREE.Scene;
 
-  selectionManager: ISelectionManager;
-  modeManager: IModeManager;
+  readonly selectionManager: ISelectionManager;
+  readonly modeManager: IModeManager;
 
   abstract layout(data?: unknown): void | Promise<void>;
 

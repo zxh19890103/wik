@@ -98,7 +98,7 @@ const Warehouse3D = (props: Props) => {
     {
       const ground = new THREE.Mesh(
         new THREE.PlaneGeometry(5000, 5000, 500, 500),
-        new THREE.MeshPhongMaterial({ color: 0x454545 }),
+        new THREE.MeshPhongMaterial({ color: 0x666666 }),
       );
 
       ground.position.set(0, 0, 0);

@@ -1,12 +1,14 @@
 import L from 'leaflet';
+import { useState } from 'react';
 import { EssWarehouse, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
-import { inject, provides } from '../model/basic';
+import { inject, List, provides } from '../model/basic';
 import { IInjector } from '../interfaces/symbols';
 import { Warehouse3D } from '../3d/Warehouse.class';
 import THREE from 'three';
 import './ioc.config';
 import * as General from '../dom/general';
 import { Rectangle } from '../2d/basic';
+import * as model3d from '../3d';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -44,18 +46,11 @@ class MyWarehouse3D extends Warehouse3D {
 
     // shelfs
     {
-      const material = new THREE.MeshPhongMaterial({
-        color: 0x00ff0f,
-        transparent: true,
-        blendDstAlpha: 0.4,
-      });
-
       for (let x = -20; x < 20; x++) {
         for (let y = -20; y < 20; y++) {
           for (let z = 0; z < 7; z++) {
-            const box = new THREE.Mesh(new THREE.BoxGeometry(20, 20, 20), material);
-            box.position.set(x * 100, y * 50, z * 25);
-            group.add(box);
+            const shelf = new model3d.Shelf({ x: x * 100, y: y * 50, z: z * 25 });
+            group.add(shelf);
           }
         }
       }

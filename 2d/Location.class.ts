@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import { leafletOptions } from '../utils/leaflet';
 import { Marker } from './basic/Marker.class';
-import type { meta } from '../model/meta';
+import type * as meta from '../model/meta';
 import * as svg from './images';
 
 @leafletOptions<L.MarkerOptions>({})

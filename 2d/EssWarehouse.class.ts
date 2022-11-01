@@ -1,4 +1,4 @@
-import { EmitterMix, __emit__, __on__ } from '../mixins/Emitter';
+import { __emit__, __on__ } from '../mixins/Emitter';
 import { Circle, LayerList, SVGOverlayList, VectorLayerList } from './basic';
 import { Bot } from './Bot.class';
 import { Chargepile } from './Chargepile.class';

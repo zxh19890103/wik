@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import { leafletOptions } from '../utils/leaflet';
 import { Rectangle } from './basic';
-import type { meta } from '../model/meta';
+import type * as meta from '../model/meta';
 
 @leafletOptions<L.PolylineOptions>({
   color: '#f00',

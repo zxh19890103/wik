@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import { Group } from './basic/Group.class';
 import { ConveyorNode } from './ConveyorNode.class';
-import { meta } from '../model/meta';
+import * as meta from '../model/meta';
 
 export class Conveyor extends Group {
   type: meta.ConveyorType = 'singleIO';
