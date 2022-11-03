@@ -1,20 +1,14 @@
 import { Interactive } from '../../interfaces/Interactive';
 import { ISelectionManager } from '../../interfaces/Selection';
-import { WithEmitter, EmitterMix } from '../../mixins/Emitter';
 import { InteractiveStateActionManager } from './InteractiveStateActionManager.class';
-import { mixin } from '../../model/basic';
 import { inject, injectable } from '../../model/basic/inject';
 import * as Interface from '../../interfaces/symbols';
-import { EventEmitter } from 'eventemitter3';
+import { Core } from '../../model/basic';
 
 type SelectionManagerEventType = 'item' | 'items';
 
-@mixin(EmitterMix)
 @injectable({ providedIn: 'root', provide: Interface.ISelectionManager })
-export class SelectionManager
-  extends EventEmitter<SelectionManagerEventType>
-  implements ISelectionManager
-{
+export class SelectionManager extends Core<SelectionManagerEventType> implements ISelectionManager {
   private item: Interactive = null;
   private items: Interactive[] = [];
 
@@ -89,5 +83,3 @@ export class SelectionManager
     this.clearMany();
   }
 }
-
-export interface SelectionManager extends WithEmitter<SelectionManagerEventType> {}

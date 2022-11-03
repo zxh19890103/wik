@@ -1,4 +1,3 @@
-import { __emit__, __on__ } from '../mixins/Emitter';
 import { Circle, LayerList, SVGOverlayList, VectorLayerList } from './basic';
 import { Bot } from './Bot.class';
 import { Chargepile } from './Chargepile.class';
@@ -9,11 +8,13 @@ import { Point } from './Point.class';
 import { Shelf } from './Shelf.class';
 
 import { IInjector } from '../interfaces/Injector';
-import { Warehouse } from './Warehouse.class';
+import { Warehouse } from './basic/Warehouse.class';
+import { EssObjectType } from '../model';
+import Interfaces from '../interfaces/symbols';
 
 export abstract class EssWarehouse<LayoutData = any, OT extends string = never> extends Warehouse<
   LayoutData,
-  OT
+  EssObjectType<OT>
 > {
   readonly points: VectorLayerList<Point>;
   readonly shelfs: VectorLayerList<Shelf>;

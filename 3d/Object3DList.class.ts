@@ -1,64 +1,47 @@
 import * as THREE from 'three';
-import { GraphicObject } from '../interfaces/GraghicObject';
-import { IList } from '../model/basic';
+import { __batched_fires__ } from '../mixins/Emitter';
+import { IWarehouse } from '../model';
+import { CoreList, writeReadonlyProp } from '../model/basic';
+import { IWarehouseObjectList } from '../model/IWarehouseObjectList';
 
-export class Object3DList<M extends GraphicObject> implements IList<M> {
-  items: Set<M>;
-  index: Map<string, M>;
-  size: number;
+export class Object3DList<M extends THREE.Object3D>
+  extends CoreList<M>
+  implements IWarehouseObjectList
+{
+  readonly $$parent: IWarehouse;
+  readonly itemKey: string = 'id';
+  readonly scene: THREE.Scene;
+  readonly mounted: boolean = false;
 
-  add(item: M): void {
-    throw new Error('Method not implemented.');
+  mount(root: THREE.Scene): void {
+    writeReadonlyProp(this, 'scene', root);
+    writeReadonlyProp(this, 'mounted', true);
+
+    // init add to ui
+    for (const item of this.items) {
+      root.add(item);
+    }
   }
 
-  addRange(...items: M[]): void {
-    throw new Error('Method not implemented.');
+  protected override _add(item: M): void {
+    this.scene?.add(item);
+    super._add(item);
   }
 
-  addArr(items: M[]): void {
-    throw new Error('Method not implemented.');
+  protected override _remove(item: M): void {
+    this.scene?.remove(item);
+    super._remove(item);
   }
 
-  remove(item?: M): void {
-    throw new Error('Method not implemented.');
+  protected override _clear(): void {
+    for (const item of this.items) {
+      this.scene?.remove(item);
+    }
+
+    super._clear();
   }
-  removeById(id: string): void {
-    throw new Error('Method not implemented.');
-  }
-  removeRange(...items: M[]): void {
-    throw new Error('Method not implemented.');
-  }
-  removeArr(items: M[]): void {
-    throw new Error('Method not implemented.');
-  }
-  clear(): void {
-    throw new Error('Method not implemented.');
-  }
-  update(item: M): void {
-    throw new Error('Method not implemented.');
-  }
-  updateRange(...items: M[]): void {
-    throw new Error('Method not implemented.');
-  }
-  has(key: string | M): boolean {
-    throw new Error('Method not implemented.');
-  }
-  find(key: string): M {
-    throw new Error('Method not implemented.');
-  }
-  query(predicate: (item: M) => boolean): M[] {
-    throw new Error('Method not implemented.');
-  }
-  map<R>(project: (item: M) => R): R[] {
-    throw new Error('Method not implemented.');
-  }
-  filter(pipe: (m: M) => boolean): M[] {
-    throw new Error('Method not implemented.');
-  }
+
   create(...args: any[]): M {
-    throw new Error('Method not implemented.');
-  }
-  [Symbol.iterator](): Iterator<M, any, undefined> {
     throw new Error('Method not implemented.');
   }
 }

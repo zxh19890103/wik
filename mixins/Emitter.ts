@@ -15,9 +15,7 @@ import { link } from '../model/basic';
 export abstract class EmitterMix implements WithParent<EmitterMix> {
   $$parent: EmitterMix;
 
-  static event: HrEvent = null;
-
-  noEmit = false;
+  noEmit: boolean;
 
   /**
    * @overrides
@@ -37,7 +35,7 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
     }
 
     const eventObj = payload instanceof HrEvent ? payload : new HrEvent(this, event, payload);
-    EmitterMix.event = eventObj;
+    globalEvent = eventObj;
 
     const r = EventEmitter.prototype.emit.call(this, event, eventObj);
 
@@ -51,7 +49,9 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
   }
 
   emit(...args) {
-    throw new Error('use fire instead');
+    if (!__PROD__) {
+      throw new Error('use fire instead');
+    }
   }
 
   setEventChild(child: EmitterMix, rm = false) {
@@ -65,40 +65,44 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
 
     return this;
   }
+
+  fire$n(event: string, payload: any) {
+    const parts = event.split(/[\s,]/g).filter(Boolean);
+    if (parts.length === 0) return;
+
+    for (const part of parts) {
+      this.fire(part, payload);
+    }
+  }
+
+  listen$n(event: string, handler: (event: HrEvent) => void) {
+    const parts = event.split(/[\s,]/g).filter(Boolean);
+    if (parts.length === 0) return;
+
+    for (const part of parts) {
+      EventEmitter.prototype.on.call(this, part, handler);
+    }
+  }
+
+  unlisten$n(event: string, handler?: (event: HrEvent) => void) {
+    const parts = event.split(/[\s,]/g).filter(Boolean);
+    if (parts.length === 0) return;
+
+    for (const part of parts) {
+      EventEmitter.prototype.off.call(this, part, handler);
+    }
+  }
 }
-
-export const __emit__ = (context: any, event: string, payload: any) => {
-  const parts = event.split(/[\s,]/g).filter(Boolean);
-  if (parts.length === 0) return;
-  for (const part of parts) {
-    EmitterMix.prototype.fire.call(context, part, payload);
-  }
-};
-
-export const __on__ = (context: any, event: string, handler: (event: HrEvent) => void) => {
-  const parts = event.split(/[\s,]/g).filter(Boolean);
-  if (parts.length === 0) return;
-
-  for (const part of parts) {
-    EventEmitter.prototype.on.call(context, part, handler);
-  }
-};
-
-export const __off__ = (context: any, event: string, handler?: (event: HrEvent) => void) => {
-  const parts = event.split(/[\s,]/g).filter(Boolean);
-  if (parts.length === 0) return;
-
-  for (const part of parts) {
-    EventEmitter.prototype.off.call(context, part, handler);
-  }
-};
-
-const clearGlobalEvent = () => {
-  EmitterMix.event = null;
-};
 
 let isEmitBatchly = false;
 let emitObjLag: { target: any; event: string } = null;
+let globalEvent: HrEvent = null;
+
+const clearGlobalEvent = () => {
+  globalEvent = null;
+};
+
+export const __global_event__ = () => globalEvent;
 
 export const __batched_fires__ = <R = any>(fn: () => R | Promise<R>, event?: string) => {
   isEmitBatchly = true;
@@ -122,13 +126,35 @@ export interface WithEmitter<E extends string> {
   noEmit: boolean;
 
   fire<T extends EventNames<E>>(event: T, payload?: SimpleObject): boolean;
+  /**
+   * split fire
+   */
+  fire$n(event: string, payload?: SimpleObject): this;
+  /**
+   * on
+   */
   listen<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
+  /**
+   * split on
+   */
+  listen$n(event: string, fn: (event: HrEvent) => void): this;
+  /**
+   * off
+   */
   unlisten<T extends EventNames<E>>(event: T, fn?: (event: HrEvent) => void): this;
+  /**
+   * split off
+   */
+  unlisten$n(event: string, fn?: (event: HrEvent) => void): this;
+
+  /**
+   * once
+   */
   listen$1<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
 
   /**
    * Create parent-child relationships of two evented objects manually.
    * Because this method not mounted on evented object.
    */
-  setEventChild(child: WithEmitter<string>, rm?: boolean): this;
+  setEventChild(child: WithEmitter<string>, off?: boolean): this;
 }

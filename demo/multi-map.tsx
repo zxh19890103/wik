@@ -1,5 +1,6 @@
 import L from 'leaflet';
-import { EssWarehouse, Route, basic, Bot, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
+import { EssWarehouse, Route, Bot } from '../2d';
+import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d/basic';
 import { Scene } from '../dom/Scene';
 import { useState } from 'react';
 import { inject, provides, rootInjector } from '../model/basic';

@@ -9,7 +9,6 @@ const pages = {
   demo: React.lazy(() => import('./demo')),
   dev: React.lazy(() => import('./dev')),
   dev3d: React.lazy(() => import('./dev3d')),
-  complete: React.lazy(() => import('./complete')),
   animation: React.lazy(() => import('./animation')),
   minimal: React.lazy(() => import('./minimal')),
   click: React.lazy(() => import('./click')),

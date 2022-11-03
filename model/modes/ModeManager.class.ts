@@ -1,15 +1,12 @@
-import { EventEmitter } from 'eventemitter3';
 import { IInjector, WithInjector } from '../../interfaces/Injector';
 import { BehaviorCallback, IBehavior, IMode, IModeManager } from '../../interfaces/Mode';
-import { EmitterMix, WithEmitter } from '../../mixins/Emitter';
-import { mixin } from '../basic';
+import { Core } from '../basic';
 import { injectable } from '../basic/inject';
 import { Behavior } from '../behaviors';
 import { Mode } from './Mode.class';
 
 @injectable()
-@mixin(EmitterMix)
-export class ModeManager extends EventEmitter<string, any> implements IModeManager, WithInjector {
+export class ModeManager extends Core implements IModeManager, WithInjector {
   readonly injector: IInjector;
   modes: Map<string, IMode> = new Map();
 
@@ -66,5 +63,3 @@ export class ModeManager extends EventEmitter<string, any> implements IModeManag
     throw new Error('Method not implemented.');
   }
 }
-
-export interface ModeManager extends WithEmitter<string> {}

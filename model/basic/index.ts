@@ -5,3 +5,5 @@ export * from './inject';
 export * from './Injector.class';
 export * from './prop';
 export * from './Event.class';
+export * from './IList';
+export * from './Core.class';

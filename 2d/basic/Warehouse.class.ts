@@ -1,37 +1,34 @@
-import { EventEmitter } from 'eventemitter3';
-import { LayerWithID } from '../interfaces/WithLayerID';
-import { WithEmitter, EmitterMix, __emit__, __on__ } from '../mixins/Emitter';
-import { InteractiveStateActionManager } from './state/InteractiveStateActionManager.class';
-import { ObjectType, IWarehouse, ListCtorArgs } from '../model';
-import { ModeManager } from '../model/modes';
-import { ConfigProviderConfigValue, mixin } from '../model/basic';
-import { GlobalConstManager } from '../model/state';
-import { HrMap, LayerList, SVGOverlayList, VectorLayerList } from './basic';
-import { RenderersManager } from './leafletCanvasOverrides';
+import { LayerWithID } from '../../interfaces/WithLayerID';
+import { InteractiveStateActionManager } from '../state/InteractiveStateActionManager.class';
+import { IWarehouse, ListCtorArgs } from '../../model';
+import { ModeManager } from '../../model/modes';
+import { ConfigProviderConfigValue, Core } from '../../model/basic';
+import { GlobalConstManager } from '../../model/state';
+import { HrMap, LayerList, SVGOverlayList, VectorLayerList } from '.';
+import { RenderersManager } from '../leafletCanvasOverrides';
 
-import { inject } from '../model/basic/inject';
-import Interfaces from '../interfaces/symbols';
-import * as behaviors from './behaviors';
-import { GraphicObject } from '../interfaces/GraghicObject';
-import { IBehavior } from '../interfaces/Mode';
-import { IInjector } from '../interfaces/Injector';
-import { tryInvokingOwn } from '../utils';
+import { inject } from '../../model/basic/inject';
+import Interfaces from '../../interfaces/symbols';
+import * as behaviors from '../behaviors';
+import { GraphicObject } from '../../interfaces/GraghicObject';
+import { IBehavior } from '../../interfaces/Mode';
+import { IInjector } from '../../interfaces/Injector';
+import { tryInvokingOwn } from '../../utils';
 
-import { AnimationManager } from './animation/AnimationManager.class';
-import { ImageManager, PaneManager, SelectionManager, HighlightManager } from './state';
-import { ILogger } from '../interfaces/Logger';
-import { HrEvent } from '../model/basic/Event.class';
+import { AnimationManager } from '../animation/AnimationManager.class';
+import { ImageManager, PaneManager, SelectionManager, HighlightManager } from '../state';
+import { ILogger } from '../../interfaces/Logger';
+import { HrEvent } from '../../model/basic/Event.class';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 
-@mixin(EmitterMix)
-export abstract class Warehouse<LayoutData = any, OT extends string = never>
-  extends EventEmitter<WarehouseEventType, any>
+export abstract class Warehouse<LayoutData = any, OT extends string = string>
+  extends Core<WarehouseEventType>
   implements IWarehouse
 {
   readonly injector: IInjector;
 
-  private updateDeps: Partial<Record<ObjectType<OT>, ItemUpdateFn<LayerWithID, any>>> = {};
+  private updateDeps: Partial<Record<OT, ItemUpdateFn<LayerWithID, any>>> = {};
 
   @inject(Interfaces.IAnimationManager)
   readonly animationManager: AnimationManager;
@@ -59,10 +56,10 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   readonly mounted: boolean = false;
   readonly layouted: boolean = false;
 
-  private typeListMapping: Map<ObjectType<OT>, LayerList<LayerWithID>> = new Map();
+  private typedLists: Map<OT, LayerList<LayerWithID>> = new Map();
 
   *[Symbol.iterator]() {
-    for (const [_, list] of this.typeListMapping) {
+    for (const [_, list] of this.typedLists) {
       for (const item of list) {
         yield item;
       }
@@ -71,18 +68,18 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
   queryListAll() {
     const entries = [];
-    for (const [type, value] of this.typeListMapping) {
+    for (const [type, value] of this.typedLists) {
       entries.push({ type, value });
     }
     return entries;
   }
 
-  queryList(type: string) {
-    return this.typeListMapping.get(type as ObjectType<OT>);
+  queryList(type: OT) {
+    return this.typedLists.get(type);
   }
 
-  each(fn: (item: GraphicObject, type: ObjectType<OT>) => void, type?: ObjectType<OT>): void {
-    for (const [t, list] of this.typeListMapping) {
+  each(fn: (item: GraphicObject, type: OT) => void, type?: OT): void {
+    for (const [t, list] of this.typedLists) {
       if (type && type !== t) continue;
       for (const item of list) {
         fn(item, t);
@@ -90,21 +87,21 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     }
   }
 
-  first<G>(type: ObjectType<OT>): G {
-    const list = this.typeListMapping.get(type);
+  first<G>(type: OT): G {
+    const list = this.typedLists.get(type);
     for (const item of list) return item as G;
     return null;
   }
 
-  item(type: ObjectType<OT>, id: string) {
-    return this.typeListMapping.get(type).find(id);
+  item(type: OT, id: string) {
+    return this.typedLists.get(type).find(id);
   }
 
-  query<T extends LayerWithID>(type: ObjectType<OT>, predicate: (item: T) => boolean) {
+  query<T extends LayerWithID>(type: OT, predicate: (item: T) => boolean) {
     return [];
   }
 
-  update(type: ObjectType<OT>, item: LayerWithID, data: any) {
+  update(type: OT, item: LayerWithID, data: any) {
     const updateFn = this.updateDeps[type];
 
     if (!updateFn && (item as any).onInput) {
@@ -117,8 +114,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     that.onUpdate && that.onUpdate(item, data);
   }
 
-  add(type: ObjectType<OT>, item: LayerWithID) {
-    const list = this.typeListMapping.get(type);
+  add(type: OT, item: LayerWithID) {
+    const list = this.typedLists.get(type);
     if (!list) return;
     list.add(item);
 
@@ -126,8 +123,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     that.onAdd && that.onAdd(item);
   }
 
-  remove(type: ObjectType<OT>, item: LayerWithID | string) {
-    const list = this.typeListMapping.get(type);
+  remove(type: OT, item: LayerWithID | string) {
+    const list = this.typedLists.get(type);
     if (!list) return;
     let _item: LayerWithID = null;
     if (typeof item === 'string') {
@@ -142,14 +139,14 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     that.onRemove && that.onRemove(_item);
   }
 
-  addList(type: ObjectType<OT>, list: LayerList<LayerWithID> | ListCtorArgs) {
+  addList(type: OT, list: LayerList<LayerWithID> | ListCtorArgs) {
     if (!__PROD__ && this.layouted) {
       throw new Error('you can not register new list after layouted! reg in layout method.');
     }
 
     let _list = null;
 
-    if (!__PROD__ && this.typeListMapping.has(type)) {
+    if (!__PROD__ && this.typedLists.has(type)) {
       throw new Error(`list type ${type} has been registered!`);
     }
 
@@ -175,7 +172,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
       }
     }
 
-    this.typeListMapping.set(type, _list);
+    this.typedLists.set(type, _list);
     this.setEventChild(_list);
 
     this.mounted && _list.mount(this.map);
@@ -183,7 +180,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     return _list;
   }
 
-  removeList(type: ObjectType<OT>) {
+  removeList(type: OT) {
     throw new Error('not implemented!');
   }
 
@@ -200,7 +197,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
     injector.writeProp(this.renderersMgr, 'map', map);
 
     // mount list
-    for (const [_, list] of this.typeListMapping) {
+    for (const [_, list] of this.typedLists) {
       if (list.mounted) continue;
       list.mount(this.map);
     }
@@ -253,7 +250,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
         click: 'onNoopClick',
       };
 
-      __on__(this, 'click dblclick mouseover mouseout mousedown contextmenu', (evt: HrEvent) => {
+      this.listen$n('click dblclick mouseover mouseout mousedown contextmenu', (evt: HrEvent) => {
         if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
         const { layer, leafletEvt } = evt.payload;
         const cb = event2cb[`item@${evt.type}`];
@@ -303,7 +300,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
   }
 
   addUpdateDep<M extends LayerWithID = LayerWithID, D = any>(
-    type: ObjectType,
+    type: OT,
     fn: ItemUpdateFn<M, D> = null,
   ) {
     this.updateDeps[type] = fn as any;
@@ -325,8 +322,6 @@ export abstract class Warehouse<LayoutData = any, OT extends string = never>
 
   abstract layout(data?: LayoutData): void | Promise<void>;
 }
-
-export interface Warehouse<LayoutData> extends WithEmitter<WarehouseEventType> {}
 
 export type ItemUpdateFn<M extends LayerWithID, D> = (item: M, data: D) => void;
 

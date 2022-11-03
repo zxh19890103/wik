@@ -17,3 +17,5 @@ export * from './Map.class';
 export * from './LayerList.class';
 export * from './SVGOverlayList.class';
 export * from './VectorLayerList.class';
+
+export * from './Warehouse.class';

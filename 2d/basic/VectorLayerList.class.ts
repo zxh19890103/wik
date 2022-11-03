@@ -33,8 +33,9 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
     this.pane = pane;
   }
 
-  onItemAdd(item: M): void {
+  protected override _add(item: M): void {
     L.Util.setOptions(item, { renderer: this.paneObj.renderer });
+    super._add(item);
   }
 
   override setZ(z: number) {
@@ -42,15 +43,16 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
       console.error('z should not be greater than 500');
       return;
     }
+
     this.paneMgr.setZ(this.pane, z);
   }
 
   override mount(parent: HrMap): void {
     super.mount(parent);
-    const paneObj = this.paneMgr.get(this.pane, this.rendererType, __pane_z_seed++);
+    const paneObj = this.paneMgr.get(this.pane, this.rendererType, _pane_z_seed++);
     writeReadonlyProp(this, 'paneObj', paneObj);
     this.rendererMgr.add(paneObj.name, paneObj.renderer);
   }
 }
 
-let __pane_z_seed = 402;
+let _pane_z_seed = 402;

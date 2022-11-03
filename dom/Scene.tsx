@@ -1,7 +1,7 @@
-import React, { memo, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
-import { WarehousePhase } from '../2d';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { WarehousePhase } from '../2d/basic';
 import { HrMap } from '../2d/basic';
-import { AbstractConstructor, Constructor } from '../interfaces/Constructor';
+import { AbstractConstructor } from '../interfaces/Constructor';
 import { ReactiveLayer } from '../mixins/ReactiveLayer';
 import { IWarehouse } from '../model';
 import { LayerPosition } from './LayerPosition';

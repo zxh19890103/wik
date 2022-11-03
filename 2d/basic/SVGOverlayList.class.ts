@@ -24,9 +24,11 @@ export class SVGOverlayList<M extends LayerWithID, E extends string = never> ext
     this.pane = pane;
   }
 
-  onItemAdd(item: M): void {
+  protected override _add(item: M): void {
     L.Util.setOptions(item, { pane: this.pane });
     writeReadonlyProp(item, 'svgServer', this.svgServer);
+
+    super._add(item);
   }
 
   override setZ(z: number) {
@@ -34,14 +36,15 @@ export class SVGOverlayList<M extends LayerWithID, E extends string = never> ext
       console.error('z should not be less than 500');
       return;
     }
+
     this.paneMgr.setZ(this.pane, z);
   }
 
   override mount(parent: HrMap): void {
     super.mount(parent);
-    this.paneMgr.get(this.pane, 'none', __pane_z_seed++);
+    this.paneMgr.get(this.pane, 'none', _pane_z_seed++);
     this.svgServer.bootstrap(parent, this.pane);
   }
 }
 
-let __pane_z_seed = 500;
+let _pane_z_seed = 500;

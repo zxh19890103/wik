@@ -1,5 +1,6 @@
 import L from 'leaflet';
-import { EssWarehouse, DEFAULT_WAREHOUSE_DEPENDENCIES, Bot, Route } from '../2d';
+import { EssWarehouse, Bot, Route } from '../2d';
+import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d/basic';
 import { useEffect, useState } from 'react';
 import { Robot, RobotView, IWarehouse, Point } from '../model';
 import { rootInjector, provides, List, inject } from '../model/basic';
@@ -132,7 +133,7 @@ export default () => {
   useEffect(() => {
     setTimeout(() => {
       const bots = __batched_fires__(() => {
-        return Array(3)
+        return Array(0)
           .fill(0)
           .map((x) => {
             return state.bots.create();
@@ -140,8 +141,8 @@ export default () => {
       }, 'size') as Robot[];
 
       __batched_fires__(() => {
-        for (let x = 0; x < 200; x++) {
-          for (let y = 0; y < 200; y++) {
+        for (let x = 0; x < 20; x++) {
+          for (let y = 0; y < 20; y++) {
             const dot = state.dots.create();
             dot.px = x * 700;
             dot.py = y * 600;
@@ -159,7 +160,7 @@ export default () => {
           bot.setPosition(px, py);
         },
         {
-          auto: true,
+          auto: false,
         },
       );
     }, 4000);

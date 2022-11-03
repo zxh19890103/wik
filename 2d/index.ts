@@ -19,7 +19,6 @@ export * from './Shelf.class';
 export * from './Bot.class';
 export * from './Edge.class';
 export * from './Route.class';
-export * from './Warehouse.class';
 export * from './EssWarehouse.class';
 
 export * from './leafletCanvasOverrides';

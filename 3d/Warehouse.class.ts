@@ -2,20 +2,37 @@ import { GraphicObject } from '../interfaces/GraghicObject';
 import { IInjector } from '../interfaces/Injector';
 import { IModeManager } from '../interfaces/Mode';
 import { ISelectionManager } from '../interfaces/Selection';
-import { IWarehouse, ListCtorArgs } from '../model';
-import { IList } from '../model/basic';
+import { IWarehouse } from '../model';
+import { Core, IList, writeReadonlyProp } from '../model/basic';
+import { Object3DList } from './Object3DList.class';
 
-export abstract class Warehouse3D implements IWarehouse {
+export abstract class Warehouse3D extends Core implements IWarehouse {
+  readonly mounted: boolean = false;
+  readonly layouted: boolean = false;
+
   protected readonly scene: THREE.Scene;
 
   readonly selectionManager: ISelectionManager;
   readonly modeManager: IModeManager;
+  readonly typedLists: Map<string, Object3DList<THREE.Object3D>> = new Map();
 
   abstract layout(data?: unknown): void | Promise<void>;
 
   mount(root: THREE.Scene): void {
-    this.injector.writeProp(this, 'scene', root);
-    this.layout(null);
+    if (this.mounted) return;
+
+    writeReadonlyProp(this, 'scene', root);
+    writeReadonlyProp(this, 'mounted', true);
+
+    for (const [_, list] of this.typedLists) {
+      if (list.mounted) continue;
+      list.mount(root);
+    }
+
+    (async () => {
+      await this.layout(null);
+      writeReadonlyProp(this, 'layouted', true);
+    })();
   }
 
   queryListAll(): { type: string; value: IList<GraphicObject> }[] {
@@ -26,8 +43,16 @@ export abstract class Warehouse3D implements IWarehouse {
     throw new Error('Method not implemented.');
   }
 
-  addList(type: string, list: ListCtorArgs): IList<any> {
-    throw new Error('Method not implemented.');
+  addList<O extends THREE.Object3D>(type: string): Object3DList<O> {
+    if (this.typedLists.has(type)) return;
+    const list = this.injector.$new<Object3DList<O>>(Object3DList);
+    this.typedLists.set(type, list);
+
+    this.setEventChild(list);
+
+    if (this.mounted) list.mount(this.scene);
+
+    return list;
   }
 
   removeList(type: string): void {

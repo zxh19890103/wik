@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { IWarehouse, ObjectType } from '../../../model';
+import { IWarehouse, EssObjectType } from '../../../model';
 import { Behavior } from '../../../model/behaviors';
 import { appendAnimation, RotationAnimation, TranslationAnimation } from '../../animation';
 import { BezierTranslationAnimation } from '../../animation/BezierTranslationAnimation.class';

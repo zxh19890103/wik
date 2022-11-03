@@ -1,5 +1,6 @@
 import L from 'leaflet';
-import { EssWarehouse, Point, Chargepile, Haiport, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
+import { EssWarehouse, Point, Chargepile, Haiport } from '../2d';
+import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d/basic';
 import { LayerSelectProps, LayerMultipleSelectProps, Scene } from '../dom/Scene';
 import { useEffect, useState } from 'react';
 import { rootInjector, provides, inject } from '../model/basic';

@@ -1,4 +1,5 @@
-import { DEFAULT_WAREHOUSE_DEPENDENCIES, EssWarehouse } from '../2d/';
+import { EssWarehouse } from '../2d/';
+import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d/basic';
 import * as hrGUI from '../2d';
 import { inject, provides } from '../model/basic/inject';
 import * as Interface from '../interfaces/symbols';

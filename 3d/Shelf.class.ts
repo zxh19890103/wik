@@ -9,7 +9,7 @@ export class Shelf extends THREE.Mesh {
 
   static get material() {
     if (!material) {
-      material = new THREE.MeshBasicMaterial({ color: 0x00fff9 });
+      material = new THREE.MeshBasicMaterial({ color: 0x40803f });
     }
     return material;
   }

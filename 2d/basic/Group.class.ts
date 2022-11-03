@@ -75,7 +75,7 @@ export class Group
   }
 
   override onAdd(map: L.Map): this {
-    const paneObj = this.paneMgr.get(this.options.pane, 'canvas', __pane_z_seed++);
+    const paneObj = this.paneMgr.get(this.options.pane, 'canvas', _pane_z_seed++);
     L.Util.setOptions(this, { renderer: paneObj.renderer });
     writeReadonlyProp(this, 'paneObj', paneObj);
     this.rendererMgr.add(paneObj.name, paneObj.renderer);
@@ -154,4 +154,4 @@ export class Group
   }
 }
 
-let __pane_z_seed = 451;
+let _pane_z_seed = 451;

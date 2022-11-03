@@ -1,4 +1,4 @@
-export type ObjectType<Extra extends string = never> =
+export type EssObjectType<Extra extends string = never> =
   | 'point'
   | 'shelf'
   | 'haiport'

@@ -8,6 +8,9 @@ export interface IWarehouse extends WithInjector, Iterable<GraphicObject> {
   selectionManager: ISelectionManager;
   modeManager: IModeManager;
 
+  mounted: boolean;
+  layouted: boolean;
+
   mount(root: any): void;
   layout(data?: unknown): void | Promise<void>;
 
@@ -25,12 +28,12 @@ export interface IWarehouse extends WithInjector, Iterable<GraphicObject> {
   update(type: string, item: GraphicObject, data: any): void;
   remove(type: string, item: GraphicObject | string): void;
 
-  onClick?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
-  onDblClick?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
-  onPress?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
-  onHover?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
-  onUnHover?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
-  onContextMenu?(item: GraphicObject, evt: L.LeafletMouseEvent): void;
+  onClick?(item: GraphicObject, evt: unknown): void;
+  onDblClick?(item: GraphicObject, evt: unknown): void;
+  onPress?(item: GraphicObject, evt: unknown): void;
+  onHover?(item: GraphicObject, evt: unknown): void;
+  onUnHover?(item: GraphicObject, evt: unknown): void;
+  onContextMenu?(item: GraphicObject, evt: unknown): void;
   onMounted?(): void;
   onLayouted?(): void;
 
@@ -39,6 +42,9 @@ export interface IWarehouse extends WithInjector, Iterable<GraphicObject> {
   onUpdate?(item: GraphicObject, data: any): void;
 }
 
+/**
+ * for threejs pane is useless rendererBy must be canvas.
+ */
 export type ListCtorArgs = {
   pane: string;
   rendererBy?: 'canvas' | 'svg' | 'overlay';

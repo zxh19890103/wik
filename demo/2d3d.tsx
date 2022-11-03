@@ -1,11 +1,11 @@
 import L from 'leaflet';
-import { EssWarehouse, basic, DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d';
+import { EssWarehouse, basic } from '../2d';
+import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d/basic';
 import { Scene } from '../dom/Scene';
 import { useEffect, useRef, useState } from 'react';
 import { inject, rootInjector, provides } from '../model/basic';
 import { IInjector } from '../interfaces/symbols';
 import { Bot } from '../2d/Bot.class';
-import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 import { Warehouse3D } from '../3d/Warehouse.class';
 import THREE from 'three';
 import './ioc.config';
