@@ -74,6 +74,13 @@
 34. List 进一步抽象，希望 LayerList 和 Object3dList 可以继承之 ✅
 35. 将 eventemitter 全部替换为 core ✅
 36. 考虑一下 group 和 list 之间的重合和差异
+37. selectionManager 和 modeManager 甚至 HighlightManager 可以放到 model/state 目录下
+38. warehouse.tsx 下的 相关代码可以移到 warehouse 类中
+39. 鼠标事件存在次序问题
+
+## TODO - 3d
+
+1. onclick, on noopclick, onhover,
 
 ## 文档 ✅
 

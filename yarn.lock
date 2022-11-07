@@ -1545,6 +1545,11 @@ text-table@^0.2.0:
   resolved "http://172.18.81.191:10000/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
+three.meshline@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/three.meshline/-/three.meshline-1.4.0.tgz#2a483cbd99cd5f74cf6ee5c253a9a4b4a8169178"
+  integrity sha512-A8IsiMrWP8zmHisGDAJ76ZD7t/dOF/oCe/FUKNE6Bu01ZYEx8N6IlU/1Plb2aOZtAuWM2A8s8qS3hvY0OFuvOw==
+
 tinybench@^2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tinybench/-/tinybench-2.3.1.tgz#14f64e6b77d7ef0b1f6ab850c7a808c6760b414d"

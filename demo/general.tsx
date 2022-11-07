@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import THREE, { BoxGeometry, Mesh } from 'three';
+import THREE from 'three';
 import { EssWarehouse } from '../2d';
 import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d/basic';
 import { inject, provides } from '../model/basic';
@@ -11,6 +11,7 @@ import { Rectangle } from '../2d/basic';
 import * as model3d from '../3d';
 import { Object3DList } from '../3d/Object3DList.class';
 import { IInjector } from '../interfaces/Injector';
+import * as meta from '../model/meta';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -22,14 +23,12 @@ class MyWarehouse extends EssWarehouse {
 
     await this.imageManager.load(icon);
 
-    // const bot = this.injector.$new<Bot>(Bot, this.imageManager.get(icon), 1000, 1000);
-    // this.add('bot', bot);
-
-    const material = { color: 'green', fill: true };
+    const material = { color: '#013faf', fill: true };
 
     for (let x = -20; x < 20; x++) {
       for (let y = -20; y < 20; y++) {
-        const dot = new Rectangle([y * 50, x * 50], 20, 20, { ...material });
+        const origin = [y * 220, x * 200] as L.LatLngExpression;
+        const dot = new Rectangle(origin, 200, 60, { ...material });
         this.add('point', dot);
       }
     }
@@ -40,50 +39,77 @@ class MyWarehouse extends EssWarehouse {
 
 @inject(Interface.IInjector)
 class MyWarehouse3D extends Warehouse3D {
+  /**
+   * just frames of rack.
+   */
   shelfs: Object3DList<model3d.Shelf>;
+  /**
+   * packages
+   */
+  packs: Object3DList<model3d.InstancePack>;
+  /**
+   * boards on shelf.
+   */
+  boards: Object3DList<model3d.InstanceBoard>;
+
+  instPack: model3d.InstancePack;
+  instBoard: model3d.InstanceBoard;
 
   constructor(injector: IInjector) {
     super();
     this.injector = injector;
+
     this.shelfs = this.addList('shelf');
+    this.packs = this.addList('pack');
+    this.boards = this.addList('board');
   }
 
   layout(data?: unknown): void | Promise<void> {
-    // const group = new THREE.Group();
-    // group.position.set(0, 0, 100);
-    // shelfs
-
-    // instantiate a loader
-    // const loader = new THREE.MaterialLoader();
-
-    // // load a resource
-    // loader.load(
-    //   // resource URL
-    //   '/__data__/rack.obj',
-    //   // called when resource is loaded
-    //   (object) => {
-    //     const a = new BoxGeometry(500, 500, 500);
-    //     this.scene.add(new Mesh(a, object));
-    //   },
-    //   // called when loading is in progresses
-    //   (xhr) => {
-    //     console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-    //   },
-    //   // called when loading has errors
-    //   (error) => {
-    //     console.log('An error happened');
-    //   },
-    // );
-
     {
-      for (let x = -20; x < 20; x++) {
-        for (let y = -20; y < 20; y++) {
-          for (let z = 0; z < 7; z++) {
-            const shelf = new model3d.Shelf({ x: x * 100, y: y * 50, z: z * 25 });
-            this.shelfs.add(shelf);
+      const shelfSpec: meta.Rack = {
+        width: 200,
+        depth: 60,
+        height: 500,
+        heightPerLayer: 50,
+        distanceOffGround: 10,
+      };
+
+      const packSpec: meta.Pack = {
+        width: 40,
+        depth: 60,
+        height: 30,
+      };
+
+      const boardSpec: meta.Board = {
+        width: 200,
+        depth: 60,
+      };
+
+      const packs = new model3d.InstancePack(1000000, packSpec);
+      const boards = new model3d.InstanceBoard(100000, boardSpec);
+
+      for (let x = -10; x < 10; x++) {
+        for (let y = -10; y < 10; y++) {
+          const origin = { x: x * 210, y: y * 200, z: 10 };
+          const shelf = new model3d.Shelf(origin, shelfSpec);
+
+          for (const slot of shelf.getPackSlots(packSpec)) {
+            packs.putAt(slot);
           }
+
+          for (const slot of shelf.getBoardSlots()) {
+            boards.putAt(shelf, slot);
+          }
+
+          this.shelfs.add(shelf);
         }
       }
+
+      this.boards.add(boards);
+      this.packs.add(packs);
+
+      this.instBoard = boards;
+      this.instPack = packs;
     }
   }
 }
@@ -91,7 +117,7 @@ class MyWarehouse3D extends Warehouse3D {
 export default () => {
   return (
     <General.World>
-      <General.Warehouse model={(injector) => injector.$new(MyWarehouse)} />
+      {/* <General.Warehouse model={(injector) => injector.$new(MyWarehouse)} /> */}
       <General.Warehouse3D model={(injector) => injector.$new(MyWarehouse3D)} />
     </General.World>
   );

@@ -11,17 +11,17 @@ export interface OnSelect<S = any> {
 }
 
 export interface OnClick {
-  onClick(e?: L.LeafletMouseEvent): void;
+  onClick(e?: unknown): void;
 }
 
 export interface OnDblClick {
-  onDblClick(e?: L.LeafletMouseEvent): void;
+  onDblClick(e?: unknown): void;
 }
 
 export interface OnDrag {
-  onDragEnd(latlng?: L.LatLng): void;
+  onDragEnd(coord?: unknown): void;
   onDragStart(): void;
-  onDragging(latlng?: L.LatLng): void;
+  onDragging(coord?: unknown): void;
 }
 
 export interface OnHighlight<S = any> {
@@ -30,7 +30,7 @@ export interface OnHighlight<S = any> {
 }
 
 export interface OnContextMenu<Key extends string = string> {
-  onContextMenu(evt?: L.LeafletMouseEvent): ContextMenuItem[];
+  onContextMenu(evt?: unknown): ContextMenuItem[];
   onContextMenuClick(key: Key): void | Promise<any>;
 }
 

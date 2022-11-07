@@ -1,36 +1,37 @@
 import { Base } from './base';
+import { Position } from './position';
 
-export interface Shelf extends Base {
-  /**
-   * 列数
-   */
-  columns: number;
-  /**
-   * 排数
-   */
-  rows: number;
-  /**
-   * 层数
-   */
-  layers?: number;
-  /**
-   * 单位宽（单位：mm）
-   */
-  unitW?: number;
-  totalW?: number;
-  /**
-   * 单位长 （单位: mm）
-   */
-  unitL?: number;
-  totalL?: number;
-  /**
-   * 宽方向上的间隔
-   */
-  gapW?: number;
-  /**
-   * 长方向上的间隔
-   */
-  gapL?: number;
+export interface Rack extends Base {
+  width: number;
+  depth: number;
+  height: number;
+  heightPerLayer: number;
+  distanceOffGround: number;
+}
 
-  pilarR?: number;
+export interface Pack extends Base {
+  width: number;
+  depth: number;
+  height: number;
+}
+
+export interface Board extends Base {
+  width: number;
+  depth: number;
+}
+
+export interface RackPackSlot {
+  position: Position;
+  layer: number;
+  n: number;
+  w?: number;
+  d?: number;
+  h?: number;
+}
+
+export interface RackBoardSlot {
+  position: Position;
+  layer: number;
+  w: number;
+  h: number;
 }

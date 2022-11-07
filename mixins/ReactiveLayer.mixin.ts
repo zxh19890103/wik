@@ -8,11 +8,12 @@ import symbols from './is';
 import { mapLatLng } from '../utils/mapLatLng';
 import { boundToLatLngs } from '../utils/boundToLatLngs';
 import { ReactiveLayer, ReactiveLayerSnapshot } from './ReactiveLayer';
-import { uniqueLayerId } from '../interfaces/WithLayerID';
 import { IList } from '../model/basic';
 
 const { mat3, vec2 } = glMatrix;
 const d2r = Math.PI / 180;
+
+let idseed = 2022;
 
 export function ReactiveLayerMixin(
   Base: Constructor<L.Layer>,
@@ -62,7 +63,7 @@ export function ReactiveLayerMixin(
     readonly disableMatrix = false;
     ifRender = true;
 
-    layerId = uniqueLayerId();
+    layerId = `layer${idseed++}`;
     latlngs: PolylineLatLngs = [];
     angle = 0;
     anglePhase = 0;

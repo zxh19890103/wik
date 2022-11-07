@@ -26,7 +26,8 @@
     "eventemitter3": "^4.0.7",
     "gl-matrix": "^3.4.3",
     "reflect-metadata": "^0.1.13",
-    "stats.js": "^0.17.0"
+    "stats.js": "^0.17.0",
+    "three.meshline": "^1.4.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.36.1",

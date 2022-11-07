@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import THREE from 'three';
 import { HrMap } from '../../2d/basic';
-import { ArcballControls } from '../../3d/controls';
+import { ArcballControls, OrbitControls } from '../../3d/controls';
+import { Ground } from '../../3d/Ground.class';
 import { IInjector } from '../../interfaces/Injector';
 import { IWarehouse } from '../../model';
 import { Model, View } from '../../model/basic';
@@ -66,8 +67,8 @@ const Warehouse3D = (props: Props) => {
   useEffect(() => {
     const element = elementRef.current;
 
-    const w = element.clientWidth,
-      h = element.clientHeight;
+    const w = element.clientWidth;
+    const h = element.clientHeight;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true });
     renderer.setSize(w, h);
@@ -77,11 +78,22 @@ const Warehouse3D = (props: Props) => {
     element.appendChild(renderer.domElement);
 
     const camera = new THREE.PerspectiveCamera(45, w / h, 1, Number.MAX_SAFE_INTEGER);
-    camera.position.set(3000, 5000, 1000);
+    camera.position.set(5000, 0, 1000);
     camera.up.set(0, 0, 1);
     camera.lookAt(0, 0, 0);
 
     const scene = new THREE.Scene();
+
+    scene.background = new THREE.Color(0x03aff4);
+
+    const adjust = () => {
+      const w = element.clientWidth;
+      const h = element.clientHeight;
+
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
 
     // lights
     {
@@ -96,13 +108,19 @@ const Warehouse3D = (props: Props) => {
 
     // ground
     {
-      const ground = new THREE.Mesh(
-        new THREE.PlaneGeometry(5000, 5000, 500, 500),
-        new THREE.MeshPhongMaterial({ color: 0x666666 }),
-      );
-
-      ground.position.set(0, 0, 0);
+      const ground = new Ground(5000, 5000);
       scene.add(ground);
+    }
+
+    // axes
+    {
+      const axesHelper = new THREE.AxesHelper(300);
+      axesHelper.setColors(
+        new THREE.Color(0xffffff), // x
+        new THREE.Color(0xff4f00), // y
+        new THREE.Color(0x00ff8f), // z
+      );
+      scene.add(axesHelper);
     }
 
     // a ref
@@ -116,15 +134,26 @@ const Warehouse3D = (props: Props) => {
       scene.add(ball);
     }
 
-    const control = new ArcballControls(camera, renderer.domElement, scene);
-    control.update();
+    // const control = new ArcballControls(camera, renderer.domElement, scene);
+    // control.update();
+
+    new OrbitControls(camera, renderer.domElement);
 
     const loop = () => {
       requestAnimationFrame(loop);
+
+      if (warehouse) {
+        const w = warehouse as any;
+        w.raycaster.setFromCamera(w.pointer, camera);
+        w.tick();
+      }
+
       renderer.render(scene, camera);
     };
 
     setTimeout(loop, 0);
+
+    window.onresize = adjust;
 
     const warehouse = createWarehouse(injector, props.model);
     warehouse?.mount(scene);
