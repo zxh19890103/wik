@@ -33,9 +33,11 @@ export class InstanceBoard extends InstancedMesh implements OnClick, IInteractiv
   }
 
   onClick(e: { instanceId: number }): void {
-    const { instanceId } = e;
-    this.setColorAt(instanceId, new THREE.Color(0xff0000));
-    this.instanceColor.needsUpdate = true;
+    // const { instanceId } = e;
+    // this.setColorAt(instanceId, new THREE.Color(0xff0000));
+    // this.instanceColor.needsUpdate = true;
+
+    console.log('board is clicked');
   }
 
   putAt(rack: Shelf, slot: meta.RackBoardSlot) {

@@ -22,8 +22,11 @@ export class InstancePack extends THREE.InstancedMesh implements OnClick, IInter
 
   onClick(e: { instanceId: number }): void {
     const { instanceId } = e;
+    console.log('pack is clicked', instanceId);
     this.setColorAt(instanceId, new THREE.Color(0xff0000));
+    // this does not work, because update must be applied in next render.
     this.instanceColor.needsUpdate = true;
+    // unless render()
   }
 
   putAt(slot: meta.RackPackSlot) {

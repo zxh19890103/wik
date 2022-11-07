@@ -38,6 +38,7 @@ class MyWarehouse extends EssWarehouse {
 }
 
 @inject(Interface.IInjector)
+@provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse3D extends Warehouse3D {
   /**
    * just frames of rack.

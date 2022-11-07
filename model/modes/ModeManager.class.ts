@@ -36,6 +36,7 @@ export class ModeManager extends Core implements IModeManager, WithInjector {
   }
 
   apply(m: BehaviorCallback, ...args: any[]) {
+    if (!this._mode) return;
     for (const behavior of this._mode.behaviors) {
       const fn = behavior[m] as (...args) => void;
       // no need to call an empty method.

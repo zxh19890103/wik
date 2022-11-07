@@ -8,6 +8,7 @@ import Interface from '../interfaces/symbols';
 import { IWarehouse } from '../model';
 import { Core, IList, inject, writeReadonlyProp } from '../model/basic';
 import { Ground } from './Ground.class';
+import { IInteractive3D } from './IInteractive3D';
 import { Object3DList } from './Object3DList.class';
 
 export abstract class Warehouse3D extends Core implements IWarehouse, IDisposable {
@@ -33,7 +34,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   isMouseMoving = false;
 
   activatedObj3d: THREE.Object3D = null;
-  instanceId: number = null;
+  activatedInstanceId: number = null;
   intersection: THREE.Intersection<THREE.Object3D>;
 
   constructor() {
@@ -43,6 +44,10 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   }
 
   abstract layout(data?: unknown): void | Promise<void>;
+
+  ascSort = (a, b) => {
+    return a.distance - b.distance;
+  };
 
   tick() {
     if (!this.isMouseMoving) return;
@@ -54,43 +59,35 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
 
     this.intersection = null;
 
-    for (const obj of this.scene.children) {
-      if (!(obj as any).isInteractive) continue;
+    const intersections: THREE.Intersection[] = [];
 
-      if ((obj as InstancedMesh).isInstancedMesh) {
-        const mesh = obj as InstancedMesh;
-        const intersection = this.raycaster.intersectObject(mesh);
-        if (intersection.length === 0) continue;
+    for (const [_, list] of this.typedLists) {
+      const intersection = this.raycaster.intersectObjects([...list.items], false);
+      if (intersection.length === 0) continue;
+      intersections.push(intersection[0]);
+    }
 
-        obj3d = mesh;
-        this.intersection = intersection[0];
-        instid = this.intersection.instanceId;
-        break;
-      } else if ((obj as Mesh).isMesh) {
-        const mesh = obj as Mesh;
-        const intersection = this.raycaster.intersectObject(mesh);
-        if (intersection.length === 0) continue;
+    // if hit one
+    if (intersections.length > 0) {
+      intersections.sort(this.ascSort);
 
-        this.intersection = intersection[0];
-        obj3d = this.intersection.object;
-        instid = null;
-        break;
-      } else {
-        // ignore
-      }
+      const intersection = intersections[0];
+
+      obj3d = intersection.object;
+      instid = intersection.instanceId;
+
+      this.intersection = intersection;
     }
 
     if (this.activatedObj3d === obj3d) {
-      if (this.instanceId !== instid) {
-        console.log('inst changed');
+      if (this.activatedInstanceId !== instid) {
         // mouseout mouseover
-        this.instanceId = instid;
+        this.activatedInstanceId = instid;
       }
     } else {
-      console.log('obj changed');
       // mouseout mouseover
       this.activatedObj3d = obj3d;
-      this.instanceId = instid;
+      this.activatedInstanceId = instid;
     }
   }
 
@@ -147,7 +144,10 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
           // click
           console.log('clicked at the same time.');
           const obj3d = this.activatedObj3d as any;
-          this.modeManager.apply('onClick', obj3d, { instanceId: this.instanceId });
+          console.log(obj3d, this.activatedInstanceId);
+          const event = { instanceId: this.activatedInstanceId };
+          obj3d.onClick && obj3d.onClick(event);
+          this.modeManager.apply('onClick', obj3d, event);
         }
       }
 

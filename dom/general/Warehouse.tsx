@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import THREE from 'three';
 import { HrMap } from '../../2d/basic';
-import { ArcballControls, OrbitControls } from '../../3d/controls';
-import { Ground } from '../../3d/Ground.class';
+import { OrbitControls } from '../../3d/controls';
 import { IInjector } from '../../interfaces/Injector';
 import { IWarehouse } from '../../model';
 import { Model, View } from '../../model/basic';
@@ -83,7 +82,8 @@ const Warehouse3D = (props: Props) => {
     camera.lookAt(0, 0, 0);
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x03aff4);
+
+    let warehouse: IWarehouse = null;
 
     const adjust = () => {
       const w = element.clientWidth;
@@ -110,11 +110,13 @@ const Warehouse3D = (props: Props) => {
       renderer.render(scene, camera);
     };
 
+    const $nextTick = (fn: () => void) => {};
+
     setTimeout(loop, 0);
 
     window.onresize = adjust;
 
-    const warehouse = createWarehouse(injector, props.model);
+    warehouse = createWarehouse(injector, props.model);
     warehouse?.mount(scene);
 
     setValue({ ...value, mvMappings: props.mvMappings, warehouse });
