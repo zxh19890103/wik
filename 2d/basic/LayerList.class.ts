@@ -8,10 +8,9 @@ import { WithClickCancel } from '../../mixins/ClickCancel';
 import { IInjector, WithInjector } from '../../interfaces/Injector';
 import { IWarehouse } from '../../model';
 import { CoreList } from '../../model/basic/Core.class';
-import { WithParent } from '../../interfaces/WithParent';
-import Interface from '../../interfaces/symbols';
 import { IWarehouseObjectList } from '../../model/IWarehouseObjectList';
 import { writeReadonlyProp } from '../../model/basic';
+import Interface from '../../interfaces/symbols';
 
 type LayerListEventType =
   | 'click'
