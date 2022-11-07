@@ -4,9 +4,10 @@ import { GraphicObject } from '../interfaces/GraghicObject';
 import { IInjector } from '../interfaces/Injector';
 import { IModeManager } from '../interfaces/Mode';
 import { ISelectionManager } from '../interfaces/Selection';
+import Interface from '../interfaces/symbols';
 import { IWarehouse } from '../model';
-import { Core, IList, writeReadonlyProp } from '../model/basic';
-import { tryInvokingOwn } from '../utils';
+import { Core, IList, inject, writeReadonlyProp } from '../model/basic';
+import { Ground } from './Ground.class';
 import { Object3DList } from './Object3DList.class';
 
 export abstract class Warehouse3D extends Core implements IWarehouse, IDisposable {
@@ -17,7 +18,9 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
 
   protected readonly scene: THREE.Scene;
 
+  @inject(Interface.ISelectionManager)
   readonly selectionManager: ISelectionManager;
+  @inject(Interface.IModeManager)
   readonly modeManager: IModeManager;
   readonly typedLists: Map<string, Object3DList<THREE.Object3D>> = new Map();
 
@@ -91,15 +94,15 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     }
   }
 
-  mount(root: THREE.Scene): void {
+  mount(scene: THREE.Scene): void {
     if (this.mounted) return;
 
-    writeReadonlyProp(this, 'scene', root);
+    writeReadonlyProp(this, 'scene', scene);
     writeReadonlyProp(this, 'mounted', true);
 
     for (const [_, list] of this.typedLists) {
       if (list.mounted) continue;
-      list.mount(root);
+      list.mount(scene);
     }
 
     let mousestopTimer = null;
@@ -144,7 +147,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
           // click
           console.log('clicked at the same time.');
           const obj3d = this.activatedObj3d as any;
-          obj3d.onClick && obj3d.onClick({ instanceId: this.instanceId });
+          this.modeManager.apply('onClick', obj3d, { instanceId: this.instanceId });
         }
       }
 
@@ -157,6 +160,39 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     document.addEventListener('pointermove', this.mousemove);
     document.addEventListener('pointerdown', this.mousedown);
     document.addEventListener('pointerup', this.mouseup);
+
+    {
+      // lights
+      const light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(0, 0, 1);
+      scene.add(light);
+      const amlight = new THREE.AmbientLight(0xffffff, 0.3);
+      scene.add(amlight);
+      // const sky = new THREE.HemisphereLight(0x2345f5, 0xff0000);
+      // scene.add(sky);
+
+      // ground
+      const ground = new Ground(5000, 5000);
+      scene.add(ground);
+
+      // axes
+      const axesHelper = new THREE.AxesHelper(300);
+      axesHelper.setColors(
+        new THREE.Color(0xffffff), // x
+        new THREE.Color(0xff4f00), // y
+        new THREE.Color(0x00ff8f), // z
+      );
+      scene.add(axesHelper);
+
+      // a ref
+      const ball = new THREE.Mesh(
+        new THREE.SphereGeometry(100, 60, 60),
+        new THREE.MeshPhongMaterial({ color: 0x00ff99 }),
+      );
+
+      ball.position.set(0, 0, 700);
+      scene.add(ball);
+    }
 
     (async () => {
       await this.layout(null);

@@ -4,7 +4,8 @@ import { inject } from '../../model/basic/inject';
 import { HrMap } from '../basic';
 import * as Interfaces from '../../interfaces/symbols';
 import { IWarehouse } from '../../model';
-import { PaneManager, PaneObject, SelectionManager } from '../state';
+import { PaneManager, PaneObject } from '../state';
+import { SelectionManager } from '../../model/state';
 
 export class RectDrawSelectBehavior extends Behavior {
   @inject(Interfaces.ISelectionManager)

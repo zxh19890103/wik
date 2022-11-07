@@ -1,7 +1,7 @@
 import { IHighlightManager } from '../../interfaces/Highlight';
 import { Interactive } from '../../interfaces/Interactive';
 import { InteractiveStateActionManager } from './InteractiveStateActionManager.class';
-import { inject, injectable } from '../../model/basic/inject';
+import { inject, injectable } from '../basic/inject';
 import Interface from '../../interfaces/symbols';
 
 @injectable()

@@ -1,6 +1,6 @@
 import { Interactive } from '../../interfaces/Interactive';
 import { IStateAction } from '../../interfaces/StateAction';
-import { StateActionBase } from '../../model/state/StateAction.class';
+import { StateActionBase } from './StateAction.class';
 
 /**
  * Must be start with captical char.

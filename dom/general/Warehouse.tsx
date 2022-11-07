@@ -83,7 +83,6 @@ const Warehouse3D = (props: Props) => {
     camera.lookAt(0, 0, 0);
 
     const scene = new THREE.Scene();
-
     scene.background = new THREE.Color(0x03aff4);
 
     const adjust = () => {
@@ -95,48 +94,8 @@ const Warehouse3D = (props: Props) => {
       camera.updateProjectionMatrix();
     };
 
-    // lights
-    {
-      const light = new THREE.DirectionalLight(0xffffff, 1);
-      light.position.set(0, 0, 1);
-      scene.add(light);
-      const amlight = new THREE.AmbientLight(0xffffff, 0.3);
-      scene.add(amlight);
-      // const sky = new THREE.HemisphereLight(0x2345f5, 0xff0000);
-      // scene.add(sky);
-    }
-
-    // ground
-    {
-      const ground = new Ground(5000, 5000);
-      scene.add(ground);
-    }
-
-    // axes
-    {
-      const axesHelper = new THREE.AxesHelper(300);
-      axesHelper.setColors(
-        new THREE.Color(0xffffff), // x
-        new THREE.Color(0xff4f00), // y
-        new THREE.Color(0x00ff8f), // z
-      );
-      scene.add(axesHelper);
-    }
-
-    // a ref
-    {
-      const ball = new THREE.Mesh(
-        new THREE.SphereGeometry(100, 60, 60),
-        new THREE.MeshPhongMaterial({ color: 0x00ff99 }),
-      );
-
-      ball.position.set(0, 0, 700);
-      scene.add(ball);
-    }
-
     // const control = new ArcballControls(camera, renderer.domElement, scene);
     // control.update();
-
     new OrbitControls(camera, renderer.domElement);
 
     const loop = () => {

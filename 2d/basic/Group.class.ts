@@ -3,12 +3,12 @@ import { ReactiveLayer } from '../../mixins/ReactiveLayer';
 import { Interactive, OnInteractive } from '../../interfaces/Interactive';
 import { inject, mix, writeReadonlyProp } from '../../model/basic';
 import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
-import { InteractiveStateActionManager, PaneManager, PaneName, PaneObject } from '../state';
+import { PaneManager, PaneName, PaneObject } from '../state';
+import { InteractiveStateActionManager } from '../../model/state';
 import {
   IModeManager,
   IPaneManager,
   IRendererManager,
-  IRedoUndoManager,
   IStateActionManager,
 } from '../../interfaces/symbols';
 import { leafletOptions } from '../../utils';

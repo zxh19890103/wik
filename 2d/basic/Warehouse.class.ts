@@ -1,5 +1,4 @@
 import { LayerWithID } from '../../interfaces/WithLayerID';
-import { InteractiveStateActionManager } from '../state/InteractiveStateActionManager.class';
 import { IWarehouse, ListCtorArgs } from '../../model';
 import { ModeManager } from '../../model/modes';
 import { ConfigProviderConfigValue, Core } from '../../model/basic';
@@ -16,7 +15,12 @@ import { IInjector } from '../../interfaces/Injector';
 import { tryInvokingOwn } from '../../utils';
 
 import { AnimationManager } from '../animation/AnimationManager.class';
-import { ImageManager, PaneManager, SelectionManager, HighlightManager } from '../state';
+import { ImageManager, PaneManager } from '../state';
+import {
+  SelectionManager,
+  HighlightManager,
+  InteractiveStateActionManager,
+} from '../../model/state';
 import { ILogger } from '../../interfaces/Logger';
 import { HrEvent } from '../../model/basic/Event.class';
 
