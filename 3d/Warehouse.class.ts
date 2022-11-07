@@ -8,7 +8,6 @@ import Interface from '../interfaces/symbols';
 import { IWarehouse } from '../model';
 import { Core, IList, inject, writeReadonlyProp } from '../model/basic';
 import { Ground } from './Ground.class';
-import { IInteractive3D } from './IInteractive3D';
 import { Object3DList } from './Object3DList.class';
 
 export abstract class Warehouse3D extends Core implements IWarehouse, IDisposable {

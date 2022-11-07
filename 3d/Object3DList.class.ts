@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { __batched_fires__ } from '../mixins/Emitter';
 import { IWarehouse } from '../model';
-import { CoreList, writeReadonlyProp } from '../model/basic';
+import { CoreList, writeProp, writeReadonlyProp } from '../model/basic';
 import { IWarehouseObjectList } from '../model/IWarehouseObjectList';
 
 export class Object3DList<M extends THREE.Object3D>
@@ -20,10 +20,12 @@ export class Object3DList<M extends THREE.Object3D>
     // init add to ui
     for (const item of this.items) {
       root.add(item);
+      writeProp(item, '$$warehouse', this.$$parent);
     }
   }
 
   protected override _add(item: M): void {
+    writeProp(item, '$$warehouse', this.$$parent);
     this.scene?.add(item);
     super._add(item);
   }
