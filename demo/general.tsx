@@ -89,8 +89,8 @@ class MyWarehouse3D extends Warehouse3D {
       const packs = new model3d.InstancePack(1000000, packSpec);
       const boards = new model3d.InstanceBoard(100000, boardSpec);
 
-      for (let x = -10; x < 10; x++) {
-        for (let y = -10; y < 10; y++) {
+      for (let x = -1; x < 0; x++) {
+        for (let y = -1; y < 0; y++) {
           const origin = { x: x * 210, y: y * 200, z: 10 };
           const shelf = new model3d.Shelf(origin, shelfSpec);
 

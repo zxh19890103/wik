@@ -76,7 +76,12 @@
 36. 考虑一下 group 和 list 之间的重合和差异
 37. selectionManager 和 modeManager 甚至 HighlightManager 可以放到 model/state 目录下 ✅
 38. warehouse.tsx 下的 相关代码可以移到 warehouse 类中 ✅
-39. 鼠标事件存在次序问题
+39. 鼠标事件存在次序问题 ✅
+40. 考虑一下 layer.onClick onSelect etc. 是否真的应该在 behavior 中调用
+
+- 我觉得需要，onXXX 都是交互响应，需要分离到 behavior 中去调用
+
+41. click cancel 执行的位置是否合适
 
 ## TODO - 3d
 

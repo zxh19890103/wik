@@ -11,7 +11,7 @@ export interface IWarehouse extends WithInjector, Iterable<GraphicObject> {
   mounted: boolean;
   layouted: boolean;
 
-  mount(root: any): void;
+  mount(root: unknown, ...args: any[]): void;
   layout(data?: unknown): void | Promise<void>;
 
   queryListAll(): Array<{ type: string; value: IList<GraphicObject> }>;

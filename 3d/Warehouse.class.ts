@@ -7,8 +7,9 @@ import { ISelectionManager } from '../interfaces/Selection';
 import Interface from '../interfaces/symbols';
 import { IWarehouse } from '../model';
 import { Core, IList, inject, writeReadonlyProp } from '../model/basic';
+import { event2behavior } from '../model/state';
+import { DefaultBehavior } from './behaviors/DefaultBehavior.class';
 import { Ground } from './Ground.class';
-import { IInteractive3D } from './IInteractive3D';
 import { Object3DList } from './Object3DList.class';
 
 export abstract class Warehouse3D extends Core implements IWarehouse, IDisposable {
@@ -18,6 +19,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   readonly pointer: THREE.Vector2 = null;
 
   protected readonly scene: THREE.Scene;
+  protected readonly domElement: HTMLDivElement = null;
 
   @inject(Interface.ISelectionManager)
   readonly selectionManager: ISelectionManager;
@@ -25,9 +27,10 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   readonly modeManager: IModeManager;
   readonly typedLists: Map<string, Object3DList<THREE.Object3D>> = new Map();
 
-  private mousemove: (event: PointerEvent) => void;
-  private mousedown: (event: PointerEvent) => void;
-  private mouseup: (event: PointerEvent) => void;
+  private mousemove: (event: MouseEvent) => void;
+  private mousedown: (event: MouseEvent) => void;
+  private mouseup: (event: MouseEvent) => void;
+  private mouseclick: (event: MouseEvent) => void;
 
   isMouseDown = false;
   isMouseMovedAfterDown = false;
@@ -81,20 +84,46 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
 
     if (this.activatedObj3d === obj3d) {
       if (this.activatedInstanceId !== instid) {
+        this.fireBehavior('mouseout', this.activatedObj3d, {
+          instanceId: this.activatedInstanceId,
+          source: this.activatedObj3d,
+        });
         // mouseout mouseover
         this.activatedInstanceId = instid;
+        this.fireBehavior('mouseover', obj3d, { instanceId: instid, source: obj3d });
       }
     } else {
       // mouseout mouseover
+      this.fireBehavior('mouseout', this.activatedObj3d, {
+        instanceId: this.activatedInstanceId,
+        source: this.activatedObj3d,
+      });
+
       this.activatedObj3d = obj3d;
       this.activatedInstanceId = instid;
+
+      this.fireBehavior('mouseover', obj3d, {
+        instanceId: instid,
+        source: obj3d,
+      });
     }
   }
 
-  mount(scene: THREE.Scene): void {
+  private fireBehavior(type: string, target: THREE.Object3D, event: any) {
+    if (!target) return;
+
+    if (target === this.scene) {
+      this.modeManager.apply(event2behavior[type], target, event);
+      return;
+    }
+    this.modeManager.apply(event2behavior[`item@${type}`], target, event);
+  }
+
+  mount(scene: THREE.Scene, domElement: HTMLDivElement): void {
     if (this.mounted) return;
 
     writeReadonlyProp(this, 'scene', scene);
+    writeReadonlyProp(this, 'domElement', domElement);
     writeReadonlyProp(this, 'mounted', true);
 
     for (const [_, list] of this.typedLists) {
@@ -109,13 +138,13 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       mousestopTimer = null;
     };
 
-    this.mousemove = (event: PointerEvent) => {
+    this.mousemove = (mevt: MouseEvent) => {
       // calculate pointer position in normalized device coordinates
       // (-1 to +1) for both components
-      event.preventDefault();
+      mevt.preventDefault();
 
-      this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-      this.pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      this.pointer.x = (mevt.clientX / window.innerWidth) * 2 - 1;
+      this.pointer.y = -(mevt.clientY / window.innerHeight) * 2 + 1;
 
       this.isMouseMoving = true;
 
@@ -127,27 +156,31 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       this.isMouseMovedAfterDown = true;
     };
 
-    this.mousedown = (event: PointerEvent) => {
+    this.mousedown = (mevt: MouseEvent) => {
       this.isMouseDown = true;
 
       if (this.activatedObj3d) {
         // mousdown
         console.log('obj is down');
+        this.fireBehavior('mousedown', this.activatedObj3d, {
+          source: this.activatedObj3d,
+          instanceId: this.activatedInstanceId,
+        });
       }
     };
 
-    this.mouseup = (event: PointerEvent) => {
+    this.mouseup = (mevt: MouseEvent) => {
       if (this.activatedObj3d) {
         // mouseup
         console.log('obj is up');
         if (!this.isMouseMovedAfterDown) {
           // click
-          console.log('clicked at the same time.');
-          const obj3d = this.activatedObj3d as any;
-          console.log(obj3d, this.activatedInstanceId);
-          const event = { instanceId: this.activatedInstanceId };
-          obj3d.onClick && obj3d.onClick(event);
-          this.modeManager.apply('onClick', obj3d, event);
+          // cancel click
+        }
+      } else {
+        if (!this.isMouseMovedAfterDown) {
+          console.log('noop click');
+          this.fireBehavior('click', this.scene, null);
         }
       }
 
@@ -157,10 +190,21 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       this.isMouseMovedAfterDown = false;
     };
 
-    document.addEventListener('pointermove', this.mousemove);
-    document.addEventListener('pointerdown', this.mousedown);
-    document.addEventListener('pointerup', this.mouseup);
+    this.mouseclick = (mevt: MouseEvent) => {
+      if (!this.activatedObj3d) return;
 
+      this.fireBehavior('click', this.activatedObj3d, {
+        instanceId: this.activatedInstanceId,
+        source: this.activatedObj3d,
+      });
+    };
+
+    domElement.addEventListener('mousemove', this.mousemove);
+    domElement.addEventListener('mousedown', this.mousedown);
+    domElement.addEventListener('mouseup', this.mouseup);
+    domElement.addEventListener('click', this.mouseclick);
+
+    // lights, ground
     {
       // lights
       const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -194,6 +238,12 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       scene.add(ball);
     }
 
+    // modes
+    {
+      this.modeManager.create('default', this.injector.$new(DefaultBehavior));
+      this.modeManager.mode = 'default';
+    }
+
     (async () => {
       await this.layout(null);
       writeReadonlyProp(this, 'layouted', true);
@@ -201,9 +251,10 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   }
 
   dispose(): void {
-    document.removeEventListener('pointermove', this.mousemove);
-    document.removeEventListener('pointerdown', this.mousedown);
-    document.removeEventListener('pointerup', this.mouseup);
+    this.domElement.removeEventListener('mousemove', this.mousemove);
+    this.domElement.removeEventListener('mousedown', this.mousedown);
+    this.domElement.removeEventListener('mouseup', this.mouseup);
+    this.domElement.removeEventListener('click', this.mouseclick);
   }
 
   queryListAll(): { type: string; value: IList<GraphicObject> }[] {

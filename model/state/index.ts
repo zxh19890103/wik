@@ -1,3 +1,4 @@
+export * from './event2behavior';
 export * from './GlobalConstManager.class';
 export * from './StateAction.class';
 export * from './StateActionManager.class';

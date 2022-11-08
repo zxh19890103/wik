@@ -2,7 +2,7 @@ import { LayerWithID } from '../../interfaces/WithLayerID';
 import { IWarehouse, ListCtorArgs } from '../../model';
 import { ModeManager } from '../../model/modes';
 import { ConfigProviderConfigValue, Core } from '../../model/basic';
-import { GlobalConstManager } from '../../model/state';
+import { event2behavior, GlobalConstManager } from '../../model/state';
 import { HrMap, LayerList, SVGOverlayList, VectorLayerList } from '.';
 import { RenderersManager } from '../leafletCanvasOverrides';
 
@@ -241,23 +241,10 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       /**
        * mapping from event of emitter or lealfet to behavior's callbacks.
        */
-      const event2cb = {
-        'item@click': 'onClick',
-        'item@dblclick': 'onDblClick',
-        'item@mouseover': 'onHover',
-        'item@mouseout': 'onUnHover',
-        'item@mousedown': 'onPress',
-        'item@contextmenu': 'onContextMenu',
-        mousedown: 'onMouseDown',
-        mousemove: 'onMouseMove',
-        mouseup: 'onMouseUp',
-        click: 'onNoopClick',
-      };
-
       this.listen$n('click dblclick mouseover mouseout mousedown contextmenu', (evt: HrEvent) => {
         if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
         const { layer, leafletEvt } = evt.payload;
-        const cb = event2cb[`item@${evt.type}`];
+        const cb = event2behavior[`item@${evt.type}`];
         tryInvokingOwn(this, cb, layer, leafletEvt);
         this.modeManager.apply(cb, layer, leafletEvt);
       });
@@ -268,7 +255,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       this.map
         .on('mousedown mousemove mouseup click', (evt) => {
           if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
-          this.modeManager.apply(event2cb[evt.type], evt);
+          this.modeManager.apply(event2behavior[evt.type], evt);
         })
         .on('zoom drag', () => {
           this.animationManager.flush();

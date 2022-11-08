@@ -110,14 +110,16 @@ const Warehouse3D = (props: Props) => {
       renderer.render(scene, camera);
     };
 
-    const $nextTick = (fn: () => void) => {};
-
     setTimeout(loop, 0);
 
     window.onresize = adjust;
 
     warehouse = createWarehouse(injector, props.model);
-    warehouse?.mount(scene);
+    warehouse?.mount(scene, element);
+
+    (warehouse as any)._render = () => {
+      renderer.render(scene, camera);
+    };
 
     setValue({ ...value, mvMappings: props.mvMappings, warehouse });
   }, []);

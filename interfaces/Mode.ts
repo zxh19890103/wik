@@ -44,7 +44,7 @@ export interface IModeManager {
   add(...modes: IMode[]): void;
   remove(...modes: IMode[]): void;
 
-  set mode(val: IMode);
+  set mode(val: IMode | string);
   get mode(): IMode;
 
   apply(callback: BehaviorCallback, ...args: any[]): void;

@@ -17,10 +17,11 @@ export class InteractiveStateActionManager implements IStateActionManager {
     }
 
     const sa = new InteractiveStateAction(context, type);
-    if (!context.changeHistory) {
-      context.changeHistory = [sa];
-    } else {
+
+    if (context.changeHistory) {
       context.changeHistory.push(sa);
+    } else {
+      context.changeHistory = [sa];
     }
 
     sa.apply();
