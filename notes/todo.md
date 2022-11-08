@@ -82,6 +82,7 @@
 - 我觉得需要，onXXX 都是交互响应，需要分离到 behavior 中去调用
 
 41. click cancel 执行的位置是否合适
+42. onHover, onSelect 等需要传入参数，以应对 three 的 instanceMesh 的交互
 
 ## TODO - 3d
 

@@ -18,7 +18,6 @@ export class InstanceBoard extends InstancedMesh implements OnClick, IInteractiv
   private readonly translationMatrix = new THREE.Matrix4();
 
   isInteractive = false;
-  activatedInstanceId: number;
 
   /**
    * which shelf it is on.
