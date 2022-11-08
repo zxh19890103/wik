@@ -3,6 +3,7 @@ import { OnClick, OnMouseOverOut } from '../interfaces/Interactive';
 import * as meta from '../model/meta';
 import { BinGeometry } from './geometries';
 import { IInteractive3D } from './IInteractive3D';
+import { Warehouse3D } from './Warehouse.class';
 
 export class Pack extends THREE.Mesh {
   constructor(position: meta.Position, meta: meta.Pack) {
@@ -14,11 +15,13 @@ export class Pack extends THREE.Mesh {
 export class InstancePack
   extends THREE.InstancedMesh
   implements OnClick, IInteractive3D, OnMouseOverOut
+  implements OnClick, IInteractive3D, WithWarehouseRef
 {
   private cursor = 0;
   private readonly translationMatrix = new THREE.Matrix4();
   isInteractive = true;
   activatedInstanceId: number;
+  $$warehouse: Warehouse3D;
 
   constructor(limit: number, meta: meta.Pack) {
     super(new BinGeometry(meta.width, meta.depth, meta.height), material, limit);

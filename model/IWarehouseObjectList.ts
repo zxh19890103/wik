@@ -6,3 +6,7 @@ export interface IWarehouseObjectList extends WithParent<IWarehouse> {
   readonly mounted: boolean;
   mount(root: unknown): void;
 }
+
+export interface WithWarehouseRef {
+  $$warehouse: IWarehouse;
+}

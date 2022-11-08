@@ -5,6 +5,7 @@ import { OrbitControls } from '../../3d/controls';
 import { IInjector } from '../../interfaces/Injector';
 import { IWarehouse } from '../../model';
 import { Model, View } from '../../model/basic';
+import { flushNextTicks } from '../../model/basic/nextTick';
 import { __world_context__ } from './World';
 
 type WarehouseProvider = IWarehouse | ((injector: IInjector) => IWarehouse);
@@ -106,6 +107,8 @@ const Warehouse3D = (props: Props) => {
         w.raycaster.setFromCamera(w.pointer, camera);
         w.tick();
       }
+
+      flushNextTicks();
 
       renderer.render(scene, camera);
     };
