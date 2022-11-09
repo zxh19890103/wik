@@ -2,10 +2,18 @@ import { Interactive } from '../../interfaces/Interactive';
 import { IStateAction } from '../../interfaces/StateAction';
 import { StateActionBase } from './StateAction.class';
 
+const noop = () => null;
+
 /**
  * Must be start with captical char.
  */
 export type InteractiveStateActionName = 'Hover' | 'Highlight' | 'Select';
+
+const action2is: Record<InteractiveStateActionName, string> = {
+  Hover: 'isHover',
+  Highlight: 'isHighlight',
+  Select: 'isSelected',
+};
 
 /**
  * @todo
@@ -17,54 +25,42 @@ export type InteractiveStateActionName = 'Hover' | 'Highlight' | 'Select';
 export class InteractiveStateAction extends StateActionBase implements IStateAction {
   public readonly type: InteractiveStateActionName;
 
+  private readonly payload: any = null;
   private data: any = null;
-  private _do: string;
-  private _undo: string;
+
+  private readonly doFn: (...args) => any;
+  private readonly unDoFn: (...args) => void;
+  private readonly fieldIs: string = null;
 
   private applied = false;
 
-  constructor(public context: Interactive, type: InteractiveStateActionName) {
+  constructor(public context: Interactive, type: InteractiveStateActionName, payload?: any) {
     super();
 
     this.type = type;
+    this.payload = payload || null;
 
-    this._do = 'on' + type;
-    this._undo = 'onUn' + type;
-  }
+    this.doFn = context[`on${type}`] || noop;
+    this.unDoFn = context[`onUn${type}`] || noop;
 
-  private setIsValue(val: boolean) {
-    switch (this.type) {
-      case 'Highlight':
-        this.context.isHighlight = val;
-        break;
-      case 'Hover':
-        this.context.isHover = val;
-        break;
-      case 'Select':
-        this.context.isSelected = val;
-        break;
-    }
+    this.fieldIs = action2is[type];
   }
 
   apply() {
     if (this.applied) return;
 
-    if (this.context[this._do]) {
-      this.data = this.context[this._do]();
-    }
+    this.data = this.doFn.call(this.context, this.payload);
 
-    this.setIsValue(true);
+    this.context[this.fieldIs] = true;
     this.applied = true;
   }
 
   revert() {
     if (!this.applied) return;
 
-    if (this.context[this._undo]) {
-      this.context[this._undo](this.data);
-    }
+    this.unDoFn.call(this.context, this.data, this.payload);
 
-    this.setIsValue(false);
+    this.context[this.fieldIs] = false;
     this.applied = false;
   }
 }

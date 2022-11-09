@@ -1,36 +1,48 @@
 import { Behavior } from '../../model/behaviors';
 import { inject } from '../../model/basic/inject';
-import { Interactive } from '../../interfaces/Interactive';
 import Interface from '../../interfaces/symbols';
-import { SelectionManager, InteractiveStateActionManager } from '../../model/state';
+import { InteractiveStateActionManager } from '../../model/state';
+import { InteractiveObject3D } from '../IInteractive3D';
+import { ISelectionManager } from '../../interfaces/Selection';
 
 export class DefaultBehavior extends Behavior {
   @inject(Interface.ISelectionManager)
-  readonly selectionManager: SelectionManager;
+  readonly selectionManager: ISelectionManager;
   @inject(Interface.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
   override onLoad(): void {}
   override onUnload(): void {}
 
-  override onHover(layer: Interactive, e: unknown): void {
-    this.interactiveStateActionManager.push(layer, 'Hover');
+  override onHover(layer: InteractiveObject3D, e: unknown): void {
+    if (!layer.onHover || !layer.onUnHover) return;
+
+    this.interactiveStateActionManager.push(layer, 'Hover', e);
   }
 
-  override onUnHover(layer: Interactive, e: unknown): void {
+  override onUnHover(layer: InteractiveObject3D, e: unknown): void {
+    if (!layer.onHover || !layer.onUnHover) return;
+
     this.interactiveStateActionManager.pop(layer, 'Hover');
   }
 
-  override onDblClick(layer: Interactive, e: unknown): void {
+  override onDblClick(layer: InteractiveObject3D, e: unknown): void {
     layer.onDblClick && layer.onDblClick(e);
   }
 
-  override onClick(layer: Interactive, e: unknown): void {
+  override onClick(layer: InteractiveObject3D, e: any): void {
     layer.onClick && layer.onClick(e);
 
-    if (!this.selectionManager.isSelectable(layer)) return;
+    if (!layer.onSelect || !layer.onUnSelect) return;
 
     this.selectionManager.clearMany();
-    this.selectionManager.current(layer);
+
+    const obj = {
+      isInstancedMesh: layer.isInstancedMesh,
+      instanceId: e.instanceId,
+      obj3d: layer,
+    };
+
+    this.selectionManager.current(obj as any, e);
   }
 }

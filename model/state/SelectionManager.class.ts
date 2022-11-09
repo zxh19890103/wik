@@ -32,14 +32,14 @@ export class SelectionManager extends Core<SelectionManagerEventType> implements
     this.fire('items', { items });
   }
 
-  current(item: Interactive) {
+  current(item: Interactive, data?: any) {
     if (item === this.item) return;
 
     if (this.item) {
       this.interactiveStateActionManager.pop(this.item, 'Select');
     }
 
-    this.interactiveStateActionManager.push(item, 'Select');
+    this.interactiveStateActionManager.push(item, 'Select', data);
     this.setItem(item);
   }
 

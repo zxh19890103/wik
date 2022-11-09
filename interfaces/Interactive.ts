@@ -1,13 +1,18 @@
 import { ContextMenuItem } from './types';
 
 export interface OnMouseOverOut<S = any> {
-  onHover(): S;
-  onUnHover(state?: S): void;
+  onHover(data?: any): S;
+  onUnHover(state?: S, data?: any): void;
 }
 
 export interface OnSelect<S = any> {
-  onSelect(): S;
-  onUnSelect(state?: S): void;
+  onSelect(data?: any): S;
+  onUnSelect(state?: S, data?: any): void;
+}
+
+export interface OnHighlight<S = any> {
+  onHighlight(data?: any): S;
+  onUnHighlight(state?: S, data?: any): void;
 }
 
 export interface OnClick {
@@ -22,11 +27,6 @@ export interface OnDrag {
   onDragEnd(coord?: unknown): void;
   onDragStart(): void;
   onDragging(coord?: unknown): void;
-}
-
-export interface OnHighlight<S = any> {
-  onHighlight(): S;
-  onUnHighlight(state?: S): void;
 }
 
 export interface OnContextMenu<Key extends string = string> {
@@ -49,7 +49,7 @@ export interface OnInteractive<S1 = any, S2 = any, S3 = any>
     OnContextMenu {}
 
 export interface Interactive extends Partial<OnInteractive> {
-  changeHistory: any[];
+  uiStateChangeLogs: any[];
 
   /**
    * If it is in state of being selected.

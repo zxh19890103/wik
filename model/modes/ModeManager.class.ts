@@ -1,6 +1,6 @@
 import { IInjector, WithInjector } from '../../interfaces/Injector';
 import { BehaviorCallback, IBehavior, IMode, IModeManager } from '../../interfaces/Mode';
-import { Core } from '../basic';
+import { Core, writeReadonlyProp } from '../basic';
 import { injectable } from '../basic/inject';
 import { Behavior } from '../behaviors';
 import { Mode } from './Mode.class';
@@ -52,7 +52,7 @@ export class ModeManager extends Core implements IModeManager, WithInjector {
 
     const mode = new Mode(name, ...behaviors);
     this.modes.set(name, mode);
-    this.injector.writeProp(mode, 'modeMgr', this);
+    writeReadonlyProp(mode, 'modeMgr', this);
     return mode;
   }
 

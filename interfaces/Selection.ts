@@ -4,7 +4,7 @@ export interface ISelectionManager {
   getCurrent(): Interactive;
   getMany(): Interactive[];
 
-  current(layer: Interactive): void;
+  current(layer: Interactive, data?: any): void;
   many(layers: Interactive[]): void;
   append(...layers: Interactive[]): void;
 

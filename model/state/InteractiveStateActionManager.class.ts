@@ -1,8 +1,8 @@
 import { Interactive } from '../../interfaces/Interactive';
 import { InteractiveStateAction, InteractiveStateActionName } from './InteractiveStateAction.class';
-import Interfacces from '../../interfaces/symbols';
 import { IStateActionManager } from '../../interfaces/StateAction';
 import { injectable } from '../../model/basic/inject';
+import Interfacces from '../../interfaces/symbols';
 
 const SAFE = 5;
 
@@ -11,18 +11,12 @@ export class InteractiveStateActionManager implements IStateActionManager {
   private _ctx: Interactive = null;
   private _type: InteractiveStateActionName = null;
 
-  push(context: Interactive, type: InteractiveStateActionName): this {
-    if (!(context[`on${type}`] && context[`onUn${type}`])) {
-      return this;
-    }
+  push(context: Interactive, type: InteractiveStateActionName, data?: any): this {
+    const sa = new InteractiveStateAction(context, type, data);
 
-    const sa = new InteractiveStateAction(context, type);
+    context.uiStateChangeLogs = context.uiStateChangeLogs || [];
 
-    if (context.changeHistory) {
-      context.changeHistory.push(sa);
-    } else {
-      context.changeHistory = [sa];
-    }
+    context.uiStateChangeLogs.push(sa);
 
     sa.apply();
 
@@ -35,10 +29,6 @@ export class InteractiveStateActionManager implements IStateActionManager {
   };
 
   pop(context: Interactive, type: InteractiveStateActionName): this {
-    if (!(context[`on${type}`] && context[`onUn${type}`])) {
-      return this;
-    }
-
     this._ctx = context;
     this._type = type;
 
@@ -48,7 +38,7 @@ export class InteractiveStateActionManager implements IStateActionManager {
 
     if (!_ctx || !_type) return;
 
-    const actions = _ctx.changeHistory as InteractiveStateAction[];
+    const actions = _ctx.uiStateChangeLogs as InteractiveStateAction[];
     if (!actions) return;
 
     // actions between brace.
@@ -74,7 +64,7 @@ export class InteractiveStateActionManager implements IStateActionManager {
     actions.push(..._actions);
 
     if (actions.length === 0) {
-      _ctx.changeHistory = null;
+      _ctx.uiStateChangeLogs = null;
     }
 
     return this;

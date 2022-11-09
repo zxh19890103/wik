@@ -3,7 +3,7 @@ import { BoardGeometry } from './geometries/BoardGeometry.class';
 import * as meta from '../model/meta';
 import { Shelf } from './Shelf.class';
 import { OnClick } from '../interfaces/Interactive';
-import { IInteractive3D } from './IInteractive3D';
+import { Interactive3D } from './IInteractive3D';
 
 export class Board extends Mesh {
   constructor(position: meta.Position, w: number, h: number) {
@@ -13,11 +13,9 @@ export class Board extends Mesh {
   }
 }
 
-export class InstanceBoard extends InstancedMesh implements OnClick, IInteractive3D {
+export class InstanceBoard extends InstancedMesh implements OnClick {
   private cursor = 0;
   private readonly translationMatrix = new THREE.Matrix4();
-
-  isInteractive = false;
 
   /**
    * which shelf it is on.

@@ -77,12 +77,14 @@
 37. selectionManager 和 modeManager 甚至 HighlightManager 可以放到 model/state 目录下 ✅
 38. warehouse.tsx 下的 相关代码可以移到 warehouse 类中 ✅
 39. 鼠标事件存在次序问题 ✅
-40. 考虑一下 layer.onClick onSelect etc. 是否真的应该在 behavior 中调用
+40. 考虑一下 layer.onClick onSelect etc. 是否真的应该在 behavior 中调用 ✅
 
-- 我觉得需要，onXXX 都是交互响应，需要分离到 behavior 中去调用
+- 我觉得需要，onXXX 都是交互响应，需要分离到 behavior 中去调用 ✅
 
 41. click cancel 执行的位置是否合适
-42. onHover, onSelect 等需要传入参数，以应对 three 的 instanceMesh 的交互
+42. onHover, onSelect 等需要传入参数，以应对 three 的 instanceMesh 的交互 ✅
+43. onSelect 无法与当前的 selectManager 相适应 ✅ - 对 3d 场景重写 manager
+44. selectManager 的状态存储需要再设计一下，比如使用 map 结构？
 
 ## TODO - 3d
 
