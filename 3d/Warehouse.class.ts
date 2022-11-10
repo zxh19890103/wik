@@ -246,7 +246,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   }
 
   queryList(type: string): IList<GraphicObject> {
-    throw new Error('Method not implemented.');
+    return this.typedLists.get(type);
   }
 
   addList<O extends THREE.Object3D>(type: string): Object3DList<O> {
@@ -281,8 +281,13 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     throw new Error('Method not implemented.');
   }
 
-  add(type: string, item: GraphicObject): void {
-    throw new Error('Method not implemented.');
+  add<M extends THREE.Object3D = THREE.Object3D>(type: string, item: M): void {
+    const list = this.typedLists.get(type);
+    if (!list) return;
+    list.add(item);
+
+    const that = this as IWarehouse;
+    that.onAdd && that.onAdd(item);
   }
 
   update(type: string, item: GraphicObject, data: any): void {

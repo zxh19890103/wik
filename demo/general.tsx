@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import THREE from 'three';
+import THREE, { Material, MeshPhongMaterial } from 'three';
 import { EssWarehouse } from '../2d';
 import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d/basic';
 import { inject, provides } from '../model/basic';
@@ -12,14 +12,22 @@ import * as model3d from '../3d';
 import { Object3DList } from '../3d/Object3DList.class';
 import { IInjector } from '../interfaces/Injector';
 import * as meta from '../model/meta';
-import { GLTFLoader } from '../3d/loaders/GLTFLoader.class';
+import { useEffect, useState } from 'react';
+import * as model from '../model';
+import { __batched_fires__ } from '../mixins/Emitter';
+import { IWarehouse } from '../model';
+import { Pack } from '../3d';
+import { PointView } from '../model/PointView';
+import { ContextMenuItem } from '../interfaces/types';
+import { OnContextMenu, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
+import { M } from 'vitest/dist/global-732f9b14';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
 @inject(Interface.IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse extends EssWarehouse {
-  async layout(data: any) {
+  async layout2(data: any) {
     const icon = 'https://cdn.iconscout.com/icon/premium/png-512-thumb/robotic-arm-51-1126917.png';
 
     await this.imageManager.load(icon);
@@ -36,6 +44,8 @@ class MyWarehouse extends EssWarehouse {
 
     this.map.setView([0, 0], 4);
   }
+
+  layout(data?: any): void | Promise<void> {}
 }
 
 @inject(Interface.IInjector)
@@ -75,7 +85,7 @@ class MyWarehouse3D extends Warehouse3D {
     this.lonelyRobot.position.set(this.walkX++, this.walkY++, 0);
   }
 
-  layout(data?: unknown): void | Promise<void> {
+  layout2(data?: unknown): void | Promise<void> {
     {
       const shelfSpec: meta.Rack = {
         width: 200,
@@ -145,13 +155,118 @@ class MyWarehouse3D extends Warehouse3D {
       // );
     }
   }
+
+  layout() {}
 }
 
 export default () => {
+  const [state] = useState(() => {
+    return {
+      dots: new model.basic.List(model.Point, []),
+    };
+  });
+
+  useEffect(() => {
+    setTimeout(() => {
+      __batched_fires__(() => {
+        // 400 dots
+        for (let x = 0; x < 20; x++) {
+          for (let y = 0; y < 20; y++) {
+            const dot = state.dots.create();
+            dot.px = x * 700;
+            dot.py = y * 600;
+          }
+        }
+      }, 'size');
+    }, 4000);
+  }, []);
+
   return (
     <General.World>
-      {/* <General.Warehouse model={(injector) => injector.$new(MyWarehouse)} /> */}
-      <General.Warehouse3D model={(injector) => injector.$new(MyWarehouse3D)} />
+      <General.Warehouse mvMappings={mvMapping} model={(injector) => injector.$new(MyWarehouse)}>
+        <General.ViewSet type="dot" fit renderer="canvas" model={state.dots} />
+      </General.Warehouse>
+      <General.Warehouse3D
+        mvMappings={mvMapping3}
+        model={(injector) => injector.$new(MyWarehouse3D)}
+      >
+        <General.ViewSet3D type="dot" model={state.dots} />
+      </General.Warehouse3D>
     </General.World>
   );
 };
+
+const mvMapping = {
+  dot: (m: model.Point, w: IWarehouse) => {
+    return new Dot([m.py, m.px]);
+  },
+};
+
+class PackView extends Pack implements PointView, OnMouseOverOut {
+  constructor(m: model.Point) {
+    super({ x: m.px, y: m.py, z: m.pz }, { width: 300, height: 300, depth: 200 });
+  }
+
+  onHover(data?: any) {
+    const material = this.material as MeshPhongMaterial;
+    const color = material.color.getHex();
+    material.color.setHex(0x0ff987);
+
+    material.needsUpdate = true;
+    return color;
+  }
+
+  onUnHover(state?: any, data?: any): void {
+    const material = this.material as MeshPhongMaterial;
+    material.color.setHex(state);
+    material.needsUpdate = true;
+  }
+
+  model: model.Point;
+
+  whenInit(): void {}
+}
+
+const mvMapping3 = {
+  dot: (m: model.Point, w: IWarehouse) => {
+    return new PackView(m);
+  },
+};
+
+class Dot extends L.Circle implements PointView, OnSelect, OnContextMenu, OnMouseOverOut {
+  model: model.Point;
+
+  onHover() {
+    const c = this.options.color;
+    this.setStyle({ color: '#000' });
+    return c;
+  }
+
+  onUnHover(state?: any): void {
+    this.setStyle({ color: state });
+  }
+
+  onContextMenu(evt?: L.LeafletMouseEvent): ContextMenuItem[] {
+    return [{ text: 'Del', value: 'delete' }];
+  }
+
+  onContextMenuClick(key: string): void | Promise<any> {
+    if (key === 'delete') {
+      this.model.remove();
+    }
+  }
+
+  whenInit(): void {}
+
+  whenEffect?(effect: string): void {}
+
+  onSelect() {
+    const color = this.options.color;
+    this.setStyle({ color: '#f12' });
+    return color;
+  }
+
+  onUnSelect(state?: any): void {
+    this.setStyle({ color: state });
+  }
+}

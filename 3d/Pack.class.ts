@@ -8,7 +8,14 @@ import { Warehouse3D } from './Warehouse.class';
 
 export class Pack extends THREE.Mesh {
   constructor(position: meta.Position, meta: meta.Pack) {
-    super(new THREE.BoxGeometry(meta.width, meta.depth, meta.height), material);
+    super(
+      new THREE.BoxGeometry(meta.width, meta.depth, meta.height),
+      new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        transparent: false,
+        opacity: 0.76,
+      }),
+    );
     this.position.set(position.x, position.y, position.z);
   }
 }
@@ -55,7 +62,7 @@ export class InstancePack
     return hex;
   }
 
-  onUnHover(state: any, data: { instanceId: number }): void {
+  onUnHover(state: any): void {
     this.setColorAt(this.id, color.setHex(state));
     this.instanceColor.needsUpdate = true;
   }

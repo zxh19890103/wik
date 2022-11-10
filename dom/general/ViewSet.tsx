@@ -21,7 +21,7 @@ interface ViewSet2DProps extends ViewSetProps {
    * If the pane is for svgOverlay, [500 - 599
    * If the pane is for canvas or svg vector, range is 401 - 500)
    */
-  zIndex?: number;
+  z?: number;
 }
 
 export const ViewSet = memo(
@@ -42,8 +42,8 @@ export const ViewSet = memo(
         pane: `${type}Pane`,
       });
 
-      if (props.zIndex !== undefined) {
-        (list as LayerList<LayerWithID>).setZ(props.zIndex);
+      if (props.z !== undefined) {
+        (list as LayerList<LayerWithID>).setZ(props.z);
       }
 
       return list;

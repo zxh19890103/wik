@@ -16,7 +16,7 @@ type WarehouseContextValue = {
 
 interface Props {
   model: WarehouseProvider;
-  mvMappings?: Record<string, (m: any) => any>;
+  mvMappings?: Record<string, (m: any, warehouse: IWarehouse) => any>;
   children?: JSX.Element | JSX.Element[];
 }
 

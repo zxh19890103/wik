@@ -85,8 +85,11 @@
 42. onHover, onSelect 等需要传入参数，以应对 three 的 instanceMesh 的交互 ✅
 43. onSelect 无法与当前的 selectManager 相适应 ✅ - 对 3d 场景重写 manager
 44. selectManager 的状态存储需要再设计一下
+
     - 比如使用 map 结构？
     - 针对 instancedMesh 构建一些独立的 3d object ? ✅ It works 😊
+
+45. 3d 光标定位的物体不准确，general demo
 
 ## TODO - 3d
 
