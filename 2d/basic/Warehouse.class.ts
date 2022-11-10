@@ -242,7 +242,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
        * mapping from event of emitter or lealfet to behavior's callbacks.
        */
       this.listen$n('click dblclick mouseover mouseout mousedown contextmenu', (evt: HrEvent) => {
-        if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
+        if (evt.type === 'click' && this.map.isClickEventFireCancelled) return;
         const { layer, leafletEvt } = evt.payload;
         const cb = event2behavior[`item@${evt.type}`];
         tryInvokingOwn(this, cb, layer, leafletEvt);
@@ -254,7 +254,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
        */
       this.map
         .on('mousedown mousemove mouseup click', (evt) => {
-          if (evt.type === 'click' && this.map.isObjClickEventCancelled) return;
+          if (evt.type === 'click' && this.map.isClickEventFireCancelled) return;
           this.modeManager.apply(event2behavior[evt.type], evt);
         })
         .on('zoom drag', () => {

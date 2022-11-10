@@ -79,12 +79,14 @@
 39. 鼠标事件存在次序问题 ✅
 40. 考虑一下 layer.onClick onSelect etc. 是否真的应该在 behavior 中调用 ✅
 
-- 我觉得需要，onXXX 都是交互响应，需要分离到 behavior 中去调用 ✅
+    - 我觉得需要，onXXX 都是交互响应，需要分离到 behavior 中去调用 ✅
 
 41. click cancel 执行的位置是否合适
 42. onHover, onSelect 等需要传入参数，以应对 three 的 instanceMesh 的交互 ✅
 43. onSelect 无法与当前的 selectManager 相适应 ✅ - 对 3d 场景重写 manager
-44. selectManager 的状态存储需要再设计一下，比如使用 map 结构？
+44. selectManager 的状态存储需要再设计一下
+    - 比如使用 map 结构？
+    - 针对 instancedMesh 构建一些独立的 3d object ? ✅ It works 😊
 
 ## TODO - 3d
 

@@ -27,6 +27,9 @@ export const __warehouse_context__ = React.createContext<WarehouseContextValue>(
   mvMappings: null,
 });
 
+/**
+ * 2d warehouse
+ */
 const Warehouse = (props: Props) => {
   const element = useRef<HTMLDivElement>();
 

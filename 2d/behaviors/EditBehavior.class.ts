@@ -143,7 +143,7 @@ export class EditBehavior extends Behavior {
 
       if (dragged) {
         asInteractive.onDragEnd && asInteractive.onDragEnd();
-        target.cancelObjClickEvent();
+        target.cancelClickEventFire();
       }
 
       document.removeEventListener('mousemove', onMove);

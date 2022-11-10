@@ -37,12 +37,6 @@ export class DefaultBehavior extends Behavior {
 
     this.selectionManager.clearMany();
 
-    const obj = {
-      isInstancedMesh: layer.isInstancedMesh,
-      instanceId: e.instanceId,
-      obj3d: layer,
-    };
-
-    this.selectionManager.current(obj as any, e);
+    this.selectionManager.current(layer, e);
   }
 }

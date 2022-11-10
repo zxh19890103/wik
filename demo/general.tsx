@@ -12,7 +12,7 @@ import * as model3d from '../3d';
 import { Object3DList } from '../3d/Object3DList.class';
 import { IInjector } from '../interfaces/Injector';
 import * as meta from '../model/meta';
-import { Selection3DManager } from '../3d/state';
+import { GLTFLoader } from '../3d/loaders/GLTFLoader.class';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -26,8 +26,8 @@ class MyWarehouse extends EssWarehouse {
 
     const material = { color: '#013faf', fill: true };
 
-    for (let x = -20; x < 20; x++) {
-      for (let y = -20; y < 20; y++) {
+    for (let x = -2; x < 2; x++) {
+      for (let y = -2; y < 2; y++) {
         const origin = [y * 220, x * 200] as L.LatLngExpression;
         const dot = new Rectangle(origin, 200, 60, { ...material });
         this.add('point', dot);
@@ -40,9 +40,6 @@ class MyWarehouse extends EssWarehouse {
 
 @inject(Interface.IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
-@provides({
-  [Interface.ISelectionManager]: Selection3DManager,
-})
 class MyWarehouse3D extends Warehouse3D {
   /**
    * just frames of rack.
@@ -69,6 +66,15 @@ class MyWarehouse3D extends Warehouse3D {
     this.boards = this.addList('board');
   }
 
+  private lonelyRobot: THREE.Object3D = null;
+  private walkX = 0;
+  private walkY = 0;
+
+  override onTick(): void {
+    if (!this.lonelyRobot) return;
+    this.lonelyRobot.position.set(this.walkX++, this.walkY++, 0);
+  }
+
   layout(data?: unknown): void | Promise<void> {
     {
       const shelfSpec: meta.Rack = {
@@ -93,8 +99,8 @@ class MyWarehouse3D extends Warehouse3D {
       const packs = new model3d.InstancePack(1000000, packSpec);
       const boards = new model3d.InstanceBoard(100000, boardSpec);
 
-      for (let x = -10; x < 10; x++) {
-        for (let y = -10; y < 10; y++) {
+      for (let x = -2; x < 2; x++) {
+        for (let y = -2; y < 2; y++) {
           const origin = { x: x * 210, y: y * 200, z: 10 };
           const shelf = new model3d.Shelf(origin, shelfSpec);
 
@@ -115,6 +121,28 @@ class MyWarehouse3D extends Warehouse3D {
 
       this.instBoard = boards;
       this.instPack = packs;
+    }
+
+    {
+      // const loader = new GLTFLoader();
+      // loader.load(
+      //   '/__data__/RobotExpressive.glb',
+      //   (gltf) => {
+      //     const model = gltf.scene;
+      //     model.position.set(0, 0, 0);
+      //     model.scale.set(30, 30, 30);
+      //     // model.rotateX(1.57);
+      //     model.rotateX(1.57);
+      //     model.rotateY(1.57);
+      //     // model.rotation.set(Math.PI / 2, 0, 0);
+      //     this.scene.add(model);
+      //     this.lonelyRobot = model;
+      //   },
+      //   undefined,
+      //   (e) => {
+      //     console.error(e);
+      //   },
+      // );
     }
   }
 }

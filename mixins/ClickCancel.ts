@@ -1,15 +1,15 @@
 export abstract class ClickCancelMix implements WithClickCancel {
-  isObjClickEventCancelled: boolean;
+  isClickEventFireCancelled: boolean;
 
-  cancelObjClickEvent() {
-    this.isObjClickEventCancelled = true;
+  cancelClickEventFire() {
+    this.isClickEventFireCancelled = true;
     requestAnimationFrame(() => {
-      this.isObjClickEventCancelled = false;
+      this.isClickEventFireCancelled = false;
     });
   }
 }
 
 export interface WithClickCancel {
-  isObjClickEventCancelled: boolean;
-  cancelObjClickEvent(): void;
+  isClickEventFireCancelled: boolean;
+  cancelClickEventFire(): void;
 }

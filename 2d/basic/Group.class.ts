@@ -66,7 +66,7 @@ export class Group
       L.DomEvent.stop(evt);
       if (
         evt.type === 'click' &&
-        (evt.propagatedFrom as unknown as WithClickCancel).isObjClickEventCancelled
+        (evt.propagatedFrom as unknown as WithClickCancel).isClickEventFireCancelled
       )
         return;
       const onCb = leafletEvent2OnCallback[evt.type];

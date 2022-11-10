@@ -1,9 +1,8 @@
-import THREE, { InstancedMesh, Mesh, MeshPhongMaterial } from 'three';
+import THREE, { Mesh } from 'three';
 import { BoardGeometry } from './geometries/BoardGeometry.class';
 import * as meta from '../model/meta';
 import { Shelf } from './Shelf.class';
-import { OnClick } from '../interfaces/Interactive';
-import { Interactive3D } from './IInteractive3D';
+import { InstancedMesh } from './basic';
 
 export class Board extends Mesh {
   constructor(position: meta.Position, w: number, h: number) {
@@ -13,7 +12,7 @@ export class Board extends Mesh {
   }
 }
 
-export class InstanceBoard extends InstancedMesh implements OnClick {
+export class InstanceBoard extends InstancedMesh {
   private cursor = 0;
   private readonly translationMatrix = new THREE.Matrix4();
 
@@ -28,14 +27,6 @@ export class InstanceBoard extends InstancedMesh implements OnClick {
 
   constructor(limit: number, meta: meta.Board) {
     super(new BoardGeometry(meta.width, meta.depth), material, limit);
-  }
-
-  onClick(e: { instanceId: number }): void {
-    // const { instanceId } = e;
-    // this.setColorAt(instanceId, new THREE.Color(0xff0000));
-    // this.instanceColor.needsUpdate = true;
-
-    console.log('board is clicked');
   }
 
   putAt(rack: Shelf, slot: meta.RackBoardSlot) {

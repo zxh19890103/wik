@@ -16,7 +16,7 @@ export interface IWarehouse extends WithInjector, Iterable<GraphicObject> {
 
   queryListAll(): Array<{ type: string; value: IList<GraphicObject> }>;
   queryList(type: string): IList<GraphicObject>;
-  addList(type: string, list: ListCtorArgs): IList<any>;
+  addList(type: string, list?: ListCtorArgs): IList<any>;
   removeList(type: string): void;
 
   each(fn: (item: GraphicObject, type: string) => void, type?: string): void;

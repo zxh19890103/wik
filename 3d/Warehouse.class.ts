@@ -1,17 +1,19 @@
-import THREE, { InstancedMesh, Mesh } from 'three';
+import THREE, { InstancedMesh } from 'three';
 import { IDisposable } from '../interfaces/Disposable';
 import { GraphicObject } from '../interfaces/GraghicObject';
 import { IInjector } from '../interfaces/Injector';
 import { IModeManager } from '../interfaces/Mode';
 import { ISelectionManager } from '../interfaces/Selection';
 import Interface from '../interfaces/symbols';
+import { ClickCancelMix, WithClickCancel } from '../mixins/ClickCancel';
 import { IWarehouse } from '../model';
-import { Core, IList, inject, writeReadonlyProp } from '../model/basic';
+import { Core, IList, inject, mixin, writeReadonlyProp } from '../model/basic';
 import { event2behavior } from '../model/state';
 import { DefaultBehavior } from './behaviors/DefaultBehavior.class';
 import { Ground } from './Ground.class';
 import { Object3DList } from './Object3DList.class';
 
+@mixin(ClickCancelMix)
 export abstract class Warehouse3D extends Core implements IWarehouse, IDisposable {
   readonly mounted: boolean = false;
   readonly layouted: boolean = false;
@@ -37,7 +39,6 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   isMouseMoving = false;
 
   activatedObj3d: THREE.Object3D = null;
-  activatedInstanceId: number = null;
   intersection: THREE.Intersection<THREE.Object3D>;
 
   constructor() {
@@ -53,12 +54,13 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   };
 
   tick() {
+    this.onTick && this.onTick();
+
     if (!this.isMouseMoving) return;
 
     console.log('moving...');
 
     let obj3d: THREE.Object3D = null;
-    let instid: number = null;
 
     this.intersection = null;
 
@@ -77,39 +79,28 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       const intersection = intersections[0];
 
       obj3d = intersection.object;
-      instid = intersection.instanceId;
+
+      if ((obj3d as InstancedMesh).isInstancedMesh) {
+        obj3d = (obj3d as any).getInstanceAt(intersection.instanceId);
+      }
 
       this.intersection = intersection;
     }
 
-    if (this.activatedObj3d === obj3d) {
-      if (this.activatedInstanceId !== instid) {
-        this.fireBehavior('mouseout', this.activatedObj3d, {
-          instanceId: this.activatedInstanceId,
-          source: this.activatedObj3d,
-        });
-        // mouseout mouseover
-        this.activatedInstanceId = instid;
-        this.fireBehavior('mouseover', obj3d, { instanceId: instid, source: obj3d });
+    if (this.activatedObj3d !== obj3d) {
+      if (this.activatedObj3d) {
+        this.fireBehavior('mouseout', this.activatedObj3d);
       }
-    } else {
-      // mouseout mouseover
-      this.fireBehavior('mouseout', this.activatedObj3d, {
-        instanceId: this.activatedInstanceId,
-        source: this.activatedObj3d,
-      });
 
       this.activatedObj3d = obj3d;
-      this.activatedInstanceId = instid;
 
-      this.fireBehavior('mouseover', obj3d, {
-        instanceId: instid,
-        source: obj3d,
-      });
+      if (obj3d) {
+        this.fireBehavior('mouseover', obj3d);
+      }
     }
   }
 
-  private fireBehavior(type: string, target: THREE.Object3D, event: any) {
+  private fireBehavior(type: string, target: THREE.Object3D, event?: any) {
     if (!target) return;
 
     if (target === this.scene) {
@@ -162,10 +153,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       if (this.activatedObj3d) {
         // mousdown
         console.log('obj is down');
-        this.fireBehavior('mousedown', this.activatedObj3d, {
-          source: this.activatedObj3d,
-          instanceId: this.activatedInstanceId,
-        });
+        this.fireBehavior('mousedown', this.activatedObj3d);
       }
     };
 
@@ -173,9 +161,8 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       if (this.activatedObj3d) {
         // mouseup
         console.log('obj is up');
-        if (!this.isMouseMovedAfterDown) {
-          // click
-          // cancel click
+        if (this.isMouseMovedAfterDown) {
+          this.cancelClickEventFire();
         }
       } else {
         if (!this.isMouseMovedAfterDown) {
@@ -191,12 +178,9 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     };
 
     this.mouseclick = (mevt: MouseEvent) => {
-      if (!this.activatedObj3d) return;
+      if (!this.activatedObj3d || this.isClickEventFireCancelled) return;
 
-      this.fireBehavior('click', this.activatedObj3d, {
-        instanceId: this.activatedInstanceId,
-        source: this.activatedObj3d,
-      });
+      this.fireBehavior('click', this.activatedObj3d);
     };
 
     domElement.addEventListener('mousemove', this.mousemove);
@@ -314,4 +298,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   [Symbol.iterator](): Iterator<GraphicObject, any, undefined> {
     throw new Error('Method not implemented.');
   }
+}
+export interface Warehouse3D extends WithClickCancel {
+  onTick(): void;
 }

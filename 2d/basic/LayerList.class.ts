@@ -50,7 +50,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
         const layer = evt.propagatedFrom as WithClickCancel;
 
-        if (evt.type === 'click' && layer.isObjClickEventCancelled) return;
+        if (evt.type === 'click' && layer.isClickEventFireCancelled) return;
 
         this.fire(evt.type as LayerListEventType, {
           layer,

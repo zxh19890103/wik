@@ -72,11 +72,11 @@ export function ReactiveLayerMixin(
 
     layerState: SimpleObject = {};
 
-    isObjClickEventCancelled = false;
-    cancelObjClickEvent() {
-      this.isObjClickEventCancelled = true;
+    isClickEventFireCancelled = false;
+    cancelClickEventFire() {
+      this.isClickEventFireCancelled = true;
       requestAnimationFrame(() => {
-        this.isObjClickEventCancelled = false;
+        this.isClickEventFireCancelled = false;
       });
     }
 

@@ -102,7 +102,7 @@ export class RectDrawSelectBehavior extends Behavior {
 
     console.log(`you've selected ${results.length} layers.`);
 
-    this.map.cancelObjClickEvent();
+    this.map.cancelClickEventFire();
 
     this.selectionMgr.many(results);
 

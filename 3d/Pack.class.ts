@@ -2,8 +2,8 @@ import THREE, { Color } from 'three';
 import { OnClick, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
 import { WithWarehouseRef } from '../model/IWarehouseObjectList';
 import * as meta from '../model/meta';
+import { InstancedMesh } from './basic';
 import { BinGeometry } from './geometries';
-import { Interactive3D } from './IInteractive3D';
 import { Warehouse3D } from './Warehouse.class';
 
 export class Pack extends THREE.Mesh {
@@ -14,7 +14,7 @@ export class Pack extends THREE.Mesh {
 }
 
 export class InstancePack
-  extends THREE.InstancedMesh
+  extends InstancedMesh
   implements OnClick, OnSelect, OnMouseOverOut, WithWarehouseRef
 {
   private cursor = 0;
@@ -27,34 +27,36 @@ export class InstancePack
     this.isInstancedMesh;
   }
 
-  onSelect(data?: any) {
-    this.getColorAt(data.instanceId, color);
+  onSelect() {
+    const instanceId = this.id;
+
+    this.getColorAt(instanceId, color);
     const hex = color.getHex();
 
-    this.setColorAt(data.instanceId, color.setHex(0x00ff98));
+    this.setColorAt(instanceId, color.setHex(0x00ff98));
     this.instanceColor.needsUpdate = true;
 
     return hex;
   }
 
   onUnSelect(state?: any, data?: any): void {
-    this.setColorAt(data.instanceId, color.setHex(state));
+    this.setColorAt(this.id, color.setHex(state));
     this.instanceColor.needsUpdate = true;
   }
 
   /**
    * oh, no! no event payload passed in.
    */
-  onHover(data: { instanceId: number }) {
-    this.getColorAt(data.instanceId, color);
+  onHover() {
+    this.getColorAt(this.id, color);
     const hex = color.getHex();
-    this.setColorAt(data.instanceId, color.setHex(0xf00f98));
+    this.setColorAt(this.id, color.setHex(0xf00f98));
     this.instanceColor.needsUpdate = true;
     return hex;
   }
 
   onUnHover(state: any, data: { instanceId: number }): void {
-    this.setColorAt(data.instanceId, color.setHex(state));
+    this.setColorAt(this.id, color.setHex(state));
     this.instanceColor.needsUpdate = true;
   }
 

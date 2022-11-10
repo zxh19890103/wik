@@ -4,17 +4,17 @@ import { IStateActionManager } from '../../interfaces/StateAction';
 import { injectable } from '../../model/basic/inject';
 import Interfacces from '../../interfaces/symbols';
 
-const SAFE = 5;
+const LOOP_SAFE_LIMIT = 5;
 
 @injectable({ providedIn: 'root', provide: Interfacces.IStateActionManager })
 export class InteractiveStateActionManager implements IStateActionManager {
-  private _ctx: Interactive = null;
-  private _type: InteractiveStateActionName = null;
+  private currentContext: Interactive = null;
+  private currType: InteractiveStateActionName = null;
 
   push(context: Interactive, type: InteractiveStateActionName, data?: any): this {
     const sa = new InteractiveStateAction(context, type, data);
 
-    context.uiStateChangeLogs = context.uiStateChangeLogs || [];
+    if (!context.uiStateChangeLogs) context.uiStateChangeLogs = [];
 
     context.uiStateChangeLogs.push(sa);
 
@@ -24,17 +24,17 @@ export class InteractiveStateActionManager implements IStateActionManager {
   }
 
   private _postPop = () => {
-    this._ctx = null;
-    this._type = null;
+    this.currentContext = null;
+    this.currType = null;
   };
 
   pop(context: Interactive, type: InteractiveStateActionName): this {
-    this._ctx = context;
-    this._type = type;
+    this.currentContext = context;
+    this.currType = type;
 
     queueMicrotask(this._postPop);
 
-    const { _ctx, _type } = this;
+    const { currentContext: _ctx, currType: _type } = this;
 
     if (!_ctx || !_type) return;
 
@@ -47,7 +47,7 @@ export class InteractiveStateActionManager implements IStateActionManager {
     let action = actions.pop();
     let i = 0;
 
-    while (i++ < SAFE && action) {
+    while (i++ < LOOP_SAFE_LIMIT && action) {
       action.revert();
 
       if (action.type === _type) {

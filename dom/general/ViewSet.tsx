@@ -32,21 +32,21 @@ export const ViewSet = memo(
     useEvented(model, `size ${props.reactOn}`);
 
     const [viewSet] = useState(() => {
-      let vs: IList<any>;
+      let list: IList<any>;
 
-      vs = warehouse.queryList(type);
-      if (vs) return vs;
+      list = warehouse.queryList(type);
+      if (list) return list;
 
-      vs = warehouse.addList(type, {
+      list = warehouse.addList(type, {
         rendererBy: renderer,
         pane: `${type}Pane`,
       });
 
       if (props.zIndex !== undefined) {
-        (vs as LayerList<LayerWithID>).setZ(props.zIndex);
+        (list as LayerList<LayerWithID>).setZ(props.zIndex);
       }
 
-      return vs;
+      return list;
     });
 
     useEffect(() => {
@@ -89,6 +89,49 @@ export const ViewSet = memo(
 
 interface ViewSet3DProps extends ViewSetProps {}
 
-export const ViewSet3D = () => {
-  return null;
-};
+export const ViewSet3D = memo((props: ViewSet3DProps) => {
+  const { model, type } = props;
+  const { warehouse } = useContext(__warehouse_context__);
+
+  useEvented(model, `size ${props.reactOn}`);
+
+  const [viewSet] = useState(() => {
+    let list: IList<any>;
+
+    list = warehouse.queryList(type);
+    if (list) return list;
+
+    list = warehouse.addList(type);
+
+    return list;
+  });
+
+  useEffect(() => {
+    return () => {
+      warehouse.removeList(type);
+    };
+  }, []);
+
+  const pipe = useMemo(() => {
+    if (!props.filter) return null;
+
+    if (typeof props.filter === 'string') {
+      const [name, value] = props.filter.split(/=/);
+      return (m: any) => {
+        return String(m[name]) === value;
+      };
+    }
+
+    return props.filter;
+  }, []);
+
+  const items = pipe ? model.filter(pipe) : model;
+
+  return (
+    <>
+      {items.map((m) => {
+        return <View key={m.id} type={type} parent={viewSet} model={m} />;
+      })}
+    </>
+  );
+});

@@ -1,1 +1,1 @@
-export * from './SelectionManager.class';
+export {};
