@@ -87,16 +87,16 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       this.intersection = intersection;
     }
 
-    if (this.activatedObj3d !== obj3d) {
-      if (this.activatedObj3d) {
-        this.fireBehavior('mouseout', this.activatedObj3d);
-      }
+    if (this.activatedObj3d === obj3d) return;
 
-      this.activatedObj3d = obj3d;
+    if (this.activatedObj3d) {
+      this.fireBehavior('mouseout', this.activatedObj3d);
+    }
 
-      if (obj3d) {
-        this.fireBehavior('mouseover', obj3d);
-      }
+    this.activatedObj3d = obj3d;
+
+    if (obj3d) {
+      this.fireBehavior('mouseover', obj3d);
     }
   }
 

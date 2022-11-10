@@ -3,6 +3,8 @@ import { rootInjector } from '../../model/basic';
 import React, { useMemo, useState } from 'react';
 
 interface Props {
+  switch?: boolean;
+  defaultKey?: string;
   children?: JSX.Element | JSX.Element[];
 }
 
@@ -37,10 +39,17 @@ const World = (props: Props) => {
     };
   }, []);
 
+  const [curr, setCurr] = useState(props.defaultKey);
+
+  const wkeys = React.Children.map(props.children, (c) => c.key) as unknown as string[];
+
   return (
     <__world_context__.Provider value={value}>
       <div className="wik wik-world" style={style}>
+        {props.switch && <Switch items={wkeys} onSwitch={setCurr} />}
         {React.Children.map(props.children, (child) => {
+          if (curr !== child.key) return null;
+
           return (
             <div key={child.key} style={itemStyle} className="wik-world__nation">
               {child}
@@ -49,6 +58,24 @@ const World = (props: Props) => {
         })}
       </div>
     </__world_context__.Provider>
+  );
+};
+
+const Switch = (props: { items: string[]; onSwitch: (k: string) => void }) => {
+  return (
+    <div className="wik-world__switch" style={{ position: 'fixed', top: 0, left: 0, zIndex: 9999 }}>
+      {props.items.map((k) => {
+        return (
+          <button
+            onClick={() => {
+              props.onSwitch(k);
+            }}
+          >
+            {k}
+          </button>
+        );
+      })}
+    </div>
   );
 };
 

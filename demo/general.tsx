@@ -175,6 +175,7 @@ export default () => {
             const dot = state.dots.create();
             dot.px = x * 700;
             dot.py = y * 600;
+            dot.pz = 400;
           }
         }
       }, 'size');
@@ -182,11 +183,16 @@ export default () => {
   }, []);
 
   return (
-    <General.World>
-      <General.Warehouse mvMappings={mvMapping} model={(injector) => injector.$new(MyWarehouse)}>
+    <General.World switch defaultKey="w2d">
+      <General.Warehouse
+        key="w2d"
+        mvMappings={mvMapping}
+        model={(injector) => injector.$new(MyWarehouse)}
+      >
         <General.ViewSet type="dot" fit renderer="canvas" model={state.dots} />
       </General.Warehouse>
       <General.Warehouse3D
+        key="w3d"
         mvMappings={mvMapping3}
         model={(injector) => injector.$new(MyWarehouse3D)}
       >
@@ -202,9 +208,24 @@ const mvMapping = {
   },
 };
 
-class PackView extends Pack implements PointView, OnMouseOverOut {
+class PackView extends Pack implements PointView, OnMouseOverOut, OnSelect {
   constructor(m: model.Point) {
     super({ x: m.px, y: m.py, z: m.pz }, { width: 300, height: 300, depth: 200 });
+  }
+
+  onSelect(data?: any) {
+    const material = this.material as MeshPhongMaterial;
+    const color = material.color.getHex();
+    material.color.setHex(0xfff987);
+
+    material.needsUpdate = true;
+    return color;
+  }
+
+  onUnSelect(state?: any, data?: any): void {
+    const material = this.material as MeshPhongMaterial;
+    material.color.setHex(state);
+    material.needsUpdate = true;
   }
 
   onHover(data?: any) {
