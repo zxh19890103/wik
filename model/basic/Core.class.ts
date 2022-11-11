@@ -6,7 +6,20 @@ import { mixin } from './mixin';
 export interface Core<E extends string = string> extends WithEmitter<E> {}
 
 @mixin(EmitterMix)
-export abstract class Core<E extends string = string> extends EventEmitter<E> {}
+export abstract class Core<E extends string = string> extends EventEmitter<E> {
+  assign(pairs: string | Record<string, any>, value?: any) {
+    if (!pairs) return;
+
+    if (typeof pairs === 'string') {
+      if (value === undefined) return;
+      this[pairs] = value;
+    } else {
+      for (const key in pairs) {
+        this[key] = pairs[key];
+      }
+    }
+  }
+}
 
 export abstract class CoreList<M = any, E extends string = never>
   extends Core<E | CoreListEventType>

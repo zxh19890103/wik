@@ -1,6 +1,7 @@
 import { IInjector } from '../../interfaces/Injector';
 import { rootInjector } from '../../model/basic';
 import React, { useMemo, useState } from 'react';
+import { MultipleSelectShell, SelectShell } from './Select';
 
 interface Props {
   switch?: boolean;
@@ -21,37 +22,23 @@ const World = (props: Props) => {
     };
   });
 
-  const style = useMemo<React.CSSProperties>(() => {
-    return {
-      display: 'flex',
-      flexDirection: 'row',
-      width: '100vw',
-      height: '100vh',
-    };
-  }, []);
-
-  const itemStyle = useMemo<React.CSSProperties>(() => {
-    return {
-      flex: 1,
-      boxSizing: 'border-box',
-      border: '1px dashed #000',
-      height: '100%',
-    };
-  }, []);
-
   const [curr, setCurr] = useState(props.defaultKey);
 
   const wkeys = React.Children.map(props.children, (c) => c.key) as unknown as string[];
 
   return (
     <__world_context__.Provider value={value}>
-      <div className="wik wik-world" style={style}>
+      <div className="wik wik-world">
         {props.switch && <Switch items={wkeys} onSwitch={setCurr} />}
         {React.Children.map(props.children, (child) => {
+          if (child.type === SelectShell || child.type === MultipleSelectShell) {
+            return child;
+          }
+
           if (curr !== child.key) return null;
 
           return (
-            <div key={child.key} style={itemStyle} className="wik-world__nation">
+            <div key={child.key} className="wik-world-item">
               {child}
             </div>
           );
@@ -61,12 +48,18 @@ const World = (props: Props) => {
   );
 };
 
-const Switch = (props: { items: string[]; onSwitch: (k: string) => void }) => {
+interface SwitchProps {
+  items: string[];
+  onSwitch: (k: string) => void;
+}
+
+const Switch = (props: SwitchProps) => {
   return (
-    <div className="wik-world__switch" style={{ position: 'fixed', top: 0, left: 0, zIndex: 9999 }}>
+    <div className="wik-world-switch" style={{}}>
       {props.items.map((k) => {
         return (
           <button
+            key={k}
             onClick={() => {
               props.onSwitch(k);
             }}

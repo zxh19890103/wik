@@ -4,7 +4,10 @@ import { IModeManager } from '../interfaces/Mode';
 import { ISelectionManager } from '../interfaces/Selection';
 import { IList } from './basic';
 
-export interface IWarehouse extends WithInjector, Iterable<GraphicObject> {
+export interface IWarehouse
+  extends WithInjector,
+    Iterable<GraphicObject>,
+    Partial<IWarehouseOptional> {
   selectionManager: ISelectionManager;
   modeManager: IModeManager;
 
@@ -27,19 +30,23 @@ export interface IWarehouse extends WithInjector, Iterable<GraphicObject> {
   add(type: string, item: GraphicObject): void;
   update(type: string, item: GraphicObject, data: any): void;
   remove(type: string, item: GraphicObject | string): void;
+}
 
-  onClick?(item: GraphicObject, evt: unknown): void;
-  onDblClick?(item: GraphicObject, evt: unknown): void;
-  onPress?(item: GraphicObject, evt: unknown): void;
-  onHover?(item: GraphicObject, evt: unknown): void;
-  onUnHover?(item: GraphicObject, evt: unknown): void;
-  onContextMenu?(item: GraphicObject, evt: unknown): void;
-  onMounted?(): void;
-  onLayouted?(): void;
+export interface IWarehouseOptional {
+  onClick(item: GraphicObject, evt: unknown): void;
+  onDblClick(item: GraphicObject, evt: unknown): void;
+  onPress(item: GraphicObject, evt: unknown): void;
+  onHover(item: GraphicObject, evt: unknown): void;
+  onUnHover(item: GraphicObject, evt: unknown): void;
+  onContextMenu(item: GraphicObject, evt: unknown): void;
+  onMounted(): void;
+  onLayouted(): void;
 
-  onAdd?(item: GraphicObject): void;
-  onRemove?(item: GraphicObject): void;
-  onUpdate?(item: GraphicObject, data: any): void;
+  onAdd(item: GraphicObject): void;
+  onRemove(item: GraphicObject): void;
+  onUpdate(item: GraphicObject, data: any): void;
+
+  tick(): void;
 }
 
 /**

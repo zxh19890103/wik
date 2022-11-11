@@ -2,7 +2,7 @@ import L from 'leaflet';
 import THREE, { Material, MeshPhongMaterial } from 'three';
 import { EssWarehouse } from '../2d';
 import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d/basic';
-import { inject, provides } from '../model/basic';
+import { inject, provides, View } from '../model/basic';
 import Interface from '../interfaces/symbols';
 import { Warehouse3D } from '../3d/Warehouse.class';
 import './ioc.config';
@@ -16,18 +16,18 @@ import { useEffect, useState } from 'react';
 import * as model from '../model';
 import { __batched_fires__ } from '../mixins/Emitter';
 import { IWarehouse } from '../model';
-import { Pack } from '../3d';
+import { Pack, Shelf } from '../3d';
 import { PointView } from '../model/PointView';
 import { ContextMenuItem } from '../interfaces/types';
 import { OnContextMenu, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
-import { M } from 'vitest/dist/global-732f9b14';
+import { ObjectSelectProps } from '../dom/general';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
 @inject(Interface.IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse extends EssWarehouse {
-  async layout2(data: any) {
+  async layout(data: any) {
     const icon = 'https://cdn.iconscout.com/icon/premium/png-512-thumb/robotic-arm-51-1126917.png';
 
     await this.imageManager.load(icon);
@@ -43,9 +43,8 @@ class MyWarehouse extends EssWarehouse {
     }
 
     this.map.setView([0, 0], 4);
+    this.modeManager.mode = 'default';
   }
-
-  layout(data?: any): void | Promise<void> {}
 }
 
 @inject(Interface.IInjector)
@@ -85,7 +84,7 @@ class MyWarehouse3D extends Warehouse3D {
     this.lonelyRobot.position.set(this.walkX++, this.walkY++, 0);
   }
 
-  layout2(data?: unknown): void | Promise<void> {
+  layout(data?: unknown): void | Promise<void> {
     {
       const shelfSpec: meta.Rack = {
         width: 200,
@@ -132,31 +131,7 @@ class MyWarehouse3D extends Warehouse3D {
       this.instBoard = boards;
       this.instPack = packs;
     }
-
-    {
-      // const loader = new GLTFLoader();
-      // loader.load(
-      //   '/__data__/RobotExpressive.glb',
-      //   (gltf) => {
-      //     const model = gltf.scene;
-      //     model.position.set(0, 0, 0);
-      //     model.scale.set(30, 30, 30);
-      //     // model.rotateX(1.57);
-      //     model.rotateX(1.57);
-      //     model.rotateY(1.57);
-      //     // model.rotation.set(Math.PI / 2, 0, 0);
-      //     this.scene.add(model);
-      //     this.lonelyRobot = model;
-      //   },
-      //   undefined,
-      //   (e) => {
-      //     console.error(e);
-      //   },
-      // );
-    }
   }
-
-  layout() {}
 }
 
 export default () => {
@@ -179,7 +154,7 @@ export default () => {
           }
         }
       }, 'size');
-    }, 4000);
+    }, 500);
   }, []);
 
   return (
@@ -187,6 +162,7 @@ export default () => {
       <General.Warehouse
         key="w2d"
         mvMappings={mvMapping}
+        modes
         model={(injector) => injector.$new(MyWarehouse)}
       >
         <General.ViewSet type="dot" fit renderer="canvas" model={state.dots} />
@@ -198,13 +174,20 @@ export default () => {
       >
         <General.ViewSet3D type="dot" model={state.dots} />
       </General.Warehouse3D>
+      <General.SelectShell w={300}>
+        <Aside />
+      </General.SelectShell>
     </General.World>
   );
 };
 
+const Aside = (props: ObjectSelectProps<View>) => {
+  return <div>got one # {props.model?.model?.id}</div>;
+};
+
 const mvMapping = {
   dot: (m: model.Point, w: IWarehouse) => {
-    return new Dot([m.py, m.px]);
+    return new Dot([m.py, m.px], { radius: 280 });
   },
 };
 
@@ -246,6 +229,19 @@ class PackView extends Pack implements PointView, OnMouseOverOut, OnSelect {
   model: model.Point;
 
   whenInit(): void {}
+}
+
+class RackView extends Shelf implements PointView {
+  model: model.Point;
+  whenInit(): void {
+    throw new Error('Method not implemented.');
+  }
+  whenUnInit?(): void {
+    throw new Error('Method not implemented.');
+  }
+  whenEffect?(effect: string): void {
+    throw new Error('Method not implemented.');
+  }
 }
 
 const mvMapping3 = {

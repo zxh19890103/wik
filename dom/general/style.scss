@@ -1,0 +1,68 @@
+.wik-world {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+
+  &-item {
+    flex: 1;
+    box-sizing: border-box;
+    border: 1px dashed #000;
+    height: 100%;
+  }
+
+  &-switch {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 9999;
+  }
+}
+
+.wik-warehouse {
+  width: 100vw;
+  height: 100vh;
+  background: white;
+  box-sizing: border-box;
+}
+
+.wik-select,
+.wik-multi-select {
+  width: 200px;
+  height: 100%;
+  background-color: #fefefe;
+  border: 1px dashed #000;
+  padding: 6px 8px;
+  box-sizing: border-box;
+}
+
+.wik-modes {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.618);
+}
+
+.wik-mode {
+  padding: 0 3px;
+  cursor: pointer;
+
+  a {
+    color: inherit;
+    display: block;
+  }
+
+  &--active {
+    color: #999;
+    cursor: not-allowed;
+  }
+
+  &--normal {
+    color: #fff;
+  }
+}

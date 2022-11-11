@@ -21,7 +21,9 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   readonly pointer: THREE.Vector2 = null;
 
   protected readonly scene: THREE.Scene;
-  protected readonly domElement: HTMLDivElement = null;
+  protected readonly camera: THREE.Camera = null;
+  protected readonly renderer: THREE.Renderer = null;
+  protected readonly domElement: HTMLCanvasElement = null;
 
   @inject(Interface.ISelectionManager)
   readonly selectionManager: ISelectionManager;
@@ -36,7 +38,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
 
   isMouseDown = false;
   isMouseMovedAfterDown = false;
-  isMouseMoving = false;
+  isPointerMoving = false;
 
   activatedObj3d: THREE.Object3D = null;
   intersection: THREE.Intersection<THREE.Object3D>;
@@ -56,7 +58,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   tick() {
     this.onTick && this.onTick();
 
-    if (!this.isMouseMoving) return;
+    if (!this.isPointerMoving) return;
 
     console.log('moving...');
 
@@ -65,6 +67,8 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     this.intersection = null;
 
     const intersections: THREE.Intersection[] = [];
+
+    this.raycaster.setFromCamera(this.pointer, this.camera);
 
     for (const [_, list] of this.typedLists) {
       const intersection = this.raycaster.intersectObjects([...list.items], false);
@@ -110,34 +114,38 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     this.modeManager.apply(event2behavior[`item@${type}`], target, event);
   }
 
-  mount(scene: THREE.Scene, domElement: HTMLDivElement): void {
+  mount(scene: THREE.Scene, renderer: THREE.Renderer, camera: THREE.Camera): void {
     if (this.mounted) return;
 
-    writeReadonlyProp(this, 'scene', scene);
-    writeReadonlyProp(this, 'domElement', domElement);
-    writeReadonlyProp(this, 'mounted', true);
+    this.assign({
+      scene,
+      camera,
+      renderer,
+      domElement: renderer.domElement,
+    });
 
     for (const [_, list] of this.typedLists) {
       if (list.mounted) continue;
       list.mount(scene);
     }
 
+    const domElement = this.domElement;
     let mousestopTimer = null;
 
     const mousestop = () => {
-      this.isMouseMoving = false;
+      this.isPointerMoving = false;
       mousestopTimer = null;
     };
 
-    this.mousemove = (mevt: MouseEvent) => {
+    this.mousemove = (evt: MouseEvent) => {
       // calculate pointer position in normalized device coordinates
       // (-1 to +1) for both components
-      mevt.preventDefault();
+      evt.preventDefault();
 
-      this.pointer.x = (mevt.clientX / window.innerWidth) * 2 - 1;
-      this.pointer.y = -(mevt.clientY / window.innerHeight) * 2 + 1;
+      this.pointer.x = (evt.clientX / domElement.clientWidth) * 2 - 1;
+      this.pointer.y = -(evt.clientY / domElement.clientHeight) * 2 + 1;
 
-      this.isMouseMoving = true;
+      this.isPointerMoving = true;
 
       clearTimeout(mousestopTimer);
       mousestopTimer = setTimeout(mousestop, 300);
@@ -199,6 +207,10 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       // const sky = new THREE.HemisphereLight(0x2345f5, 0xff0000);
       // scene.add(sky);
 
+      const grid = new THREE.GridHelper(5000);
+      grid.rotateX(Math.PI / 2);
+      scene.add(grid);
+
       // ground
       const ground = new Ground(5000, 5000);
       scene.add(ground);
@@ -227,6 +239,8 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       this.modeManager.create('default', this.injector.$new(DefaultBehavior));
       this.modeManager.mode = 'default';
     }
+
+    writeReadonlyProp(this, 'mounted', true);
 
     (async () => {
       await this.layout(null);

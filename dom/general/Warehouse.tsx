@@ -5,6 +5,8 @@ import { OrbitControls } from '../../3d/controls';
 import { IInjector } from '../../interfaces/Injector';
 import { IWarehouse } from '../../model';
 import { Model, View } from '../../model/basic';
+import { SelectionContext } from '../useSelection';
+import { Modes } from './Select';
 import { __world_context__ } from './World';
 
 type WarehouseProvider = IWarehouse | ((injector: IInjector) => IWarehouse);
@@ -18,14 +20,17 @@ interface Props {
   model: WarehouseProvider;
   mvMappings?: Record<string, (m: any, warehouse: IWarehouse) => any>;
   children?: JSX.Element | JSX.Element[];
+  modes?: boolean;
 }
 
 const whStyle = { width: '100%', height: '100%' };
 
-export const __warehouse_context__ = React.createContext<WarehouseContextValue>({
+const __context_value__ = Object.freeze({
   warehouse: null,
   mvMappings: null,
 });
+
+export const __warehouse_context__ = React.createContext<WarehouseContextValue>(__context_value__);
 
 /**
  * 2d warehouse
@@ -33,11 +38,9 @@ export const __warehouse_context__ = React.createContext<WarehouseContextValue>(
 const Warehouse = (props: Props) => {
   const element = useRef<HTMLDivElement>();
 
-  const [value, setValue] = useState<WarehouseContextValue>(() => {
-    return {
-      warehouse: null,
-      mvMappings: props.mvMappings,
-    };
+  const [value, setValue] = useState<WarehouseContextValue>({
+    ...__context_value__,
+    mvMappings: props.mvMappings,
   });
 
   const { injector } = useContext(__world_context__);
@@ -49,13 +52,20 @@ const Warehouse = (props: Props) => {
     setValue({ ...value, warehouse });
   }, []);
 
+  const { warehouse } = value;
+
   return (
     <__warehouse_context__.Provider value={value}>
       <div style={whStyle} className="wik-warehouse" ref={element}>
-        {value?.warehouse &&
-          React.Children.map(props.children, (child) => {
-            return <child.type {...child.props} parent={value.warehouse} />;
-          })}
+        {warehouse && (
+          <>
+            <SelectionContext warehouse={warehouse} />
+            {props.modes && <Modes warehouse={warehouse} />}
+            {React.Children.map(props.children, (child) => {
+              return <child.type {...child.props} parent={warehouse} />;
+            })}
+          </>
+        )}
       </div>
     </__warehouse_context__.Provider>
   );
@@ -63,7 +73,10 @@ const Warehouse = (props: Props) => {
 
 const Warehouse3D = (props: Props) => {
   const elementRef = useRef<HTMLDivElement>();
-  const [value, setValue] = useState<WarehouseContextValue>(null);
+  const [value, setValue] = useState<WarehouseContextValue>({
+    ...__context_value__,
+    mvMappings: props.mvMappings,
+  });
   const { injector } = useContext(__world_context__);
 
   useEffect(() => {
@@ -100,11 +113,7 @@ const Warehouse3D = (props: Props) => {
     const loop = () => {
       requestAnimationFrame(loop);
 
-      if (warehouse) {
-        const w = warehouse as any;
-        w.raycaster.setFromCamera(w.pointer, camera);
-        w.tick();
-      }
+      warehouse && warehouse.tick();
 
       renderer.render(scene, camera);
     };
@@ -114,18 +123,25 @@ const Warehouse3D = (props: Props) => {
     window.onresize = adjust;
 
     warehouse = createWarehouse(injector, props.model);
-    warehouse?.mount(scene, renderer.domElement);
+    warehouse?.mount(scene, renderer, camera);
 
     setValue({ ...value, mvMappings: props.mvMappings, warehouse });
   }, []);
 
+  const { warehouse } = value;
+
   return (
     <__warehouse_context__.Provider value={value}>
       <div style={whStyle} className="wik-warehouse" ref={elementRef}>
-        {value?.warehouse &&
-          React.Children.map(props.children, (child) => {
-            return <child.type {...child.props} parent={value.warehouse} />;
-          })}
+        {warehouse && (
+          <>
+            <SelectionContext warehouse={warehouse} />
+            {props.modes && <Modes warehouse={warehouse} />}
+            {React.Children.map(props.children, (child) => {
+              return <child.type {...child.props} parent={warehouse} />;
+            })}
+          </>
+        )}
       </div>
     </__warehouse_context__.Provider>
   );
