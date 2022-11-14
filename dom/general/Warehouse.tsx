@@ -4,21 +4,22 @@ import { HrMap } from '../../2d/basic';
 import { OrbitControls } from '../../3d/controls';
 import { IInjector } from '../../interfaces/Injector';
 import { IWarehouse } from '../../model';
-import { Model, View } from '../../model/basic';
 import { SelectionContext } from '../useSelection';
 import { Modes } from './Select';
 import { __world_context__ } from './World';
+
+export type MvMappings = Record<string, (m: any, warehouse: any) => any>;
 
 type WarehouseProvider = IWarehouse | ((injector: IInjector) => IWarehouse);
 
 type WarehouseContextValue = {
   warehouse: IWarehouse;
-  mvMappings: Record<string, (m: Model, warehouse: IWarehouse) => View>;
+  mvMappings: MvMappings;
 };
 
 interface Props {
-  model: WarehouseProvider;
-  mvMappings?: Record<string, (m: any, warehouse: IWarehouse) => any>;
+  warehouse: WarehouseProvider;
+  mvMappings?: MvMappings;
   children?: JSX.Element | JSX.Element[];
   modes?: boolean;
 }
@@ -47,7 +48,7 @@ const Warehouse = (props: Props) => {
 
   useEffect(() => {
     const root = new HrMap(element.current);
-    const warehouse = createWarehouse(injector, props.model);
+    const warehouse = createWarehouse(injector, props.warehouse);
     warehouse?.mount(root);
     setValue({ ...value, warehouse });
   }, []);
@@ -113,7 +114,9 @@ const Warehouse3D = (props: Props) => {
     const loop = () => {
       requestAnimationFrame(loop);
 
-      warehouse && warehouse.tick();
+      if (warehouse) {
+        warehouse.onTick && warehouse.onTick();
+      }
 
       renderer.render(scene, camera);
     };
@@ -122,7 +125,7 @@ const Warehouse3D = (props: Props) => {
 
     window.onresize = adjust;
 
-    warehouse = createWarehouse(injector, props.model);
+    warehouse = createWarehouse(injector, props.warehouse);
     warehouse?.mount(scene, renderer, camera);
 
     setValue({ ...value, mvMappings: props.mvMappings, warehouse });

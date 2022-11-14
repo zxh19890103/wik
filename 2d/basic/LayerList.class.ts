@@ -9,7 +9,7 @@ import { IInjector, WithInjector } from '../../interfaces/Injector';
 import { IWarehouse } from '../../model';
 import { CoreList } from '../../model/basic/Core.class';
 import { IWarehouseObjectList } from '../../model/IWarehouseObjectList';
-import { writeReadonlyProp } from '../../model/basic';
+import { writeProp, writeReadonlyProp } from '../../model/basic';
 import Interface from '../../interfaces/symbols';
 
 type LayerListEventType =
@@ -79,9 +79,15 @@ export class LayerList<M extends LayerWithID, E extends string = never>
   }
 
   mount(root: HrMap) {
-    writeReadonlyProp(this, 'scene', root);
+    this.assign('scene', root);
     root.addLayer(this.featureGroup);
-    writeReadonlyProp(this, 'mounted', true);
+    this.assign('mounted', true);
+  }
+
+  unmount() {
+    this.scene.removeLayer(this.featureGroup);
+    this.assign('scene', null);
+    this.assign('mounted', false);
   }
 
   fit(immediately = false) {

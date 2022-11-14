@@ -46,7 +46,10 @@ export interface IWarehouseOptional {
   onRemove(item: GraphicObject): void;
   onUpdate(item: GraphicObject, data: any): void;
 
-  tick(): void;
+  /**
+   * every frame call
+   */
+  onTick(): void;
 }
 
 /**

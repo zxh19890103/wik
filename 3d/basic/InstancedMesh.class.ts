@@ -15,6 +15,7 @@ export class InstancedMesh extends THREE.InstancedMesh {
     const instance = Object.create(this, {
       id: { value: id, writable: false, configurable: false, enumerable: false },
     });
+
     instance.$$instanceOf = this;
     instance.isInstancedMeshInstance = true;
 

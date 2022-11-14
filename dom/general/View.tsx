@@ -1,4 +1,5 @@
 import { memo, useContext, useEffect } from 'react';
+import { InstancedMesh } from '../../3d/basic';
 import { IList, Model, View as ModelView } from '../../model/basic';
 import { __warehouse_context__ } from './Warehouse';
 
@@ -37,3 +38,22 @@ export const View = memo(
   },
   () => true,
 );
+
+interface InstancedViewProps extends Props {
+  instanced: InstancedMesh;
+}
+
+export const InstancedView = memo((props: InstancedViewProps) => {
+  const { parent, model, type, instanced } = props;
+  const { warehouse, mvMappings } = useContext(__warehouse_context__);
+
+  useEffect(() => {
+    const makeFn = mvMappings[type];
+
+    const { position, color } = makeFn(model, warehouse);
+
+    return () => {};
+  }, []);
+
+  return null;
+});

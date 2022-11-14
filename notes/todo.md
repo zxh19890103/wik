@@ -89,7 +89,9 @@
     - 比如使用 map 结构？
     - 针对 instancedMesh 构建一些独立的 3d object ? ✅ It works 😊
 
-45. 3d 光标定位的物体不准确，general demo
+45. 3d 光标定位的物体不准确，general demo ✅
+
+46. react component for instancedMesh pls!
 
 ## TODO - 3d
 

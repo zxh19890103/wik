@@ -1,13 +1,13 @@
 import L from 'leaflet';
-import THREE, { Material, MeshPhongMaterial } from 'three';
+import THREE, { MeshPhongMaterial } from 'three';
 import { EssWarehouse } from '../2d';
 import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d/basic';
 import { inject, provides, View } from '../model/basic';
 import Interface from '../interfaces/symbols';
 import { Warehouse3D } from '../3d/Warehouse.class';
 import './ioc.config';
-import * as General from '../dom/general';
-import { Rectangle } from '../2d/basic';
+import * as wik from '../dom/general';
+import * as model2d from '../2d';
 import * as model3d from '../3d';
 import { Object3DList } from '../3d/Object3DList.class';
 import { IInjector } from '../interfaces/Injector';
@@ -20,29 +20,19 @@ import { Pack, Shelf } from '../3d';
 import { PointView } from '../model/PointView';
 import { ContextMenuItem } from '../interfaces/types';
 import { OnContextMenu, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
-import { ObjectSelectProps } from '../dom/general';
+import { MvMappings, ObjectSelectProps } from '../dom/general';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
 @inject(Interface.IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse extends EssWarehouse {
-  async layout(data: any) {
-    const icon = 'https://cdn.iconscout.com/icon/premium/png-512-thumb/robotic-arm-51-1126917.png';
+  async layout2(data: any) {
+    this.modeManager.mode = 'default';
+  }
 
-    await this.imageManager.load(icon);
-
-    const material = { color: '#013faf', fill: true };
-
-    for (let x = -2; x < 2; x++) {
-      for (let y = -2; y < 2; y++) {
-        const origin = [y * 220, x * 200] as L.LatLngExpression;
-        const dot = new Rectangle(origin, 200, 60, { ...material });
-        this.add('point', dot);
-      }
-    }
-
-    this.map.setView([0, 0], 4);
+  async layout(data?: any): Promise<void> {
+    // this.map.setView([0, 0], 4);
     this.modeManager.mode = 'default';
   }
 }
@@ -63,8 +53,8 @@ class MyWarehouse3D extends Warehouse3D {
    */
   boards: Object3DList<model3d.InstanceBoard>;
 
-  instPack: model3d.InstancePack;
-  instBoard: model3d.InstanceBoard;
+  instancedPack: model3d.InstancePack;
+  instancedBoard: model3d.InstanceBoard;
 
   constructor(injector: IInjector) {
     super();
@@ -73,65 +63,18 @@ class MyWarehouse3D extends Warehouse3D {
     this.shelfs = this.addList('shelf');
     this.packs = this.addList('pack');
     this.boards = this.addList('board');
+
+    const pack = new model3d.InstancePack(1000000, packSpec);
+    const board = new model3d.InstanceBoard(100000, boardSpec);
+
+    this.packs.add(pack);
+    this.boards.add(board);
+
+    this.instancedBoard = board;
+    this.instancedPack = pack;
   }
 
-  private lonelyRobot: THREE.Object3D = null;
-  private walkX = 0;
-  private walkY = 0;
-
-  override onTick(): void {
-    if (!this.lonelyRobot) return;
-    this.lonelyRobot.position.set(this.walkX++, this.walkY++, 0);
-  }
-
-  layout(data?: unknown): void | Promise<void> {
-    {
-      const shelfSpec: meta.Rack = {
-        width: 200,
-        depth: 60,
-        height: 500,
-        heightPerLayer: 50,
-        distanceOffGround: 10,
-      };
-
-      const packSpec: meta.Pack = {
-        width: 40,
-        depth: 60,
-        height: 30,
-      };
-
-      const boardSpec: meta.Board = {
-        width: 200,
-        depth: 60,
-      };
-
-      const packs = new model3d.InstancePack(1000000, packSpec);
-      const boards = new model3d.InstanceBoard(100000, boardSpec);
-
-      for (let x = -2; x < 2; x++) {
-        for (let y = -2; y < 2; y++) {
-          const origin = { x: x * 210, y: y * 200, z: 10 };
-          const shelf = new model3d.Shelf(origin, shelfSpec);
-
-          for (const slot of shelf.getPackSlots(packSpec)) {
-            packs.putAt(slot);
-          }
-
-          for (const slot of shelf.getBoardSlots()) {
-            boards.putAt(shelf, slot);
-          }
-
-          this.shelfs.add(shelf);
-        }
-      }
-
-      this.boards.add(boards);
-      this.packs.add(packs);
-
-      this.instBoard = boards;
-      this.instPack = packs;
-    }
-  }
+  layout(data?: unknown): void | Promise<void> {}
 }
 
 export default () => {
@@ -149,8 +92,8 @@ export default () => {
           for (let y = 0; y < 20; y++) {
             const dot = state.dots.create();
             dot.px = x * 700;
-            dot.py = y * 600;
-            dot.pz = 400;
+            dot.py = y * 190;
+            dot.pz = 0;
           }
         }
       }, 'size');
@@ -158,26 +101,27 @@ export default () => {
   }, []);
 
   return (
-    <General.World switch defaultKey="w2d">
-      <General.Warehouse
+    <wik.World switch defaultKeys={['w2d', 'w3d']}>
+      <wik.Warehouse
         key="w2d"
         mvMappings={mvMapping}
         modes
-        model={(injector) => injector.$new(MyWarehouse)}
+        warehouse={(injector) => injector.$new(MyWarehouse)}
       >
-        <General.ViewSet type="dot" fit renderer="canvas" model={state.dots} />
-      </General.Warehouse>
-      <General.Warehouse3D
+        <wik.ViewSet type="rack" fit renderer="canvas" model={state.dots} />
+      </wik.Warehouse>
+      <wik.Warehouse3D
         key="w3d"
+        modes
         mvMappings={mvMapping3}
-        model={(injector) => injector.$new(MyWarehouse3D)}
+        warehouse={(injector) => injector.$new(MyWarehouse3D)}
       >
-        <General.ViewSet3D type="dot" model={state.dots} />
-      </General.Warehouse3D>
-      <General.SelectShell w={300}>
+        <wik.ViewSet3D type="rack" model={state.dots} />
+      </wik.Warehouse3D>
+      <wik.SelectShell w={300}>
         <Aside />
-      </General.SelectShell>
-    </General.World>
+      </wik.SelectShell>
+    </wik.World>
   );
 };
 
@@ -185,72 +129,65 @@ const Aside = (props: ObjectSelectProps<View>) => {
   return <div>got one # {props.model?.model?.id}</div>;
 };
 
+const packSpec: meta.Pack = {
+  width: 100,
+  depth: 80,
+  height: 80,
+};
+
+const rackSpec: meta.Rack = {
+  width: 690,
+  depth: 80,
+  height: 500,
+  heightPerLayer: 60,
+  distanceOffGround: 20,
+};
+
+const boardSpec: meta.Board = {
+  width: 690,
+  depth: 80,
+};
+
 const mvMapping = {
-  dot: (m: model.Point, w: IWarehouse) => {
-    return new Dot([m.py, m.px], { radius: 280 });
+  rack: (m: model.Point, w: IWarehouse) => {
+    return new Rack2dView([m.py, m.px], rackSpec);
   },
 };
 
-class PackView extends Pack implements PointView, OnMouseOverOut, OnSelect {
-  constructor(m: model.Point) {
-    super({ x: m.px, y: m.py, z: m.pz }, { width: 300, height: 300, depth: 200 });
-  }
-
-  onSelect(data?: any) {
-    const material = this.material as MeshPhongMaterial;
-    const color = material.color.getHex();
-    material.color.setHex(0xfff987);
-
-    material.needsUpdate = true;
-    return color;
-  }
-
-  onUnSelect(state?: any, data?: any): void {
-    const material = this.material as MeshPhongMaterial;
-    material.color.setHex(state);
-    material.needsUpdate = true;
-  }
-
-  onHover(data?: any) {
-    const material = this.material as MeshPhongMaterial;
-    const color = material.color.getHex();
-    material.color.setHex(0x0ff987);
-
-    material.needsUpdate = true;
-    return color;
-  }
-
-  onUnHover(state?: any, data?: any): void {
-    const material = this.material as MeshPhongMaterial;
-    material.color.setHex(state);
-    material.needsUpdate = true;
-  }
-
+class RackView extends model3d.Shelf implements PointView {
   model: model.Point;
+
+  constructor(m: model.Point) {
+    super({ x: m.px, y: m.py, z: m.pz }, rackSpec);
+  }
 
   whenInit(): void {}
-}
-
-class RackView extends Shelf implements PointView {
-  model: model.Point;
-  whenInit(): void {
-    throw new Error('Method not implemented.');
-  }
-  whenUnInit?(): void {
-    throw new Error('Method not implemented.');
-  }
-  whenEffect?(effect: string): void {
-    throw new Error('Method not implemented.');
-  }
+  whenUnInit?(): void {}
+  whenEffect?(effect: string): void {}
 }
 
 const mvMapping3 = {
-  dot: (m: model.Point, w: IWarehouse) => {
-    return new PackView(m);
+  rack: (m: model.Point, w: MyWarehouse3D) => {
+    const view = new RackView(m);
+
+    for (const slot of view.getBoardSlots()) {
+      w.instancedBoard.putAt(slot);
+    }
+
+    // for (const slot of view.getPackSlots(packSpec)) {
+    //   w.instancedPack.putAt(slot);
+    // }
+
+    w.instancedBoard.instanceMatrix.needsUpdate = true;
+
+    return view;
   },
 };
 
-class Dot extends L.Circle implements PointView, OnSelect, OnContextMenu, OnMouseOverOut {
+class Rack2dView
+  extends model2d.Shelf
+  implements PointView, OnSelect, OnContextMenu, OnMouseOverOut
+{
   model: model.Point;
 
   onHover() {

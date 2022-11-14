@@ -1,5 +1,6 @@
+import L from 'leaflet';
 import { LayerWithID } from '../../interfaces/WithLayerID';
-import { IWarehouse, ListCtorArgs } from '../../model';
+import { IWarehouse, IWarehouseOptional, ListCtorArgs } from '../../model';
 import { ModeManager } from '../../model/modes';
 import { ConfigProviderConfigValue, Core } from '../../model/basic';
 import { event2behavior, GlobalConstManager } from '../../model/state';
@@ -114,8 +115,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       updateFn(item, data);
     }
 
-    const that = this as IWarehouse;
-    that.onUpdate && that.onUpdate(item, data);
+    this.onUpdate && this.onUpdate(item, data);
   }
 
   add(type: OT, item: LayerWithID) {
@@ -123,8 +123,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
     if (!list) return;
     list.add(item);
 
-    const that = this as IWarehouse;
-    that.onAdd && that.onAdd(item);
+    this.onAdd && this.onAdd(item);
   }
 
   remove(type: OT, item: LayerWithID | string) {
@@ -139,8 +138,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
 
     list.remove(_item);
 
-    const that = this as IWarehouse;
-    that.onRemove && that.onRemove(_item);
+    this.onRemove && this.onRemove(_item);
   }
 
   addList(type: OT, list: LayerList<LayerWithID> | ListCtorArgs) {
@@ -185,7 +183,14 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
   }
 
   removeList(type: OT) {
-    throw new Error('not implemented!');
+    const list = this.typedLists.get(type);
+    if (!list) return;
+
+    this.typedLists.delete(type);
+
+    list.setEventParent(null);
+
+    list.mounted && list.unmount();
   }
 
   mount(map: HrMap) {
@@ -204,6 +209,27 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
     for (const [_, list] of this.typedLists) {
       if (list.mounted) continue;
       list.mount(this.map);
+    }
+
+    // axes
+    {
+      // X
+      L.polyline(
+        [
+          [0, 0],
+          [0, 10000],
+        ],
+        { weight: 1, color: '#3487f0', dashArray: [3, 4] },
+      ).addTo(map);
+
+      // Y
+      L.polyline(
+        [
+          [0, 0],
+          [10000, 0],
+        ],
+        { weight: 1, color: '#ff4f00', dashArray: [3, 4] },
+      ).addTo(map);
     }
 
     //#region modes
@@ -315,6 +341,9 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
 }
 
 export type ItemUpdateFn<M extends LayerWithID, D> = (item: M, data: D) => void;
+
+export interface Warehouse<LayoutData = any, OT extends string = string>
+  extends IWarehouseOptional {}
 
 export enum WarehousePhase {
   mount = 1,

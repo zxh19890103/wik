@@ -31,7 +31,10 @@ export class InstancePack
 
   constructor(limit: number, meta: meta.Pack) {
     super(new BinGeometry(meta.width, meta.depth, meta.height), material, limit);
-    this.isInstancedMesh;
+
+    for (let i = 0; i < limit; i++) {
+      this.setColorAt(i, color);
+    }
   }
 
   onSelect() {
@@ -96,15 +99,13 @@ export class InstancePack
     /**
      * index color must be set to update.
      */
-    this.setColorAt(id, color);
+    // this.setColorAt(id, color.setHex(Math.random() * 0xffffff));
     this.setMatrixAt(id, this.translationMatrix);
   }
 }
 
-const color = new THREE.Color(0xffffff);
+const color = new THREE.Color();
 
 const material = new THREE.MeshPhongMaterial({
   color: 0xffffff,
-  transparent: false,
-  opacity: 0.76,
 });

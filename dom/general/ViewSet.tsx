@@ -1,14 +1,24 @@
 import { memo, useContext, useEffect, useMemo, useState } from 'react';
 import { LayerList } from '../../2d/basic';
+import { InstancedMesh } from '../../3d/basic';
 import { LayerWithID } from '../../interfaces/WithLayerID';
 import { Base, IList } from '../../model/basic';
 import { useEvented } from '../useEvented';
-import { View } from './View';
+import { InstancedView, View } from './View';
 import { __warehouse_context__ } from './Warehouse';
 
 interface ViewSetProps {
+  /**
+   * the type tag of objects.
+   */
   type: string;
+  /**
+   * the data based on.
+   */
   model: IList<Base>;
+  /**
+   * trigger component's re-render on which events?
+   */
   reactOn?: string;
   filter?: `${string}=${string}` | ((m: any) => boolean);
 }
@@ -23,13 +33,10 @@ interface ViewSet2DProps extends ViewSetProps {
    */
   z?: number;
 }
-
 export const ViewSet = memo(
   (props: ViewSet2DProps) => {
     const { model, renderer, type } = props;
     const { warehouse } = useContext(__warehouse_context__);
-
-    useEvented(model, `size ${props.reactOn}`);
 
     const [viewSet] = useState(() => {
       let list: IList<any>;
@@ -49,32 +56,16 @@ export const ViewSet = memo(
       return list;
     });
 
-    useEffect(() => {
-      return () => {
-        warehouse.removeList(type);
-      };
-    }, []);
-
+    // fit
     useEffect(() => {
       if (props.fit) {
-        (viewSet as LayerList<LayerWithID>).fit();
+        setTimeout(() => {
+          (viewSet as LayerList<LayerWithID>).fit();
+        }, 300);
       }
     }, [model.size]);
 
-    const pipe = useMemo(() => {
-      if (!props.filter) return null;
-
-      if (typeof props.filter === 'string') {
-        const [name, value] = props.filter.split(/=/);
-        return (m: any) => {
-          return String(m[name]) === value;
-        };
-      }
-
-      return props.filter;
-    }, []);
-
-    const items = pipe ? model.filter(pipe) : model;
+    const { items } = useViewSet(props);
 
     return (
       <>
@@ -88,12 +79,37 @@ export const ViewSet = memo(
 );
 
 interface ViewSet3DProps extends ViewSetProps {}
-
 export const ViewSet3D = memo((props: ViewSet3DProps) => {
-  const { model, type } = props;
-  const { warehouse } = useContext(__warehouse_context__);
+  const { type } = props;
+  const { warehouse, mvMappings } = useContext(__warehouse_context__);
 
-  useEvented(model, `size ${props.reactOn}`);
+  const [viewSet] = useState(() => {
+    let list: IList<any>;
+
+    list = warehouse.queryList(type);
+    if (list) return list;
+
+    list = warehouse.addList(type);
+
+    return list;
+  });
+
+  const { items } = useViewSet(props);
+
+  return (
+    <>
+      {items.map((m) => {
+        return <View key={m.id} type={type} parent={viewSet} model={m} />;
+      })}
+    </>
+  );
+});
+
+interface InstancedViewSet3DProps extends ViewSetProps {}
+export const InstancedViewSet3D = memo((props: InstancedViewSet3DProps) => {
+  const { type } = props;
+  const { warehouse, mvMappings } = useContext(__warehouse_context__);
+  const [instView, setInstView] = useState<InstancedMesh>(null);
 
   const [viewSet] = useState(() => {
     let list: IList<any>;
@@ -107,31 +123,67 @@ export const ViewSet3D = memo((props: ViewSet3DProps) => {
   });
 
   useEffect(() => {
+    const make = mvMappings[type];
+
+    const instancedView = make(props.model, warehouse);
+
+    warehouse.add(type, instancedView);
+
+    setInstView(instancedView);
+
     return () => {
-      warehouse.removeList(type);
+      warehouse.remove(type, instancedView);
     };
   }, []);
 
-  const pipe = useMemo(() => {
-    if (!props.filter) return null;
+  const { items } = useViewSet(props);
 
-    if (typeof props.filter === 'string') {
-      const [name, value] = props.filter.split(/=/);
+  if (!instView) return null;
+
+  return (
+    <>
+      {items.map((m) => {
+        return (
+          <InstancedView instanced={instView} key={m.id} type={type} parent={viewSet} model={m} />
+        );
+      })}
+    </>
+  );
+});
+
+interface UseViewSetOptions extends ViewSetProps {}
+
+/**
+ * share the same logic
+ */
+export const useViewSet = (options: UseViewSetOptions) => {
+  const { model, reactOn, type, filter } = options;
+  const { warehouse } = useContext(__warehouse_context__);
+
+  useEvented(model, `size ${reactOn}`);
+
+  const pipe = useMemo(() => {
+    if (!filter) return null;
+
+    if (typeof filter === 'string') {
+      const [name, value] = filter.split(/=/);
       return (m: any) => {
         return String(m[name]) === value;
       };
     }
 
-    return props.filter;
+    return filter;
+  }, [filter]);
+
+  useEffect(() => {
+    return () => {
+      warehouse.removeList(type);
+    };
   }, []);
 
   const items = pipe ? model.filter(pipe) : model;
 
-  return (
-    <>
-      {items.map((m) => {
-        return <View key={m.id} type={type} parent={viewSet} model={m} />;
-      })}
-    </>
-  );
-});
+  return {
+    items,
+  };
+};

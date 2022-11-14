@@ -66,6 +66,18 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
     return this;
   }
 
+  setEventParent(parent: EmitterMix) {
+    if (!__PROD__) {
+      if (!(this instanceof EventEmitter) || (!!parent && !(parent instanceof EventEmitter))) {
+        throw new Error('you can not set a non-event emitter as parent or child.');
+      }
+    }
+
+    this.$$parent = parent;
+
+    return this;
+  }
+
   fire$n(event: string, payload: any) {
     const parts = event.split(/[\s,]/g).filter(Boolean);
     if (parts.length === 0) return;
@@ -157,4 +169,6 @@ export interface WithEmitter<E extends string> {
    * Because this method not mounted on evented object.
    */
   setEventChild(child: WithEmitter<string>, off?: boolean): this;
+
+  setEventParent(parent: WithEmitter<string>): this;
 }

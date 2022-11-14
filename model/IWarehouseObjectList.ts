@@ -5,6 +5,7 @@ export interface IWarehouseObjectList extends WithParent<IWarehouse> {
   readonly scene: unknown;
   readonly mounted: boolean;
   mount(root: unknown): void;
+  unmount(): void;
 }
 
 export interface WithWarehouseRef {

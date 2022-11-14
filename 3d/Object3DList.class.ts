@@ -14,14 +14,24 @@ export class Object3DList<M extends THREE.Object3D>
   readonly mounted: boolean = false;
 
   mount(root: THREE.Scene): void {
-    writeReadonlyProp(this, 'scene', root);
-    writeReadonlyProp(this, 'mounted', true);
+    this.assign('scene', root);
+    this.assign('mounted', true);
 
     // init add to ui
     for (const item of this.items) {
       root.add(item);
       writeProp(item, '$$warehouse', this.$$parent);
     }
+  }
+
+  unmount(): void {
+    for (const item of this.items) {
+      this.scene.remove(item);
+      writeProp(item, '$$warehouse', null);
+    }
+
+    this.assign('scene', null);
+    this.assign('mounted', false);
   }
 
   protected override _add(item: M): void {
