@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { __batched_fires__ } from '../mixins/Emitter';
 import { IWarehouse } from '../model';
-import { CoreList, writeProp, writeReadonlyProp } from '../model/basic';
+import { CoreList, writeProp } from '../model/basic';
 import { IWarehouseObjectList } from '../model/IWarehouseObjectList';
 
 export class Object3DList<M extends THREE.Object3D>

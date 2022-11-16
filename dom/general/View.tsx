@@ -22,8 +22,8 @@ export const View = memo(
       const index = model.$$views.push(view) - 1;
       view.model = model;
 
-      view.whenInit && view.whenInit();
       warehouse.add(type, view);
+      view.whenInit && view.whenInit();
 
       return () => {
         model.$$views.splice(index, 1);

@@ -31,10 +31,6 @@ export class InstancePack
 
   constructor(limit: number, meta: meta.Pack) {
     super(new BinGeometry(meta.width, meta.depth, meta.height), material, limit);
-
-    for (let i = 0; i < limit; i++) {
-      this.setColorAt(i, color);
-    }
   }
 
   onSelect() {

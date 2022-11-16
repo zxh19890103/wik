@@ -21,6 +21,8 @@ import { PointView } from '../model/PointView';
 import { ContextMenuItem } from '../interfaces/types';
 import { OnContextMenu, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
 import { MvMappings, ObjectSelectProps } from '../dom/general';
+import { WithWarehouseRef } from '../model/IWarehouseObjectList';
+import { queueTask } from '../utils';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
 
@@ -132,7 +134,7 @@ const Aside = (props: ObjectSelectProps<View>) => {
 const packSpec: meta.Pack = {
   width: 100,
   depth: 80,
-  height: 80,
+  height: 30,
 };
 
 const rackSpec: meta.Rack = {
@@ -154,33 +156,46 @@ const mvMapping = {
   },
 };
 
-class RackView extends model3d.Shelf implements PointView {
+class RackView extends model3d.Shelf implements PointView, WithWarehouseRef<MyWarehouse3D> {
   model: model.Point;
+  $$warehouse: MyWarehouse3D;
 
   constructor(m: model.Point) {
     super({ x: m.px, y: m.py, z: m.pz }, rackSpec);
   }
 
-  whenInit(): void {}
-  whenUnInit?(): void {}
+  whenInit(): void {
+    for (const slot of this.getBoardSlots()) {
+      this.$$warehouse.instancedBoard.putAt(slot);
+    }
+
+    for (const slot of this.getPackSlots(packSpec)) {
+      this.$$warehouse.instancedPack.putAt(slot);
+    }
+
+    queueTask({
+      key: 'instancedupdate',
+      run: (...args) => {
+        console.log('run......');
+        this.$$warehouse.instancedBoard.instanceColor.needsUpdate = true;
+        this.$$warehouse.instancedBoard.instanceMatrix.needsUpdate = true;
+        this.$$warehouse.instancedPack.instanceColor.needsUpdate = true;
+        this.$$warehouse.instancedPack.instanceMatrix.needsUpdate = true;
+      },
+    });
+  }
+
+  whenUnInit?(): void {
+    this.$$warehouse.instancedBoard.deleteInstanceAt(0);
+    this.$$warehouse.instancedPack.deleteInstanceAt(0);
+  }
+
   whenEffect?(effect: string): void {}
 }
 
 const mvMapping3 = {
   rack: (m: model.Point, w: MyWarehouse3D) => {
-    const view = new RackView(m);
-
-    for (const slot of view.getBoardSlots()) {
-      w.instancedBoard.putAt(slot);
-    }
-
-    // for (const slot of view.getPackSlots(packSpec)) {
-    //   w.instancedPack.putAt(slot);
-    // }
-
-    w.instancedBoard.instanceMatrix.needsUpdate = true;
-
-    return view;
+    return new RackView(m);
   },
 };
 

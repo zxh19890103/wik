@@ -18,10 +18,6 @@ export class InstanceBoard extends InstancedMesh implements OnSelect, OnMouseOve
 
   constructor(limit: number, meta: meta.Board) {
     super(new BoardGeometry(meta.width, meta.depth), material, limit);
-
-    for (let i = 0; i < limit; i++) {
-      this.setColorAt(i, color);
-    }
   }
 
   /**

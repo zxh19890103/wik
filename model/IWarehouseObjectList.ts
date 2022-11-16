@@ -8,6 +8,6 @@ export interface IWarehouseObjectList extends WithParent<IWarehouse> {
   unmount(): void;
 }
 
-export interface WithWarehouseRef {
-  $$warehouse: IWarehouse;
+export interface WithWarehouseRef<W = IWarehouse> {
+  $$warehouse: W;
 }

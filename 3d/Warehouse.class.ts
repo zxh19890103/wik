@@ -6,7 +6,7 @@ import { IModeManager } from '../interfaces/Mode';
 import { ISelectionManager } from '../interfaces/Selection';
 import Interface from '../interfaces/symbols';
 import { ClickCancelMix, WithClickCancel } from '../mixins/ClickCancel';
-import { IWarehouse } from '../model';
+import { IWarehouse, IWarehouseOptional } from '../model';
 import { Core, IList, inject, mixin, writeReadonlyProp } from '../model/basic';
 import { event2behavior } from '../model/state';
 import { PointerReactBehavior } from './behaviors';
@@ -168,8 +168,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     if (!list) return;
     list.add(item);
 
-    const that = this as IWarehouse;
-    that.onAdd && that.onAdd(item);
+    this.onAdd && this.onAdd(item);
   }
 
   update(type: string, item: THREE.Object3D, data: any): void {
@@ -193,6 +192,6 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     throw new Error('Method not implemented.');
   }
 }
-export interface Warehouse3D extends WithClickCancel {
+export interface Warehouse3D extends WithClickCancel, IWarehouseOptional {
   onTick(): void;
 }
