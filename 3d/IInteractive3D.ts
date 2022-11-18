@@ -6,6 +6,7 @@ export interface InteractiveObject3D extends Interactive, InstanceMeshInstance {
 
 export interface InstanceMeshInstance {
   id: number;
-  own: THREE.InstancedMesh;
+  instanceIndex: number;
+  $$instanceOf: THREE.InstancedMesh;
   isInstancedMeshInstance: boolean;
 }
