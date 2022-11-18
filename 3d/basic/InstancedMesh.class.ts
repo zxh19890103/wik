@@ -16,11 +16,6 @@ export class InstancedMesh extends THREE.InstancedMesh {
     for (let i = 0; i < count; i++) {
       this.setColorAt(i, _color);
     }
-
-    this.instanceMatrix.updateRange = {
-      offset: 0,
-      count: 0,
-    };
   }
 
   getInstanceAt<T extends InstanceMeshInstance = InstanceMeshInstance>(id: number): T {
