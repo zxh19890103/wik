@@ -8,6 +8,7 @@ export class InstancedMesh extends THREE.InstancedMesh {
   private instances: Map<number, any> = new Map();
   readonly isInstancedMeshInstance: boolean = false;
   readonly $$instanceOf: InstancedMesh = null;
+  instanceIndex = -1;
 
   constructor(geometry: THREE.BufferGeometry, material: THREE.Material, count: number) {
     super(geometry, material, count);
@@ -15,6 +16,11 @@ export class InstancedMesh extends THREE.InstancedMesh {
     for (let i = 0; i < count; i++) {
       this.setColorAt(i, _color);
     }
+
+    this.instanceMatrix.updateRange = {
+      offset: 0,
+      count: 0,
+    };
   }
 
   getInstanceAt<T extends InstanceMeshInstance = InstanceMeshInstance>(id: number): T {
@@ -22,6 +28,23 @@ export class InstancedMesh extends THREE.InstancedMesh {
       return this.instances.get(id);
     }
 
+    return this.createInstance() as unknown as T;
+  }
+
+  addInstanceAt(index: number, color: number | string, position: THREE.Vector3) {
+    const instance = this.createInstance();
+    instance.setColor(color);
+    instance.setPosition(position);
+
+    instance.instanceIndex = index;
+
+    return instance;
+  }
+
+  deleteInstanceAt(id: number) {}
+
+  private createInstance() {
+    const id = __instance__id__seed__++;
     // create
     const instance = Object.create(this, {
       id: { value: id, writable: false, configurable: false, enumerable: false },
@@ -32,10 +55,19 @@ export class InstancedMesh extends THREE.InstancedMesh {
 
     this.instances.set(id, instance);
 
-    return instance;
+    return instance as InstancedMesh;
   }
 
-  addInstanceAt(id: number, color: THREE.ColorRepresentation, position: THREE.Vector3) {}
+  setPosition(position: THREE.Vector3) {
+    _identity.setPosition(position);
+    this.setMatrixAt(this.instanceIndex, _identity);
+    this.instanceMatrix.needsUpdate = true;
+  }
 
-  deleteInstanceAt(id: number) {}
+  setColor(color: number | string) {
+    this.setColorAt(this.instanceIndex, new THREE.Color(color));
+    this.instanceColor.needsUpdate = true;
+  }
 }
+
+let __instance__id__seed__ = 1990;
