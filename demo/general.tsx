@@ -55,8 +55,11 @@ class MyWarehouse3D extends Warehouse3D {
    */
   boards: Object3DList<model3d.InstanceBoard>;
 
+  racks: Object3DList<model3d.InstancedRack>;
+
   instancedPack: model3d.InstancePack;
   instancedBoard: model3d.InstanceBoard;
+  instancedRack: model3d.InstancedRack;
 
   constructor(injector: IInjector) {
     super();
@@ -65,6 +68,7 @@ class MyWarehouse3D extends Warehouse3D {
     this.shelfs = this.addList('shelf');
     this.packs = this.addList('pack');
     this.boards = this.addList('board');
+    this.racks = this.addList('rack');
 
     const pack = new model3d.InstancePack(1000000, packSpec);
     const board = new model3d.InstanceBoard(100000, boardSpec);
@@ -74,9 +78,113 @@ class MyWarehouse3D extends Warehouse3D {
 
     this.instancedBoard = board;
     this.instancedPack = pack;
+
+    const rackSpec = {
+      width: 1655,
+      depth: 655,
+      height: 3400,
+      heightPerLayer: 360,
+      distanceOffGround: 20,
+    };
+
+    this.instancedRack = new model3d.InstancedRack(100000, rackSpec);
+
+    this.racks.add(this.instancedRack);
   }
 
-  layout(data?: unknown): void | Promise<void> {}
+  async layout(data: any) {
+    {
+      const racks = await fetch('/__data__/racks.json').then((r) => r.json());
+
+      for (const rack of racks) {
+        if (rack.a === null || rack.t === 90 || rack.t === 270) continue;
+
+        this.instancedRack.addInstance({
+          x: rack.xC - 10000,
+          y: rack.yC - 20000,
+          z: 0,
+        });
+      }
+
+      this.instancedRack.updateInstances();
+    }
+
+    {
+      // let total = 0;
+      // console.time('location');
+      // for (const location of data.location) {
+      //   switch (location.locationTypeCode) {
+      //     case 'LT_SHELF_STORAGE': {
+      //       total += 1;
+      //       this.makeLocation(location);
+      //       break;
+      //     }
+      //     case 'LT_CHARGE': {
+      //       break;
+      //     }
+      //     case 'LT_HAIPORT': {
+      //       break;
+      //     }
+      //     case 'LT_LABOR': {
+      //       break;
+      //     }
+      //     case 'LT_REST': {
+      //       break;
+      //     }
+      //     case 'LT_MAINTAIN': {
+      //       break;
+      //     }
+      //   }
+      //   // if (total === 30) {
+      //   //   break;
+      //   // }
+      // }
+      // this.instancedPack.position.set(-10000, -20000, 0);
+      // this.instancedPack.updateInstances();
+      // console.timeEnd('location');
+      // console.log('location total', total);
+    }
+  }
+
+  getLayoutData(): Promise<any> {
+    return fetch('/__data__/xianbei').then((r) => r.json());
+  }
+
+  private makePoint(data) {
+    const { position } = data;
+  }
+
+  private makeLocation(data) {
+    const { position } = data;
+    const theta = data.link[0]?.container2mapTheta || '0';
+    const { x, y, z } = position;
+    // const identity = `${x},${y},${theta}`;
+    // 0,90,180,270,
+    const translation = { y: +y, x: +x, z: +z };
+    const rotation = { z: 0 };
+
+    if (theta === '270') {
+      translation.y -= 460;
+      rotation.z = Math.PI * 0.5;
+    } else if (theta === '180') {
+      translation.x += 460;
+      rotation.z = Math.PI * 0.5;
+    } else if (theta === '90') {
+      translation.y += 460;
+      rotation.z = Math.PI * 1.5;
+    } else {
+      translation.x -= 460;
+      rotation.z = Math.PI * 1.5;
+    }
+
+    const instance = this.instancedPack.addInstance(
+      translation,
+      rotation.z,
+      Math.random() * 0xffffff,
+    );
+
+    instance.model = data;
+  }
 }
 
 export default () => {
@@ -87,23 +195,23 @@ export default () => {
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      __batched_fires__(() => {
-        // 400 dots
-        for (let x = 0; x < 20; x++) {
-          for (let y = 0; y < 20; y++) {
-            const dot = state.dots.create();
-            dot.px = x * 700;
-            dot.py = y * 190;
-            dot.pz = 0;
-          }
-        }
-      }, 'size');
-    }, 500);
+    // setTimeout(() => {
+    //   __batched_fires__(() => {
+    //     // 400 dots
+    //     for (let x = 0; x < 1; x++) {
+    //       for (let y = 0; y < 3; y++) {
+    //         const dot = state.dots.create();
+    //         dot.px = x * 700;
+    //         dot.py = y * 190;
+    //         dot.pz = 0;
+    //       }
+    //     }
+    //   }, 'size');
+    // }, 500);
   }, []);
 
   return (
-    <wik.World switch defaultKeys={['w2d', 'w3d']}>
+    <wik.World switch defaultKeys={['w3d']}>
       <wik.Warehouse
         key="w2d"
         mvMappings={mvMapping}
@@ -121,27 +229,45 @@ export default () => {
         <wik.ViewSet3D type="rack" model={state.dots} />
       </wik.Warehouse3D>
       <wik.SelectShell w={300}>
-        <Aside />
+        <Aside C={model3d.InstancePack}>
+          <button
+            onClick={() => {
+              const dot = state.dots.create();
+              dot.px = Math.random() * 3000;
+              dot.py = Math.random() * 3000;
+              dot.pz = 0;
+            }}
+          >
+            add
+          </button>
+        </Aside>
       </wik.SelectShell>
     </wik.World>
   );
 };
 
 const Aside = (props: ObjectSelectProps<View>) => {
-  return <div>got one # {props.model?.model?.id}</div>;
+  return (
+    <div>
+      got one # {props.C?.name} // {props.model?.id}
+      <pre>{JSON.stringify(props.model.model, null, 2)}</pre>
+      <hr />
+      {props.children}
+    </div>
+  );
 };
 
 const packSpec: meta.Pack = {
-  width: 100,
-  depth: 80,
-  height: 30,
+  width: 400,
+  depth: 400,
+  height: 340,
 };
 
 const rackSpec: meta.Rack = {
-  width: 690,
-  depth: 80,
-  height: 500,
-  heightPerLayer: 60,
+  width: 1600,
+  depth: 500,
+  height: 3400,
+  heightPerLayer: 360,
   distanceOffGround: 20,
 };
 
@@ -165,29 +291,45 @@ class RackView extends model3d.Shelf implements PointView, WithWarehouseRef<MyWa
   }
 
   whenInit(): void {
+    const { instancedBoard, instancedPack } = this.$$warehouse;
+
     for (const slot of this.getBoardSlots()) {
-      this.$$warehouse.instancedBoard.putAt(slot);
+      const instance = instancedBoard.addInstance(slot.position, 0x9088f6);
+      this.boards.push(instance);
     }
 
     for (const slot of this.getPackSlots(packSpec)) {
-      this.$$warehouse.instancedPack.putAt(slot);
+      const instance = instancedPack.addInstance(slot.position);
+      this.packs.push(instance);
     }
 
     queueTask({
-      key: 'instancedupdate',
-      run: (...args) => {
-        console.log('run......');
-        this.$$warehouse.instancedBoard.instanceColor.needsUpdate = true;
-        this.$$warehouse.instancedBoard.instanceMatrix.needsUpdate = true;
-        this.$$warehouse.instancedPack.instanceColor.needsUpdate = true;
-        this.$$warehouse.instancedPack.instanceMatrix.needsUpdate = true;
+      key: 'updateInstances',
+      run: () => {
+        instancedPack.updateInstances();
+        instancedBoard.updateInstances();
       },
     });
   }
 
   whenUnInit?(): void {
-    this.$$warehouse.instancedBoard.deleteInstanceAt(0);
-    this.$$warehouse.instancedPack.deleteInstanceAt(0);
+    const { instancedBoard, instancedPack } = this.$$warehouse;
+
+    for (const pack of this.packs) {
+      pack.delete();
+    }
+
+    for (const board of this.boards) {
+      board.delete();
+    }
+
+    queueTask({
+      key: 'updateInstances',
+      run: () => {
+        instancedPack.updateInstances();
+        instancedBoard.updateInstances();
+      },
+    });
   }
 
   whenEffect?(effect: string): void {}

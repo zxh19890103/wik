@@ -1,9 +1,15 @@
 import THREE, { BufferGeometry, LineBasicMaterial } from 'three';
 import { OnClick } from '../interfaces/Interactive';
-import * as meta from '../model/meta';
+import { InstancedMesh } from './basic';
+import { InstanceBoard } from './Board.class';
+import { InstancePack } from './Pack.class';
 import { generateRetangle } from './utils';
+import * as meta from '../model/meta';
 
 export class Shelf extends THREE.LineSegments implements OnClick {
+  packs: InstancePack[] = [];
+  boards: InstanceBoard[] = [];
+
   constructor(position: meta.Position, private meta: meta.Rack) {
     const geometry = new BufferGeometry();
     const { vertices, indices } = generateVertices(meta);
@@ -75,6 +81,21 @@ export class Shelf extends THREE.LineSegments implements OnClick {
       material = new LineBasicMaterial({ linewidth: 12, color: 0xf3fadf });
     }
     return material;
+  }
+}
+
+export class InstancedRack extends InstancedMesh {
+  constructor(limit: number, meta: meta.Rack) {
+    const geometry = new BufferGeometry();
+    const { vertices, indices } = generateVertices(meta);
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setIndex(indices);
+
+    super(
+      geometry,
+      new THREE.MeshBasicMaterial({ color: 0xff8712, transparent: true, opacity: 0.8 }),
+      limit,
+    );
   }
 }
 

@@ -13,6 +13,18 @@ export interface Model extends WithID, WithParent<IList<Model>>, Serializable {
 }
 
 export interface View<M extends Model = Model, E extends string = string> {
+  /**
+   * if this view is a threejs object3d
+   */
+  id?: number;
+  /**
+   * if this view is a reactive leaflet layer
+   */
+  layerId?: string;
+  /**
+   * if this view is a native leaflet layer
+   */
+  leafletId?: string;
   model: M;
   whenInit(): void;
   whenUnInit?(): void;

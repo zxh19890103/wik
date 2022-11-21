@@ -91,7 +91,15 @@
 
 45. 3d 光标定位的物体不准确，general demo ✅
 
-46. react component for instancedMesh pls!
+46. react component for instancedMesh pls! ❌
+
+47. 可编辑选择框
+
+48. make reactive leaflet diff automatically.
+
+49. generates rack data form ess exports' locations.
+
+50. needs a InstancedLineSegments class, just like InstancedMesh.
 
 ## TODO - 3d
 

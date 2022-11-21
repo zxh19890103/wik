@@ -2,13 +2,14 @@ import THREE, { InstancedMesh } from 'three';
 import { IDisposable } from '../interfaces/Disposable';
 import { GraphicObject } from '../interfaces/GraghicObject';
 import { IInjector } from '../interfaces/Injector';
-import { IModeManager } from '../interfaces/Mode';
+import { IBehavior, IModeManager } from '../interfaces/Mode';
 import { ISelectionManager } from '../interfaces/Selection';
 import Interface from '../interfaces/symbols';
 import { ClickCancelMix, WithClickCancel } from '../mixins/ClickCancel';
 import { IWarehouse, IWarehouseOptional } from '../model';
 import { Core, IList, inject, mixin, writeReadonlyProp } from '../model/basic';
 import { event2behavior } from '../model/state';
+import { tryInvokingOwn } from '../utils';
 import { PointerReactBehavior } from './behaviors';
 import { DefaultBehavior } from './behaviors/DefaultBehavior.class';
 import { Ground } from './Ground.class';
@@ -107,10 +108,14 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     }
 
     writeReadonlyProp(this, 'mounted', true);
+    tryInvokingOwn(this, 'onMounted');
 
     (async () => {
-      await this.layout(null);
+      const data = await this.getLayoutData();
+      await this.layout(data);
+
       writeReadonlyProp(this, 'layouted', true);
+      tryInvokingOwn(this, 'onLayouted');
     })();
   }
 
@@ -184,6 +189,20 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     } else {
       list.remove(item);
     }
+  }
+
+  /**
+   * retains the data for layouting ,which is the initial data. default is null, you can overrides it in subclass.
+   */
+  getLayoutData(): Promise<any> {
+    return Promise.resolve(null);
+  }
+
+  /**
+   * default is empty, you can overrides it.
+   */
+  configModes(): Record<string, IBehavior[]> {
+    return {};
   }
 
   injector: IInjector;

@@ -135,7 +135,9 @@ export class PointerReactBehavior extends Behavior {
         this.intersection = intersection;
       }
 
-      if (this.activatedObj3d === obj3d) return;
+      if (this.activatedObj3d === obj3d) {
+        return;
+      }
 
       if (this.activatedObj3d) {
         warehouse.fireBehavior('mouseout', this.activatedObj3d);

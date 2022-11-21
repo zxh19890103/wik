@@ -1,6 +1,6 @@
 import { GraphicObject } from '../interfaces/GraghicObject';
 import { WithInjector } from '../interfaces/Injector';
-import { IModeManager } from '../interfaces/Mode';
+import { IBehavior, IModeManager } from '../interfaces/Mode';
 import { ISelectionManager } from '../interfaces/Selection';
 import { IList } from './basic';
 
@@ -30,6 +30,9 @@ export interface IWarehouse
   add(type: string, item: GraphicObject): void;
   update(type: string, item: GraphicObject, data: any): void;
   remove(type: string, item: GraphicObject | string): void;
+
+  getLayoutData(): Promise<unknown>;
+  configModes(): Record<string, IBehavior[]>;
 }
 
 export interface IWarehouseOptional {

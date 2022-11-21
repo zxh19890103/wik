@@ -86,7 +86,6 @@ const Modes = memo((props: { warehouse: IWarehouse }) => {
   const onModeChange = (evt) => {
     const name = evt.target.getAttribute('itemid');
     if (mode === name) return;
-    console.log(name);
     modeManager.mode = name;
   };
 
@@ -114,6 +113,7 @@ export type ObjectSelectProps<M = any, P = {}> = {
   model?: M;
   C?: AbstractConstructor;
   position?: JSX.Element;
+  children?: JSX.Element;
 } & P;
 
 export type MultipleObjectsSelectProps<M, P = {}> = {
