@@ -4,6 +4,7 @@ import { InstanceMeshInstance } from '../IInteractive3D';
 
 const _color = new THREE.Color();
 const _identity = new THREE.Matrix4();
+<<<<<<< HEAD
 const _identity2 = new THREE.Matrix4();
 const _vector3 = new THREE.Vector3();
 
@@ -16,6 +17,12 @@ export class InstancedMesh
 {
   private instances: Map<number, InstancedMesh> = new Map();
   private index2id: Map<number, number> = new Map();
+=======
+
+let __instance__id__seed__ = 1990;
+export class InstancedMesh extends THREE.InstancedMesh {
+  private instances: Map<number, any> = new Map();
+>>>>>>> a792f6f432aacfcdd13709a1a9ceea2ec5be3806
   readonly isInstancedMeshInstance: boolean = false;
   readonly $$instanceOf: InstancedMesh = null;
 
@@ -192,5 +199,3 @@ export class InstancedMesh
     color.toArray(this.instanceColor.array, index * 3);
   }
 }
-
-let __instance__id__seed__ = 1990;
