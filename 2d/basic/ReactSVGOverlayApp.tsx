@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import { BUILTIN_LEAFLET_PANES } from './constants';
-import { HrMap } from './Map.class';
+import { WikMap } from './Map.class';
 import { SvgFunctionComponent } from './SVGComponentFactory';
 
 interface SVG {
@@ -20,7 +20,7 @@ type AfterRenderPromiseSettleFn = (val?: HTMLElement) => void;
  * 用于渲染 svg 组件的服务
  */
 class ReactSVGOverlayAppServer {
-  map: HrMap;
+  map: WikMap;
   pane: string;
   isRunning = false;
   isMounted = false;
@@ -53,7 +53,7 @@ class ReactSVGOverlayAppServer {
    *
    * 注意：当使用这样的服务时，你就不能使用 vector 渲染方式
    */
-  bootstrap(map: HrMap, pane: string) {
+  bootstrap(map: WikMap, pane: string) {
     if (this.isRunning) {
       return this;
     }

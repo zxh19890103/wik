@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { Behavior } from '../../model/behaviors/Behavior.class';
-import { HrMap } from '../basic';
+import { WikMap } from '../basic';
 import { IWarehouse } from '../../model';
 import { PaneObject } from '../state';
 
@@ -18,7 +18,7 @@ export class SpaceDragBehavior extends Behavior {
     }
   };
 
-  constructor(private map: HrMap) {
+  constructor(private map: WikMap) {
     super();
   }
 

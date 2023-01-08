@@ -5,7 +5,8 @@ import './index.scss';
 
 const route = window['__ROUTE__'];
 
-const pages = {
+/**
+ * 
   demo: React.lazy(() => import('./demo')),
   dev: React.lazy(() => import('./dev')),
   dev3d: React.lazy(() => import('./dev3d')),
@@ -22,7 +23,12 @@ const pages = {
   group: React.lazy(() => import('./group')),
   'redo-undo': React.lazy(() => import('./redo-undo')),
   '2d3d': React.lazy(() => import('./2d3d')),
+ */
+
+const pages = {
   general: React.lazy(() => import('./general')),
+  minimal: React.lazy(() => import('./minimal')),
+  rack: React.lazy(() => import('./rack')),
 };
 
 const Route = () => {

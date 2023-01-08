@@ -1,6 +1,6 @@
 import { EventEmitter, EventNames } from 'eventemitter3';
 import { SimpleObject } from '../interfaces/types';
-import { HrEvent } from '../model/basic/Event.class';
+import { WikEvent } from '../model/basic/Event.class';
 import { WithParent } from '../interfaces/WithParent';
 import { link } from '../model/basic';
 
@@ -34,7 +34,7 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
       return;
     }
 
-    const eventObj = payload instanceof HrEvent ? payload : new HrEvent(this, event, payload);
+    const eventObj = payload instanceof WikEvent ? payload : new WikEvent(this, event, payload);
     globalEvent = eventObj;
 
     const r = EventEmitter.prototype.emit.call(this, event, eventObj);
@@ -87,7 +87,7 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
     }
   }
 
-  listen$n(event: string, handler: (event: HrEvent) => void) {
+  listen$n(event: string, handler: (event: WikEvent) => void) {
     const parts = event.split(/[\s,]/g).filter(Boolean);
     if (parts.length === 0) return;
 
@@ -96,7 +96,7 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
     }
   }
 
-  unlisten$n(event: string, handler?: (event: HrEvent) => void) {
+  unlisten$n(event: string, handler?: (event: WikEvent) => void) {
     const parts = event.split(/[\s,]/g).filter(Boolean);
     if (parts.length === 0) return;
 
@@ -108,7 +108,7 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
 
 let isEmitBatchly = false;
 let emitObjLag: { target: any; event: string } = null;
-let globalEvent: HrEvent = null;
+let globalEvent: WikEvent = null;
 
 const clearGlobalEvent = () => {
   globalEvent = null;
@@ -145,24 +145,24 @@ export interface WithEmitter<E extends string> {
   /**
    * on
    */
-  listen<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
+  listen<T extends EventNames<E>>(event: T, fn: (event: WikEvent) => void, context?: any): this;
   /**
    * split on
    */
-  listen$n(event: string, fn: (event: HrEvent) => void): this;
+  listen$n(event: string, fn: (event: WikEvent) => void): this;
   /**
    * off
    */
-  unlisten<T extends EventNames<E>>(event: T, fn?: (event: HrEvent) => void): this;
+  unlisten<T extends EventNames<E>>(event: T, fn?: (event: WikEvent) => void): this;
   /**
    * split off
    */
-  unlisten$n(event: string, fn?: (event: HrEvent) => void): this;
+  unlisten$n(event: string, fn?: (event: WikEvent) => void): this;
 
   /**
    * once
    */
-  listen$1<T extends EventNames<E>>(event: T, fn: (event: HrEvent) => void, context?: any): this;
+  listen$1<T extends EventNames<E>>(event: T, fn: (event: WikEvent) => void, context?: any): this;
 
   /**
    * Create parent-child relationships of two evented objects manually.

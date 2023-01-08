@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react';
 import * as model from '../model';
 import { __batched_fires__ } from '../mixins/Emitter';
 import { IWarehouse } from '../model';
-import { Pack, Shelf } from '../3d';
 import { PointView } from '../model/PointView';
 import { ContextMenuItem } from '../interfaces/types';
 import { OnContextMenu, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
@@ -25,19 +24,6 @@ import { WithWarehouseRef } from '../model/IWarehouseObjectList';
 import { queueTask } from '../utils';
 
 L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-static/';
-
-@inject(Interface.IInjector)
-@provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
-class MyWarehouse extends EssWarehouse {
-  async layout2(data: any) {
-    this.modeManager.mode = 'default';
-  }
-
-  async layout(data?: any): Promise<void> {
-    // this.map.setView([0, 0], 4);
-    this.modeManager.mode = 'default';
-  }
-}
 
 @inject(Interface.IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
@@ -59,7 +45,6 @@ class MyWarehouse3D extends Warehouse3D {
 
   instancedPack: model3d.InstancePack;
   instancedBoard: model3d.InstanceBoard;
-  instancedRack: model3d.InstancedRack;
 
   constructor(injector: IInjector) {
     super();
@@ -78,37 +63,9 @@ class MyWarehouse3D extends Warehouse3D {
 
     this.instancedBoard = board;
     this.instancedPack = pack;
-
-    const rackSpec = {
-      width: 1655,
-      depth: 655,
-      height: 3400,
-      heightPerLayer: 360,
-      distanceOffGround: 20,
-    };
-
-    this.instancedRack = new model3d.InstancedRack(100000, rackSpec);
-
-    this.racks.add(this.instancedRack);
   }
 
   async layout(data: any) {
-    {
-      const racks = await fetch('/__data__/racks.json').then((r) => r.json());
-
-      for (const rack of racks) {
-        if (rack.a === null || rack.t === 90 || rack.t === 270) continue;
-
-        this.instancedRack.addInstance({
-          x: rack.xC - 10000,
-          y: rack.yC - 20000,
-          z: 0,
-        });
-      }
-
-      this.instancedRack.updateInstances();
-    }
-
     {
       // let total = 0;
       // console.time('location');
@@ -198,7 +155,7 @@ export default () => {
     setTimeout(() => {
       __batched_fires__(() => {
         // 400 dots
-        for (let x = 0; x < 1; x++) {
+        for (let x = 0; x < 4; x++) {
           for (let y = 0; y < 3; y++) {
             const dot = state.dots.create();
             dot.px = x * 700;
@@ -211,15 +168,7 @@ export default () => {
   }, []);
 
   return (
-    <wik.World switch defaultKeys={['w3d']}>
-      <wik.Warehouse
-        key="w2d"
-        mvMappings={mvMapping}
-        modes
-        warehouse={(injector) => injector.$new(MyWarehouse)}
-      >
-        <wik.ViewSet type="rack" fit renderer="canvas" model={state.dots} />
-      </wik.Warehouse>
+    <wik.World defaultKeys={['w3d']}>
       <wik.Warehouse3D
         key="w3d"
         modes
@@ -276,12 +225,6 @@ const boardSpec: meta.Board = {
   depth: 80,
 };
 
-const mvMapping = {
-  rack: (m: model.Point, w: IWarehouse) => {
-    return new Rack2dView([m.py, m.px], rackSpec);
-  },
-};
-
 class RackView extends model3d.Shelf implements PointView, WithWarehouseRef<MyWarehouse3D> {
   model: model.Point;
   $$warehouse: MyWarehouse3D;
@@ -293,10 +236,10 @@ class RackView extends model3d.Shelf implements PointView, WithWarehouseRef<MyWa
   whenInit(): void {
     const { instancedBoard, instancedPack } = this.$$warehouse;
 
-    for (const slot of this.getBoardSlots()) {
-      const instance = instancedBoard.addInstance(slot.position, 0x9088f6);
-      this.boards.push(instance);
-    }
+    // for (const slot of this.getBoardSlots()) {
+    //   const instance = instancedBoard.addInstance(slot.position, 0x9088f6);
+    //   this.boards.push(instance);
+    // }
 
     for (const slot of this.getPackSlots(packSpec)) {
       const instance = instancedPack.addInstance(slot.position);
@@ -340,44 +283,3 @@ const mvMapping3 = {
     return new RackView(m);
   },
 };
-
-class Rack2dView
-  extends model2d.Shelf
-  implements PointView, OnSelect, OnContextMenu, OnMouseOverOut
-{
-  model: model.Point;
-
-  onHover() {
-    const c = this.options.color;
-    this.setStyle({ color: '#000' });
-    return c;
-  }
-
-  onUnHover(state?: any): void {
-    this.setStyle({ color: state });
-  }
-
-  onContextMenu(evt?: L.LeafletMouseEvent): ContextMenuItem[] {
-    return [{ text: 'Del', value: 'delete' }];
-  }
-
-  onContextMenuClick(key: string): void | Promise<any> {
-    if (key === 'delete') {
-      this.model.remove();
-    }
-  }
-
-  whenInit(): void {}
-
-  whenEffect?(effect: string): void {}
-
-  onSelect() {
-    const color = this.options.color;
-    this.setStyle({ color: '#f12' });
-    return color;
-  }
-
-  onUnSelect(state?: any): void {
-    this.setStyle({ color: state });
-  }
-}

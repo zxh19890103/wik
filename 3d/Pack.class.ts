@@ -28,7 +28,7 @@ export class InstancePack
 
   constructor(limit: number, meta: meta.Pack) {
     super(
-      new BinGeometry(meta.width, meta.depth, meta.height),
+      new BoxGeometry(meta.width, meta.depth, meta.height),
       new THREE.MeshPhongMaterial({
         color: 0xf09812,
         transparent: true,

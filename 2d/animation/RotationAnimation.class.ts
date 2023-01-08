@@ -1,12 +1,12 @@
 import { LinearLine1D } from '../../utils';
-import { HrAnimation } from './Animation.class';
+import { WikAnimation } from './Animation.class';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
 /**
  * 旋转90度一般3.5s
  */
 
-export class RotationAnimation extends HrAnimation<ReactiveLayerWithAnimate> {
+export class RotationAnimation extends WikAnimation<ReactiveLayerWithAnimate> {
   readonly value: number;
   private linear: LinearLine1D;
 

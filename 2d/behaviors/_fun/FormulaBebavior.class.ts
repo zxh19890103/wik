@@ -1,12 +1,12 @@
 import L from 'leaflet';
 import { IWarehouse, EssObjectType } from '../../../model';
 import { Behavior } from '../../../model/behaviors';
-import { HrMap } from '../../basic/Map.class';
+import { WikMap } from '../../basic/Map.class';
 
 const scale = 1000;
 
 export class FormulaBehavior extends Behavior {
-  constructor(private map: HrMap, private wh: IWarehouse) {
+  constructor(private map: WikMap, private wh: IWarehouse) {
     super();
   }
 

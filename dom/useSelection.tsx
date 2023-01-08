@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
 import { IWarehouse } from '../model';
-import { HrEvent } from '../model/basic/Event.class';
+import { WikEvent } from '../model/basic/Event.class';
 import { useEvented } from './useEvented';
 
 interface Props {
@@ -41,14 +41,14 @@ export const SelectionContext = memo((props: Props) => {
   const selection = warehouse.selectionManager as any;
 
   useEffect(() => {
-    const onItem = (event: HrEvent) => {
+    const onItem = (event: WikEvent) => {
       const item = event.payload.item;
       for (const setter of itemSetters) {
         setter(item);
       }
     };
 
-    const onItems = (event: HrEvent) => {
+    const onItems = (event: WikEvent) => {
       const item = event.payload.items;
       for (const setter of itemsSetters) {
         setter(item);

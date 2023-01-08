@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { useEffect, useRef } from 'react';
-import { HrMap } from '../2d/basic/Map.class';
+import { WikMap } from '../2d/basic/Map.class';
 import './dev.scss';
 
 import * as hrGUIBasic from '../2d/basic';
@@ -24,7 +24,7 @@ class MyWarehouse extends EssWarehouse {
 async function bootstrap(container: HTMLDivElement) {
   document.title = 'animation test.';
 
-  const root = new HrMap(container, { zoom: 1.5 });
+  const root = new WikMap(container, { zoom: 1.5 });
 
   const warehouse = rootInjector.$new<MyWarehouse>(MyWarehouse);
   warehouse.mount(root);

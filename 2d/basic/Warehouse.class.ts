@@ -4,7 +4,7 @@ import { IWarehouse, IWarehouseOptional, ListCtorArgs } from '../../model';
 import { ModeManager } from '../../model/modes';
 import { ConfigProviderConfigValue, Core } from '../../model/basic';
 import { event2behavior, GlobalConstManager } from '../../model/state';
-import { HrMap, LayerList, SVGOverlayList, VectorLayerList } from '.';
+import { WikMap, LayerList, SVGOverlayList, VectorLayerList } from '.';
 import { RenderersManager } from '../leafletCanvasOverrides';
 
 import { inject } from '../../model/basic/inject';
@@ -23,7 +23,7 @@ import {
   InteractiveStateActionManager,
 } from '../../model/state';
 import { ILogger } from '../../interfaces/Logger';
-import { HrEvent } from '../../model/basic/Event.class';
+import { WikEvent } from '../../model/basic/Event.class';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 
@@ -57,7 +57,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
   @inject(Interfaces.IRendererManager)
   readonly renderersMgr: RenderersManager;
 
-  readonly map: HrMap = null;
+  readonly map: WikMap = null;
   readonly mounted: boolean = false;
   readonly layouted: boolean = false;
 
@@ -193,7 +193,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
     list.mounted && list.unmount();
   }
 
-  mount(map: HrMap) {
+  mount(map: WikMap) {
     if (this.mounted) return;
 
     this.fire('phase', { phase: WarehousePhase.mount });
@@ -267,7 +267,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       /**
        * mapping from event of emitter or lealfet to behavior's callbacks.
        */
-      this.listen$n('click dblclick mouseover mouseout mousedown contextmenu', (evt: HrEvent) => {
+      this.listen$n('click dblclick mouseover mouseout mousedown contextmenu', (evt: WikEvent) => {
         if (evt.type === 'click' && this.map.isClickEventFireCancelled) return;
         const { layer, leafletEvt } = evt.payload;
         const cb = event2behavior[`item@${evt.type}`];

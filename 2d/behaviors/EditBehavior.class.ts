@@ -5,7 +5,7 @@ import { ContextMenuItem } from '../../interfaces/types';
 import { ReactiveLayer } from '../../mixins/ReactiveLayer';
 import { IWarehouse } from '../../model';
 import { Behavior } from '../../model/behaviors';
-import { HrMap } from '../basic';
+import { WikMap } from '../basic';
 
 /**
  * @todo
@@ -18,7 +18,7 @@ export class EditBehavior extends Behavior {
   private currentContextMenuItems: ContextMenuItem[] = null;
   private contextmenuPopup: L.Popup = null;
 
-  constructor(private warehouse: IWarehouse, private map: HrMap) {
+  constructor(private warehouse: IWarehouse, private map: WikMap) {
     super();
   }
 

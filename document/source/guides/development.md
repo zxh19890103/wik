@@ -9,7 +9,7 @@ order: 990
 拉取代码：
 
 ```sh
-git clone git@git.hairoutech.com:softwaregroup/frontend/common/graphic.git
+git clone https://github.com/graphic.git
 
 cd graphic
 

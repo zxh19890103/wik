@@ -24,8 +24,8 @@ import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
   tapTolerance: 100,
 })
 @mixin(ClickCancelMix)
-export class HrMap extends L.Map {}
+export class WikMap extends L.Map {}
 
-export interface HrMap extends WithClickCancel {
+export interface WikMap extends WithClickCancel {
   _container: HTMLDivElement;
 }

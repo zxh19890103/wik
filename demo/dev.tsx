@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { useEffect, useRef } from 'react';
-import { HrMap } from '../2d/basic/Map.class';
+import { WikMap } from '../2d/basic/Map.class';
 import './dev.scss';
 
 import * as hrGUI from '../2d';
@@ -12,7 +12,7 @@ export default () => {
   const domRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
-    const root = new HrMap(domRef.current, {});
+    const root = new WikMap(domRef.current, {});
 
     const list = new hrGUIBasic.LayerList();
     list.mount(root);

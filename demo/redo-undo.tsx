@@ -10,7 +10,7 @@ import { Bot } from '../2d/Bot.class';
 import './ioc.config';
 import { SVG_KUBOT, SVG_KUBOT_RED } from '../2d/images';
 import { StateActionBase, StateActionManager } from '../model/state';
-import { HrMap } from '../2d/basic';
+import { WikMap } from '../2d/basic';
 import { randomLatLng } from '../utils';
 import { ReactiveLayer } from '../mixins/ReactiveLayer';
 import { WithLayerState } from '../interfaces/WithLayerState';
@@ -36,7 +36,7 @@ class MyWarehouse extends EssWarehouse {
 }
 
 class LayerCreateAction extends StateActionBase {
-  readonly map: HrMap;
+  readonly map: WikMap;
   private point: basic.Circle;
 
   constructor(private warehouse: Warehouse) {

@@ -3,7 +3,7 @@ import { LayerWithID } from '../../interfaces/WithLayerID';
 import { writeReadonlyProp } from '../../model/basic';
 import { inject } from '../../model/basic/inject';
 import { LayerList } from './LayerList.class';
-import { HrMap } from './Map.class';
+import { WikMap } from './Map.class';
 import { PaneManager, PaneName, PaneObject, RendererType } from '../state/PaneManager.class';
 import * as Interface from '../../interfaces/symbols';
 import { RenderersManager } from '../leafletCanvasOverrides';
@@ -47,7 +47,7 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
     this.paneMgr.setZ(this.pane, z);
   }
 
-  override mount(parent: HrMap): void {
+  override mount(parent: WikMap): void {
     super.mount(parent);
     const paneObj = this.paneMgr.get(this.pane, this.rendererType, _pane_z_seed++);
     writeReadonlyProp(this, 'paneObj', paneObj);

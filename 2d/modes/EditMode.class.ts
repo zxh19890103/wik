@@ -1,8 +1,8 @@
 import { Mode } from '../../model/modes';
-import { HrMap } from '../basic';
+import { WikMap } from '../basic';
 
 export class EditMode extends Mode {
-  constructor(private map: HrMap) {
+  constructor(private map: WikMap) {
     super('interact');
   }
 

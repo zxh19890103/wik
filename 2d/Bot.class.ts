@@ -4,7 +4,7 @@ import { ImageLayer } from './basic';
 
 import {
   WithAnimate,
-  HrAnimation,
+  WikAnimation,
   TranslationAnimation,
   RotationAnimation,
   AnimationManager,
@@ -14,15 +14,25 @@ import {
 import { WithClone } from '../interfaces/WithClone';
 import { ImageManager } from './state';
 import Interfaces from '../interfaces/symbols';
+import { OnSelect } from '../interfaces/Interactive';
 
-export class Bot extends ImageLayer implements WithAnimate, WithClone {
+export class Bot extends ImageLayer implements WithAnimate, WithClone, OnSelect {
+  onSelect(data?: any) {
+    // throw new Error('Method not implemented.');
+    this.setAngle(45);
+  }
+  onUnSelect(state?: any, data?: any): void {
+    // throw new Error('Method not implemented.');
+    this.setAngle(0);
+  }
+
   @inject(Interfaces.IAnimationManager)
   readonly animationManager: AnimationManager = null;
   @inject(Interfaces.IImageManager)
   readonly imageManager: ImageManager = null;
   readonly anglePhase = 90;
 
-  currentAnimation: HrAnimation = null;
+  currentAnimation: WikAnimation = null;
 
   /**
    * @remove

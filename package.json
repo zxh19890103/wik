@@ -14,7 +14,7 @@
     "doc:gen": "cd document && yarn gen && cd .. && typedoc",
     "doc:dev": "cd document && yarn dev",
     "tsCheck": "tsc --noEmit",
-    "postdoc:gen": "node ./scripts/doc && vite --config vite.config.js build && scp -r document/dist/* hairou@172.20.8.54:/data/workspace/hrgui-doc",
+    "postdoc:gen": "node ./scripts/doc && vite --config vite.config.js build",
     "release": ""
   },
   "dependencies": {

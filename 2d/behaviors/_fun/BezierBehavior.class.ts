@@ -1,13 +1,13 @@
 import L from 'leaflet';
-import { IWarehouse, EssObjectType } from '../../../model';
+import { IWarehouse } from '../../../model';
 import { Behavior } from '../../../model/behaviors';
 import { appendAnimation, RotationAnimation, TranslationAnimation } from '../../animation';
 import { BezierTranslationAnimation } from '../../animation/BezierTranslationAnimation.class';
-import { HrMap } from '../../basic/Map.class';
+import { WikMap } from '../../basic/Map.class';
 import { Bot } from '../../Bot.class';
 
 export class BezierBehavior extends Behavior {
-  constructor(private map: HrMap, private wh: IWarehouse) {
+  constructor(private map: WikMap, private wh: IWarehouse) {
     super();
   }
 

@@ -3,7 +3,7 @@ import { LayerWithID } from '../../interfaces/WithLayerID';
 import { writeReadonlyProp } from '../../model/basic';
 import { inject } from '../../model/basic/inject';
 import { LayerList } from './LayerList.class';
-import { HrMap } from './Map.class';
+import { WikMap } from './Map.class';
 import { PaneManager, PaneName } from '../state/PaneManager.class';
 import { ReactSVGOverlayAppServer } from './ReactSVGOverlayApp';
 import * as Interface from '../../interfaces/symbols';
@@ -40,7 +40,7 @@ export class SVGOverlayList<M extends LayerWithID, E extends string = never> ext
     this.paneMgr.setZ(this.pane, z);
   }
 
-  override mount(parent: HrMap): void {
+  override mount(parent: WikMap): void {
     super.mount(parent);
     this.paneMgr.get(this.pane, 'none', _pane_z_seed++);
     this.svgServer.bootstrap(parent, this.pane);

@@ -1,6 +1,6 @@
 import L from 'leaflet';
 
-export class HrDraggable extends L.Draggable {
+export class WikDraggable extends L.Draggable {
   layer: L.Layer;
 
   constructor(element: HTMLElement, layer: L.Layer) {

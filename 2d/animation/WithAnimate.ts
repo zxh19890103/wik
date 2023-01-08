@@ -1,9 +1,9 @@
 import { ReactiveLayer } from '../../mixins/ReactiveLayer';
-import { HrAnimation } from './Animation.class';
+import { WikAnimation } from './Animation.class';
 import { AnimationManager } from './AnimationManager.class';
 
 export interface WithAnimate {
-  currentAnimation: HrAnimation;
+  currentAnimation: WikAnimation;
   animationManager: AnimationManager;
 
   /**
@@ -12,7 +12,7 @@ export interface WithAnimate {
   animate(type: string, ...args: any[]): this;
 }
 
-export function appendAnimation<A extends HrAnimation>(this: WithAnimate, a: A) {
+export function appendAnimation<A extends WikAnimation>(this: WithAnimate, a: A) {
   if (this.currentAnimation) {
     let tail = this.currentAnimation;
     while (tail.next) tail = tail.next;

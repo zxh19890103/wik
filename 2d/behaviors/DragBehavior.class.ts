@@ -1,10 +1,10 @@
 import { Behavior } from '../../model/behaviors/Behavior.class';
-import { HrMap } from '../basic';
+import { WikMap } from '../basic';
 
 export class DragBehavior extends Behavior {
   private isDraggable = false;
 
-  constructor(private map: HrMap) {
+  constructor(private map: WikMap) {
     super();
   }
 

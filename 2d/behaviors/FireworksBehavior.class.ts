@@ -3,7 +3,7 @@ import { IDisposable } from '../../interfaces/Disposable';
 import { Behavior } from '../../model/behaviors/Behavior.class';
 import { randomColor } from '../../utils';
 import { inject } from '../../model/basic/inject';
-import { HrMap } from '../basic';
+import { WikMap } from '../basic';
 import { PaneManager, PaneObject } from '../state';
 import * as Interface from '../../interfaces/symbols';
 
@@ -147,7 +147,7 @@ export class FireworksBehavior extends Behavior implements IDisposable {
 
   private pane: PaneObject = null;
 
-  constructor(private map: HrMap) {
+  constructor(private map: WikMap) {
     super();
   }
 

@@ -55,7 +55,7 @@ const loop = () => {
 - final 终态设置
 
 ```ts
-class OpacityAnimation extends HrAnimation {
+class OpacityAnimation extends WikAnimation {
   start() {
     this.N = 100;
   }

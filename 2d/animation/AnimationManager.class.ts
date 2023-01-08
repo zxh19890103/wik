@@ -1,6 +1,6 @@
 import { GlobalConstManager } from '../../model/state';
 import { inject, injectable } from '../../model/basic/inject';
-import { HrAnimation } from './Animation.class';
+import { WikAnimation } from './Animation.class';
 import { AnimationState } from './AnimationState.enum';
 import * as Interfaces from '../../interfaces/symbols';
 import { IDisposable } from '../../interfaces/Disposable';
@@ -18,7 +18,7 @@ export class AnimationManager implements IDisposable, WithInjector {
   readonly constantsManager: GlobalConstManager;
   readonly injector: IInjector;
 
-  private animations: HrAnimation[] = [];
+  private animations: WikAnimation[] = [];
   private state: AnimationManagerState = AnimationManagerState.idle;
 
   private isPageHidden = false;
@@ -41,7 +41,7 @@ export class AnimationManager implements IDisposable, WithInjector {
     document.removeEventListener('visibilitychange', this.onIsPageHiddenChange);
   }
 
-  add(animtion: HrAnimation) {
+  add(animtion: WikAnimation) {
     if (this.isPageHidden) {
       animtion.final();
       return;
@@ -80,7 +80,7 @@ export class AnimationManager implements IDisposable, WithInjector {
     /**
      * While the loop script takes long, user interactive will be blocked. What's the solution?
      */
-    for (let item: HrAnimation, i = 0; i < size; i += 1) {
+    for (let item: WikAnimation, i = 0; i < size; i += 1) {
       item = animations[i];
 
       switch (item.state) {
@@ -158,7 +158,7 @@ export class AnimationManager implements IDisposable, WithInjector {
     }
   }
 
-  end1(item: HrAnimation) {
+  end1(item: WikAnimation) {
     item.state = AnimationState.finished;
     item.m.currentAnimation = null;
     item.final();
@@ -169,7 +169,7 @@ export class AnimationManager implements IDisposable, WithInjector {
   }
 
   final() {
-    let iterator: HrAnimation = null;
+    let iterator: WikAnimation = null;
 
     for (const ani of this.animations) {
       iterator = ani;

@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import { Behavior } from '../../model/behaviors/Behavior.class';
 import { inject } from '../../model/basic/inject';
-import { HrMap } from '../basic';
+import { WikMap } from '../basic';
 import * as Interfaces from '../../interfaces/symbols';
 import { IWarehouse } from '../../model';
 import { PaneManager, PaneObject } from '../state';
@@ -19,7 +19,7 @@ export class RectDrawSelectBehavior extends Behavior {
 
   private pane: PaneObject;
 
-  constructor(private warehouse: IWarehouse, private map: HrMap) {
+  constructor(private warehouse: IWarehouse, private map: WikMap) {
     super();
   }
 

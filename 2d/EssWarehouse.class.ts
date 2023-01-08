@@ -10,7 +10,6 @@ import { Shelf } from './Shelf.class';
 import { IInjector } from '../interfaces/Injector';
 import { Warehouse } from './basic/Warehouse.class';
 import { EssObjectType } from '../model';
-import Interfaces from '../interfaces/symbols';
 
 export abstract class EssWarehouse<LayoutData = any, OT extends string = never> extends Warehouse<
   LayoutData,

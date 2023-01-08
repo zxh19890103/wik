@@ -1,13 +1,13 @@
 import L from 'leaflet';
 import { CubicBezierCurve, R2D, vector2rad } from '../../utils';
-import { HrAnimation, HrAnimationOptions } from './Animation.class';
+import { WikAnimation, WikAnimationOptions } from './Animation.class';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
-interface BezierTranslationAnimationOptions extends HrAnimationOptions {
+interface BezierTranslationAnimationOptions extends WikAnimationOptions {
   controls: L.LatLngLiteral[];
 }
 
-export class BezierTranslationAnimation extends HrAnimation<ReactiveLayerWithAnimate> {
+export class BezierTranslationAnimation extends WikAnimation<ReactiveLayerWithAnimate> {
   private path: L.LatLngLiteral[] = [];
 
   readonly options: BezierTranslationAnimationOptions;

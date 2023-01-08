@@ -1,7 +1,7 @@
 import L, { LatLng } from 'leaflet';
 import { Behavior } from '../../../model/behaviors';
 import { randomColor } from '../../../utils';
-import { HrMap } from '../../basic/Map.class';
+import { WikMap } from '../../basic/Map.class';
 
 const { random, PI, sin, cos, abs, sqrt, pow } = Math;
 const D2R = PI / 180;
@@ -152,7 +152,7 @@ export class GravityBehavior extends Behavior {
   private lastMoment: number = null;
   private star: L.Circle = null;
 
-  constructor(private map: HrMap) {
+  constructor(private map: WikMap) {
     super();
   }
 

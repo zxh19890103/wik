@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { HrMap } from './Map.class';
+import { WikMap } from './Map.class';
 import { IDisposable } from '../../interfaces/Disposable';
 import { LayerWithID } from '../../interfaces/WithLayerID';
 import { InteractiveStateActionManager } from '../../model/state';
@@ -34,7 +34,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
   readonly mounted = false;
 
   protected featureGroup: L.FeatureGroup = null;
-  readonly scene: HrMap = null;
+  readonly scene: WikMap = null;
 
   constructor(layers?: M[]) {
     super();
@@ -78,7 +78,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
     super._clear();
   }
 
-  mount(root: HrMap) {
+  mount(root: WikMap) {
     this.assign('scene', root);
     root.addLayer(this.featureGroup);
     this.assign('mounted', true);

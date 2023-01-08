@@ -1,4 +1,4 @@
-export class HrEvent<S = any, T = any> {
+export class WikEvent<S = any, T = any> {
   readonly type: string = null;
   readonly target: T = null;
   readonly source: S = null;

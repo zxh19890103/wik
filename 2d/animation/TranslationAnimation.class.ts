@@ -1,5 +1,5 @@
 import { LinearLine2D, R2D, vector2rad } from '../../utils';
-import { HrAnimation } from './Animation.class';
+import { WikAnimation } from './Animation.class';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
 /**
@@ -11,7 +11,7 @@ import { ReactiveLayerWithAnimate } from './WithAnimate';
 一般，这个可以配置
  */
 
-export class TranslationAnimation extends HrAnimation<ReactiveLayerWithAnimate> {
+export class TranslationAnimation extends WikAnimation<ReactiveLayerWithAnimate> {
   readonly value: { lat: number; lng: number };
   private linear: LinearLine2D;
 

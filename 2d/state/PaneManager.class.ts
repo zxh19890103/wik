@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { IDisposable } from '../../interfaces/Disposable';
 import { injectable } from '../../model/basic/inject';
 import { BUILTIN_LEAFLET_PANES } from '../basic/constants';
-import { HrMap } from '../basic/Map.class';
+import { WikMap } from '../basic/Map.class';
 
 /**
  * default z-index of built-in panes:
@@ -30,7 +30,7 @@ export interface PaneObject {
 
 @injectable()
 export class PaneManager implements IDisposable {
-  readonly map: HrMap;
+  readonly map: WikMap;
   private panesElement: HTMLDivElement;
   public readonly pool: Record<string, PaneObject> = {};
   private styleElement: HTMLStyleElement = null;

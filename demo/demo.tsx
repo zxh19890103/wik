@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import { useEffect, useRef, useState } from 'react';
-import { HrMap } from '../2d/basic/Map.class';
+import { WikMap } from '../2d/basic/Map.class';
 import './dev.scss';
 
 import * as hrGUI from '../2d';
@@ -16,7 +16,7 @@ L.Icon.Default.imagePath = 'http://wls.hairoutech.com:9100/fe-libs/leaflet-stati
 async function bootstrap(container: HTMLDivElement, initialData: any) {
   document.title = 'animation test.';
 
-  const root = new HrMap(container, { zoom: 1.5 });
+  const root = new WikMap(container, { zoom: 1.5 });
   const warehouse = rootInjector.$new<MyWarehouse>(MyWarehouse);
   warehouse.mount(root);
 

@@ -4,18 +4,18 @@ import { WithAnimate } from './WithAnimate';
 
 let __id_seed = 2023;
 
-export type HrAnimationValue = number | Record<string, number> | Array<number>;
-export type HrAnimationOptions = {
+export type WikAnimationValue = number | Record<string, number> | Array<number>;
+export type WikAnimationOptions = {
   delay?: number;
   duration?: number;
   [extra: string]: any;
 };
 
-export abstract class HrAnimation<M extends WithAnimate = WithAnimate> {
+export abstract class WikAnimation<M extends WithAnimate = WithAnimate> {
   readonly id = __id_seed++;
   readonly delay: number;
-  readonly options: HrAnimationOptions;
-  readonly value: HrAnimationValue;
+  readonly options: WikAnimationOptions;
+  readonly value: WikAnimationValue;
 
   state: AnimationState = AnimationState.init;
   addedAt = 0;
@@ -39,11 +39,11 @@ export abstract class HrAnimation<M extends WithAnimate = WithAnimate> {
   /**
    * next animation after this finished.
    */
-  next: HrAnimation = null;
+  next: WikAnimation = null;
 
   readonly globalConstMgr: GlobalConstManager = null;
 
-  constructor(public m: M, value: HrAnimationValue, options: HrAnimationOptions = {}) {
+  constructor(public m: M, value: WikAnimationValue, options: WikAnimationOptions = {}) {
     this.options = options;
     this.delay = options.delay || 0;
     this.duration = options.duration || null;

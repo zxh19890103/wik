@@ -30,7 +30,7 @@ export abstract class EmitterMix implements WithParent<EmitterMix> {
   __super__: any;
   $$parent: EmitterMix;
 
-  static event: HrEvent = null;
+  static event: WikEvent = null;
 
   noEmit = false;
 

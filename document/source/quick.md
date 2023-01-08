@@ -8,11 +8,11 @@ title: 快速入门
 因为依赖包在注册于私有仓，因此首先修改 registry，使用命令或者添加 `.npmrc` 文件，
 
 ```sh
-npm config set registry = 'http://172.18.81.191:10000/'
+npm config set registry = 'http://~:10000/'
 ```
 
 ```
-registry = 'http://172.18.81.191:10000/'
+registry = 'http://~:10000/'
 ```
 
 然后安装，使用 yarn 或者 npm，

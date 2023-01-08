@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import THREE from 'three';
-import { HrMap } from '../../2d/basic';
+import { WikMap } from '../../2d/basic';
 import { OrbitControls } from '../../3d/controls';
 import { IInjector } from '../../interfaces/Injector';
 import { IWarehouse } from '../../model';
@@ -47,7 +47,7 @@ const Warehouse = (props: Props) => {
   const { injector } = useContext(__world_context__);
 
   useEffect(() => {
-    const root = new HrMap(element.current);
+    const root = new WikMap(element.current);
     const warehouse = createWarehouse(injector, props.warehouse);
     warehouse?.mount(root);
     setValue({ ...value, warehouse });

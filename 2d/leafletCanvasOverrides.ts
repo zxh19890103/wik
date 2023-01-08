@@ -2,7 +2,7 @@ import L, { DomEvent } from 'leaflet';
 import { IDisposable } from '../interfaces/Disposable';
 import { IPaneManager } from '../interfaces/symbols';
 import { inject, injectable, writeReadonlyProp } from '../model/basic';
-import { HrMap } from './basic';
+import { WikMap } from './basic';
 import { PaneManager } from './state';
 
 // @see https://github.com/Leaflet/Leaflet/blob/main/src/layer/vector/Canvas.js
@@ -53,7 +53,7 @@ export class RenderersManager implements IDisposable {
   private renderersInOrder = [];
   private size = 0; // count of renderer
 
-  readonly map: HrMap;
+  readonly map: WikMap;
 
   constructor(private paneMgr: PaneManager) {}
 

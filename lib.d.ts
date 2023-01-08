@@ -1,6 +1,6 @@
 import { Renderer } from 'leaflet';
 import { EventEmitterStatic3 } from 'eventemitter3';
-// import { HrMap } from './2d/basic';
+import { WikMap } from './2d/basic';
 
 declare global {
   const __PROD__: boolean;
@@ -9,14 +9,14 @@ declare global {
 declare module 'leaflet' {
   interface Renderer {
     _container: HTMLCanvasElement;
-    _map: HrMap;
+    _map: WikMap;
     _onMouseMove(e): void;
     _handleMouseOut(e): void;
     _onClick(e): void;
   }
 
   interface Layer {
-    _mapToAdd: HrMap;
+    _mapToAdd: WikMap;
   }
 
   interface Canvas {

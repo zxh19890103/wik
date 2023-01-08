@@ -1,14 +1,12 @@
 import L from 'leaflet';
-import { HrDraggable } from './Draggable.class';
-import { HrMap } from './Map.class';
+import { WikDraggable } from './Draggable.class';
+import { WikMap } from './Map.class';
 import { EMPTY_BOUNDS } from './constants';
 import { leafletOptions } from '../../utils/leaflet';
 import { alias, mix } from '../../model/basic/mixin';
 import { ReactiveLayer } from '../../mixins/ReactiveLayer';
 import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
 import { ReactiveLayerRenderEffect } from '../../mixins/effects';
-import { WithLayerState } from '../../interfaces/WithLayerState';
-import { SimpleObject } from '../../interfaces/types';
 
 @leafletOptions<L.ImageOverlayOptions>({
   interactive: true,
@@ -152,14 +150,14 @@ export class SVGOverlay extends mix(L.SVGOverlay).with<L.SVGOverlay, ReactiveLay
 }
 
 export interface SVGOverlay {
-  _map: HrMap;
+  _map: WikMap;
   /**
    * world bounds.
    */
   _bounds: L.LatLngBounds;
   _fromBoundsMark: L.Rectangle;
   _image: HTMLElement;
-  dragging: HrDraggable;
+  dragging: WikDraggable;
 
   redraw: () => void;
 }

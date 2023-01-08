@@ -1,13 +1,13 @@
 import L from 'leaflet';
 import { Behavior } from '../../../model/behaviors/Behavior.class';
-import { HrMap } from '../../basic';
+import { WikMap } from '../../basic';
 
 export class WaterDropBehavior extends Behavior {
   private cirlce: L.Circle = null;
   private trace: L.Polyline = null;
   private path: L.LatLng[] = [];
 
-  constructor(private map: HrMap) {
+  constructor(private map: WikMap) {
     super();
   }
 
