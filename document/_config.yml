@@ -6,13 +6,13 @@ public_dir: dist
 theme: hr
 version: 1.0.5
 menu:
-  - text: 简介
+  - text: Intro
     path: /
-  - text: 入门
+  - text: Quick
     path: /quick.html
-  - text: 教程
+  - text: Guides
     path: /guides
-  - text: 博客
+  - text: Posts
     path: /posts.html
   - text: API
     path: /api.html

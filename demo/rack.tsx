@@ -1,13 +1,10 @@
 import L from 'leaflet';
-import THREE, { MeshPhongMaterial } from 'three';
-import { EssWarehouse } from '../2d';
 import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../2d/basic';
 import { inject, provides, View } from '../model/basic';
 import Interface from '../interfaces/symbols';
 import { Warehouse3D } from '../3d/Warehouse.class';
 import './ioc.config';
 import * as wik from '../dom/general';
-import * as model2d from '../2d';
 import * as model3d from '../3d';
 import { Object3DList } from '../3d/Object3DList.class';
 import { IInjector } from '../interfaces/Injector';
@@ -15,11 +12,8 @@ import * as meta from '../model/meta';
 import { useEffect, useState } from 'react';
 import * as model from '../model';
 import { __batched_fires__ } from '../mixins/Emitter';
-import { IWarehouse } from '../model';
 import { PointView } from '../model/PointView';
-import { ContextMenuItem } from '../interfaces/types';
-import { OnContextMenu, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
-import { MvMappings, ObjectSelectProps } from '../dom/general';
+import { ObjectSelectProps } from '../dom/general';
 import { WithWarehouseRef } from '../model/IWarehouseObjectList';
 import { queueTask } from '../utils';
 
@@ -177,20 +171,6 @@ export default () => {
       >
         <wik.ViewSet3D type="rack" model={state.dots} />
       </wik.Warehouse3D>
-      <wik.SelectShell w={300}>
-        <Aside C={model3d.InstancePack}>
-          <button
-            onClick={() => {
-              const dot = state.dots.create();
-              dot.px = Math.random() * 3000;
-              dot.py = Math.random() * 3000;
-              dot.pz = 0;
-            }}
-          >
-            add
-          </button>
-        </Aside>
-      </wik.SelectShell>
     </wik.World>
   );
 };
