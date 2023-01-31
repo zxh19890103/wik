@@ -30,7 +30,10 @@ jobs:
     steps:
       - name: Install And Generate Doc
         run: |
-          yarn && cd document && yarn && cd ..
+          yarn
+          cd document
+          yarn
+          cd ..
           yarn doc:gen
       - name: Checkout
         uses: actions/checkout@v3
