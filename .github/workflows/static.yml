@@ -31,7 +31,7 @@ jobs:
       - name: Install And Generate Doc
         run: |
           yarn
-          cd document
+          cd ./document
           yarn
           cd ..
           yarn doc:gen
