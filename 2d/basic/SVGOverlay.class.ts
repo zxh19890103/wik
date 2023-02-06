@@ -117,9 +117,9 @@ export class SVGOverlay extends mix(L.SVGOverlay).with<L.SVGOverlay, ReactiveLay
     this.redraw();
   }
 
-  getCenter() {
-    return this._bounds.getCenter();
-  }
+  // getCenter() {
+  //   return this._bounds.getCenter();
+  // }
 
   /**
    *

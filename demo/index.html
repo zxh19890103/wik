@@ -1,50 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Warehouse demo</title>
 
-    <link
-      rel="stylesheet"
-      href="http://wls.hairoutech.com:9100/fe-libs/leaflet/1.8.0/leaflet.min.css"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warehouse demo</title>
 
-    <!-- https://unpkg.com/browse/three@0.143.0/examples/jsm/ -->
-    <script
-      src="http://wls.hairoutech.com:9100/fe-libs/three/0.144.0/three.min.js"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+  <style>
+    body,
+    html {
+      padding: 0;
+      margin: 0
+    }
 
-    <script
-      src="http://wls.hairoutech.com:9100/fe-libs/leaflet/1.8.0/leaflet.min.js"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+    body {
+      background-color: aquamarine;
+      min-height: 100vh;
+    }
+  </style>
 
-    <script
-      src="http://wls.hairoutech.com:9100/fe-libs/react/17.0.1/react.development.js"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.css" />
 
-    <script
-      src="http://wls.hairoutech.com:9100/fe-libs/react-dom/17.0.1/react-dom.development.js"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+  <!-- https://unpkg.com/browse/three@0.143.0/examples/jsm/ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.143.0/three.min.js"></script>
 
-    <script>
-      window.__ROUTE__ = new URLSearchParams(location.search).get('route');
-    </script>
-  </head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.min.js"></script>
 
-  <body class="root">
-    <div id="app"></div>
-    <script type="module" src="./index.tsx"></script>
-  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+
+  <script>
+    window.__ROUTE__ = new URLSearchParams(location.search).get('route');
+  </script>
+</head>
+
+<body class="root">
+  <div id="app"></div>
+  <script type="module" src="./index.tsx"></script>
+</body>
+
 </html>

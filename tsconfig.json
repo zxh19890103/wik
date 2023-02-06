@@ -28,5 +28,5 @@
     "declarationMap": false,
     "typeRoots": ["./node_modules/@types"]
   },
-  "exclude": ["node_modules", "**/*.spec.ts", "**/*.js", "**/dist", "**/doc"]
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.js", "**/dist", "**/doc", "**/demo"]
 }

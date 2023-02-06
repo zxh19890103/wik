@@ -14,7 +14,6 @@
     "doc:gen": "cd document && yarn gen && cd .. && typedoc",
     "doc:dev": "cd document && yarn dev",
     "tsCheck": "tsc --noEmit",
-    "postdoc:gen": "node ./scripts/doc && vite --config vite.config.js build",
     "release": ""
   },
   "dependencies": {
@@ -43,7 +42,7 @@
     "typedoc-theme-hierarchy": "^3.0.0",
     "typescript": "^4.8.2",
     "vite": "^3.0.9",
-    "vite-plugin-externals": "^0.5.1",
+    "vite-plugin-externals": "^0.6.2",
     "vitest": "^0.24.3"
   }
 }
