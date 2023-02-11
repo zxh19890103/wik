@@ -32,7 +32,7 @@ export class InstancePack
       new THREE.MeshPhongMaterial({
         color: 0xf09812,
         transparent: true,
-        opacity: 0.86,
+        opacity: 0.89,
       }),
       limit,
     );

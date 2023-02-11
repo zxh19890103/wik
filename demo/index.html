@@ -5,40 +5,29 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Warehouse demo</title>
-
+  <title>Wik Demo</title>
   <style>
-    body,
-    html {
-      padding: 0;
-      margin: 0
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
-    body {
-      background-color: aquamarine;
-      min-height: 100vh;
+    ul {
+      display: block;
+      font-size: 2rem;
     }
   </style>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.css" />
-
-  <!-- https://unpkg.com/browse/three@0.143.0/examples/jsm/ -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.143.0/three.min.js"></script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.min.js"></script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-
-  <script>
-    window.__ROUTE__ = new URLSearchParams(location.search).get('route');
-  </script>
 </head>
 
 <body class="root">
-  <div id="app"></div>
-  <script type="module" src="./index.tsx"></script>
+  <ul>
+    <li><a href="./2d.html?route=minimal">Minimal</a></li>
+    <li><a href="./2d.html?route=general">General</a></li>
+    <li><a href="./3d.html?route=rack">Rack</a></li>
+  </ul>
 </body>
 
 </html>

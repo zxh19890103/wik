@@ -1,0 +1,30 @@
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Microsoft Yahei, Arial, Hiragino Sans GB, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  background: white;
+}
+
+#app {
+  height: 100%;
+}
+
+.App {
+  height: 100%;
+  &__topbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    a {
+      color: #999;
+    }
+  }
+}
