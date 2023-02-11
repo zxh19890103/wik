@@ -1,5 +1,5 @@
 import { memo, useContext, useEffect } from 'react';
-import { type InstancedMesh } from '../3d/basic';
+import { type InstancedMesh } from '@/3d/basic';
 import { ViewProps } from './interface';
 import { __warehouse_context__ } from './WarehouseContext';
 

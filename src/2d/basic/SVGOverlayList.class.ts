@@ -1,12 +1,12 @@
 import L from 'leaflet';
-import { LayerWithID } from '../../interfaces/WithLayerID';
-import { writeReadonlyProp } from '../../model/basic';
-import { inject } from '../../model/basic/inject';
+import { LayerWithID } from '@/interfaces/WithLayerID';
+import { writeReadonlyProp } from '@/model/basic';
+import { inject } from '@/model/basic/inject';
 import { LayerList } from './LayerList.class';
 import { WikMap } from './Map.class';
 import { PaneManager, PaneName } from '../state/PaneManager.class';
 import { ReactSVGOverlayAppServer } from './ReactSVGOverlayApp';
-import * as Interface from '../../interfaces/symbols';
+import * as Interface from '@/interfaces/symbols';
 
 export class SVGOverlayList<M extends LayerWithID, E extends string = never> extends LayerList<
   M,

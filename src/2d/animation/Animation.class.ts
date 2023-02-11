@@ -1,4 +1,4 @@
-import { GlobalConstManager } from '../../model/state';
+import { GlobalConstManager } from '@/model/state';
 import { AnimationState } from './AnimationState.enum';
 import { WithAnimate } from './WithAnimate';
 

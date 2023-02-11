@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { WikMap } from '../2d/basic';
+import { WikMap } from '@/2d/basic';
 import { SelectionContext } from './useSelection';
 import { Modes } from './Select';
 import { __world_context__ } from './World';

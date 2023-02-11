@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
-import { EmitterMix, WithEmitter } from '../../mixins/Emitter';
+import { EmitterMix, WithEmitter } from '@/mixins/Emitter';
 import { IList } from './IList';
 import { mixin } from './mixin';
 

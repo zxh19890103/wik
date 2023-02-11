@@ -1,4 +1,4 @@
-import { queueTask } from '../../utils';
+import { queueTask } from '@/utils';
 
 /**
  *

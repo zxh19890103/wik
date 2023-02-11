@@ -1,10 +1,10 @@
-import { GlobalConstManager } from '../../model/state';
-import { inject, injectable } from '../../model/basic/inject';
+import { GlobalConstManager } from '@/model/state';
+import { inject, injectable } from '@/model/basic/inject';
 import { WikAnimation } from './Animation.class';
 import { AnimationState } from './AnimationState.enum';
-import * as Interfaces from '../../interfaces/symbols';
-import { IDisposable } from '../../interfaces/Disposable';
-import { IInjector, WithInjector } from '../../interfaces/Injector';
+import * as Interfaces from '@/interfaces/symbols';
+import { IDisposable } from '@/interfaces/Disposable';
+import { IInjector, WithInjector } from '@/interfaces/Injector';
 
 export enum AnimationManagerState {
   idle = 0,

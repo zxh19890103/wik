@@ -1,4 +1,4 @@
-import { toCapital } from '../../utils';
+import { toCapital } from '@/utils';
 import { Base } from './Base.class';
 import { writeReadonlyProp } from './mixin';
 

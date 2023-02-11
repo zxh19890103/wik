@@ -1,10 +1,10 @@
 import L from 'leaflet';
-import { GraphicObject } from '../../interfaces/GraghicObject';
-import { Interactive } from '../../interfaces/Interactive';
-import { ContextMenuItem } from '../../interfaces/types';
-import { ReactiveLayer } from '../../mixins/ReactiveLayer';
-import { IWarehouse } from '../../model';
-import { Behavior } from '../../model/behaviors';
+import { GraphicObject } from '@/interfaces/GraghicObject';
+import { Interactive } from '@/interfaces/Interactive';
+import { ContextMenuItem } from '@/interfaces/types';
+import { ReactiveLayer } from '@/mixins/ReactiveLayer';
+import { IWarehouse } from '@/model';
+import { Behavior } from '@/model/behaviors';
 import { WikMap } from '../basic';
 
 /**

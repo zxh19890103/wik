@@ -10,10 +10,11 @@ export default {
   root: './src',
   build: {
     ...configBase.build,
+    minify: false,
     lib: {
       name: 'wik',
       entry: './index.ts',
-      formats: ['es', 'umd'],
+      formats: ['umd'],
       fileName: 'index',
     },
     outDir: path.resolve('./', tsConfig.compilerOptions.outDir),

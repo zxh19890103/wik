@@ -1,5 +1,5 @@
-import { Interactive } from '../../interfaces/Interactive';
-import { IStateAction } from '../../interfaces/StateAction';
+import { Interactive } from '@/interfaces/Interactive';
+import { IStateAction } from '@/interfaces/StateAction';
 import { StateActionBase } from './StateAction.class';
 
 const noop = () => null;

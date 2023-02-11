@@ -1,6 +1,6 @@
-import { IStateAction, IStateActionManager } from '../../interfaces/StateAction';
+import { IStateAction, IStateActionManager } from '@/interfaces/StateAction';
 import { alias, injectable, writeProp } from '../basic';
-import * as Interfaces from '../../interfaces/symbols';
+import * as Interfaces from '@/interfaces/symbols';
 
 @alias('pop', 'undo')
 @injectable({ providedIn: 'root', provide: Interfaces.IRedoUndoManager })

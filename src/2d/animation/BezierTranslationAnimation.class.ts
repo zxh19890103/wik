@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { CubicBezierCurve, R2D, vector2rad } from '../../utils';
+import { CubicBezierCurve, R2D, vector2rad } from '@/utils';
 import { WikAnimation, WikAnimationOptions } from './Animation.class';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 

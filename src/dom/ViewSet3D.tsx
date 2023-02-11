@@ -1,5 +1,5 @@
 import { memo, useContext, useEffect, useState } from 'react';
-import { InstancedMesh } from '../3d/basic';
+import { InstancedMesh } from '@/3d/basic';
 import { IList } from '../model/basic';
 import { InstancedView } from './InstancedView';
 import { ViewSetProps } from './interface';

@@ -1,4 +1,4 @@
-import { IBehavior, IMode, IModeManager } from '../../interfaces/Mode';
+import { IBehavior, IMode, IModeManager } from '@/interfaces/Mode';
 
 export class Mode implements IMode {
   readonly name: string;

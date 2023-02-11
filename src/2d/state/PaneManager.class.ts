@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import { IDisposable } from '../../interfaces/Disposable';
-import { injectable } from '../../model/basic/inject';
+import { IDisposable } from '@/interfaces/Disposable';
+import { injectable } from '@/model/basic/inject';
 import { BUILTIN_LEAFLET_PANES } from '../basic/constants';
 import { WikMap } from '../basic/Map.class';
 

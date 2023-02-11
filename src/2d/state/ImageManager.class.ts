@@ -1,6 +1,6 @@
-import { IDisposable } from '../../interfaces/Disposable';
-import { injectable } from '../../model/basic/inject';
-import { createOffscreenCanvas } from '../../utils';
+import { IDisposable } from '@/interfaces/Disposable';
+import { injectable } from '@/model/basic/inject';
+import { createOffscreenCanvas } from '@/utils';
 
 @injectable()
 export class ImageManager implements IDisposable {

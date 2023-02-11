@@ -1,15 +1,30 @@
 {
   "$schema": "https://typedoc.org/schema.json",
   "name": "Graphic Library Documentation",
-  "entryPoints": ["2d", "3d", "dom", "interfaces", "mixins", "model", "utils"],
-  "exclude": ["demo"],
+  "entryPoints": [
+    "src/2d",
+    "src/3d",
+    "src/dom",
+    "src/interfaces",
+    "src/mixins",
+    "src/model",
+    "src/utils"
+  ],
+  "exclude": [
+    "demo"
+  ],
   "entryPointStrategy": "expand",
   "out": "document/dist/referrences",
   "theme": "default",
   "customCss": "./document/themes/typedoc/custom.css",
-  "externalPattern": ["**/node_modules/**/*"],
+  "externalPattern": [
+    "**/node_modules/**/*"
+  ],
   "includeVersion": true,
   "excludeExternals": true,
   "cleanOutputDir": true,
-  "plugin": ["typedoc-plugin-missing-exports", "typedoc-theme-hierarchy"]
+  "plugin": [
+    "typedoc-plugin-missing-exports",
+    "typedoc-theme-hierarchy"
+  ]
 }

@@ -1,21 +1,21 @@
 import L from 'leaflet';
-import { ReactiveLayer } from '../../mixins/ReactiveLayer';
-import { Interactive, OnInteractive } from '../../interfaces/Interactive';
-import { inject, mix, writeReadonlyProp } from '../../model/basic';
-import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
+import { ReactiveLayer } from '@/mixins/ReactiveLayer';
+import { Interactive, OnInteractive } from '@/interfaces/Interactive';
+import { inject, mix, writeReadonlyProp } from '@/model/basic';
+import { ReactiveLayerMixin } from '@/mixins/ReactiveLayer.mixin';
 import { PaneManager, PaneName, PaneObject } from '../state';
-import { InteractiveStateActionManager } from '../../model/state';
+import { InteractiveStateActionManager } from '@/model/state';
 import {
   IModeManager,
   IPaneManager,
   IRendererManager,
   IStateActionManager,
-} from '../../interfaces/symbols';
-import { leafletOptions } from '../../utils';
+} from '@/interfaces/symbols';
+import { leafletOptions } from '@/utils';
 import { RenderersManager } from '../leafletCanvasOverrides';
-import { ModeManager } from '../../model/modes';
-import { ContextMenuItem } from '../../interfaces/types';
-import { WithClickCancel } from '../../mixins/ClickCancel';
+import { ModeManager } from '@/model/modes';
+import { ContextMenuItem } from '@/interfaces/types';
+import { WithClickCancel } from '@/mixins/ClickCancel';
 
 const leafletEvent2OnCallback = {
   click: 'onClick',

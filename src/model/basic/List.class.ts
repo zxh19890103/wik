@@ -1,6 +1,6 @@
-import { Constructor, ConstructorOrFactory, Factory } from '../../interfaces/Constructor';
-import { Serializable } from '../../interfaces/Serializable';
-import { isClass } from '../../utils';
+import { Constructor, ConstructorOrFactory, Factory } from '@/interfaces/Constructor';
+import { Serializable } from '@/interfaces/Serializable';
+import { isClass } from '@/utils';
 import { Base } from './Base.class';
 import { CoreList } from './Core.class';
 

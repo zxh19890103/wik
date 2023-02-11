@@ -1,7 +1,7 @@
 import L from 'leaflet';
-import { Behavior } from '../../model/behaviors/Behavior.class';
+import { Behavior } from '@/model/behaviors/Behavior.class';
 import { WikMap } from '../basic';
-import { IWarehouse } from '../../model';
+import { IWarehouse } from '@/model';
 import { PaneObject } from '../state';
 
 export class SpaceDragBehavior extends Behavior {

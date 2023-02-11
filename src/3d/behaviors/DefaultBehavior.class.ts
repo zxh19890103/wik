@@ -1,9 +1,9 @@
-import { Behavior } from '../../model/behaviors';
-import { inject } from '../../model/basic/inject';
-import Interface from '../../interfaces/symbols';
-import { InteractiveStateActionManager } from '../../model/state';
+import { Behavior } from '@/model/behaviors';
+import { inject } from '@/model/basic/inject';
+import Interface from '@/interfaces/symbols';
+import { InteractiveStateActionManager } from '@/model/state';
 import { InteractiveObject3D } from '../IInteractive3D';
-import { ISelectionManager } from '../../interfaces/Selection';
+import { ISelectionManager } from '@/interfaces/Selection';
 
 export class DefaultBehavior extends Behavior {
   @inject(Interface.ISelectionManager)

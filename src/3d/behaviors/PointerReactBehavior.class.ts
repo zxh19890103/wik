@@ -1,5 +1,5 @@
 import THREE from 'three';
-import { Behavior } from '../../model/behaviors';
+import { Behavior } from '@/model/behaviors';
 import { InstancedMesh } from '../basic';
 import { Warehouse3D } from '../Warehouse.class';
 

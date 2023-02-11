@@ -1,4 +1,4 @@
-import { Behavior } from '../../model/behaviors/Behavior.class';
+import { Behavior } from '@/model/behaviors/Behavior.class';
 import { WikMap } from '../basic';
 
 export class DragBehavior extends Behavior {

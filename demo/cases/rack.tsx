@@ -1,20 +1,20 @@
-import { configProviders, inject, List, provides, View } from '../../src/model/basic';
-import Interface from '../../src/interfaces/symbols';
-import { Warehouse3D } from '../../src/3d/Warehouse.class';
+import { configProviders, inject, List, provides, View } from '@/model/basic';
+import Interface from '@/interfaces/symbols';
+import { Warehouse3D } from '@/3d/Warehouse.class';
 
-import * as model3d from '../../src/3d';
-import { Object3DList } from '../../src/3d/Object3DList.class';
-import { IInjector } from '../../src/interfaces/Injector';
-import * as meta from '../../src/model/meta';
+import * as model3d from '@/3d';
+import { Object3DList } from '@/3d/Object3DList.class';
+import { IInjector } from '@/interfaces/Injector';
+import * as meta from '@/model/meta';
 import { useEffect, useState } from 'react';
-import { __batched_fires__ } from '../../src/mixins/Emitter';
-import { PointView } from '../../src/model/PointView';
-import { WithWarehouseRef } from '../../src/model/IWarehouseObjectList';
-import { queueTask } from '../../src/utils/queueTask';
-import * as Interfaces from '../../src/interfaces/symbols';
+import { __batched_fires__ } from '@/mixins/Emitter';
+import { PointView } from '@/model/PointView';
+import { WithWarehouseRef } from '@/model/IWarehouseObjectList';
+import { queueTask } from '@/utils/queueTask';
+import * as Interfaces from '@/interfaces/symbols';
 
-import * as wik from '../../src/dom/3d';
-import * as model from '../../src/model';
+import * as wik from '@/dom/3d';
+import * as model from '@/model';
 
 configProviders('root', {
   [Interfaces.IGlobalConstManager]: model.state.GlobalConstManager,

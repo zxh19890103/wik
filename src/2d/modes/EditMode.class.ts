@@ -1,4 +1,4 @@
-import { Mode } from '../../model/modes';
+import { Mode } from '@/model/modes';
 import { WikMap } from '../basic';
 
 export class EditMode extends Mode {

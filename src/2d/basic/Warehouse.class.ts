@@ -1,29 +1,25 @@
 import L from 'leaflet';
-import { LayerWithID } from '../../interfaces/WithLayerID';
-import { IWarehouse, IWarehouseOptional, ListCtorArgs } from '../../model';
-import { ModeManager } from '../../model/modes';
-import { ConfigProviderConfigValue, Core } from '../../model/basic';
-import { event2behavior, GlobalConstManager } from '../../model/state';
+import { LayerWithID } from '@/interfaces/WithLayerID';
+import { IWarehouse, IWarehouseOptional, ListCtorArgs } from '@/model';
+import { ModeManager } from '@/model/modes';
+import { ConfigProviderConfigValue, Core } from '@/model/basic';
+import { event2behavior, GlobalConstManager } from '@/model/state';
 import { WikMap, LayerList, SVGOverlayList, VectorLayerList } from '.';
 import { RenderersManager } from '../leafletCanvasOverrides';
 
-import { inject } from '../../model/basic/inject';
-import Interfaces from '../../interfaces/symbols';
+import { inject } from '@/model/basic/inject';
+import Interfaces from '@/interfaces/symbols';
 import * as behaviors from '../behaviors';
-import { GraphicObject } from '../../interfaces/GraghicObject';
-import { IBehavior } from '../../interfaces/Mode';
-import { IInjector } from '../../interfaces/Injector';
-import { tryInvokingOwn } from '../../utils';
+import { GraphicObject } from '@/interfaces/GraghicObject';
+import { IBehavior } from '@/interfaces/Mode';
+import { IInjector } from '@/interfaces/Injector';
+import { tryInvokingOwn } from '@/utils';
 
 import { AnimationManager } from '../animation/AnimationManager.class';
 import { ImageManager, PaneManager } from '../state';
-import {
-  SelectionManager,
-  HighlightManager,
-  InteractiveStateActionManager,
-} from '../../model/state';
-import { ILogger } from '../../interfaces/Logger';
-import { WikEvent } from '../../model/basic/Event.class';
+import { SelectionManager, HighlightManager, InteractiveStateActionManager } from '@/model/state';
+import { ILogger } from '@/interfaces/Logger';
+import { WikEvent } from '@/model/basic/Event.class';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 

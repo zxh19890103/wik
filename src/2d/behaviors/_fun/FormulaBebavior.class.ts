@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import { IWarehouse, EssObjectType } from '../../../model';
-import { Behavior } from '../../../model/behaviors';
+import { IWarehouse, EssObjectType } from '../@/model';
+import { Behavior } from '../@/model/behaviors';
 import { WikMap } from '../../basic/Map.class';
 
 const scale = 1000;

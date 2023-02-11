@@ -1,4 +1,4 @@
-import { ReactiveLayer } from '../../mixins/ReactiveLayer';
+import { ReactiveLayer } from '@/mixins/ReactiveLayer';
 import { WikAnimation } from './Animation.class';
 import { AnimationManager } from './AnimationManager.class';
 

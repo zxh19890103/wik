@@ -1,5 +1,5 @@
-import { GraphicObject } from '../../interfaces/GraghicObject';
-import { IBehavior } from '../../interfaces/Mode';
+import { GraphicObject } from '@/interfaces/GraghicObject';
+import { IBehavior } from '@/interfaces/Mode';
 
 export abstract class Behavior implements IBehavior {
   abstract onLoad(): void;

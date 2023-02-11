@@ -1,5 +1,5 @@
 import { memo, useContext, useEffect, useState } from 'react';
-import { LayerList } from '../2d/basic';
+import { LayerList } from '@/2d/basic';
 import { LayerWithID } from '../interfaces/WithLayerID';
 import { IList } from '../model/basic';
 import { ViewSetProps } from './interface';

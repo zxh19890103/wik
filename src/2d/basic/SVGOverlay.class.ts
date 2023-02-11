@@ -2,11 +2,11 @@ import L from 'leaflet';
 import { WikDraggable } from './Draggable.class';
 import { WikMap } from './Map.class';
 import { EMPTY_BOUNDS } from './constants';
-import { leafletOptions } from '../../utils/leaflet';
-import { alias, mix } from '../../model/basic/mixin';
-import { ReactiveLayer } from '../../mixins/ReactiveLayer';
-import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
-import { ReactiveLayerRenderEffect } from '../../mixins/effects';
+import { leafletOptions } from '@/utils/leaflet';
+import { alias, mix } from '@/model/basic/mixin';
+import { ReactiveLayer } from '@/mixins/ReactiveLayer';
+import { ReactiveLayerMixin } from '@/mixins/ReactiveLayer.mixin';
+import { ReactiveLayerRenderEffect } from '@/mixins/effects';
 
 @leafletOptions<L.ImageOverlayOptions>({
   interactive: true,

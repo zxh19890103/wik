@@ -1,16 +1,16 @@
 import L from 'leaflet';
 import { WikMap } from './Map.class';
-import { IDisposable } from '../../interfaces/Disposable';
-import { LayerWithID } from '../../interfaces/WithLayerID';
-import { InteractiveStateActionManager } from '../../model/state';
-import { inject } from '../../model/basic/inject';
-import { WithClickCancel } from '../../mixins/ClickCancel';
-import { IInjector, WithInjector } from '../../interfaces/Injector';
-import { IWarehouse } from '../../model';
-import { CoreList } from '../../model/basic/Core.class';
-import { IWarehouseObjectList } from '../../model/IWarehouseObjectList';
-import { writeProp, writeReadonlyProp } from '../../model/basic';
-import Interface from '../../interfaces/symbols';
+import { IDisposable } from '@/interfaces/Disposable';
+import { LayerWithID } from '@/interfaces/WithLayerID';
+import { InteractiveStateActionManager } from '@/model/state';
+import { inject } from '@/model/basic/inject';
+import { WithClickCancel } from '@/mixins/ClickCancel';
+import { IInjector, WithInjector } from '@/interfaces/Injector';
+import { IWarehouse } from '@/model';
+import { CoreList } from '@/model/basic/Core.class';
+import { IWarehouseObjectList } from '@/model/IWarehouseObjectList';
+import { writeProp, writeReadonlyProp } from '@/model/basic';
+import Interface from '@/interfaces/symbols';
 
 type LayerListEventType =
   | 'click'

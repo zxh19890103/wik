@@ -1,9 +1,9 @@
 import L from 'leaflet';
-import { mix } from '../../model/basic';
-import { boundToLatLngs, createOffscreenCanvas, D2R, leafletOptions, mapLatLng } from '../../utils';
-import { ReactiveLayer } from '../../mixins/ReactiveLayer';
-import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
-import { Constructor } from '../../interfaces/Constructor';
+import { mix } from '@/model/basic';
+import { boundToLatLngs, createOffscreenCanvas, D2R, leafletOptions, mapLatLng } from '@/utils';
+import { ReactiveLayer } from '@/mixins/ReactiveLayer';
+import { ReactiveLayerMixin } from '@/mixins/ReactiveLayer.mixin';
+import { Constructor } from '@/interfaces/Constructor';
 import { DEFAULT_PATH_STYLE } from './constants';
 
 export type ImageLayerDataSource = HTMLImageElement | HTMLCanvasElement;

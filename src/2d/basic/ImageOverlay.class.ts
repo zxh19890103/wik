@@ -1,8 +1,8 @@
 import L from 'leaflet';
-import { ReactiveLayer } from '../../mixins/ReactiveLayer';
-import { ReactiveLayerMixin } from '../../mixins/ReactiveLayer.mixin';
-import { alias, mix } from '../../model/basic';
-import { leafletOptions } from '../../utils';
+import { ReactiveLayer } from '@/mixins/ReactiveLayer';
+import { ReactiveLayerMixin } from '@/mixins/ReactiveLayer.mixin';
+import { alias, mix } from '@/model/basic';
+import { leafletOptions } from '@/utils';
 import { EMPTY_BOUNDS } from './constants';
 
 @leafletOptions<L.ImageOverlayOptions>({

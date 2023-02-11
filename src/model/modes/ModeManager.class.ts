@@ -1,5 +1,5 @@
-import { IInjector, WithInjector } from '../../interfaces/Injector';
-import { BehaviorCallback, IBehavior, IMode, IModeManager } from '../../interfaces/Mode';
+import { IInjector, WithInjector } from '@/interfaces/Injector';
+import { BehaviorCallback, IBehavior, IMode, IModeManager } from '@/interfaces/Mode';
 import { Core, writeReadonlyProp } from '../basic';
 import { injectable } from '../basic/inject';
 import { Behavior } from '../behaviors';

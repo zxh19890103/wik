@@ -1,7 +1,7 @@
-import { Interactive } from '../../interfaces/Interactive';
-import { ISelectionManager } from '../../interfaces/Selection';
+import { Interactive } from '@/interfaces/Interactive';
+import { ISelectionManager } from '@/interfaces/Selection';
 import { InteractiveStateActionManager } from './InteractiveStateActionManager.class';
-import * as Interface from '../../interfaces/symbols';
+import * as Interface from '@/interfaces/symbols';
 import { Core, inject, injectable } from '../basic';
 
 type SelectionManagerEventType = 'item' | 'items';

@@ -1,5 +1,5 @@
 import THREE from 'three';
-import * as meta from '../../model/meta';
+import * as meta from '@/model/meta';
 import { InstanceMeshInstance } from '../IInteractive3D';
 
 const _color = new THREE.Color();

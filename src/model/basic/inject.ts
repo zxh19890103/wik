@@ -1,5 +1,5 @@
-import { Constructor, AbstractConstructor } from '../../interfaces/Constructor';
-import { queueTask } from '../../utils';
+import { Constructor, AbstractConstructor } from '@/interfaces/Constructor';
+import { queueTask } from '@/utils';
 import {
   InjectDecratorArgs,
   TokenGraphNode,

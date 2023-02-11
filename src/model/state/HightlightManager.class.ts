@@ -1,8 +1,8 @@
-import { IHighlightManager } from '../../interfaces/Highlight';
-import { Interactive } from '../../interfaces/Interactive';
+import { IHighlightManager } from '@/interfaces/Highlight';
+import { Interactive } from '@/interfaces/Interactive';
 import { InteractiveStateActionManager } from './InteractiveStateActionManager.class';
 import { inject, injectable } from '../basic/inject';
-import Interface from '../../interfaces/symbols';
+import Interface from '@/interfaces/symbols';
 
 @injectable()
 export class HighlightManager implements IHighlightManager {

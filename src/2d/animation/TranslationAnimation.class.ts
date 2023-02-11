@@ -1,4 +1,4 @@
-import { LinearLine2D, R2D, vector2rad } from '../../utils';
+import { LinearLine2D, R2D, vector2rad } from '@/utils';
 import { WikAnimation } from './Animation.class';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 
