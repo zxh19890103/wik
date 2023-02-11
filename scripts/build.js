@@ -10,6 +10,7 @@ const tsConfig = require('../tsconfig.prod.json');
 
 const rootPath = join(__dirname, '../');
 const npmPath = join(__dirname, '../.npm');
+const srcPath = join(__dirname, '../src');
 
 const distPath = join(rootPath, tsConfig.compilerOptions.outDir);
 const pubPkg = require(join(npmPath, './package.json'));
@@ -32,19 +33,22 @@ const pre = () => {
 const post = () => {
   // package file
   pubPkg.version = devPkg.version;
+  pubPkg.name = devPkg.name;
+
   fs.writeFileSync(join(distPath, './package.json'), JSON.stringify(pubPkg, '  \n'));
 
   // other files in .npm
-  for (const file of ['.npmrc', 'README.md']) {
-    fs.copyFileSync(join(npmPath, file), join(distPath, file));
+  for (const file of [
+    '.npm/.npmrc',
+    './LICENSE',
+    './README.md',
+    'src/lib.d.ts',
+    'src/lib.internal.d.ts',
+  ]) {
+    fs.copyFileSync(join(rootPath, file), join(distPath, file.split('/')[1]));
   }
 
-  // copy d.ts files
-  for (const file of ['lib.d.ts', 'lib.internal.d.ts']) {
-    fs.copyFileSync(join(rootPath, file), join(distPath, file));
-  }
-
-  console.log('Now you should open ./dist folder and run `npm publish`');
+  console.log('Open ./dist folder and run `npm publish`');
 };
 
 const main = () => {

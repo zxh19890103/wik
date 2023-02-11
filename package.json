@@ -1,20 +1,19 @@
 {
-  "name": "core",
-  "version": "1.0.5",
+  "name": "@zxh19890103/wik",
+  "version": "1.0.1",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "test": "vitest --config vite.config.test.js",
     "coverage": "vitest run --coverage --config vite.config.test.js",
-    "dev": "vite dev --host",
-    "lint": "eslint . --fix",
+    "dev": "vite --config vite.config.dev.js dev --host",
+    "lint": "eslint ./src --fix",
     "prebuild": "yarn lint && node ./scripts/build --stage=pre",
     "build": "vite --config vite.config.lib.js build && tsc --project tsconfig.prod.json",
     "postbuild": "node ./scripts/build --stage=post",
     "doc:gen": "cd document && yarn gen && cd .. && typedoc",
     "doc:dev": "cd document && yarn dev",
-    "tsCheck": "tsc --noEmit",
-    "release": ""
+    "tsCheck": "tsc --noEmit"
   },
   "dependencies": {
     "@types/leaflet": "^1.7.11",

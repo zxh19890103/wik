@@ -1,7 +1,7 @@
 import { Interactive } from '../../interfaces/Interactive';
 import { InteractiveStateAction, InteractiveStateActionName } from './InteractiveStateAction.class';
 import { IStateActionManager } from '../../interfaces/StateAction';
-import { injectable } from '../../model/basic/inject';
+import { injectable } from '../basic/inject';
 import Interfacces from '../../interfaces/symbols';
 
 const LOOP_SAFE_LIMIT = 5;

@@ -11,15 +11,15 @@
     "sourceMap": false
   },
   "include": [
-    "2d/**/*",
-    "3d/**/*",
-    "dom/**/*",
-    "interafces/**/*",
-    "mixins/**/*",
-    "model/**/*",
-    "utils/**/*",
-    "lib.internal.d.ts",
-    "lib.d.ts",
-    "index.ts"
+    "src/2d/**/*",
+    "src/3d/**/*",
+    "src/dom/**/*",
+    "src/interafces/**/*",
+    "src/mixins/**/*",
+    "src/model/**/*",
+    "src/utils/**/*",
+    "src/lib.internal.d.ts",
+    "src/lib.d.ts",
+    "src/index.ts"
   ]
 }

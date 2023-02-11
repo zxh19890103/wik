@@ -1,17 +1,16 @@
-import { EssWarehouse, basic } from '../../2d';
-import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../../2d/basic';
 import { useState } from 'react';
-import { inject, rootInjector, provides } from '../../model/basic';
-import { IInjector } from '../../interfaces/symbols';
-import { Bot } from '../../2d/Bot.class';
+import { EssWarehouse, basic, Bot } from '@/2d';
+import { inject, rootInjector, provides } from '@/model/basic';
+import { IInjector } from '@/interfaces/symbols';
 
-import * as wik from '../../dom';
+import * as wik from '@/dom';
+import { SVG_KUBOT, SVG_KUBOT_RED } from '@/2d/images';
+import { OnClick, OnMouseOverOut, OnSelect } from '@/interfaces/Interactive';
+
 import '../ioc.config';
-import { SVG_KUBOT, SVG_KUBOT_RED } from '../../2d/images';
-import { OnClick, OnMouseOverOut, OnSelect } from '../../interfaces/Interactive';
 
 @inject(IInjector)
-@provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
+@provides(basic.DEFAULT_WAREHOUSE_DEPENDENCIES)
 class MyWarehouse extends EssWarehouse {
   async layout(data: any) {
     await this.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);

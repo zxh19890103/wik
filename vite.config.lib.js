@@ -1,11 +1,13 @@
 import configBase from './vite.config';
 import tsConfig from './tsconfig.prod.json';
+import path from 'path';
 
 // vite.config.js
 /** @type {import('vite').UserConfig} */
 export default {
   ...configBase,
   publicDir: false,
+  root: './src',
   build: {
     ...configBase.build,
     lib: {
@@ -14,7 +16,7 @@ export default {
       formats: ['es', 'umd'],
       fileName: 'index',
     },
-    outDir: tsConfig.compilerOptions.outDir,
+    outDir: path.resolve('./', tsConfig.compilerOptions.outDir),
     emptyOutDir: false,
   },
 };

@@ -5,7 +5,7 @@ import './app.scss';
 
 const route = new URLSearchParams(location.search).get('route');
 
-const Page = React.lazy(() => import(`./cases/${route}`));
+const Page = React.lazy(() => import(`./cases/${route}.tsx`));
 
 const Route = () => {
   return (

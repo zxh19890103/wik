@@ -1,9 +1,34 @@
 {
-  "name": "@fe/graphic",
+  "name": "@zxh19890103/wik",
   "version": "",
   "main": "index.mjs",
   "module": "index.mjs",
+  "type": "module",
   "license": "MIT",
+  "repository": {
+    "url": "git@github.com:zxh19890103/wik.git",
+    "type": "github"
+  },
+  "homepage": "http://wik.zhangxinghai.cn",
+  "keywords": [
+    "wik",
+    "warehouse",
+    "digital visualizing",
+    "visualizing",
+    "leaflet",
+    "threejs",
+    "2d",
+    "3d"
+  ],
+  "description": "With wik, visualize warehouse is easy!",
+  "author": {
+    "name": "sea",
+    "url": "http://www.zhangxinghai.cn",
+    "email": "zhangxinghai79@gmail.com"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {},
   "dependencies": {
     "@types/leaflet": "^1.7.11",

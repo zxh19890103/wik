@@ -1,6 +1,6 @@
 import THREE, { Mesh } from 'three';
 import { BoardGeometry } from './geometries/BoardGeometry.class';
-import * as meta from '../model/meta';
+import * as meta from '@/model/meta';
 import { InstancedMesh } from './basic';
 
 export class Board extends Mesh {

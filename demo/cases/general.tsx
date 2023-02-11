@@ -1,26 +1,26 @@
 import L from 'leaflet';
-import { EssWarehouse } from '../../2d';
-import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../../2d/basic';
-import { inject, provides, View } from '../../model/basic';
-import Interface from '../../interfaces/symbols';
-import { Warehouse3D } from '../../3d/Warehouse.class';
+import { EssWarehouse } from '../../src/2d';
+import { DEFAULT_WAREHOUSE_DEPENDENCIES } from '../../src/2d/basic';
+import { inject, provides, View } from '../../src/model/basic';
+import Interface from '../../src/interfaces/symbols';
+import { Warehouse3D } from '../../src/3d/Warehouse.class';
 import '../ioc.config';
-import * as wik from '../../dom/general';
-import * as model2d from '../../2d';
-import * as model3d from '../../3d';
-import { Object3DList } from '../../3d/Object3DList.class';
-import { IInjector } from '../../interfaces/Injector';
-import * as meta from '../../model/meta';
+import * as wik from '../../src/dom/general';
+import * as model2d from '../../src/2d';
+import * as model3d from '../../src/3d';
+import { Object3DList } from '../../src/3d/Object3DList.class';
+import { IInjector } from '../../src/interfaces/Injector';
+import * as meta from '../../src/model/meta';
 import { useEffect, useState } from 'react';
-import * as model from '../../model';
-import { __batched_fires__ } from '../../mixins/Emitter';
-import { IWarehouse } from '../../model';
-import { PointView } from '../../model/PointView';
-import { ContextMenuItem } from '../../interfaces/types';
-import { OnContextMenu, OnMouseOverOut, OnSelect } from '../../interfaces/Interactive';
-import { MvMappings, ObjectSelectProps } from '../../dom/general';
-import { WithWarehouseRef } from '../../model/IWarehouseObjectList';
-import { queueTask } from '../../utils';
+import * as model from '../../src/model';
+import { __batched_fires__ } from '../../src/mixins/Emitter';
+import { IWarehouse } from '../../src/model';
+import { PointView } from '../../src/model/PointView';
+import { ContextMenuItem } from '../../src/interfaces/types';
+import { OnContextMenu, OnMouseOverOut, OnSelect } from '../../src/interfaces/Interactive';
+import { MvMappings, ObjectSelectProps } from '../../src/dom/general';
+import { WithWarehouseRef } from '../../src/model/IWarehouseObjectList';
+import { queueTask } from '../../src/utils';
 
 @inject(Interface.IInjector)
 @provides(DEFAULT_WAREHOUSE_DEPENDENCIES)
