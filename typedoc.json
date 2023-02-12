@@ -1,22 +1,13 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "name": "Graphic Library Documentation",
+  "name": "Wik APIs",
   "entryPoints": [
-    "src/2d",
-    "src/3d",
-    "src/dom",
-    "src/interfaces",
-    "src/mixins",
-    "src/model",
-    "src/utils"
-  ],
-  "exclude": [
-    "demo"
+    "src"
   ],
   "entryPointStrategy": "expand",
   "out": "document/_site/referrences",
   "theme": "default",
-  "customCss": "./document/typedoc/custom.css",
+  "customCss": "document/typedoc/custom.css",
   "externalPattern": [
     "**/node_modules/**/*"
   ],

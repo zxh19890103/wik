@@ -4,12 +4,13 @@ layout: default
 
 {% include site-header.html %}
 
+<div class="landing-picture">
+  <p>{{ page.pic_desc }}</p>
+  <img alt="" src="{{ page.pic }}" />
+  <p>{{ page.pic_desc_1 }}</p>
+</div>
+
 <main class="main container landing">
-  <div class="landing-picture">
-    <p>{{ page.pic_desc }}</p>
-    <img alt="" src="{{ page.pic }}" />
-    <p>{{ page.pic_desc_1 }}</p>
-  </div>
   <article class="article article--page content typeset">{{ content }}</article>
 </main>
 
