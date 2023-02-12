@@ -42,6 +42,7 @@ const post = () => {
     '.npm/.npmrc',
     './LICENSE',
     './README.md',
+    './tsconfig.json',
     'src/lib.d.ts',
     'src/lib.internal.d.ts',
   ]) {

@@ -20,14 +20,21 @@ export default {
    * We do not use vite's build feature, instead we use TSC to transform TS file to "es6 + d.ts"
    * Now we use vite to build.
    */
-  build: {},
+  build: {
+    rollupOptions: {
+      output: {
+        exports: 'named',
+      },
+      external: ['react', 'react-dom', 'leaflet', 'three'],
+    },
+  },
   plugins: [
     viteExternalsPlugin(
       {
-        react: '__wik__.React',
-        'react-dom': '__wik__.ReactDOM',
-        leaflet: '__wik__.L',
-        three: '__wik__.THREE',
+        // react: '__wik__.React',
+        // 'react-dom': '__wik__.ReactDOM',
+        // leaflet: '__wik__.L',
+        // three: '__wik__.THREE',
       },
       {
         useWindow: false,

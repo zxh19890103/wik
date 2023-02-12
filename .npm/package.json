@@ -1,9 +1,8 @@
 {
   "name": "@zxh19890103/wik",
   "version": "",
-  "main": "index.mjs",
-  "module": "index.mjs",
-  "type": "module",
+  "main": "index.js",
+  "type": "commonjs",
   "license": "MIT",
   "repository": {
     "url": "git@github.com:zxh19890103/wik.git",
