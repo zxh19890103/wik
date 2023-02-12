@@ -1,6 +1,6 @@
 ---
 layout: landing
-pic: /assets/feature.png
+pic: /assets/feature2.png
 ---
 
 ## What it it?

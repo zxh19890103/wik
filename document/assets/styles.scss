@@ -194,6 +194,10 @@ table {
     background: linear-gradient(0deg, #707eba 0%, #e8ebec 40%, #e8ebec 70%, #b2b9be 100%);
     background-blend-mode: color-dodge;
 
+    img {
+      max-height: 500px;
+    }
+
     p {
       width: 500px;
       font-size: 2.4rem;
