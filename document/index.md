@@ -1,69 +1,77 @@
 ---
-layout: page
+layout: landing
+pic: /assets/feature.png
 ---
 
-<div style="text-align: center">
-  <img class="logo-light" src="/assets/images/logo.svg" />
-  <h3>
-    使用 Wik，完成你的仓库可视化只需
-    <em style="font-size: 1.5em">3</em>
-    分钟！
-  </h3>
-</div>
+## What it it?
 
-## 特点
+Wik is a JavaScript Library for big-scale warehouse visualization. Both 2D and 3D are supported. With Wik, you could visualize the warehouse very easily.
 
-<ul class="cards cards--x2">
-  
+## Features
+
+<ul class="cards cards--x3">
   <li>
-  
-  **模型驱动视图** 业务模型包含了系统的数据与行为，视图是业务模型的一种视觉映射，业务模型的变化导致视图变化
-  
+{% include card.html title="Model-Driven" text="Business models contain the data and behavior of the system, and views are a visual mapping of the business model. Changes in the business model result in changes in the view." %}
   </li>
     <li>
-  
-  **视图状态驱动** 视图的变化的原因始终为数据的变化，视图模型也可以携带数据
-
+{% include card.html title="Data-Driven" text="The reason for the change of the view is always the change of the data, and the view model can also carry data." %}
   </li>
     <li>
-  
-  **1 model => N views** 一个模型可以绑定多个视图
-
+{% include card.html title="1 Model => N Views" text="One model can be bound to multiple views." %}
   </li>
     <li>
-  
-  **React-SVGOverlay** React 负责 svg 的内容更新，leaflet 负责 overlay 的增删
-
+{% include card.html title="React-SVGOverlay" text="React is responsible for updating the svg content, leaflet is responsible for adding and deleting overlay." %}
   </li>
     <li>
-  
-  **Real Mixin** 用继承的方式实现 mixin
-
+{% include card.html title="Real Mixin" text="Implements mixin using inheritance." %}
   </li>
     <li>
-  
-  **依赖注入** 该设计的目的是为了分离关注点，分离接收方和依赖，从而提供松耦合以及代码重用性
-
+{% include card.html title="Dependency Injection" text="The goal of this design is to separate concerns, decouple the recipient and dependencies, thus providing loose coupling and code reuse." %}
   </li>
   <li>
-  
-  **自动分层管理** 分层基于分类，分层仅限于 leaflet
-
+{% include card.html title="Automatic Panes Management" text="Panes is based on categories and limited to leaflet only." %}
   </li>
   <li>
-  
-  **交互状态管理** 实现鼠标悬停、选中、高亮等状态，支持扩展
-
+{% include card.html title="Interactive State Management" text="Implement mouse hover, selection, highlight, and other states, support for expansion." %}
   </li>
-  <li>
-  
-  **行为和模式** 提供了强大的交互扩展能力
-
+    <li>
+{% include card.html title="Behavior & Mode" text="Provide powerful interactive expansion capabilities." %}
   </li>
-  
 </ul>
 
-## 相关文档
+## Code Sample
+
+```tsx
+import * as wik from '@zxh/wik'
+
+class MyWarehouse extends Warehouse {}
+
+export default () => {
+  const [warehouse] = useState(() => {
+    return rootInjector.$new(MyWarehouse) as MyWarehouse;
+  });
+
+  return (
+    <wik.World defaultKeys={['2d']}>
+      <wik.Warehouse key="2d" modes warehouse={warehouse} />
+      <wik.MultipleSelectShell w={400}>
+        <Aside />
+      </wik.MultipleSelectShell>
+      <wik.SelectShell w={300}>
+        <Aside2 />
+      </wik.SelectShell>
+    </wik.World>
+  );
+};
+```
+
+## Pictures
+
+{% include figure.html image="/assets/images/snapshot.png" caption="More than 20000 packages rendered!" position="center" %}
+
+{% include figure.html image="/assets/images/snapshot2.png" caption="Colorful packages render" position="center" %}
+
+## Dependencies
 
 - <a href="https://reactjs.org/docs/getting-started.html">react</a>
 - <a href="https://leafletjs.com/reference.html">leaflet</a>

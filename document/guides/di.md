@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 依赖注入
+title: Dependency Injection
 categories: guide
 ---
 

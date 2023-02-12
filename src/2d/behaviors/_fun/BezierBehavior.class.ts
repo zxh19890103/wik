@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import { IWarehouse } from '../@/model';
-import { Behavior } from '../@/model/behaviors';
+import { IWarehouse } from '@/model';
+import { Behavior } from '@/model/behaviors';
 import { appendAnimation, RotationAnimation, TranslationAnimation } from '../../animation';
 import { BezierTranslationAnimation } from '../../animation/BezierTranslationAnimation.class';
 import { WikMap } from '../../basic/Map.class';

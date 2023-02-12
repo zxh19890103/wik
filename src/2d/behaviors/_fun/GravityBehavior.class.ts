@@ -1,6 +1,6 @@
 import L, { LatLng } from 'leaflet';
-import { Behavior } from '../@/model/behaviors';
-import { randomColor } from '../@/utils';
+import { Behavior } from '@/model/behaviors';
+import { randomColor } from '@/utils';
 import { WikMap } from '../../basic/Map.class';
 
 const { random, PI, sin, cos, abs, sqrt, pow } = Math;

@@ -11,8 +11,7 @@
     "prebuild": "yarn lint && node ./scripts/build --stage=pre",
     "build": "vite --config vite.config.lib.js build && tsc --project tsconfig.prod.json",
     "postbuild": "node ./scripts/build --stage=post",
-    "doc:gen": "cd document && yarn gen && cd .. && typedoc",
-    "doc:dev": "cd document && yarn dev",
+    "doc": "typedoc",
     "tsCheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 介绍 React-SVGOverlay
+title: Introduction to React-SVGOverlay
 categories: guide
 ---
 

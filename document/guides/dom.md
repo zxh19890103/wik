@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 组件
+title: Components
 categories: guide
 ---
 

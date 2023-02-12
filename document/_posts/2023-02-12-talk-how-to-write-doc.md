@@ -1,9 +1,10 @@
 ---
 layout: post
-title: 聊一下文档的事 (2022-10-20)
+title: Talk about documentations (2022-10-20)
+categories: blog
 ---
 
-## 主题
+## Topics
 
 - 文档 site 的布局与样式
 - 图形库的名字

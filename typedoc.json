@@ -14,9 +14,9 @@
     "demo"
   ],
   "entryPointStrategy": "expand",
-  "out": "document/dist/referrences",
+  "out": "document/_site/referrences",
   "theme": "default",
-  "customCss": "./document/themes/typedoc/custom.css",
+  "customCss": "./document/typedoc/custom.css",
   "externalPattern": [
     "**/node_modules/**/*"
   ],

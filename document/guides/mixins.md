@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 混入
+title: Mixins
 categories: guide
 ---
 

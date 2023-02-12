@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 行为与模式
+title: Behaviors & Modes
 categories: guide
 ---
 

@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 为什么有这个图形库
+title: Why do we need this library?
 categories: guide
 ---
 

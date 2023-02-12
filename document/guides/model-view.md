@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 模型与视图的关系
+title: The relations of Models & Views
 categories: guide
 ---
 
@@ -41,7 +41,7 @@ Wik 已经梳理好了一套标准流程，严格沿着这套流程实施你的�
 模型必须由 `Base` 扩展出来，其中 `@effect(KuboBotEffect.translate)` 的意思是业务模型的这个方法被调用之后，对应的视图也需要调用对应的方法，以保持模型和视图的一致，
 
 ```ts
-import { Base } from '@fe/graphic/model';
+import { Base } from 'wik/model';
 
 enum KubotEffect {
   translate = 'Translate',
@@ -62,7 +62,7 @@ class Kubot extends Base<KubotEffect> {
 ## 定义视图接口
 
 ```ts
-import { View } from '@fe/graphic/model';
+import { View } from 'wik/model';
 
 interface KubotView extends View<Kubot, KubotEffect> {
   whenTranslate(): void;

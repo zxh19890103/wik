@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 撤销与恢复
+title: Undo & Redo
 categories: guide
 ---
 
