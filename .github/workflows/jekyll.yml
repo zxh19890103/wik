@@ -43,10 +43,7 @@ jobs:
         uses: actions/configure-pages@v3
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
-        with:
-          source: ./document
-          destination: ./document/_site
+        run: cd document && bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
       - name: Generate APIs by TypeDoc
@@ -55,7 +52,7 @@ jobs:
         # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v1
         with:
-          path: './document/_site'
+          path: ./document/_site
 
   # Deployment job
   deploy:
