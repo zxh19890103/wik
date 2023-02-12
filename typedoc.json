@@ -16,6 +16,5 @@
   "cleanOutputDir": true,
   "plugin": [
     "typedoc-plugin-missing-exports",
-    "typedoc-theme-hierarchy"
   ]
 }
