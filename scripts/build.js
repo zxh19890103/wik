@@ -6,11 +6,10 @@ const { join } = path;
 const stage = process.argv[2].slice(8);
 
 const devPkg = require('../package.json');
-const tsConfig = require('../tsconfig.prod.json');
+const tsConfig = require('../tsconfig.lib.json');
 
 const rootPath = join(__dirname, '../');
 const npmPath = join(__dirname, '../.npm');
-const srcPath = join(__dirname, '../src');
 
 const distPath = join(rootPath, tsConfig.compilerOptions.outDir);
 const pubPkg = require(join(npmPath, './package.json'));
@@ -35,14 +34,19 @@ const post = () => {
   pubPkg.version = devPkg.version;
   pubPkg.name = devPkg.name;
 
-  fs.writeFileSync(join(distPath, './package.json'), JSON.stringify(pubPkg, '  \n'));
+  fs.writeFileSync(join(distPath, './package.json'), JSON.stringify(pubPkg, null, 2));
+
+  const tsConfig = require('../tsconfig.json');
+  tsConfig.exclude = [];
+  tsConfig.compilerOptions.paths['@/*'] = ['./*'];
+
+  fs.writeFileSync(join(distPath, './tsconfig.json'), JSON.stringify(tsConfig, null, 2));
 
   // other files in .npm
   for (const file of [
     '.npm/.npmrc',
     './LICENSE',
     './README.md',
-    './tsconfig.json',
     'src/lib.d.ts',
     'src/lib.internal.d.ts',
   ]) {

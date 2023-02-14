@@ -43,6 +43,7 @@ const flush = () => {
 
   for (const task of tasks) {
     const { context, run, args } = task;
+    console.log('flush iter', task.key);
     if (typeof run === 'function') {
       run.apply(context, args);
     } else {

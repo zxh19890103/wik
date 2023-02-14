@@ -1,5 +1,5 @@
 import configBase from './vite.config';
-import tsConfig from './tsconfig.prod.json';
+import tsConfig from './tsconfig.lib.json';
 import path from 'path';
 
 // vite.config.js
@@ -10,7 +10,14 @@ export default {
   root: './src',
   build: {
     ...configBase.build,
+    rollupOptions: {
+      output: {
+        exports: 'named',
+      },
+      external: ['react', 'react-dom', 'leaflet', 'three'],
+    },
     minify: true,
+    sourcemap: 'inline',
     lib: {
       name: 'wik',
       entry: './index.ts',

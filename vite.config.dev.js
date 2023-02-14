@@ -1,3 +1,4 @@
+import { viteExternalsPlugin } from 'vite-plugin-externals';
 import configBase from './vite.config';
 
 // vite.config.js
@@ -10,4 +11,18 @@ export default {
     open: true,
   },
   build: {},
+  plugins: [
+    ...configBase.plugins,
+    viteExternalsPlugin(
+      {
+        react: 'React',
+        'react-dom': 'ReactDOM',
+        leaflet: 'L',
+        three: 'THREE',
+      },
+      {
+        useWindow: true,
+      },
+    ),
+  ],
 };

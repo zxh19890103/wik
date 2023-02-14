@@ -8,7 +8,12 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "declarationMap": false,
-    "sourceMap": false
+    "sourceMap": false,
+    "plugins": [
+      {
+        "transform": "@zerollup/ts-transform-paths"
+      }
+    ]
   },
   "include": [
     "src/2d/**/*",
