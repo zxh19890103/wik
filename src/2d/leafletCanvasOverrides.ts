@@ -1,9 +1,8 @@
 import L, { DomEvent } from 'leaflet';
-import { IDisposable } from '../interfaces/Disposable';
-import { IPaneManager } from '../interfaces/symbols';
-import { inject, injectable, writeReadonlyProp } from '../model/basic';
-import { WikMap } from './basic';
-import { PaneManager } from './state';
+import { IDisposable } from '@/interfaces/Disposable';
+import { deco$$, util$$, interfaces } from '@/model';
+import { WikMap } from './basic/Map.class';
+import { PaneManager } from './state/PaneManager.class';
 
 // @see https://github.com/Leaflet/Leaflet/blob/main/src/layer/vector/Canvas.js
 // overrides
@@ -46,8 +45,8 @@ import { PaneManager } from './state';
 let phaseOfMouseEventHandleLoopFrame = 0;
 let fireEvtCall = 0; // on called counter.
 
-@injectable()
-@inject(IPaneManager)
+@deco$$.injectable()
+@deco$$.inject(interfaces.IPaneManager)
 export class RenderersManager implements IDisposable {
   private renderers: Map<string, L.Renderer> = new Map();
   private renderersInOrder = [];
@@ -122,7 +121,7 @@ export class RenderersManager implements IDisposable {
     const { renderer } = paneMgr.get('proxyPane', 'canvas', 499);
     const container = renderer._container;
 
-    writeReadonlyProp(this.map, '__canvas_renderers_size__', this.size);
+    util$$.writeReadonlyProp(this.map, '__canvas_renderers_size__', this.size);
     paneMgr.onZChange = this.order;
     this.order();
 

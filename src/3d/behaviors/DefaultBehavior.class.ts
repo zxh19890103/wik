@@ -1,6 +1,6 @@
 import { Behavior } from '@/model/behaviors';
 import { inject } from '@/model/basic/inject';
-import Interface from '@/interfaces/symbols';
+import Interface from '@/model/symbols';
 import { InteractiveStateActionManager } from '@/model/state';
 import { InteractiveObject3D } from '../IInteractive3D';
 import { ISelectionManager } from '@/interfaces/Selection';

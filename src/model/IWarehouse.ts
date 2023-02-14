@@ -1,8 +1,8 @@
-import { GraphicObject } from '../interfaces/GraghicObject';
-import { WithInjector } from '../interfaces/Injector';
-import { IBehavior, IModeManager } from '../interfaces/Mode';
-import { ISelectionManager } from '../interfaces/Selection';
-import { IList } from './basic';
+import { GraphicObject } from '@/interfaces/GraghicObject';
+import { WithInjector } from '@/interfaces/Injector';
+import { IBehavior, IModeManager } from '@/interfaces/Mode';
+import { ISelectionManager } from '@/interfaces/Selection';
+import { IList } from './basic/IList';
 
 export interface IWarehouse
   extends WithInjector,

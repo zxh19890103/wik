@@ -1,7 +1,3 @@
-// export * from './HighlightManager.class';
-export * from './ImageManager.class';
-// export * from './InteractiveStateAction.class';
-// export * from './InteractiveStateActionManager.class';
-export * from './PaneManager.class';
-// export * from './SelectionManager.class';
-export * from './UserAction.class';
+export { ImageManager } from './ImageManager.class';
+export { PaneManager, type PaneName, type PaneObject } from './PaneManager.class';
+export { UserAction } from './UserAction.class';

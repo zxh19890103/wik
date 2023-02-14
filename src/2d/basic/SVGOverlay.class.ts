@@ -2,20 +2,18 @@ import L from 'leaflet';
 import { WikDraggable } from './Draggable.class';
 import { WikMap } from './Map.class';
 import { EMPTY_BOUNDS } from './constants';
-import { leafletOptions } from '@/utils/leaflet';
-import { alias, mix } from '@/model/basic/mixin';
-import { ReactiveLayer } from '@/mixins/ReactiveLayer';
-import { ReactiveLayerMixin } from '@/mixins/ReactiveLayer.mixin';
-import { ReactiveLayerRenderEffect } from '@/mixins/effects';
+import { leafletOptions } from '../utils';
+import { deco$$ } from '@/model';
+import { ReactiveLayer, ReactiveLayerMixin, ReactiveLayerRenderEffect } from '@/mixins';
 
 @leafletOptions<L.ImageOverlayOptions>({
   interactive: true,
   bubblingMouseEvents: false,
 })
-@alias('_reset', 'redraw')
-export class SVGOverlay extends mix(L.SVGOverlay).with<L.SVGOverlay, ReactiveLayer>(
-  ReactiveLayerMixin,
-) {
+@deco$$.alias('_reset', 'redraw')
+export class SVGOverlay extends deco$$
+  .mix(L.SVGOverlay)
+  .with<L.SVGOverlay, ReactiveLayer>(ReactiveLayerMixin) {
   private _size: L.Point = null;
   /**
    * 修改前的 svg 尺寸

@@ -1,13 +1,16 @@
-import { Behavior } from '@/model/behaviors';
-import { inject } from '@/model/basic/inject';
+import {
+  inject,
+  interfaces,
+  Behavior,
+  SelectionManager,
+  InteractiveStateActionManager,
+} from '@/model';
 import { Interactive } from '@/interfaces/Interactive';
-import Interface from '@/interfaces/symbols';
-import { SelectionManager, InteractiveStateActionManager } from '@/model/state';
 
 export class DefaultBehavior extends Behavior {
-  @inject(Interface.ISelectionManager)
+  @inject(interfaces.ISelectionManager)
   readonly selectionManager: SelectionManager;
-  @inject(Interface.IStateActionManager)
+  @inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
   override onLoad(): void {}

@@ -1,8 +1,8 @@
 import { EventEmitter, EventNames } from 'eventemitter3';
-import { SimpleObject } from '../interfaces/types';
-import { WikEvent } from '../model/basic/Event.class';
-import { WithParent } from '../interfaces/WithParent';
-import { link } from '../model/basic';
+import { SimpleObject } from '@/interfaces/types';
+import { WikEvent } from './Event.class';
+import { WithParent } from '@/interfaces/WithParent';
+import { link } from './mixin';
 
 /**
  * When you use this methods mixin, please keep in mind that the target Class you want mix must be inherited from EventEmitter

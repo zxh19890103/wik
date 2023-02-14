@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
-import { AbstractConstructor } from '../interfaces/Constructor';
-import { ReactiveLayer } from '../mixins/ReactiveLayer';
-import { IWarehouse } from '../model/IWarehouse';
+import { AbstractConstructor } from '@/interfaces/Constructor';
+import { ReactiveLayer } from '@/mixins';
+import { IWarehouse } from '@/model';
 import { LayerPosition } from './LayerPosition';
 import { useEvented } from './useEvented';
 import { useMultipleSelection, useSelection } from './useSelection';

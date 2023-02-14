@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { inject } from '../model/basic/inject';
+import { deco$$ } from '@/model';
 import { ImageLayer } from './basic';
 
 import {
@@ -11,10 +11,10 @@ import {
   appendAnimation,
 } from './animation';
 
-import { WithClone } from '../interfaces/WithClone';
+import { WithClone } from '@/interfaces/WithClone';
 import { ImageManager } from './state';
-import Interfaces from '../interfaces/symbols';
-import { OnSelect } from '../interfaces/Interactive';
+import Interfaces from '@/model/symbols';
+import { OnSelect } from '@/interfaces/Interactive';
 
 export class Bot extends ImageLayer implements WithAnimate, WithClone, OnSelect {
   onSelect(data?: any) {
@@ -26,9 +26,9 @@ export class Bot extends ImageLayer implements WithAnimate, WithClone, OnSelect 
     this.setAngle(0);
   }
 
-  @inject(Interfaces.IAnimationManager)
+  @deco$$.inject(Interfaces.IAnimationManager)
   readonly animationManager: AnimationManager = null;
-  @inject(Interfaces.IImageManager)
+  @deco$$.inject(Interfaces.IImageManager)
   readonly imageManager: ImageManager = null;
   readonly anglePhase = 90;
 

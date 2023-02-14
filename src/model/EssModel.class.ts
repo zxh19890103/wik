@@ -1,4 +1,4 @@
-import { Base } from './basic';
+import { Base } from './basic/Base.class';
 
 export class EssModel extends Base {
   toSnapshot() {

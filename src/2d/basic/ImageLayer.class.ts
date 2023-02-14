@@ -1,8 +1,8 @@
 import L from 'leaflet';
-import { mix } from '@/model/basic';
-import { boundToLatLngs, createOffscreenCanvas, D2R, leafletOptions, mapLatLng } from '@/utils';
-import { ReactiveLayer } from '@/mixins/ReactiveLayer';
-import { ReactiveLayerMixin } from '@/mixins/ReactiveLayer.mixin';
+import { deco$$ } from '@/model';
+import { boundToLatLngs, D2R, leafletOptions, mapLatLng } from '../utils';
+import { createOffscreenCanvas } from '@/utils';
+import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
 import { Constructor } from '@/interfaces/Constructor';
 import { DEFAULT_PATH_STYLE } from './constants';
 
@@ -15,7 +15,9 @@ export type ImageLayerDataSource = HTMLImageElement | HTMLCanvasElement;
   fill: true,
   fillColor: '#f90',
 })
-export class ImageLayer extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(ReactiveLayerMixin) {
+export class ImageLayer extends deco$$
+  .mix(L.Polygon)
+  .with<L.Polygon, ReactiveLayer>(ReactiveLayerMixin) {
   protected image: ImageLayerDataSource = null;
   protected width = 0;
   protected height = 0;

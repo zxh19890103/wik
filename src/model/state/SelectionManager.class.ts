@@ -1,17 +1,18 @@
 import { Interactive } from '@/interfaces/Interactive';
 import { ISelectionManager } from '@/interfaces/Selection';
 import { InteractiveStateActionManager } from './InteractiveStateActionManager.class';
-import * as Interface from '@/interfaces/symbols';
-import { Core, inject, injectable } from '../basic';
+import { Core } from '../basic/Core.class';
+import { inject, injectable } from '../basic/inject';
+import interfaces from '../symbols';
 
 type SelectionManagerEventType = 'item' | 'items';
 
-@injectable({ providedIn: 'root', provide: Interface.ISelectionManager })
+@injectable({ providedIn: 'root', provide: interfaces.ISelectionManager })
 export class SelectionManager extends Core<SelectionManagerEventType> implements ISelectionManager {
   private item: Interactive = null;
   private items: Interactive[] = [];
 
-  @inject(Interface.IStateActionManager)
+  @inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
   getCurrent(): Interactive {

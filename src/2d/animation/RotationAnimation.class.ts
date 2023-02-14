@@ -1,4 +1,4 @@
-import { LinearLine1D } from '@/utils';
+import { LinearLine1D } from '../utils';
 import { WikAnimation } from './Animation.class';
 import { ReactiveLayerWithAnimate } from './WithAnimate';
 

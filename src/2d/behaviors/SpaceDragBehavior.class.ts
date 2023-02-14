@@ -1,8 +1,5 @@
-import L from 'leaflet';
-import { Behavior } from '@/model/behaviors/Behavior.class';
-import { WikMap } from '../basic';
-import { IWarehouse } from '@/model';
-import { PaneObject } from '../state';
+import { Behavior } from '@/model';
+import { WikMap } from '../basic/Map.class';
 
 export class SpaceDragBehavior extends Behavior {
   private isDraggable = false;

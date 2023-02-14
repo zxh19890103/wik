@@ -1,5 +1,5 @@
-import { Behavior } from '@/model/behaviors/Behavior.class';
-import { WikMap } from '../basic';
+import { Behavior } from '@/model';
+import { WikMap } from '../basic/Map.class';
 
 export class DragBehavior extends Behavior {
   private isDraggable = false;

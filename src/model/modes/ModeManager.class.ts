@@ -1,8 +1,9 @@
 import { IInjector, WithInjector } from '@/interfaces/Injector';
 import { BehaviorCallback, IBehavior, IMode, IModeManager } from '@/interfaces/Mode';
-import { Core, writeReadonlyProp } from '../basic';
+import { Core } from '../basic/Core.class';
 import { injectable } from '../basic/inject';
-import { Behavior } from '../behaviors';
+import { writeReadonlyProp } from '../basic/mixin';
+import { Behavior } from '../behaviors/Behavior.class';
 import { Mode } from './Mode.class';
 
 @injectable()

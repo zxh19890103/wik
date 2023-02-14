@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { ReactiveLayer } from '../mixins/ReactiveLayer';
+import { ReactiveLayer } from '../mixins';
 import { useLeafletEvented } from './useLeafletEvented';
 
 export const LayerPosition = memo((props: { model: ReactiveLayer }) => {

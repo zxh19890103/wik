@@ -1,5 +1,5 @@
-import { Mode } from '@/model/modes';
-import { WikMap } from '../basic';
+import { Mode } from '@/model';
+import { WikMap } from '../basic/Map.class';
 
 export class EditMode extends Mode {
   constructor(private map: WikMap) {

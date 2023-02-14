@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "url": "git@github.com:zxh19890103/wik.git",
-    "type": "github"
+    "type": "git"
   },
   "homepage": "http://wik.zhangxinghai.cn",
   "keywords": [

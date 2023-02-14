@@ -1,4 +1,4 @@
-import * as Interfaces from '@/interfaces/symbols';
+import * as Interfaces from '@/model/symbols';
 import { GlobalConstManager } from '@/model/state';
 import { configProviders } from '@/model/basic/Injector.class';
 import { ImageManager } from '@/2d/state';

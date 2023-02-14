@@ -1,5 +1,5 @@
 import { configProviders, inject, List, provides, View } from '@/model/basic';
-import Interface from '@/interfaces/symbols';
+import Interface from '@/model/symbols';
 import { Warehouse3D } from '@/3d/Warehouse.class';
 
 import * as model3d from '@/3d';
@@ -7,11 +7,11 @@ import { Object3DList } from '@/3d/Object3DList.class';
 import { IInjector } from '@/interfaces/Injector';
 import * as meta from '@/model/meta';
 import { useEffect, useState } from 'react';
-import { __batched_fires__ } from '@/mixins/Emitter';
+import { __batched_fires__ } from '@/model/basic/Emitter';
 import { PointView } from '@/model/PointView';
 import { WithWarehouseRef } from '@/model/IWarehouseObjectList';
 import { queueTask } from '@/utils/queueTask';
-import * as Interfaces from '@/interfaces/symbols';
+import * as Interfaces from '@/model/symbols';
 
 import * as wik from '@/dom/3d';
 import * as model from '@/model';

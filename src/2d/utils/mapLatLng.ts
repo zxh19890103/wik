@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { PolylineLatLngs } from '../interfaces/types';
+import { PolylineLatLngs } from '@/interfaces/types';
 
 export const mapLatLng = (
   latlngs: PolylineLatLngs,

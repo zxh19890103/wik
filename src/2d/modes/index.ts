@@ -1,3 +1,3 @@
-export * from './InteractiveMode.class';
-export * from './ReadonlyMode.class';
-export * from './EditMode.class';
+export { InteractiveMode } from './InteractiveMode.class';
+export { ReadonlyMode } from './ReadonlyMode.class';
+export { EditMode } from './EditMode.class';

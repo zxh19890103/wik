@@ -1,6 +1,5 @@
 import L from 'leaflet';
-import { CubicBezierCurve } from '../utils';
-import { leafletOptions } from '../utils/leaflet';
+import { CubicBezierCurve, leafletOptions } from './utils';
 import { Polyline } from './basic';
 
 @leafletOptions<L.PolylineOptions>({

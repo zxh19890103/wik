@@ -1,6 +1,6 @@
-import { IInjector } from '../interfaces/Injector';
-import { IWarehouse } from '../model';
-import { Base, IList, Model, View } from '../model/basic';
+import { IInjector } from '@/interfaces/Injector';
+import { IWarehouse } from '@/model';
+import { Base, IList, Model, View } from '@/model';
 
 export interface ViewProps {
   parent: IList<View>;

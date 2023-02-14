@@ -5,15 +5,10 @@
     "target": "ESNext",
     "module": "ESNext",
     "noEmit": false,
-    "declaration": true,
     "emitDeclarationOnly": true,
+    "declaration": true,
     "declarationMap": false,
-    "sourceMap": false,
-    "plugins": [
-      {
-        "transform": "@zerollup/ts-transform-paths"
-      }
-    ]
+    "sourceMap": false
   },
   "include": [
     "src/2d/**/*",
@@ -26,5 +21,8 @@
     "src/lib.internal.d.ts",
     "src/lib.d.ts",
     "src/index.ts"
+  ],
+  "exclude": [
+    "**/*.test.ts"
   ]
 }

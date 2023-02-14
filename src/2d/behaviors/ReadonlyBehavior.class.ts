@@ -1,4 +1,4 @@
-import { Behavior } from '@/model/behaviors/Behavior.class';
+import { Behavior } from '@/model';
 
 export class ReadonlyBehavior extends Behavior {
   override onLoad(): void {}

@@ -1,34 +1,37 @@
 import { useState } from 'react';
-import { EssWarehouse, basic, Bot } from '@/2d';
-import { inject, rootInjector, provides } from '@/model/basic';
-import { IInjector } from '@/interfaces/symbols';
+import * as wik2d from '@/2d';
+import * as wikmodel from '@/model';
+import * as wikdom from '@/dom';
 
-import * as wik from '@/dom';
-import { SVG_KUBOT, SVG_KUBOT_RED } from '@/2d/images';
 import { OnClick, OnMouseOverOut, OnSelect } from '@/interfaces/Interactive';
 
 import '../ioc.config';
 
-@inject(IInjector)
-@provides(basic.DEFAULT_WAREHOUSE_DEPENDENCIES)
-class MyWarehouse extends EssWarehouse {
+@wikmodel.inject(wikmodel.interfaces.IInjector)
+@wikmodel.provides(wik2d.const$$.DEFAULT_WAREHOUSE_DEPENDENCIES)
+class MyWarehouse extends wik2d.EssWarehouse {
   async layout(data: any) {
-    await this.imageManager.load(SVG_KUBOT, SVG_KUBOT_RED);
+    await this.imageManager.load(wik2d.images.SVG_KUBOT, wik2d.images.SVG_KUBOT_RED);
 
-    const bot = this.injector.$new<Bot>(Bot, this.imageManager.get(SVG_KUBOT_RED), 1000, 1000);
+    const bot = this.injector.$new<wik2d.Bot>(
+      wik2d.Bot,
+      this.imageManager.get(wik2d.images.SVG_KUBOT_RED),
+      1000,
+      1000,
+    );
     this.add('bot', bot);
 
     const n = 100; // 400 * 400 = 16 00000
 
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
-        this.add('point', new Point(i * 400, j * 400));
+        this.add('point', new MyPoint(i * 400, j * 400));
       }
     }
   }
 }
 
-class Point extends basic.Circle implements OnSelect, OnClick, OnMouseOverOut {
+class MyPoint extends wik2d.Circle implements OnSelect, OnClick, OnMouseOverOut {
   color = '#097';
 
   constructor(lat, lng) {
@@ -58,26 +61,26 @@ class Point extends basic.Circle implements OnSelect, OnClick, OnMouseOverOut {
 
 export default () => {
   const [warehouse] = useState(() => {
-    return rootInjector.$new(MyWarehouse) as MyWarehouse;
+    return wikmodel.rootInjector.$new(MyWarehouse) as MyWarehouse;
   });
 
   return (
-    <wik.World defaultKeys={['2d']}>
-      <wik.Warehouse key="2d" modes warehouse={warehouse} />
-      <wik.MultipleSelectShell w={400}>
+    <wikdom.World defaultKeys={['2d']}>
+      <wikdom.Warehouse key="2d" modes warehouse={warehouse} />
+      <wikdom.MultipleSelectShell w={400}>
         <Aside />
-      </wik.MultipleSelectShell>
-      <wik.SelectShell w={300}>
+      </wikdom.MultipleSelectShell>
+      <wikdom.SelectShell w={300}>
         <Aside2 />
-      </wik.SelectShell>
-    </wik.World>
+      </wikdom.SelectShell>
+    </wikdom.World>
   );
 };
 
-const Aside = (props: wik.MultipleObjectsSelectProps<any>) => {
+const Aside = (props: wikdom.MultipleObjectsSelectProps<any>) => {
   return <div>{props.model?.length} selected</div>;
 };
 
-const Aside2 = (props: wik.ObjectSelectProps<any>) => {
+const Aside2 = (props: wikdom.ObjectSelectProps<any>) => {
   return <div>.. selected</div>;
 };

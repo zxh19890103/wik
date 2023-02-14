@@ -1,12 +1,10 @@
 import L from 'leaflet';
 import { LayerWithID } from '@/interfaces/WithLayerID';
-import { writeReadonlyProp } from '@/model/basic';
-import { inject } from '@/model/basic/inject';
+import { util$$, deco$$, interfaces } from '@/model';
 import { LayerList } from './LayerList.class';
 import { WikMap } from './Map.class';
 import { PaneManager, PaneName } from '../state/PaneManager.class';
 import { ReactSVGOverlayAppServer } from './ReactSVGOverlayApp';
-import * as Interface from '@/interfaces/symbols';
 
 export class SVGOverlayList<M extends LayerWithID, E extends string = never> extends LayerList<
   M,
@@ -15,7 +13,7 @@ export class SVGOverlayList<M extends LayerWithID, E extends string = never> ext
   readonly pane: PaneName;
   readonly svgServer: ReactSVGOverlayAppServer;
 
-  @inject(Interface.IPaneManager)
+  @deco$$.inject(interfaces.IPaneManager)
   readonly paneMgr: PaneManager;
 
   constructor(pane: PaneName) {
@@ -26,7 +24,7 @@ export class SVGOverlayList<M extends LayerWithID, E extends string = never> ext
 
   protected override _add(item: M): void {
     L.Util.setOptions(item, { pane: this.pane });
-    writeReadonlyProp(item, 'svgServer', this.svgServer);
+    util$$.writeReadonlyProp(item, 'svgServer', this.svgServer);
 
     super._add(item);
   }

@@ -1,21 +1,13 @@
 import L from 'leaflet';
 import { ReactiveLayer } from '@/mixins/ReactiveLayer';
 import { Interactive, OnInteractive } from '@/interfaces/Interactive';
-import { inject, mix, writeReadonlyProp } from '@/model/basic';
+import { deco$$, util$$, interfaces, InteractiveStateActionManager, ModeManager } from '@/model';
 import { ReactiveLayerMixin } from '@/mixins/ReactiveLayer.mixin';
 import { PaneManager, PaneName, PaneObject } from '../state';
-import { InteractiveStateActionManager } from '@/model/state';
-import {
-  IModeManager,
-  IPaneManager,
-  IRendererManager,
-  IStateActionManager,
-} from '@/interfaces/symbols';
-import { leafletOptions } from '@/utils';
+import { leafletOptions } from '../utils';
 import { RenderersManager } from '../leafletCanvasOverrides';
-import { ModeManager } from '@/model/modes';
 import { ContextMenuItem } from '@/interfaces/types';
-import { WithClickCancel } from '@/mixins/ClickCancel';
+import { WithClickCancel } from '@/mixins';
 
 const leafletEvent2OnCallback = {
   click: 'onClick',
@@ -37,16 +29,16 @@ interface GroupOptions {
   pane: 'groupPane',
 })
 export class Group
-  extends mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLayerMixin)
+  extends deco$$.mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLayerMixin)
   implements OnInteractive
 {
-  @inject(IPaneManager)
+  @deco$$.inject(interfaces.IPaneManager)
   readonly paneMgr: PaneManager;
-  @inject(IRendererManager)
+  @deco$$.inject(interfaces.IRendererManager)
   readonly rendererMgr: RenderersManager;
-  @inject(IModeManager)
+  @deco$$.inject(interfaces.IModeManager)
   readonly modeMgr: ModeManager;
-  @inject(IStateActionManager)
+  @deco$$.inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
   readonly paneObj: PaneObject;
@@ -77,7 +69,7 @@ export class Group
   override onAdd(map: L.Map): this {
     const paneObj = this.paneMgr.get(this.options.pane, 'canvas', _pane_z_seed++);
     L.Util.setOptions(this, { renderer: paneObj.renderer });
-    writeReadonlyProp(this, 'paneObj', paneObj);
+    util$$.writeReadonlyProp(this, 'paneObj', paneObj);
     this.rendererMgr.add(paneObj.name, paneObj.renderer);
     super.onAdd(map);
     return this;

@@ -133,7 +133,7 @@ export function link(src: AbstractConstructor, pairs: Record<string, string>) {
 /**
  * set alias, just methods!
  */
-export function _internal_alias(to: AbstractConstructor, pairs: Record<string, string>) {
+function _internal_alias(to: AbstractConstructor, pairs: Record<string, string>) {
   const proto = to.prototype;
 
   for (const [name, alias] of Object.entries(pairs)) {
@@ -147,7 +147,7 @@ export function _internal_alias(to: AbstractConstructor, pairs: Record<string, s
 /**
  * Just mix Own methods in DEST class's prototype.
  */
-export function _internal_mixin(
+function _internal_mixin(
   destClass: AbstractConstructor,
   srcClass: Constructor,
   onlyMethods = false,

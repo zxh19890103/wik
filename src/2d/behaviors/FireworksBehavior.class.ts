@@ -1,11 +1,9 @@
 import L from 'leaflet';
 import { IDisposable } from '@/interfaces/Disposable';
-import { Behavior } from '@/model/behaviors/Behavior.class';
 import { randomColor } from '@/utils';
-import { inject } from '@/model/basic/inject';
-import { WikMap } from '../basic';
+import { inject, interfaces, Behavior } from '@/model';
+import { WikMap } from '../basic/Map.class';
 import { PaneManager, PaneObject } from '../state';
-import * as Interface from '@/interfaces/symbols';
 
 const { random, PI, sin, cos } = Math;
 const D2R = PI / 180;
@@ -133,7 +131,7 @@ enum FireworksBehaviorPhase {
 }
 
 export class FireworksBehavior extends Behavior implements IDisposable {
-  @inject(Interface.IPaneManager)
+  @inject(interfaces.IPaneManager)
   paneMgr: PaneManager;
 
   private particles: L.Polygon = null;

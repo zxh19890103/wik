@@ -2,7 +2,7 @@ import React from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import THREE from 'three';
 import { OrbitControls } from '@/3d/controls';
-import { IWarehouse } from '../model';
+import { IWarehouse } from '@/model';
 import { WarehouseContextValue, WarehouseProps } from './interface';
 import { Modes } from './Select';
 import { SelectionContext } from './useSelection';

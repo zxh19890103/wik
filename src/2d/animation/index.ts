@@ -5,4 +5,3 @@ export * from './WithAnimate';
 export * from './RotationAnimation.class';
 export * from './TranslationAnimation.class';
 export * from './AnimationManager.class';
-export * from './constants';

@@ -1,14 +1,14 @@
 import L from 'leaflet';
 import * as glMatrix from 'gl-matrix';
-import { Constructor } from '../interfaces/Constructor';
+import { Constructor } from '@/interfaces/Constructor';
 import { ReactiveLayerRenderEffect } from './effects';
-import { appendLayerRenderReq } from './reactiveLayerRenderThread';
-import { SimpleObject, PolylineLatLngs } from '../interfaces/types';
+import { appendLayerRenderReq } from './_render_loop';
+import { SimpleObject, PolylineLatLngs } from '@/interfaces/types';
 import symbols from './is';
-import { mapLatLng } from '../utils/mapLatLng';
-import { boundToLatLngs } from '../utils/boundToLatLngs';
+import { mapLatLng } from '@/2d/utils/mapLatLng';
+import { boundToLatLngs } from '@/2d/utils/boundToLatLngs';
 import { ReactiveLayer, ReactiveLayerSnapshot } from './ReactiveLayer';
-import { IList } from '../model/basic';
+import { IList } from '@/model/basic/IList';
 
 const { mat3, vec2 } = glMatrix;
 const d2r = Math.PI / 180;

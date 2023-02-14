@@ -1,16 +1,12 @@
 import L from 'leaflet';
-import { Behavior } from '@/model/behaviors/Behavior.class';
-import { inject } from '@/model/basic/inject';
-import { WikMap } from '../basic';
-import * as Interfaces from '@/interfaces/symbols';
-import { IWarehouse } from '@/model';
+import { WikMap } from '../basic/Map.class';
+import { IWarehouse, interfaces, Behavior, inject, SelectionManager } from '@/model';
 import { PaneManager, PaneObject } from '../state';
-import { SelectionManager } from '@/model/state';
 
 export class RectDrawSelectBehavior extends Behavior {
-  @inject(Interfaces.ISelectionManager)
+  @inject(interfaces.ISelectionManager)
   private selectionMgr: SelectionManager;
-  @inject(Interfaces.IPaneManager)
+  @inject(interfaces.IPaneManager)
   private paneMgr: PaneManager;
 
   private rect: L.Rectangle = null;

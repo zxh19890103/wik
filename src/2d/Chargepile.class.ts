@@ -1,10 +1,10 @@
 import L from 'leaflet';
-import { leafletOptions } from '../utils/leaflet';
-import { ReactSVGOverlayAppServer } from './basic';
+import { leafletOptions } from './utils';
 import { ReactSVGOverlay } from './basic/ReactSVGOverlay.class';
 import ImageSVG from './basic/Image.svg';
-import type * as meta from '../model/meta';
+import type * as meta from '@/model/meta';
 import svgURL from './images/chargepile.svg';
+import { ReactSVGOverlayAppServer } from './basic/ReactSVGOverlayApp';
 
 @leafletOptions<L.ImageOverlayOptions>({})
 export class Chargepile extends ReactSVGOverlay {

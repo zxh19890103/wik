@@ -3,8 +3,7 @@ import L, { Map } from 'leaflet';
 import { SVGOverlay } from './SVGOverlay.class';
 import { ReactSVGOverlayAppServer } from './ReactSVGOverlayApp';
 import type { SvgFunctionComponent } from './SVGComponentFactory';
-import { leafletOptions } from '@/utils/leaflet';
-import { SimpleObject } from '@/interfaces/types';
+import { leafletOptions } from '../utils';
 
 let _svg_id = 1992;
 

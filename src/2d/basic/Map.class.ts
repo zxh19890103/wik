@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import { ClickCancelMix, WithClickCancel } from '@/mixins/ClickCancel';
-import { mixin } from '@/model/basic';
-import { leafletOptions } from '@/utils/leaflet';
+import { deco$$ } from '@/model';
+import { leafletOptions } from '../utils/leaflet';
 import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
 
 @leafletOptions<L.MapOptions>({
@@ -23,7 +23,7 @@ import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
   preferCanvas: true,
   tapTolerance: 100,
 })
-@mixin(ClickCancelMix)
+@deco$$.mixin(ClickCancelMix)
 export class WikMap extends L.Map {}
 
 export interface WikMap extends WithClickCancel {

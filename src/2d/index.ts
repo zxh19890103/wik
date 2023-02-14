@@ -1,26 +1,35 @@
-import * as basic from './basic';
-import * as behaviors from './behaviors';
-import * as state from './state';
-import * as modes from './modes';
-import * as animation from './animation';
-import * as images from './images';
+export * as animation from './animation';
+export * as images from './images';
+
+export * from './modes';
+export * from './basic';
+export * from './behaviors';
+export * from './state';
+
+export * as util$$ from './utils';
+
+export { CacheShelf } from './CacheShelf.class';
+export { Chargepile } from './Chargepile.class';
+export { Conveyor } from './Conveyor.class';
+export { ConveyorNode } from './ConveyorNode.class';
+export { Haiport } from './Haiport.class';
+export { Location } from './Location.class';
+export { Point } from './Point.class';
+export { Robot } from './Robot.class';
+export { Shelf } from './Shelf.class';
+export { Bot } from './Bot.class';
+export { Edge } from './Edge.class';
+export { Route } from './Route.class';
+export { EssWarehouse } from './EssWarehouse.class';
+export { RenderersManager } from './leafletCanvasOverrides';
+
+import { DEFAULT_WAREHOUSE_DEPENDENCIES } from './basic/Warehouse.class';
+import { EMPTY_BOUNDS, DEFAULT_PATH_STYLE } from './basic/constants';
+
+export const const$$ = {
+  EMPTY_BOUNDS,
+  DEFAULT_PATH_STYLE,
+  DEFAULT_WAREHOUSE_DEPENDENCIES,
+};
 
 import './styles/index.scss';
-
-export * from './CacheShelf.class';
-export * from './Chargepile.class';
-export * from './Conveyor.class';
-export * from './ConveyorNode.class';
-export * from './Haiport.class';
-export * from './Location.class';
-export * from './Point.class';
-export * from './Robot.class';
-export * from './Shelf.class';
-export * from './Bot.class';
-export * from './Edge.class';
-export * from './Route.class';
-export * from './EssWarehouse.class';
-
-export * from './leafletCanvasOverrides';
-
-export { basic, behaviors, state, modes, animation, images };

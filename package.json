@@ -9,7 +9,7 @@
     "dev": "vite --config vite.config.dev.js dev --host",
     "lint": "eslint ./src --fix",
     "prebuild": "yarn lint && node ./scripts/build --stage=pre",
-    "build": "vite --config vite.config.lib.js build && tsc --project tsconfig.lib.json",
+    "build": "vite --config vite.config.lib.js build && tsc -p tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
     "postbuild": "node ./scripts/build --stage=post",
     "doc": "typedoc",
     "tsCheck": "tsc --noEmit"
@@ -35,6 +35,8 @@
     "prettier": "^2.7.1",
     "sass": "^1.54.8",
     "ts-transform-paths": "^3.0.0",
+    "tsc-alias": "^1.8.2",
+    "ttypescript": "^1.5.15",
     "typedoc": "^0.23.25",
     "typedoc-plugin-missing-exports": "^1.0.0",
     "typescript": "^4.8.2",

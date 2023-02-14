@@ -1,5 +1,5 @@
-import { IInjector } from '../interfaces/Injector';
-import { rootInjector } from '../model/basic';
+import { IInjector } from '@/interfaces/Injector';
+import { rootInjector } from '@/model';
 import React, { useState } from 'react';
 import { MultipleSelectShell, SelectShell } from './Select';
 

@@ -1,6 +1,6 @@
 import L from 'leaflet';
 
-export const boundToLatLngs = (latLngBoundsExpr: any) => {
+export const sizeToLatLngs = (latLngBoundsExpr: any) => {
   const bounds = L.latLngBounds(latLngBoundsExpr);
   return [
     bounds.getSouthWest(),

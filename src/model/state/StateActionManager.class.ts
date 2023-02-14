@@ -1,9 +1,10 @@
 import { IStateAction, IStateActionManager } from '@/interfaces/StateAction';
-import { alias, injectable, writeProp } from '../basic';
-import * as Interfaces from '@/interfaces/symbols';
+import { injectable } from '../basic/inject';
+import { IRedoUndoManager } from '../symbols';
+import { alias, writeProp } from '../basic/mixin';
 
 @alias('pop', 'undo')
-@injectable({ providedIn: 'root', provide: Interfaces.IRedoUndoManager })
+@injectable({ providedIn: 'root', provide: IRedoUndoManager })
 export class StateActionManager implements IStateActionManager {
   readonly undoLimit = 20;
   readonly redoLimit = 20;

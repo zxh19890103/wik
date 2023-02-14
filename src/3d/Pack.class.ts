@@ -1,7 +1,7 @@
 import THREE, { BoxGeometry } from 'three';
-import { OnClick, OnMouseOverOut, OnSelect } from '../interfaces/Interactive';
-import { WithWarehouseRef } from '../model/IWarehouseObjectList';
-import * as meta from '../model/meta';
+import { OnClick, OnMouseOverOut, OnSelect } from '@/interfaces/Interactive';
+import { WithWarehouseRef } from '@/model/IWarehouseObjectList';
+import * as meta from '@/model/meta';
 import { InstancedMesh } from './basic';
 import { BinGeometry } from './geometries';
 import { Warehouse3D } from './Warehouse.class';

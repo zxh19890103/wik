@@ -1,25 +1,39 @@
 import L from 'leaflet';
 import { LayerWithID } from '@/interfaces/WithLayerID';
-import { IWarehouse, IWarehouseOptional, ListCtorArgs } from '@/model';
-import { ModeManager } from '@/model/modes';
-import { ConfigProviderConfigValue, Core } from '@/model/basic';
-import { event2behavior, GlobalConstManager } from '@/model/state';
-import { WikMap, LayerList, SVGOverlayList, VectorLayerList } from '.';
+import {
+  IWarehouse,
+  Core,
+  deco$$,
+  const$$,
+  interfaces,
+  GlobalConstManager,
+  ModeManager,
+  SelectionManager,
+  HighlightManager,
+  InteractiveStateActionManager,
+  WikEvent,
+  ListCtorArgs,
+  IWarehouseOptional,
+  ConfigProviderConfigValue,
+} from '@/model';
+
 import { RenderersManager } from '../leafletCanvasOverrides';
 
-import { inject } from '@/model/basic/inject';
-import Interfaces from '@/interfaces/symbols';
 import * as behaviors from '../behaviors';
+
 import { GraphicObject } from '@/interfaces/GraghicObject';
 import { IBehavior } from '@/interfaces/Mode';
 import { IInjector } from '@/interfaces/Injector';
+import { ILogger } from '@/interfaces/Logger';
+
 import { tryInvokingOwn } from '@/utils';
 
 import { AnimationManager } from '../animation/AnimationManager.class';
 import { ImageManager, PaneManager } from '../state';
-import { SelectionManager, HighlightManager, InteractiveStateActionManager } from '@/model/state';
-import { ILogger } from '@/interfaces/Logger';
-import { WikEvent } from '@/model/basic/Event.class';
+import { WikMap } from './Map.class';
+import { LayerList } from './LayerList.class';
+import { SVGOverlayList } from './SVGOverlayList.class';
+import { VectorLayerList } from './VectorLayerList.class';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 
@@ -31,26 +45,26 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
 
   private updateDeps: Partial<Record<OT, ItemUpdateFn<LayerWithID, any>>> = {};
 
-  @inject(Interfaces.IAnimationManager)
+  @deco$$.inject(interfaces.IAnimationManager)
   readonly animationManager: AnimationManager;
-  @inject(Interfaces.IPaneManager)
+  @deco$$.inject(interfaces.IPaneManager)
   readonly paneManager: PaneManager;
-  @inject(Interfaces.ISelectionManager)
+  @deco$$.inject(interfaces.ISelectionManager)
   readonly selectionManager: SelectionManager;
-  @inject(Interfaces.IImageManager)
+  @deco$$.inject(interfaces.IImageManager)
   readonly imageManager: ImageManager;
-  @inject(Interfaces.IHighlightManager)
+  @deco$$.inject(interfaces.IHighlightManager)
   readonly highlightManager: HighlightManager;
-  @inject(Interfaces.IStateActionManager)
+  @deco$$.inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
-  @inject(Interfaces.IModeManager)
+  @deco$$.inject(interfaces.IModeManager)
   readonly modeManager: ModeManager;
-  @inject(Interfaces.IGlobalConstManager)
+  @deco$$.inject(interfaces.IGlobalConstManager)
   readonly globalConsts: GlobalConstManager;
-  @inject(Interfaces.ILogger)
+  @deco$$.inject(interfaces.ILogger)
   readonly logger: ILogger;
 
-  @inject(Interfaces.IRendererManager)
+  @deco$$.inject(interfaces.IRendererManager)
   readonly renderersMgr: RenderersManager;
 
   readonly map: WikMap = null;
@@ -266,7 +280,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       this.listen$n('click dblclick mouseover mouseout mousedown contextmenu', (evt: WikEvent) => {
         if (evt.type === 'click' && this.map.isClickEventFireCancelled) return;
         const { layer, leafletEvt } = evt.payload;
-        const cb = event2behavior[`item@${evt.type}`];
+        const cb = const$$.event2behavior[`item@${evt.type}`];
         tryInvokingOwn(this, cb, layer, leafletEvt);
         this.modeManager.apply(cb, layer, leafletEvt);
       });
@@ -277,7 +291,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       this.map
         .on('mousedown mousemove mouseup click', (evt) => {
           if (evt.type === 'click' && this.map.isClickEventFireCancelled) return;
-          this.modeManager.apply(event2behavior[evt.type], evt);
+          this.modeManager.apply(const$$.event2behavior[evt.type], evt);
         })
         .on('zoom drag', () => {
           this.animationManager.flush();
@@ -350,10 +364,10 @@ export enum WarehousePhase {
 }
 
 export const DEFAULT_WAREHOUSE_DEPENDENCIES: Record<symbol, ConfigProviderConfigValue> = {
-  [Interfaces.IPaneManager]: PaneManager,
-  [Interfaces.IModeManager]: ModeManager,
-  [Interfaces.IAnimationManager]: AnimationManager,
-  [Interfaces.IHighlightManager]: HighlightManager,
-  [Interfaces.IRendererManager]: RenderersManager,
-  [Interfaces.IImageManager]: ImageManager,
+  [interfaces.IPaneManager]: PaneManager,
+  [interfaces.IModeManager]: ModeManager,
+  [interfaces.IAnimationManager]: AnimationManager,
+  [interfaces.IHighlightManager]: HighlightManager,
+  [interfaces.IRendererManager]: RenderersManager,
+  [interfaces.IImageManager]: ImageManager,
 };

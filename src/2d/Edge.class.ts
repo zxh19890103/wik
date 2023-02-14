@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { HALF_PI, vector2rad, rad2vector, CubicBezierCurve, leafletOptions } from '../utils';
+import { HALF_PI, vector2rad, rad2vector, CubicBezierCurve, leafletOptions } from './utils';
 import { Polyline } from './basic/Polyline.class';
 
 @leafletOptions<L.PolylineOptions>({

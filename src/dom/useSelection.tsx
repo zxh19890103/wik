@@ -1,7 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { IWarehouse } from '../model';
-import { WikEvent } from '../model/basic/Event.class';
-import { useEvented } from './useEvented';
+import { IWarehouse, WikEvent } from '@/model';
 
 interface Props {
   warehouse: IWarehouse;

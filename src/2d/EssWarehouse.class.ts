@@ -7,9 +7,9 @@ import { Location } from './Location.class';
 import { Point } from './Point.class';
 import { Shelf } from './Shelf.class';
 
-import { IInjector } from '../interfaces/Injector';
+import { IInjector } from '@/interfaces/Injector';
 import { Warehouse } from './basic/Warehouse.class';
-import { EssObjectType } from '../model';
+import { EssObjectType } from '@/model';
 
 export abstract class EssWarehouse<LayoutData = any, OT extends string = never> extends Warehouse<
   LayoutData,

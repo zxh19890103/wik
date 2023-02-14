@@ -1,9 +1,9 @@
 import L from 'leaflet';
-import { leafletOptions } from '../utils/leaflet';
-import { ReactSVGOverlayAppServer } from './basic';
+import { leafletOptions } from '@/2d/utils/leaflet';
 import { ReactSVGOverlay } from './basic/ReactSVGOverlay.class';
+import { ReactSVGOverlayAppServer } from './basic/ReactSVGOverlayApp';
 import ImageSVG from './basic/Image.svg';
-import type * as meta from '../model/meta';
+import type * as meta from '@/model/meta';
 import * as svg from './images';
 
 @leafletOptions<L.ImageOverlayOptions>({})

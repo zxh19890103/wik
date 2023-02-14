@@ -1,20 +1,18 @@
 import L from 'leaflet';
 import { LayerWithID } from '@/interfaces/WithLayerID';
-import { writeReadonlyProp } from '@/model/basic';
-import { inject } from '@/model/basic/inject';
+import { util$$, deco$$, interfaces } from '@/model';
 import { LayerList } from './LayerList.class';
 import { WikMap } from './Map.class';
 import { PaneManager, PaneName, PaneObject, RendererType } from '../state/PaneManager.class';
-import * as Interface from '@/interfaces/symbols';
 import { RenderersManager } from '../leafletCanvasOverrides';
 
 export class VectorLayerList<M extends LayerWithID, E extends string = never> extends LayerList<
   M,
   E
 > {
-  @inject(Interface.IPaneManager)
+  @deco$$.inject(interfaces.IPaneManager)
   readonly paneMgr: PaneManager;
-  @inject(Interface.IRendererManager)
+  @deco$$.inject(interfaces.IRendererManager)
   readonly rendererMgr: RenderersManager;
 
   readonly pane: PaneName;
@@ -50,7 +48,7 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
   override mount(parent: WikMap): void {
     super.mount(parent);
     const paneObj = this.paneMgr.get(this.pane, this.rendererType, _pane_z_seed++);
-    writeReadonlyProp(this, 'paneObj', paneObj);
+    util$$.writeReadonlyProp(this, 'paneObj', paneObj);
     this.rendererMgr.add(paneObj.name, paneObj.renderer);
   }
 }

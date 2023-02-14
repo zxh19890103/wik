@@ -1,7 +1,7 @@
 import L from 'leaflet';
-import { leafletOptions } from '../utils/leaflet';
+import { leafletOptions } from '../2d/utils';
 import { Circle } from './basic';
-import type * as meta from '../model/meta';
+import type * as meta from '@/model/meta';
 
 @leafletOptions<L.CircleMarkerOptions>({
   color: '#d9d9d9',

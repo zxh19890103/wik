@@ -1,8 +1,8 @@
 import './style.scss';
 
-export * from './DefaultBehavior.class';
-export * from './ReadonlyBehavior.class';
-export * from './RectDrawSelectBehavior.class';
-export * from './EditBehavior.class';
-export * from './DragBehavior.class';
-export * from './SpaceDragBehavior.class';
+export { DefaultBehavior } from './DefaultBehavior.class';
+export { ReadonlyBehavior } from './ReadonlyBehavior.class';
+export { RectDrawSelectBehavior } from './RectDrawSelectBehavior.class';
+export { EditBehavior } from './EditBehavior.class';
+export { DragBehavior } from './DragBehavior.class';
+export { SpaceDragBehavior } from './SpaceDragBehavior.class';

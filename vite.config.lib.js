@@ -1,6 +1,6 @@
+import path from 'path';
 import configBase from './vite.config';
 import tsConfig from './tsconfig.lib.json';
-import path from 'path';
 
 // vite.config.js
 /** @type {import('vite').UserConfig} */
