@@ -1,7 +1,7 @@
 {
   "name": "@zxh19890103/wik",
-  "version": "1.0.3",
-  "main": "index.js",
+  "version": "1.0.4",
+  "main": "dist/index",
   "license": "MIT",
   "scripts": {
     "test": "vitest --config vite.config.test.js",
@@ -9,7 +9,7 @@
     "dev": "vite --config vite.config.dev.js dev --host",
     "lint": "eslint ./src --fix",
     "prebuild": "yarn lint && node ./scripts/build --stage=pre",
-    "build": "vite --config vite.config.lib.js build && tsc --project tsconfig.prod.json",
+    "build": "vite --config vite.config.lib.js build && tsc --project tsconfig.lib.json",
     "postbuild": "node ./scripts/build --stage=post",
     "doc": "typedoc",
     "tsCheck": "tsc --noEmit"
