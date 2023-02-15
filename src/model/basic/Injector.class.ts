@@ -1,5 +1,5 @@
-import { Constructor, AbstractConstructor } from '@/interfaces/Constructor';
-import { IInjector, WithInjector } from '@/interfaces/Injector';
+import { Constructor, AbstractConstructor } from '@/interfaces';
+import { IInjector, WithInjector } from '@/interfaces';
 import * as Interfaces from '@/model/symbols';
 import { Entries, fromEntries, toEntries } from '@/utils';
 import { writeReadonlyProp } from './mixin';

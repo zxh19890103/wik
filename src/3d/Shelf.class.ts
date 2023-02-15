@@ -1,10 +1,10 @@
 import THREE, { BufferGeometry, LineBasicMaterial } from 'three';
-import { OnClick } from '@/interfaces/Interactive';
+import { OnClick } from '@/interfaces';
 import { InstancedMesh } from './basic';
 import { InstanceBoard } from './Board.class';
 import { InstancePack } from './Pack.class';
 import { generateRetangle } from './utils';
-import * as meta from '@/model/meta';
+import { meta } from '@/model';
 
 export class Shelf extends THREE.LineSegments implements OnClick {
   packs: InstancePack[] = [];

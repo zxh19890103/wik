@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { IDisposable } from '@/interfaces/Disposable';
+import { IDisposable } from '@/interfaces';
 import { randomColor } from '@/utils';
 import { inject, interfaces, Behavior } from '@/model';
 import { WikMap } from '../basic/Map.class';

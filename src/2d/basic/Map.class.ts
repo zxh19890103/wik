@@ -1,7 +1,7 @@
 import L from 'leaflet';
-import { ClickCancelMix, WithClickCancel } from '@/mixins/ClickCancel';
+import { ClickCancelMix, WithClickCancel } from '@/mixins';
 import { deco$$ } from '@/model';
-import { leafletOptions } from '../utils/leaflet';
+import { leafletOptions } from '../utils';
 import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
 
 @leafletOptions<L.MapOptions>({

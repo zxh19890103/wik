@@ -1,6 +1,7 @@
 import path from 'path';
 import configBase from './vite.config';
 import tsConfig from './tsconfig.lib.json';
+import bannerGen from './scripts/banner';
 
 // vite.config.js
 /** @type {import('vite').UserConfig} */
@@ -13,16 +14,18 @@ export default {
     rollupOptions: {
       output: {
         exports: 'named',
+        chunkFileNames: '_shared.js',
+        banner: bannerGen(),
       },
       external: ['react', 'react-dom', 'leaflet', 'three'],
     },
     minify: true,
-    sourcemap: 'inline',
+    sourcemap: true,
     lib: {
       name: 'wik',
-      entry: './index.ts',
+      entry: ['./i2d.ts', './i3d.ts'],
       formats: ['cjs'],
-      fileName: 'index',
+      fileName: '[name]',
     },
     outDir: path.resolve('./', tsConfig.compilerOptions.outDir),
     emptyOutDir: false,

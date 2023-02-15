@@ -1,13 +1,15 @@
 import L from 'leaflet';
 import { WikMap } from './Map.class';
-import { IDisposable } from '@/interfaces/Disposable';
-import { LayerWithID } from '@/interfaces/WithLayerID';
-import { InteractiveStateActionManager, CoreList, IWarehouse } from '@/model';
-import { inject } from '@/model/basic/inject';
-import { WithClickCancel } from '@/mixins/ClickCancel';
-import { IInjector, WithInjector } from '@/interfaces/Injector';
-import { IWarehouseObjectList } from '@/model/IWarehouseObjectList';
-import Interface from '@/model/symbols';
+import { IDisposable, LayerWithID, IInjector, WithInjector } from '@/interfaces';
+import {
+  inject,
+  IWarehouseObjectList,
+  InteractiveStateActionManager,
+  CoreList,
+  IWarehouse,
+  interfaces,
+} from '@/model';
+import { WithClickCancel } from '@/mixins';
 
 type LayerListEventType =
   | 'click'
@@ -26,7 +28,7 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
   readonly itemKey: string = 'layerId';
 
-  @inject(Interface.IStateActionManager)
+  @inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
   readonly mounted = false;
 

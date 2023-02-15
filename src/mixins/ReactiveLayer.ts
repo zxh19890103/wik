@@ -1,12 +1,12 @@
 import * as glMatrix from 'gl-matrix';
-import { PolylineLatLngs } from '@/interfaces/types';
-import { WithLayerID } from '@/interfaces/WithLayerID';
+import { PolylineLatLngs } from '@/interfaces';
+import { WithLayerID } from '@/interfaces';
 import { ReactiveLayerRenderEffect } from './effects';
 import { WithClickCancel } from './ClickCancel';
 import { IList } from '@/model';
-import { WithParent } from '@/interfaces/WithParent';
-import { WithRef } from '@/interfaces/WithRef';
-import { WithLayerState } from '@/interfaces/WithLayerState';
+import { WithParent } from '@/interfaces';
+import { WithRef } from '@/interfaces';
+import { WithLayerState } from '@/interfaces';
 import { WithSnapshotAbstract } from './Snapshot';
 
 export interface ReactiveLayerSnapshot {

@@ -1,9 +1,9 @@
 import L from 'leaflet';
 import * as glMatrix from 'gl-matrix';
-import { Constructor } from '@/interfaces/Constructor';
+import { Constructor } from '@/interfaces';
 import { ReactiveLayerRenderEffect } from './effects';
 import { appendLayerRenderReq } from './_render_loop';
-import { SimpleObject, PolylineLatLngs } from '@/interfaces/types';
+import { SimpleObject, PolylineLatLngs } from '@/interfaces';
 import { mapLatLng } from '@/2d/utils/mapLatLng';
 import { boundToLatLngs } from '@/2d/utils/boundToLatLngs';
 import { ReactiveLayer, ReactiveLayerSnapshot } from './ReactiveLayer';

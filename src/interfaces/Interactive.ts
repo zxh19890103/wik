@@ -1,4 +1,4 @@
-import { ContextMenuItem } from './types';
+import { ContextMenuItem } from './d';
 
 export interface OnMouseOverOut<S = any> {
   onHover(data?: any): S;

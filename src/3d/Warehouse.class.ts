@@ -1,9 +1,9 @@
 import THREE from 'three';
-import { IDisposable } from '@/interfaces/Disposable';
-import { GraphicObject } from '@/interfaces/GraghicObject';
-import { IInjector } from '@/interfaces/Injector';
-import { IBehavior, IModeManager } from '@/interfaces/Mode';
-import { ISelectionManager } from '@/interfaces/Selection';
+import { IDisposable } from '@/interfaces';
+import { GraphicObject } from '@/interfaces';
+import { IInjector } from '@/interfaces';
+import { IBehavior, IModeManager } from '@/interfaces';
+import { ISelectionManager } from '@/interfaces';
 import { ClickCancelMix, WithClickCancel } from '@/mixins/ClickCancel';
 import {
   IWarehouse,

@@ -1,4 +1,4 @@
-import { Constructor, AbstractConstructor } from '@/interfaces/Constructor';
+import { Constructor, AbstractConstructor } from '@/interfaces';
 import { queueTask } from '@/utils';
 import {
   InjectDecratorArgs,

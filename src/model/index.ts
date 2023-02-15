@@ -26,6 +26,7 @@ export { type IWarehouse, type ListCtorArgs, type IWarehouseOptional } from './I
 export { type WikObjectType } from './ObjectType';
 export { type IWarehouseObjectList, type WithWarehouseRef } from './IWarehouseObjectList';
 export { type Mixin } from './basic/mixin';
+export { __batched_fires__ } from './basic/Emitter';
 
 import { rootInjector, ConfigProviderConfigValue, configProviders } from './basic/Injector.class';
 import { inject, injectable, provides } from './basic/inject';
@@ -36,6 +37,8 @@ import { hook } from './basic/hook';
 
 import { event2behavior } from './state/event2behavior';
 import interfaces from './symbols';
+
+export * as meta from './meta';
 
 export const deco$$ = {
   effect,

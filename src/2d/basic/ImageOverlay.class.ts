@@ -1,7 +1,6 @@
 import L from 'leaflet';
-import { ReactiveLayer } from '@/mixins/ReactiveLayer';
-import { ReactiveLayerMixin } from '@/mixins/ReactiveLayer.mixin';
-import { deco$$ } from '@/model';
+import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
+import { alias, mix } from '@/model';
 import { leafletOptions } from '../utils';
 import { EMPTY_BOUNDS } from './constants';
 
@@ -9,10 +8,10 @@ import { EMPTY_BOUNDS } from './constants';
   interactive: true,
   bubblingMouseEvents: false,
 })
-@deco$$.alias('_reset', 'redraw')
-export class ImageOverlay extends deco$$
-  .mix(L.ImageOverlay)
-  .with<L.ImageOverlay, ReactiveLayer>(ReactiveLayerMixin) {
+@alias('_reset', 'redraw')
+export class ImageOverlay extends mix(L.ImageOverlay).with<L.ImageOverlay, ReactiveLayer>(
+  ReactiveLayerMixin,
+) {
   private size: L.PointTuple;
 
   constructor(

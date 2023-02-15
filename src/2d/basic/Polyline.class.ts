@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import type { PolylineLatLngs } from '@/interfaces/types';
+import type { PolylineLatLngs } from '@/interfaces';
 import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
 import { deco$$ } from '@/model';
 import { leafletOptions, mapLatLng } from '../utils';

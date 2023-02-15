@@ -1,4 +1,4 @@
-import { IDisposable } from '@/interfaces/Disposable';
+import { IDisposable } from '@/interfaces';
 import { injectable } from '@/model';
 import { createOffscreenCanvas } from '@/utils';
 

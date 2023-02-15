@@ -1,4 +1,4 @@
-import { IInjector } from '@/interfaces/Injector';
+import { IInjector } from '@/interfaces';
 import { IWarehouse } from '@/model';
 import { Base, IList, Model, View } from '@/model';
 

@@ -1,4 +1,4 @@
-import { Interactive } from '@/interfaces/Interactive';
+import { Interactive } from '@/interfaces';
 
 export interface InteractiveObject3D extends Interactive, InstanceMeshInstance {
   isInstancedMesh: boolean;

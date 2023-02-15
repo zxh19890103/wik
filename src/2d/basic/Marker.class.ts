@@ -1,8 +1,7 @@
 import L from 'leaflet';
-import { mix } from '@/model/basic/mixin';
-import { ReactiveLayer } from '@/mixins/ReactiveLayer';
-import { ReactiveLayerMixin } from '@/mixins/ReactiveLayer.mixin';
-import { leafletOptions } from '@/2d/utils/leaflet';
+import { mix } from '@/model';
+import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
+import { leafletOptions } from '../utils/leaflet';
 
 @leafletOptions<L.MarkerOptions>({
   interactive: true,

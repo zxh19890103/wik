@@ -1,4 +1,4 @@
-import { AbstractConstructor, Constructor } from '@/interfaces/Constructor';
+import { AbstractConstructor, Constructor } from '@/interfaces';
 
 const hasOwn = Object.prototype.hasOwnProperty;
 const defineProp = Object.defineProperty;

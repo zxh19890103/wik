@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { leafletOptions } from './utils';
 import { ReactSVGOverlay } from './basic/ReactSVGOverlay.class';
 import ImageSVG from './basic/Image.svg';
-import type * as meta from '@/model/meta';
+import { meta } from '@/model';
 import svgURL from './images/chargepile.svg';
 import { ReactSVGOverlayAppServer } from './basic/ReactSVGOverlayApp';
 

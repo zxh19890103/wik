@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import { LayerWithID } from '@/interfaces/WithLayerID';
 import {
   IWarehouse,
   Core,
@@ -21,10 +20,7 @@ import { RenderersManager } from '../leafletCanvasOverrides';
 
 import * as behaviors from '../behaviors';
 
-import { GraphicObject } from '@/interfaces/GraghicObject';
-import { IBehavior } from '@/interfaces/Mode';
-import { IInjector } from '@/interfaces/Injector';
-import { ILogger } from '@/interfaces/Logger';
+import { GraphicObject, LayerWithID, ILogger, IBehavior, IInjector } from '@/interfaces';
 
 import { tryInvokingOwn } from '@/utils';
 

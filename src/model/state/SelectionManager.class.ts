@@ -1,5 +1,5 @@
-import { Interactive } from '@/interfaces/Interactive';
-import { ISelectionManager } from '@/interfaces/Selection';
+import { Interactive } from '@/interfaces';
+import { ISelectionManager } from '@/interfaces';
 import { InteractiveStateActionManager } from './InteractiveStateActionManager.class';
 import { Core } from '../basic/Core.class';
 import { inject, injectable } from '../basic/inject';

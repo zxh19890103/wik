@@ -3,7 +3,7 @@ import { deco$$ } from '@/model';
 import { boundToLatLngs, D2R, leafletOptions, mapLatLng } from '../utils';
 import { createOffscreenCanvas } from '@/utils';
 import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
-import { Constructor } from '@/interfaces/Constructor';
+import { Constructor } from '@/interfaces';
 import { DEFAULT_PATH_STYLE } from './constants';
 
 export type ImageLayerDataSource = HTMLImageElement | HTMLCanvasElement;

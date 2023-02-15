@@ -1,6 +1,6 @@
-import { Interactive } from '@/interfaces/Interactive';
+import { Interactive } from '@/interfaces';
 import { InteractiveStateAction, InteractiveStateActionName } from './InteractiveStateAction.class';
-import { IStateActionManager } from '@/interfaces/StateAction';
+import { IStateActionManager } from '@/interfaces';
 import { injectable } from '../basic/inject';
 import Interfacces from '@/model/symbols';
 

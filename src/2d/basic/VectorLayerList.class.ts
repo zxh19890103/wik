@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import { LayerWithID } from '@/interfaces/WithLayerID';
-import { util$$, deco$$, interfaces } from '@/model';
+import { LayerWithID } from '@/interfaces';
+import { util$$, inject, interfaces } from '@/model';
 import { LayerList } from './LayerList.class';
 import { WikMap } from './Map.class';
 import { PaneManager, PaneName, PaneObject, RendererType } from '../state/PaneManager.class';
@@ -10,9 +10,9 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
   M,
   E
 > {
-  @deco$$.inject(interfaces.IPaneManager)
+  @inject(interfaces.IPaneManager)
   readonly paneMgr: PaneManager;
-  @deco$$.inject(interfaces.IRendererManager)
+  @inject(interfaces.IRendererManager)
   readonly rendererMgr: RenderersManager;
 
   readonly pane: PaneName;

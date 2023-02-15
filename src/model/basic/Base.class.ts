@@ -1,7 +1,7 @@
-import { Serializable } from '@/interfaces/Serializable';
+import { Serializable } from '@/interfaces';
 import { mixin } from './mixin';
-import { WithParent } from '@/interfaces/WithParent';
-import { WithID } from '@/interfaces/WithID';
+import { WithParent } from '@/interfaces';
+import { WithID } from '@/interfaces';
 import { SnapshotMix, WithSnapshot } from '@/mixins/Snapshot';
 import { EffectCallReq } from './effect';
 import { Core } from './Core.class';

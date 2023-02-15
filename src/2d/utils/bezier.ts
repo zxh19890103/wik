@@ -1,4 +1,4 @@
-import { LatLngVector2D } from '@/interfaces/types';
+import { LatLngVector2D } from '@/interfaces';
 import { LineBuilder } from './Line';
 
 const { pow, sqrt } = Math;

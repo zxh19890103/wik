@@ -1,6 +1,6 @@
 import { InteractiveStateActionManager, Behavior, inject, interfaces } from '@/model';
 import { InteractiveObject3D } from '../IInteractive3D';
-import { ISelectionManager } from '@/interfaces/Selection';
+import { ISelectionManager } from '@/interfaces';
 
 export class DefaultBehavior extends Behavior {
   @inject(interfaces.ISelectionManager)

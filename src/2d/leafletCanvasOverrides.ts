@@ -1,5 +1,5 @@
 import L, { DomEvent } from 'leaflet';
-import { IDisposable } from '@/interfaces/Disposable';
+import { IDisposable } from '@/interfaces';
 import { deco$$, util$$, interfaces } from '@/model';
 import { WikMap } from './basic/Map.class';
 import { PaneManager } from './state/PaneManager.class';

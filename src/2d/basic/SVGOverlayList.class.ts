@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import { LayerWithID } from '@/interfaces/WithLayerID';
-import { util$$, deco$$, interfaces } from '@/model';
+import { LayerWithID } from '@/interfaces';
+import { util$$, mix, inject, interfaces } from '@/model';
 import { LayerList } from './LayerList.class';
 import { WikMap } from './Map.class';
 import { PaneManager, PaneName } from '../state/PaneManager.class';
@@ -13,7 +13,7 @@ export class SVGOverlayList<M extends LayerWithID, E extends string = never> ext
   readonly pane: PaneName;
   readonly svgServer: ReactSVGOverlayAppServer;
 
-  @deco$$.inject(interfaces.IPaneManager)
+  @inject(interfaces.IPaneManager)
   readonly paneMgr: PaneManager;
 
   constructor(pane: PaneName) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { IInjector } from '@/interfaces/Injector';
+import { IInjector } from '@/interfaces';
 import { WarehouseContextValue, WarehouseProvider } from './interface';
 
 export const __context_value__ = Object.freeze({

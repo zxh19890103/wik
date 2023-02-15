@@ -1,4 +1,4 @@
-import { IStateAction, IStateActionManager } from '@/interfaces/StateAction';
+import { IStateAction, IStateActionManager } from '@/interfaces';
 import { injectable } from '../basic/inject';
 import { IRedoUndoManager } from '../symbols';
 import { alias, writeProp } from '../basic/mixin';

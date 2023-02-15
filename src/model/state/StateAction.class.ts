@@ -1,4 +1,4 @@
-import { IStateAction } from '@/interfaces/StateAction';
+import { IStateAction } from '@/interfaces';
 
 let __action_tag_seed__ = 1999;
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { wik, wikdom, wikui, wikutil } from '@/index';
+import { wik, wikdom, wikui, wikutil } from '@/i2d';
 
-import { OnClick, OnMouseOverOut, OnSelect } from '@/interfaces/Interactive';
+import { OnClick, OnMouseOverOut, OnSelect } from '@/interfaces';
 
 @wik.inject(wik.interfaces.IInjector)
 @wik.provides(wikui.const$$.DEFAULT_WAREHOUSE_DEPENDENCIES)

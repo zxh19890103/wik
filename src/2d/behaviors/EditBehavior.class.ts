@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import { Interactive } from '@/interfaces/Interactive';
-import { ContextMenuItem } from '@/interfaces/types';
+import { Interactive } from '@/interfaces';
+import { ContextMenuItem } from '@/interfaces';
 import { ReactiveLayer } from '@/mixins';
 import { IWarehouse, Behavior } from '@/model';
 import { WikMap } from '../basic/Map.class';

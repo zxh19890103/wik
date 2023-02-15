@@ -1,48 +1,36 @@
-import { configProviders, inject, List, provides, View } from '@/model';
-import Interface from '@/model/symbols';
-import { Warehouse3D } from '@/3d/Warehouse.class';
-
-import * as model3d from '@/3d';
-import { Object3DList } from '@/3d/Object3DList.class';
-import { IInjector } from '@/interfaces/Injector';
+import { IInjector } from '@/interfaces';
 import * as meta from '@/model/meta';
 import { useEffect, useState } from 'react';
-import { __batched_fires__ } from '@/model/basic/Emitter';
-import { PointView } from '@/model/PointView';
-import { WithWarehouseRef } from '@/model/IWarehouseObjectList';
-import { queueTask } from '@/utils/queueTask';
-import * as Interfaces from '@/model/symbols';
 
-import * as wik from '@/dom/3d';
-import * as model from '@/model';
+import { wik, wikdom, wikui, wikutil } from '@/i3d';
 
-configProviders('root', {
-  [Interfaces.IGlobalConstManager]: model.state.GlobalConstManager,
-  [Interfaces.ILogger]: { useFactory: () => console },
+wik.configProviders('root', {
+  [wik.interfaces.IGlobalConstManager]: wik.GlobalConstManager,
+  [wik.interfaces.ILogger]: { useFactory: () => console },
 });
 
-@inject(Interface.IInjector)
-@provides({
-  [Interfaces.IModeManager]: model.modes.ModeManager,
+@wik.inject(wik.interfaces.IInjector)
+@wik.provides({
+  [wik.interfaces.IModeManager]: wik.ModeManager,
 })
-class MyWarehouse3D extends Warehouse3D {
+class MyWarehouse3D extends wikui.Warehouse3D {
   /**
    * just frames of rack.
    */
-  shelfs: Object3DList<model3d.Shelf>;
+  shelfs: wikui.Object3DList<wikui.Shelf>;
   /**
    * packages
    */
-  packs: Object3DList<model3d.InstancePack>;
+  packs: wikui.Object3DList<wikui.InstancePack>;
   /**
    * boards on shelf.
    */
-  boards: Object3DList<model3d.InstanceBoard>;
+  boards: wikui.Object3DList<wikui.InstanceBoard>;
 
-  racks: Object3DList<model3d.InstancedRack>;
+  racks: wikui.Object3DList<wikui.InstancedRack>;
 
-  instancedPack: model3d.InstancePack;
-  instancedBoard: model3d.InstanceBoard;
+  instancedPack: wikui.InstancePack;
+  instancedBoard: wikui.InstanceBoard;
 
   constructor(injector: IInjector) {
     super();
@@ -53,8 +41,8 @@ class MyWarehouse3D extends Warehouse3D {
     this.boards = this.addList('board');
     this.racks = this.addList('rack');
 
-    const pack = new model3d.InstancePack(1000000, packSpec);
-    const board = new model3d.InstanceBoard(100000, boardSpec);
+    const pack = new wikui.InstancePack(1000000, packSpec);
+    const board = new wikui.InstanceBoard(100000, boardSpec);
 
     this.packs.add(pack);
     this.boards.add(board);
@@ -69,13 +57,13 @@ class MyWarehouse3D extends Warehouse3D {
 export default () => {
   const [state] = useState(() => {
     return {
-      dots: new List(model.Point, []),
+      dots: new wik.List(wik.Point, []),
     };
   });
 
   useEffect(() => {
     setTimeout(() => {
-      __batched_fires__(() => {
+      wik.__batched_fires__(() => {
         // 400 dots
         for (let x = 0; x < 4; x++) {
           for (let y = 0; y < 3; y++) {
@@ -90,23 +78,23 @@ export default () => {
   }, []);
 
   return (
-    <wik.World defaultKeys={['w3d']}>
-      <wik.Warehouse3D
+    <wikdom.World defaultKeys={['w3d']}>
+      <wikdom.Warehouse3D
         key="w3d"
         modes
         mvMappings={mvMapping3}
         warehouse={(injector) => injector.$new(MyWarehouse3D)}
       >
-        <wik.ViewSet3D type="rack" model={state.dots} />
-      </wik.Warehouse3D>
-      <wik.SelectShell w={300}>
+        <wikdom.ViewSet3D type="rack" model={state.dots} />
+      </wikdom.Warehouse3D>
+      <wikdom.SelectShell w={300}>
         <Aside />
-      </wik.SelectShell>
-    </wik.World>
+      </wikdom.SelectShell>
+    </wikdom.World>
   );
 };
 
-const Aside = (props: wik.ObjectSelectProps<View>) => {
+const Aside = (props: wikdom.ObjectSelectProps<wik.View>) => {
   return (
     <div>
       got one # {props.C?.name} // {props.model?.id}
@@ -136,11 +124,11 @@ const boardSpec: meta.Board = {
   depth: 80,
 };
 
-class RackView extends model3d.Shelf implements PointView, WithWarehouseRef<MyWarehouse3D> {
-  model: model.Point;
+class RackView extends wikui.Shelf implements wik.PointView, wik.WithWarehouseRef<MyWarehouse3D> {
+  model: wik.Point;
   $$warehouse: MyWarehouse3D;
 
-  constructor(m: model.Point) {
+  constructor(m: wik.Point) {
     super({ x: m.px, y: m.py, z: m.pz }, rackSpec);
   }
 
@@ -152,7 +140,7 @@ class RackView extends model3d.Shelf implements PointView, WithWarehouseRef<MyWa
       this.packs.push(instance);
     }
 
-    queueTask({
+    wikutil.queueTask({
       key: 'updateInstances',
       run: () => {
         instancedPack.updateInstances();
@@ -172,7 +160,7 @@ class RackView extends model3d.Shelf implements PointView, WithWarehouseRef<MyWa
       board.delete();
     }
 
-    queueTask({
+    wikutil.queueTask({
       key: 'updateInstances',
       run: () => {
         instancedPack.updateInstances();
@@ -185,7 +173,7 @@ class RackView extends model3d.Shelf implements PointView, WithWarehouseRef<MyWa
 }
 
 const mvMapping3 = {
-  rack: (m: model.Point, w: MyWarehouse3D) => {
+  rack: (m: wik.Point, w: MyWarehouse3D) => {
     return new RackView(m);
   },
 };

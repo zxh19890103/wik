@@ -1,5 +1,5 @@
 import { Util } from 'leaflet';
-import { Constructor } from '@/interfaces/Constructor';
+import { Constructor } from '@/interfaces';
 
 export function leafletOptions<O>(o: O) {
   return function (target: Constructor) {

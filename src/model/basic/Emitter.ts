@@ -1,7 +1,7 @@
 import { EventEmitter, EventNames } from 'eventemitter3';
-import { SimpleObject } from '@/interfaces/types';
+import { SimpleObject } from '@/interfaces';
 import { WikEvent } from './Event.class';
-import { WithParent } from '@/interfaces/WithParent';
+import { WithParent } from '@/interfaces';
 import { link } from './mixin';
 
 /**

@@ -1,4 +1,4 @@
-import { IInjector } from '@/interfaces/Injector';
+import { IInjector } from '@/interfaces';
 import { rootInjector } from '@/model';
 import React, { useState } from 'react';
 import { MultipleSelectShell, SelectShell } from './Select';

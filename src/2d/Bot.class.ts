@@ -11,10 +11,10 @@ import {
   appendAnimation,
 } from './animation';
 
-import { WithClone } from '@/interfaces/WithClone';
+import { WithClone } from '@/interfaces';
 import { ImageManager } from './state';
 import Interfaces from '@/model/symbols';
-import { OnSelect } from '@/interfaces/Interactive';
+import { OnSelect } from '@/interfaces';
 
 export class Bot extends ImageLayer implements WithAnimate, WithClone, OnSelect {
   onSelect(data?: any) {

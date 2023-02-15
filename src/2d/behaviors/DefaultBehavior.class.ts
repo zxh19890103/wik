@@ -5,7 +5,7 @@ import {
   SelectionManager,
   InteractiveStateActionManager,
 } from '@/model';
-import { Interactive } from '@/interfaces/Interactive';
+import { Interactive } from '@/interfaces';
 
 export class DefaultBehavior extends Behavior {
   @inject(interfaces.ISelectionManager)

@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { AbstractConstructor } from '@/interfaces/Constructor';
+import { AbstractConstructor } from '@/interfaces';
 import { ReactiveLayer } from '@/mixins';
 import { IWarehouse } from '@/model';
 import { LayerPosition } from './LayerPosition';
