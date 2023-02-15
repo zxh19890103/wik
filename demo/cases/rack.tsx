@@ -1,4 +1,4 @@
-import { configProviders, inject, List, provides, View } from '@/model/basic';
+import { configProviders, inject, List, provides, View } from '@/model';
 import Interface from '@/model/symbols';
 import { Warehouse3D } from '@/3d/Warehouse.class';
 

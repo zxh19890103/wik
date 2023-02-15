@@ -1,6 +1,6 @@
-import { EssModel } from './EssModel.class';
+import { WikModel } from './WikModel.class';
 
-export class Point extends EssModel {
+export class Point extends WikModel {
   px = 0;
   py = 0;
   pz = 0;

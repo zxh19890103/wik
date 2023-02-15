@@ -1,2 +1,2 @@
-export * from './Camera.class';
-export * from './InstancedMesh.class';
+export { Camera } from './Camera.class';
+export { InstancedMesh } from './InstancedMesh.class';

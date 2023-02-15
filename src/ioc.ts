@@ -1,10 +1,8 @@
-import * as Interfaces from '@/model/symbols';
-import { GlobalConstManager } from '@/model/state';
-import { configProviders } from '@/model/basic/Injector.class';
+import { GlobalConstManager, configProviders, interfaces } from '@/model';
 import { ImageManager } from '@/2d/state';
 
 configProviders('root', {
-  [Interfaces.IImageManager]: ImageManager,
-  [Interfaces.IGlobalConstManager]: GlobalConstManager,
-  [Interfaces.ILogger]: { useFactory: () => console },
+  [interfaces.IImageManager]: ImageManager,
+  [interfaces.IGlobalConstManager]: GlobalConstManager,
+  [interfaces.ILogger]: { useFactory: () => console },
 });

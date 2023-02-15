@@ -26,7 +26,7 @@ export interface ReactiveLayer
     WithLayerState<unknown>,
     WithParent<IList<ReactiveLayer>>,
     WithRef {
-  readonly $$isReactive: symbol;
+  readonly $$isReactive: true;
 
   /**
    * If you want to disable matrix transformation.

@@ -1,9 +1,8 @@
 import THREE, { BoxGeometry } from 'three';
 import { OnClick, OnMouseOverOut, OnSelect } from '@/interfaces/Interactive';
-import { WithWarehouseRef } from '@/model/IWarehouseObjectList';
+import { WithWarehouseRef } from '@/model';
 import * as meta from '@/model/meta';
 import { InstancedMesh } from './basic';
-import { BinGeometry } from './geometries';
 import { Warehouse3D } from './Warehouse.class';
 
 export class Pack extends THREE.Mesh {

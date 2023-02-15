@@ -1,8 +1,8 @@
-import * as Wik2D from '@/2d';
-import * as WikDOM from '@/dom';
-import * as WikUtils from '@/utils';
-import * as WikModel from '@/model';
+import * as wikui from '@/2d';
+import * as wikdom from '@/dom';
+import * as wikutil from '@/utils';
+import * as wik from '@/model';
 
 import './ioc';
 
-export { Wik2D, WikDOM, WikUtils, WikModel };
+export { wik, wikutil, wikdom, wikui };

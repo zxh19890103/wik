@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { __batched_fires__ } from '../model/basic/Emitter';
 import { IWarehouse } from '@/model';
-import { CoreList, writeProp } from '@/model/basic';
+import { CoreList, util$$ } from '@/model';
 import { IWarehouseObjectList } from '@/model/IWarehouseObjectList';
 
 export class Object3DList<M extends THREE.Object3D>
@@ -20,14 +20,14 @@ export class Object3DList<M extends THREE.Object3D>
     // init add to ui
     for (const item of this.items) {
       root.add(item);
-      writeProp(item, '$$warehouse', this.$$parent);
+      util$$.writeProp(item, '$$warehouse', this.$$parent);
     }
   }
 
   unmount(): void {
     for (const item of this.items) {
       this.scene.remove(item);
-      writeProp(item, '$$warehouse', null);
+      util$$.writeProp(item, '$$warehouse', null);
     }
 
     this.assign('scene', null);
@@ -35,7 +35,7 @@ export class Object3DList<M extends THREE.Object3D>
   }
 
   protected override _add(item: M): void {
-    writeProp(item, '$$warehouse', this.$$parent);
+    util$$.writeProp(item, '$$warehouse', this.$$parent);
     this.scene?.add(item);
     super._add(item);
   }

@@ -1,2 +1,2 @@
-export * from './ArcballControl.class';
-export * from './OrbitControl.class';
+export { ArcballControls } from './ArcballControl.class';
+export { OrbitControls } from './OrbitControl.class';

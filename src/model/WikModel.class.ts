@@ -1,6 +1,6 @@
 import { Base } from './basic/Base.class';
 
-export class EssModel extends Base {
+export class WikModel extends Base {
   toSnapshot() {
     return null;
   }

@@ -9,11 +9,11 @@ import { Shelf } from './Shelf.class';
 
 import { IInjector } from '@/interfaces/Injector';
 import { Warehouse } from './basic/Warehouse.class';
-import { EssObjectType } from '@/model';
+import { WikObjectType } from '@/model';
 
-export abstract class EssWarehouse<LayoutData = any, OT extends string = never> extends Warehouse<
+export abstract class WikWarehouse<LayoutData = any, OT extends string = never> extends Warehouse<
   LayoutData,
-  EssObjectType<OT>
+  WikObjectType<OT>
 > {
   readonly points: VectorLayerList<Point>;
   readonly shelfs: VectorLayerList<Shelf>;

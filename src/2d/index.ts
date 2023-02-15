@@ -20,7 +20,7 @@ export { Shelf } from './Shelf.class';
 export { Bot } from './Bot.class';
 export { Edge } from './Edge.class';
 export { Route } from './Route.class';
-export { EssWarehouse } from './EssWarehouse.class';
+export { WikWarehouse } from './WikWarehouse.class';
 export { RenderersManager } from './leafletCanvasOverrides';
 
 import { DEFAULT_WAREHOUSE_DEPENDENCIES } from './basic/Warehouse.class';

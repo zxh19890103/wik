@@ -4,7 +4,6 @@ import { Constructor } from '@/interfaces/Constructor';
 import { ReactiveLayerRenderEffect } from './effects';
 import { appendLayerRenderReq } from './_render_loop';
 import { SimpleObject, PolylineLatLngs } from '@/interfaces/types';
-import symbols from './is';
 import { mapLatLng } from '@/2d/utils/mapLatLng';
 import { boundToLatLngs } from '@/2d/utils/boundToLatLngs';
 import { ReactiveLayer, ReactiveLayerSnapshot } from './ReactiveLayer';
@@ -53,7 +52,7 @@ export function ReactiveLayerMixin(
   Base: Constructor<L.Layer>,
 ): Constructor<L.Layer & ReactiveLayer> {
   return class extends Base implements ReactiveLayer {
-    readonly $$isReactive = symbols.isReactiveSymbol;
+    readonly $$isReactive = true;
 
     $$parent: IList<ReactiveLayer> = null;
     $$system: ReactiveLayer = null;

@@ -1,21 +1,17 @@
 import { useState } from 'react';
-import * as wik2d from '@/2d';
-import * as wikmodel from '@/model';
-import * as wikdom from '@/dom';
+import { wik, wikdom, wikui, wikutil } from '@/index';
 
 import { OnClick, OnMouseOverOut, OnSelect } from '@/interfaces/Interactive';
 
-import '../ioc.config';
-
-@wikmodel.inject(wikmodel.interfaces.IInjector)
-@wikmodel.provides(wik2d.const$$.DEFAULT_WAREHOUSE_DEPENDENCIES)
-class MyWarehouse extends wik2d.EssWarehouse {
+@wik.inject(wik.interfaces.IInjector)
+@wik.provides(wikui.const$$.DEFAULT_WAREHOUSE_DEPENDENCIES)
+class MyWarehouse extends wikui.WikWarehouse {
   async layout(data: any) {
-    await this.imageManager.load(wik2d.images.SVG_KUBOT, wik2d.images.SVG_KUBOT_RED);
+    await this.imageManager.load(wikui.images.SVG_KUBOT, wikui.images.SVG_KUBOT_RED);
 
-    const bot = this.injector.$new<wik2d.Bot>(
-      wik2d.Bot,
-      this.imageManager.get(wik2d.images.SVG_KUBOT_RED),
+    const bot = this.injector.$new<wikui.Bot>(
+      wikui.Bot,
+      this.imageManager.get(wikui.images.SVG_KUBOT_RED),
       1000,
       1000,
     );
@@ -31,7 +27,7 @@ class MyWarehouse extends wik2d.EssWarehouse {
   }
 }
 
-class MyPoint extends wik2d.Circle implements OnSelect, OnClick, OnMouseOverOut {
+class MyPoint extends wikui.Circle implements OnSelect, OnClick, OnMouseOverOut {
   color = '#097';
 
   constructor(lat, lng) {
@@ -61,7 +57,7 @@ class MyPoint extends wik2d.Circle implements OnSelect, OnClick, OnMouseOverOut 
 
 export default () => {
   const [warehouse] = useState(() => {
-    return wikmodel.rootInjector.$new(MyWarehouse) as MyWarehouse;
+    return wik.rootInjector.$new(MyWarehouse) as MyWarehouse;
   });
 
   return (

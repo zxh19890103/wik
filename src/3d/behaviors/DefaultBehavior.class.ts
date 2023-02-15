@@ -1,14 +1,11 @@
-import { Behavior } from '@/model/behaviors';
-import { inject } from '@/model/basic/inject';
-import Interface from '@/model/symbols';
-import { InteractiveStateActionManager } from '@/model/state';
+import { InteractiveStateActionManager, Behavior, inject, interfaces } from '@/model';
 import { InteractiveObject3D } from '../IInteractive3D';
 import { ISelectionManager } from '@/interfaces/Selection';
 
 export class DefaultBehavior extends Behavior {
-  @inject(Interface.ISelectionManager)
+  @inject(interfaces.ISelectionManager)
   readonly selectionManager: ISelectionManager;
-  @inject(Interface.IStateActionManager)
+  @inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
   override onLoad(): void {}

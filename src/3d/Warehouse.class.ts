@@ -1,21 +1,28 @@
-import THREE, { InstancedMesh } from 'three';
+import THREE from 'three';
 import { IDisposable } from '@/interfaces/Disposable';
 import { GraphicObject } from '@/interfaces/GraghicObject';
 import { IInjector } from '@/interfaces/Injector';
 import { IBehavior, IModeManager } from '@/interfaces/Mode';
 import { ISelectionManager } from '@/interfaces/Selection';
-import Interface from '@/model/symbols';
-import { ClickCancelMix, WithClickCancel } from '../mixins/ClickCancel';
-import { IWarehouse, IWarehouseOptional } from '@/model';
-import { Core, IList, inject, mixin, writeReadonlyProp } from '@/model/basic';
-import { event2behavior } from '@/model/state';
+import { ClickCancelMix, WithClickCancel } from '@/mixins/ClickCancel';
+import {
+  IWarehouse,
+  IWarehouseOptional,
+  const$$,
+  interfaces,
+  Core,
+  IList,
+  inject,
+  deco$$,
+  util$$,
+} from '@/model';
 import { tryInvokingOwn } from '@/utils';
 import { PointerReactBehavior } from './behaviors';
 import { DefaultBehavior } from './behaviors/DefaultBehavior.class';
 import { Ground } from './Ground.class';
 import { Object3DList } from './Object3DList.class';
 
-@mixin(ClickCancelMix)
+@deco$$.mixin(ClickCancelMix)
 export abstract class Warehouse3D extends Core implements IWarehouse, IDisposable {
   readonly mounted: boolean = false;
   readonly layouted: boolean = false;
@@ -24,9 +31,9 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   readonly camera: THREE.Camera = null;
   readonly renderer: THREE.Renderer = null;
 
-  @inject(Interface.ISelectionManager)
+  @inject(interfaces.ISelectionManager)
   readonly selectionManager: ISelectionManager;
-  @inject(Interface.IModeManager)
+  @inject(interfaces.IModeManager)
   readonly modeManager: IModeManager;
   readonly typedLists: Map<string, Object3DList<THREE.Object3D>> = new Map();
 
@@ -36,11 +43,11 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     if (!target) return;
 
     if (target === this.scene) {
-      this.modeManager.apply(event2behavior[type], target, event);
+      this.modeManager.apply(const$$.event2behavior[type], target, event);
       return;
     }
 
-    this.modeManager.apply(event2behavior[`item@${type}`], target, event);
+    this.modeManager.apply(const$$.event2behavior[`item@${type}`], target, event);
   }
 
   mount(scene: THREE.Scene, renderer: THREE.Renderer, camera: THREE.Camera): void {
@@ -107,14 +114,14 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       this.modeManager.mode = 'readonly';
     }
 
-    writeReadonlyProp(this, 'mounted', true);
+    util$$.writeReadonlyProp(this, 'mounted', true);
     tryInvokingOwn(this, 'onMounted');
 
     (async () => {
       const data = await this.getLayoutData();
       await this.layout(data);
 
-      writeReadonlyProp(this, 'layouted', true);
+      util$$.writeReadonlyProp(this, 'layouted', true);
       tryInvokingOwn(this, 'onLayouted');
     })();
   }

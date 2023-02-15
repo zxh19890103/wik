@@ -1,6 +1,6 @@
 import { effect } from './basic/effect';
 import { prop } from './basic/prop';
-import { EssModel } from './EssModel.class';
+import { WikModel } from './WikModel.class';
 
 export enum RobotEffect {
   translate = 'Translate',
@@ -8,7 +8,7 @@ export enum RobotEffect {
   state = 'State',
 }
 
-export class Robot extends EssModel {
+export class Robot extends WikModel {
   px = 0;
   py = 0;
   pz = 0;

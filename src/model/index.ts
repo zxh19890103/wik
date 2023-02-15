@@ -16,14 +16,14 @@ export { SelectionManager } from './state/SelectionManager.class';
 export { StateActionBase } from './state/StateAction.class';
 export { StateActionManager } from './state/StateActionManager.class';
 
-export { EssModel } from './EssModel.class';
+export { WikModel } from './WikModel.class';
 export { Robot, RobotEffect } from './Robot.class';
 export { type RobotView } from './RobotView';
 export { Point } from './Point.class';
 export { type PointView } from './PointView';
 export { type ScheduledPathView } from './ScheduledPathView';
 export { type IWarehouse, type ListCtorArgs, type IWarehouseOptional } from './IWarehouse';
-export { type EssObjectType } from './ObjectType';
+export { type WikObjectType } from './ObjectType';
 export { type IWarehouseObjectList, type WithWarehouseRef } from './IWarehouseObjectList';
 export { type Mixin } from './basic/mixin';
 

@@ -1,4 +1,4 @@
-export type EssObjectType<Extra extends string = never> =
+export type WikObjectType<Extra extends string = never> =
   | 'point'
   | 'shelf'
   | 'haiport'
