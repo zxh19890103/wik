@@ -30,17 +30,16 @@ export abstract class WikWarehouse<LayoutData = any, OT extends string = never> 
   constructor(injector: IInjector) {
     super();
 
-    this.points = injector.$new<any>(VectorLayerList, 'pointPane', 'canvas');
-    this.shelfs = injector.$new<any>(VectorLayerList, 'shelfPane', 'canvas');
-    this.haiports = injector.$new<any>(SVGOverlayList, 'haiportPane');
-    this.chargepiles = injector.$new<any>(SVGOverlayList, 'chargepilePane');
-    this.labors = injector.$new<any>(VectorLayerList, 'laborsPane', 'canvas');
-    this.rests = injector.$new<any>(VectorLayerList, 'restsPane', 'canvas');
-    this.maintains = injector.$new<any>(VectorLayerList, 'maintainsPane', 'canvas');
-    this.bots = injector.$new<any>(VectorLayerList, 'botsPane', 'canvas');
+    this.points = injector.$new<any>(VectorLayerList, 'point', 'canvas');
+    this.shelfs = injector.$new<any>(VectorLayerList, 'shelf', 'canvas');
+    this.haiports = injector.$new<any>(SVGOverlayList, 'haiport');
+    this.chargepiles = injector.$new<any>(SVGOverlayList, 'chargepile');
+    this.labors = injector.$new<any>(VectorLayerList, 'labor', 'canvas');
+    this.rests = injector.$new<any>(VectorLayerList, 'rest', 'canvas');
+    this.maintains = injector.$new<any>(VectorLayerList, 'maintainence', 'canvas');
+    this.bots = injector.$new<any>(VectorLayerList, 'bot', 'canvas');
     // this.cacheShelfs = injector.$new<any>(LayerList);
-    this.conveyors = injector.$new<any>(VectorLayerList, 'conveyorPane', 'canvas');
-    ///
+    this.conveyors = injector.$new<any>(VectorLayerList, 'conveyor', 'canvas');
     this.locations = injector.$new<any>(LayerList);
 
     //#region set

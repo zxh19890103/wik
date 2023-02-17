@@ -1,7 +1,7 @@
 {
   "name": "@zxh19890103/wik",
-  "version": "1.0.5",
-  "main": "dist/index",
+  "version": "1.0.0-dev01",
+  "main": "dist/i2d.js",
   "license": "MIT",
   "scripts": {
     "test": "vitest --config vite.config.test.js",

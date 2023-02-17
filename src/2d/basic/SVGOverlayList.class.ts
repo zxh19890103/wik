@@ -1,22 +1,23 @@
 import L from 'leaflet';
 import { LayerWithID } from '@/interfaces';
-import { util$$, mix, inject, interfaces } from '@/model';
+import { util$$, inject, interfaces } from '@/model';
 import { LayerList } from './LayerList.class';
 import { WikMap } from './Map.class';
-import { PaneManager, PaneName } from '../state/PaneManager.class';
+import { PaneManager, WikPane } from '../state/PaneManager.class';
 import { ReactSVGOverlayAppServer } from './ReactSVGOverlayApp';
 
 export class SVGOverlayList<M extends LayerWithID, E extends string = never> extends LayerList<
   M,
   E
 > {
-  readonly pane: PaneName;
+  readonly pane: string;
+  readonly paneObj: WikPane;
   readonly svgServer: ReactSVGOverlayAppServer;
 
   @inject(interfaces.IPaneManager)
   readonly paneMgr: PaneManager;
 
-  constructor(pane: PaneName) {
+  constructor(pane: string) {
     super([]);
     this.svgServer = new ReactSVGOverlayAppServer();
     this.pane = pane;
@@ -35,12 +36,13 @@ export class SVGOverlayList<M extends LayerWithID, E extends string = never> ext
       return;
     }
 
-    this.paneMgr.setZ(this.pane, z);
+    this.paneMgr.setOrder(this.pane, z);
   }
 
   override mount(parent: WikMap): void {
     super.mount(parent);
-    this.paneMgr.get(this.pane, 'none', _pane_z_seed++);
+    const paneObj = this.paneMgr.get(this.pane, 'overlay', _pane_z_seed++);
+    util$$.writeReadonlyProp(this, 'paneObj', paneObj);
     this.svgServer.bootstrap(parent, this.pane);
   }
 }

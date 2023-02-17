@@ -1,5 +1,5 @@
 import THREE from 'three';
-import { IDisposable } from '@/interfaces';
+import { Constructor, IDisposable } from '@/interfaces';
 import { GraphicObject } from '@/interfaces';
 import { IInjector } from '@/interfaces';
 import { IBehavior, IModeManager } from '@/interfaces';
@@ -30,6 +30,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   readonly scene: THREE.Scene;
   readonly camera: THREE.Camera = null;
   readonly renderer: THREE.Renderer = null;
+  readonly injector: IInjector;
 
   @inject(interfaces.ISelectionManager)
   readonly selectionManager: ISelectionManager;
@@ -212,7 +213,12 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     return {};
   }
 
-  injector: IInjector;
+  create<C extends Constructor<object>>(
+    ctor: C,
+    ...args: ConstructorParameters<C>
+  ): InstanceType<C> {
+    return this.injector.$new(ctor, ...args) as InstanceType<C>;
+  }
 
   [Symbol.iterator](): Iterator<THREE.Object3D, any, undefined> {
     throw new Error('Method not implemented.');

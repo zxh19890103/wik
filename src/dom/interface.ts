@@ -1,4 +1,4 @@
-import { IInjector } from '@/interfaces';
+import { Constructor, IInjector } from '@/interfaces';
 import { IWarehouse } from '@/model';
 import { Base, IList, Model, View } from '@/model';
 
@@ -31,7 +31,10 @@ export type WarehouseContextValue = {
   mvMappings: MvMappings;
 };
 
-export type WarehouseProvider = IWarehouse | ((injector: IInjector) => IWarehouse);
+export type WarehouseProvider =
+  | IWarehouse
+  | Constructor<IWarehouse>
+  | ((injector: IInjector) => IWarehouse);
 
 export interface WarehouseProps {
   warehouse: WarehouseProvider;

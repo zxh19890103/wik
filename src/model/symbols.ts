@@ -10,6 +10,7 @@ export const IGlobalConstManager = Symbol.for('IGlobalConstManager');
 export const IInjector = Symbol.for('IInjector');
 export const ILogger = Symbol.for('ILogger');
 export const IRendererManager = Symbol.for('IRendererManager');
+export const IWikMap = Symbol.for('IWikMap');
 
 export default {
   IHighlightManager,
@@ -24,4 +25,5 @@ export default {
   IInjector,
   ILogger,
   IRendererManager,
+  IWikMap,
 };

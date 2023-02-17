@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import { WikMap } from '../basic/Map.class';
 import { IWarehouse, interfaces, Behavior, inject, SelectionManager } from '@/model';
-import { PaneManager, PaneObject } from '../state';
+import { PaneManager, WikPane } from '../state';
 
 export class RectDrawSelectBehavior extends Behavior {
   @inject(interfaces.ISelectionManager)
@@ -13,7 +13,7 @@ export class RectDrawSelectBehavior extends Behavior {
   private latlng0: L.LatLng = null;
   private latlng1: L.LatLng = null;
 
-  private pane: PaneObject;
+  private pane: WikPane;
 
   constructor(private warehouse: IWarehouse, private map: WikMap) {
     super();

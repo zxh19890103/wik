@@ -58,10 +58,6 @@ export class Injector implements IInjector {
 
     const params = getParamsDeps(C, inj);
 
-    console.log('Class', C);
-    console.log('Params', params);
-    console.log('Args', args);
-
     /**
      * What IF we need access injector in construtor ?
      */
@@ -228,13 +224,9 @@ export function configProviders(
 function getParamsDeps(c: Constructor, _injector: IInjector) {
   const node = graphNodes.get(c);
 
-  console.log('getParamsDeps has node?', node);
-
   if (!node) {
     return [];
   }
-
-  console.log('yes, has node. and paramsDeps = ', node.paramsDeps);
 
   return node.paramsDeps.map((x) => {
     if (x.child.token === Interfaces.IInjector) {

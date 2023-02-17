@@ -31,10 +31,10 @@ function injectable(config?: { providedIn: 'root'; provide: symbol }) {
  */
 function inject(token: InjectToken, ...tokens: InjectToken[]) {
   return function (...args: any[]) {
-    // Args.length === 1 means it's a class inject
+    // Class inject
     if (args.length === 1) {
       queueTask({
-        key: 'inject' + injectRunIdSeed++,
+        key: 'class inject' + injectRunIdSeed++,
         run: () => {
           const node = getGraphNode(args[0] as Constructor) as TargetGraphNode;
           let index = 0;
@@ -47,7 +47,7 @@ function inject(token: InjectToken, ...tokens: InjectToken[]) {
       });
     } else {
       queueTask({
-        key: 'inject' + injectRunIdSeed++,
+        key: 'member inject' + injectRunIdSeed++,
         run: () => {
           const [target, prop, _] = args as InjectDecratorArgs;
 

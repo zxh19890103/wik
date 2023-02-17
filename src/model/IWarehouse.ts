@@ -1,4 +1,4 @@
-import { GraphicObject } from '@/interfaces';
+import { Constructor, GraphicObject } from '@/interfaces';
 import { WithInjector } from '@/interfaces';
 import { IBehavior, IModeManager } from '@/interfaces';
 import { ISelectionManager } from '@/interfaces';
@@ -30,6 +30,7 @@ export interface IWarehouse
   add(type: string, item: GraphicObject): void;
   update(type: string, item: GraphicObject, data: any): void;
   remove(type: string, item: GraphicObject | string): void;
+  create<C extends Constructor>(ctor: C, ...args: ConstructorParameters<C>): InstanceType<C>;
 
   getLayoutData(): Promise<unknown>;
   configModes(): Record<string, IBehavior[]>;

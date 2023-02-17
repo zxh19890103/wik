@@ -1,6 +1,7 @@
 import React from 'react';
-import { IInjector } from '@/interfaces';
+import { Constructor, IInjector } from '@/interfaces';
 import { WarehouseContextValue, WarehouseProvider } from './interface';
+import { isArrowFunction } from '@/utils';
 
 export const __context_value__ = Object.freeze({
   warehouse: null,
@@ -11,7 +12,11 @@ export const __warehouse_context__ = React.createContext<WarehouseContextValue>(
 
 export const createWarehouse = (injector: IInjector, model: WarehouseProvider) => {
   if (typeof model === 'function') {
-    return model(injector);
+    if (isArrowFunction(model)) {
+      return (model as any)(injector);
+    } else {
+      return injector.$new(model as Constructor);
+    }
   } else {
     return model;
   }

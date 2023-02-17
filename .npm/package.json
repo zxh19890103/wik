@@ -1,11 +1,11 @@
 {
   "name": "@zxh19890103/wik",
   "version": "",
-  "main": "index.js",
+  "main": "i2d.js",
   "type": "commonjs",
   "license": "MIT",
   "repository": {
-    "url": "git@github.com:zxh19890103/wik.git",
+    "url": "git+https://github.com/zxh19890103/wik.git",
     "type": "git"
   },
   "homepage": "http://wik.zhangxinghai.cn",
@@ -19,7 +19,7 @@
     "2d",
     "3d"
   ],
-  "description": "With wik, visualize warehouse is easy!",
+  "description": "The world-class JavaScript library for building large-scale digital warehouse both on 2D and 3D.",
   "author": {
     "name": "zhangxinghai",
     "url": "http://www.zhangxinghai.cn",

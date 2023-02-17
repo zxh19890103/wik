@@ -10,6 +10,7 @@ import {
   __context_value__,
   __warehouse_context__,
 } from './WarehouseContext';
+import { configProviders, interfaces } from '@/model';
 
 /**
  * 2d warehouse
@@ -25,9 +26,14 @@ export const Warehouse = (props: WarehouseProps) => {
   const { injector } = useContext(__world_context__);
 
   useEffect(() => {
-    const root = new WikMap(element.current);
+    const scene = new WikMap(element.current);
+
+    configProviders('root', {
+      [interfaces.IWikMap]: { useValue: scene },
+    });
+
     const warehouse = createWarehouse(injector, props.warehouse);
-    warehouse?.mount(root);
+    warehouse?.mount(scene);
     setValue({ ...value, warehouse });
   }, []);
 

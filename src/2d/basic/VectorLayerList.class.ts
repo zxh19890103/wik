@@ -3,8 +3,7 @@ import { LayerWithID } from '@/interfaces';
 import { util$$, inject, interfaces } from '@/model';
 import { LayerList } from './LayerList.class';
 import { WikMap } from './Map.class';
-import { PaneManager, PaneName, PaneObject, RendererType } from '../state/PaneManager.class';
-import { RenderersManager } from '../leafletCanvasOverrides';
+import { PaneManager, WikPane, WikPaneType } from '../state/PaneManager.class';
 
 export class VectorLayerList<M extends LayerWithID, E extends string = never> extends LayerList<
   M,
@@ -12,19 +11,16 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
 > {
   @inject(interfaces.IPaneManager)
   readonly paneMgr: PaneManager;
-  @inject(interfaces.IRendererManager)
-  readonly rendererMgr: RenderersManager;
 
-  readonly pane: PaneName;
-  readonly rendererType: RendererType;
+  readonly pane: string;
+  readonly rendererType: WikPaneType;
+  readonly paneObj: WikPane = null;
 
-  readonly paneObj: PaneObject = null;
-
-  constructor(pane: PaneName, rendererType: RendererType) {
+  constructor(pane: string, rendererType: WikPaneType) {
     super([]);
     this.rendererType = rendererType;
     if (!__PROD__) {
-      if (rendererType === 'none') {
+      if (rendererType === 'overlay') {
         throw new Error(`${rendererType} is not allowed!`);
       }
     }
@@ -42,14 +38,13 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
       return;
     }
 
-    this.paneMgr.setZ(this.pane, z);
+    this.paneMgr.setOrder(this.pane, z);
   }
 
   override mount(parent: WikMap): void {
     super.mount(parent);
     const paneObj = this.paneMgr.get(this.pane, this.rendererType, _pane_z_seed++);
     util$$.writeReadonlyProp(this, 'paneObj', paneObj);
-    this.rendererMgr.add(paneObj.name, paneObj.renderer);
   }
 }
 

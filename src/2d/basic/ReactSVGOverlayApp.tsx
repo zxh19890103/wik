@@ -48,11 +48,6 @@ class ReactSVGOverlayAppServer {
     return this.paneElement.querySelector(`#${id}`) || null;
   }
 
-  /**
-   *  将 server 挂载于 map 上，并且指定一个 pane
-   *
-   * 注意：当使用这样的服务时，你就不能使用 vector 渲染方式
-   */
   bootstrap(map: WikMap, pane: string) {
     if (this.isRunning) {
       return this;
@@ -95,7 +90,7 @@ class ReactSVGOverlayAppServer {
   private preparePaneElement() {
     this.leafletPanesElement = this.map._container.querySelector('.leaflet-map-pane');
     this.paneElement = this.leafletPanesElement.querySelector(
-      `.leaflet-${this.pane.replace('Pane', '-pane')}`,
+      `.leaflet-${this.pane}-pane`,
     ) as HTMLDivElement;
   }
 

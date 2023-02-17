@@ -3,6 +3,7 @@ import {
   IWarehouse,
   Core,
   deco$$,
+  inject,
   const$$,
   interfaces,
   GlobalConstManager,
@@ -14,18 +15,26 @@ import {
   ListCtorArgs,
   IWarehouseOptional,
   ConfigProviderConfigValue,
+  util$$,
 } from '@/model';
-
-import { RenderersManager } from '../leafletCanvasOverrides';
 
 import * as behaviors from '../behaviors';
 
-import { GraphicObject, LayerWithID, ILogger, IBehavior, IInjector } from '@/interfaces';
+import {
+  GraphicObject,
+  LayerWithID,
+  ILogger,
+  IBehavior,
+  IInjector,
+  Constructor,
+  WithLayerID,
+} from '@/interfaces';
 
 import { tryInvokingOwn } from '@/utils';
 
 import { AnimationManager } from '../animation/AnimationManager.class';
-import { ImageManager, PaneManager } from '../state';
+import { ImageManager } from '../state';
+import { PaneManager } from '../state/PaneManager.class';
 import { WikMap } from './Map.class';
 import { LayerList } from './LayerList.class';
 import { SVGOverlayList } from './SVGOverlayList.class';
@@ -41,29 +50,26 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
 
   private updateDeps: Partial<Record<OT, ItemUpdateFn<LayerWithID, any>>> = {};
 
-  @deco$$.inject(interfaces.IAnimationManager)
+  @inject(interfaces.IAnimationManager)
   readonly animationManager: AnimationManager;
-  @deco$$.inject(interfaces.IPaneManager)
+  @inject(interfaces.IPaneManager)
   readonly paneManager: PaneManager;
-  @deco$$.inject(interfaces.ISelectionManager)
+  @inject(interfaces.ISelectionManager)
   readonly selectionManager: SelectionManager;
-  @deco$$.inject(interfaces.IImageManager)
+  @inject(interfaces.IImageManager)
   readonly imageManager: ImageManager;
-  @deco$$.inject(interfaces.IHighlightManager)
+  @inject(interfaces.IHighlightManager)
   readonly highlightManager: HighlightManager;
-  @deco$$.inject(interfaces.IStateActionManager)
+  @inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
-  @deco$$.inject(interfaces.IModeManager)
+  @inject(interfaces.IModeManager)
   readonly modeManager: ModeManager;
-  @deco$$.inject(interfaces.IGlobalConstManager)
+  @inject(interfaces.IGlobalConstManager)
   readonly globalConsts: GlobalConstManager;
-  @deco$$.inject(interfaces.ILogger)
+  @inject(interfaces.ILogger)
   readonly logger: ILogger;
 
-  @deco$$.inject(interfaces.IRendererManager)
-  readonly renderersMgr: RenderersManager;
-
-  readonly map: WikMap = null;
+  readonly scene: WikMap = null;
   readonly mounted: boolean = false;
   readonly layouted: boolean = false;
 
@@ -183,7 +189,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
     this.typedLists.set(type, _list);
     this.setEventChild(_list);
 
-    this.mounted && _list.mount(this.map);
+    this.mounted && _list.mount(this.scene);
 
     return _list;
   }
@@ -207,14 +213,15 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
     const injector = this.injector;
 
     // inject
-    injector.writeProp(this, 'map', map);
-    injector.writeProp(this.paneManager, 'map', map);
-    injector.writeProp(this.renderersMgr, 'map', map);
+    util$$.writeProp(this, 'scene', map);
+    util$$.writeProp(this.paneManager, 'scene', map);
+
+    this.paneManager.interact();
 
     // mount list
     for (const [_, list] of this.typedLists) {
       if (list.mounted) continue;
-      list.mount(this.map);
+      list.mount(this.scene);
     }
 
     // axes
@@ -274,7 +281,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
        * mapping from event of emitter or lealfet to behavior's callbacks.
        */
       this.listen$n('click dblclick mouseover mouseout mousedown contextmenu', (evt: WikEvent) => {
-        if (evt.type === 'click' && this.map.isClickEventFireCancelled) return;
+        if (evt.type === 'click' && this.scene.isClickEventFireCancelled) return;
         const { layer, leafletEvt } = evt.payload;
         const cb = const$$.event2behavior[`item@${evt.type}`];
         tryInvokingOwn(this, cb, layer, leafletEvt);
@@ -284,9 +291,9 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       /**
        * event bind on map seems like that it can't read the actual propagatedFrom layer, no this field.
        */
-      this.map
+      this.scene
         .on('mousedown mousemove mouseup click', (evt) => {
-          if (evt.type === 'click' && this.map.isClickEventFireCancelled) return;
+          if (evt.type === 'click' && this.scene.isClickEventFireCancelled) return;
           this.modeManager.apply(const$$.event2behavior[evt.type], evt);
         })
         .on('zoom drag', () => {
@@ -311,8 +318,6 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       time = performance.now();
       await this.layout(d);
       console.log('layout takes:', performance.now() - time);
-
-      this.renderersMgr.interactAll();
 
       injector.writeProp(this, 'layouted', true);
       tryInvokingOwn(this, 'onLayouted');
@@ -343,6 +348,10 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
     return {};
   }
 
+  create<C extends Constructor>(ctor: C, ...args: ConstructorParameters<C>) {
+    return this.injector.$new(ctor, ...args) as InstanceType<C>;
+  }
+
   abstract layout(data?: LayoutData): void | Promise<void>;
 }
 
@@ -364,6 +373,5 @@ export const DEFAULT_WAREHOUSE_DEPENDENCIES: Record<symbol, ConfigProviderConfig
   [interfaces.IModeManager]: ModeManager,
   [interfaces.IAnimationManager]: AnimationManager,
   [interfaces.IHighlightManager]: HighlightManager,
-  [interfaces.IRendererManager]: RenderersManager,
   [interfaces.IImageManager]: ImageManager,
 };

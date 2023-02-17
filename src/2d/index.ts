@@ -21,7 +21,6 @@ export { Bot } from './Bot.class';
 export { Edge } from './Edge.class';
 export { Route } from './Route.class';
 export { WikWarehouse } from './WikWarehouse.class';
-export { RenderersManager } from './leafletCanvasOverrides';
 
 import { DEFAULT_WAREHOUSE_DEPENDENCIES } from './basic/Warehouse.class';
 import { EMPTY_BOUNDS, DEFAULT_PATH_STYLE } from './basic/constants';

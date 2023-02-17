@@ -3,6 +3,7 @@ import { ClickCancelMix, WithClickCancel } from '@/mixins';
 import { deco$$ } from '@/model';
 import { leafletOptions } from '../utils';
 import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
+import { PaneManager } from '../state';
 
 @leafletOptions<L.MapOptions>({
   dragging: false,
@@ -24,8 +25,12 @@ import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
   tapTolerance: 100,
 })
 @deco$$.mixin(ClickCancelMix)
-export class WikMap extends L.Map {}
+export class WikMap extends L.Map {
+  readonly paneMgr: PaneManager;
+  __canvas_renderers_size__ = 0;
+}
 
 export interface WikMap extends WithClickCancel {
   _container: HTMLDivElement;
+  _fireDOMEvent: (...args) => void;
 }

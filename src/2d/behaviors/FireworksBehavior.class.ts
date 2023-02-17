@@ -3,7 +3,7 @@ import { IDisposable } from '@/interfaces';
 import { randomColor } from '@/utils';
 import { inject, interfaces, Behavior } from '@/model';
 import { WikMap } from '../basic/Map.class';
-import { PaneManager, PaneObject } from '../state';
+import { PaneManager, WikPane } from '../state';
 
 const { random, PI, sin, cos } = Math;
 const D2R = PI / 180;
@@ -143,7 +143,7 @@ export class FireworksBehavior extends Behavior implements IDisposable {
   private flash: Flash = null;
   private color: string = null;
 
-  private pane: PaneObject = null;
+  private pane: WikPane = null;
 
   constructor(private map: WikMap) {
     super();

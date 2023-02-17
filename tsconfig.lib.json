@@ -20,7 +20,8 @@
     "src/utils/**/*",
     "src/lib.internal.d.ts",
     "src/lib.d.ts",
-    "src/index.ts"
+    "src/i2d.ts",
+    "src/i3d.ts"
   ],
   "exclude": [
     "**/*.test.ts"

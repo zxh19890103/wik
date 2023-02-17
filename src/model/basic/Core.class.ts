@@ -25,8 +25,8 @@ export abstract class CoreList<M = any, E extends string = never>
   extends Core<E | CoreListEventType>
   implements IList<M>
 {
-  items: Set<M> = new Set();
-  index: Map<string, M> = new Map();
+  readonly items: Set<M> = new Set();
+  readonly index: Map<string, M> = new Map();
   size = 0;
 
   protected isBatching = false;

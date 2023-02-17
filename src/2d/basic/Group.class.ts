@@ -1,9 +1,8 @@
 import L from 'leaflet';
 import { ReactiveLayer, ReactiveLayerMixin, WithClickCancel } from '@/mixins';
 import { deco$$, util$$, interfaces, InteractiveStateActionManager, ModeManager } from '@/model';
-import { PaneManager, PaneName, PaneObject } from '../state';
+import { PaneManager, WikPane } from '../state/PaneManager.class';
 import { leafletOptions } from '../utils';
-import { RenderersManager } from '../leafletCanvasOverrides';
 import { ContextMenuItem, Interactive, OnInteractive } from '@/interfaces';
 
 const leafletEvent2OnCallback = {
@@ -19,7 +18,7 @@ interface GroupOptions {
   /**
    * @default group
    */
-  pane?: PaneName;
+  pane?: string;
 }
 
 @leafletOptions<GroupOptions>({
@@ -31,14 +30,12 @@ export class Group
 {
   @deco$$.inject(interfaces.IPaneManager)
   readonly paneMgr: PaneManager;
-  @deco$$.inject(interfaces.IRendererManager)
-  readonly rendererMgr: RenderersManager;
   @deco$$.inject(interfaces.IModeManager)
   readonly modeMgr: ModeManager;
   @deco$$.inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
-  readonly paneObj: PaneObject;
+  readonly paneObj: WikPane;
   readonly options: GroupOptions;
 
   constructor(layers: ReactiveLayer[] = [], options?: GroupOptions) {
@@ -67,7 +64,6 @@ export class Group
     const paneObj = this.paneMgr.get(this.options.pane, 'canvas', _pane_z_seed++);
     L.Util.setOptions(this, { renderer: paneObj.renderer });
     util$$.writeReadonlyProp(this, 'paneObj', paneObj);
-    this.rendererMgr.add(paneObj.name, paneObj.renderer);
     super.onAdd(map);
     return this;
   }
