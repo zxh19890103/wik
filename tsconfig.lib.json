@@ -24,6 +24,7 @@
     "src/i3d.ts"
   ],
   "exclude": [
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "demo/**/*.ts"
   ]
 }

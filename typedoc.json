@@ -4,6 +4,7 @@
   "entryPoints": [
     "src"
   ],
+  "exclude": ["demo/**/*"],
   "entryPointStrategy": "expand",
   "out": "document/_site/referrences",
   "theme": "default",

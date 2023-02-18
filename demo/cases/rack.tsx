@@ -34,7 +34,7 @@ class MyWarehouse3D extends wikui.Warehouse3D {
 
   constructor(injector: IInjector) {
     super();
-    this.injector = injector;
+    // this.injector = injector;
 
     this.shelfs = this.addList('shelf');
     this.packs = this.addList('pack');
