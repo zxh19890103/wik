@@ -3,15 +3,10 @@ layout: default
 ---
 
 {% include site-header.html %}
+{% include wik-icons.svg %}
 
-<div class="landing-picture">
-  <p>{{ page.pic_desc }}</p>
-  <img alt="" src="{{ page.pic }}" />
-  <p>{{ page.pic_desc_1 }}</p>
-</div>
-
-<main class="main container landing">
-  <article class="article article--page content typeset">{{ content }}</article>
+<main class="main container">
+  <article class="typeset">{{ content }}</article>
 </main>
 
 {% include site-footer.html %}

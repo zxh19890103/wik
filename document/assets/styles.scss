@@ -124,10 +124,10 @@ table {
       transition: border-color 0.3s linear;
 
       &__title {
+        font-size: 1em;
         display: block;
         font-weight: bold;
-        font-size: 1.3em !important;
-        margin-bottom: 1.6rem;
+        margin: 0;
         color: #333;
       }
 
@@ -136,75 +136,77 @@ table {
         border-color: #aaa;
       }
     }
-  }
 
-  &--x2 {
-    &:nth-child(2n + 1) > p {
-      margin-left: 0;
+    @include breakpoint(break-0) {
+      width: 100%;
     }
 
-    &:nth-child(2n) > p {
-      margin-right: 0;
+    @include breakpoint(break-2) {
+      width: 50%;
     }
-  }
 
-  &--x3 {
-    li {
+    @include breakpoint(break-3) {
       width: 30%;
-
-      &:nth-child(3n + 1) > p {
-        margin-left: 0;
-      }
-
-      &:nth-child(3n) > p {
-        margin-right: 0;
-      }
-    }
-  }
-
-  &--x4 {
-    li {
-      width: 20%;
-      &:nth-child(4n + 1) > p {
-        margin-left: 0;
-      }
-
-      &:nth-child(4n) > p {
-        margin-right: 0;
-      }
     }
   }
 }
 
-.landing {
-  width: 61.8%;
-  max-width: 61.8%;
-  flex-direction: column;
-  align-items: center;
+.logo-text {
+  color: $headingColour;
+  margin: 0 0 0 8px;
+  font-size: 1rem;
+}
 
-  &-picture {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
+.wik-icon {
+  display: block;
+
+  @include breakpoint(break-0) {
+    display: none;
+  }
+  @include breakpoint(break-2) {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    border-radius: 10%;
+    border: 1px solid #ddd;
+    font-size: 30px;
     text-align: center;
-    background: rgb(2, 0, 36);
-    background: linear-gradient(0deg, #707eba 0%, #e8ebec 40%, #e8ebec 70%, #b2b9be 100%);
-    background-blend-mode: color-dodge;
+    line-height: 45px;
+    margin: 0 6px 0 0;
+  }
+  @include breakpoint(break-3) {
+    display: block;
+    width: 80px;
+    height: 80px;
+    border-radius: 10%;
+    border: 1px solid #ddd;
+    font-size: 60px;
+    text-align: center;
+    line-height: 80px;
+  }
+}
 
-    img {
-      max-height: 500px;
-    }
+.nav-wrap {
+  display: flex;
+  justify-content: flex-start;
+  .nav,
+  .link {
+    margin-right: 8px;
+  }
+}
 
-    p {
-      width: 500px;
-      font-size: 2.4rem;
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: 4px;
-      color: #789;
-    }
+.theme-button {
+  svg {
+    display: none;
+    vertical-align: middle;
+    pointer-events: none;
+  }
+
+  &.dark .lightToggleIcon_XCs_ {
+    display: inline;
+  }
+
+  &.light .darkToggleIcon_FGAN {
+    display: inline;
   }
 }

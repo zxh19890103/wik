@@ -1,6 +1,6 @@
 ---
 layout: landing
-pic: /assets/feature2.png
+feature_image: "/assets/images/landing.png"
 ---
 
 ## What it it?
@@ -9,63 +9,39 @@ Wik is a JavaScript Library for big-scale warehouse visualization. Both 2D and 3
 
 ## Features
 
-<ul class="cards cards--x3">
+<ul class="cards">
   <li>
-{% include card.html title="Model-Driven" text="Business models contain the data and behavior of the system, and views are a visual mapping of the business model. Changes in the business model result in changes in the view." %}
+{% include card.html icon="wikicon-Directory-tree" color="#897" padding="6px" title="Model-Driven" text="You defeined your own powerful models with events and then use them to render views." %}
   </li>
     <li>
-{% include card.html title="Data-Driven" text="The reason for the change of the view is always the change of the data, and the view model can also carry data." %}
+{% include card.html icon="wikicon-data" color="#390"  padding="3px 0"  title="Data-Driven" text="Every view has its state which can make its presentation change over time just like what React do." %}
   </li>
     <li>
-{% include card.html title="1 Model => N Views" text="One model can be bound to multiple views." %}
+{% include card.html icon="wikicon-behavior_line" color="#d06"  title="1 Model => N Views" text="Since that we've separated models & views, one model can driven several views change at the same time." %}
   </li>
     <li>
-{% include card.html title="React-SVGOverlay" text="React is responsible for updating the svg content, leaflet is responsible for adding and deleting overlay." %}
+{% include card.html icon="wikicon-react" color="#0a9"  title="React-SVGOverlay" text="Leaflet SVGOverlay is static. Wik makes it reactive!" %}
   </li>
     <li>
-{% include card.html title="Real Mixin" text="Implements mixin using inheritance." %}
+{% include card.html icon="wikicon-mix" color="#e4d"  title="Real Mixin" text="This is quite better than rewrite prototype of Class!" %}
   </li>
     <li>
-{% include card.html title="Dependency Injection" text="The goal of this design is to separate concerns, decouple the recipient and dependencies, thus providing loose coupling and code reuse." %}
-  </li>
-  <li>
-{% include card.html title="Automatic Panes Management" text="Panes is based on categories and limited to leaflet only." %}
+{% include card.html icon="wikicon-ts-relationship" color="#a0f" padding="6px"  title="Dependency Injection" text="The goal of this design is to separate concerns, decouple the recipient and dependencies, thus providing loose coupling and code reuse." %}
   </li>
   <li>
-{% include card.html title="Interactive State Management" text="Implement mouse hover, selection, highlight, and other states, support for expansion." %}
+{% include card.html icon="wikicon-layers" color="#c3d" padding="0 3px"   title="Automatic Panes Management" text="Panes is based on categories and limited to leaflet only." %}
+  </li>
+  <li>
+{% include card.html icon="wikicon-model-line" color="#bb1"  title="Interactive State Management" text="Wik has implemented mouse hover, selection, highlight, and other states. Extension is supported." %}
   </li>
     <li>
-{% include card.html title="Behavior & Mode" text="Provide powerful interactive expansion capabilities." %}
+{% include card.html icon="wikicon-userbehavior" color="#fa0"  title="Behavior & Mode" text="Wik provides powerful interactive extendable capabilities." %}
   </li>
 </ul>
 
-## Code Sample
-
-```tsx
-import * as wik from '@zxh/wik'
-
-class MyWarehouse extends Warehouse {}
-
-export default () => {
-  const [warehouse] = useState(() => {
-    return rootInjector.$new(MyWarehouse) as MyWarehouse;
-  });
-
-  return (
-    <wik.World defaultKeys={['2d']}>
-      <wik.Warehouse key="2d" modes warehouse={warehouse} />
-      <wik.MultipleSelectShell w={400}>
-        <Aside />
-      </wik.MultipleSelectShell>
-      <wik.SelectShell w={300}>
-        <Aside2 />
-      </wik.SelectShell>
-    </wik.World>
-  );
-};
-```
-
 ## Pictures
+
+{% include figure.html image="/assets/images/snapshot3.png" caption="Just 2 Objects needed to run your digital warehouse." position="center" %}
 
 {% include figure.html image="/assets/images/snapshot.png" caption="More than 20000 packages rendered!" position="center" %}
 

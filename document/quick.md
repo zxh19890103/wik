@@ -20,26 +20,29 @@ npm install @zxh19890103/wik
 
 ## Code & Run it.
 
-Firstly, You should define your `Warehouse` class.
+In your project, define your `Warehouse` class.
 
 ```ts
-import { dom, o2d, model } from '@zxh19890103/wik';
+import { wik, wikui } from '@zxh19890103/wik';
 
-class MyWarehouse extends o2d.EssWarehouse {
+@wik.inject(...)
+class MyWarehouse extends wikui.WikWarehouse {
   layout() {
-    // your code.
+    // this.create(...)
   }
 }
 ```
 
-To represent it on screen, you could choose `Scene` component.
+To flush it on the screen, you create a React component.
 
 ```tsx
-const App = () => {
-  const [warehouse] = useState(() => {
-    return model.basic.rootInjector.$new(MyWarehouse);
-  });
+import { wik, wikui, wikdom } from '@zxh19890103/wik';
 
-  return <dom.Scene warehouse={warehouse} />;
+const App = () => {
+  return <wikdom.World defaultKeys={["2d"]}>
+    <wikdom.Warehouse key="2d" warehouse={MyWarehouse} />
+  </wikdomWorld>;
 };
 ```
+
+That's all.

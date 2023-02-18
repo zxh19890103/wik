@@ -1,4 +1,11 @@
 <div class="card">
-  <h3 class="card__title">{{include.title}}</h3>
+  <h3 class="card__title">
+    {% if include.icon %}
+    
+    <svg class="wik-icon wik-icon-{{include.icon}}" role="img" alt="{{include.icon}}" style="background-color: {{ include.color }}; color: #fff; padding: {{ include.padding }}"><title>{{ include.title | default: include.icon }}</title><use xlink:href="#{{ include.icon }}" fill="CurrentColor"></use></svg>
+
+    {% endif %}
+    {{include.title}}
+  </h3>
   <div class="card__text">{{include.text}}</div>
 </div>

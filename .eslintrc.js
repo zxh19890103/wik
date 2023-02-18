@@ -16,7 +16,7 @@ module.exports = {
   globals: {
     __PROD__: 'readonly',
   },
-  ignorePatterns: ['node_modules/**/*', '**/dist/**/*', 'doc/**/*'],
+  ignorePatterns: ['node_modules/**/*', '**/dist/**/*', 'document/**/*'],
   rules: {
     'prettier/prettier': [2],
     semi: ['error', 'always'],

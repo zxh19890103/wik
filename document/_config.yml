@@ -18,7 +18,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Wik
+title: Wik, Warehouse Digitalization
 email: zhangxinghai79@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Wik is the best choice to develop a large-scale web graphic application.
@@ -27,6 +27,8 @@ description: >- # this means to ignore newlines until "baseurl:"
 baseurl: '' # the subpath of your site, e.g. /blog
 url: 'http://wik.zhangxinghai.cn' # the base hostname & protocol for your site, e.g. http://example.com
 logo: '/assets/images/favicon-32x32.png'
+service_worker: false
+css_inline: true
 
 # Build settings
 theme: alembic-jekyll-theme
@@ -34,25 +36,18 @@ theme: alembic-jekyll-theme
 navigation_header:
   - title: Home
     url: /
-  - title: Quick
-    url: /quick
+  - title: Quick Start
+    url: /quick/
   - title: Guides
-    url: /guides
+    url: /guides/
   - title: Posts
-    url: /posts
-  - title: API
-    url: /api
+    url: /posts/
+  - title: References
+    url: /api/
 
 navigation_footer:
   - title: Github
     url: https://github.com/zxh19890103/wik
-
-feature_image: '/assets/feature.png'
-feature_text: 'Visualize your warehouse in 3 minutes.'
-
-custom_fonts:
-  urls:
-    - '/assets/fonts.css'
 
 plugins:
   - jekyll-feed

@@ -1,0 +1,10 @@
+{
+  "name": "@zxh19890103/wikdoc",
+  "version": "1.0.0",
+  "main": "",
+  "types": "",
+  "license": "MIT",
+  "dependencies": {
+    "darkreader": "^4.9.58"
+  }
+}
