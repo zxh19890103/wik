@@ -37,13 +37,13 @@ navigation_header:
   - title: Home
     url: /
   - title: Quick Start
-    url: /quick/
+    url: /quick
   - title: Guides
-    url: /guides/
+    url: /guides
   - title: Posts
-    url: /posts/
+    url: /posts
   - title: References
-    url: /api/
+    url: /api
 
 navigation_footer:
   - title: Github

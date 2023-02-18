@@ -3,7 +3,7 @@ layout: landing
 feature_image: "/assets/images/landing.png"
 ---
 
-## What it it?
+## What is it?
 
 Wik is a JavaScript Library for big-scale warehouse visualization. Both 2D and 3D are supported. With Wik, you could visualize the warehouse very easily.
 
