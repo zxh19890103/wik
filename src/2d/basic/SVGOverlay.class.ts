@@ -1,7 +1,7 @@
 import L from 'leaflet';
 import { WikDraggable } from './Draggable.class';
 import { WikMap } from './Map.class';
-import { EMPTY_BOUNDS } from './constants';
+import { empty_bounds } from './constants';
 import { leafletOptions } from '../utils';
 import { deco$$ } from '@/model';
 import { ReactiveLayer, ReactiveLayerMixin, ReactiveLayerRenderEffect } from '@/mixins';
@@ -44,7 +44,7 @@ export class SVGOverlay extends deco$$
     sizeY: number,
     options?: L.ImageOverlayOptions,
   ) {
-    super(el, EMPTY_BOUNDS, options);
+    super(el, empty_bounds, options);
     // (this as any)._initContextMenu();
     this.position = L.latLng(position);
     this.size = new L.Point(sizeX, sizeY);

@@ -43,20 +43,20 @@ export abstract class WikWarehouse<LayoutData = any, OT extends string = never> 
     this.locations = injector.$new<any>(LayerList);
 
     //#region set
-    this.addList('point', this.points);
-    this.addList('shelf', this.shelfs);
-    this.addList('haiport', this.haiports);
-    this.addList('chargepile', this.chargepiles);
+    this.regList('point', this.points);
+    this.regList('shelf', this.shelfs);
+    this.regList('haiport', this.haiports);
+    this.regList('chargepile', this.chargepiles);
 
-    this.addList('labor', this.labors);
-    this.addList('rest', this.rests);
-    this.addList('maintain', this.maintains);
+    this.regList('labor', this.labors);
+    this.regList('rest', this.rests);
+    this.regList('maintain', this.maintains);
 
-    this.addList('bot', this.bots);
+    this.regList('bot', this.bots);
 
     // this.addList('cacheShelf', this.cacheShelfs);
-    this.addList('conveyor', this.conveyors);
-    this.addList('location', this.locations);
+    this.regList('conveyor', this.conveyors);
+    this.regList('location', this.locations);
     //#endregion
   }
 }

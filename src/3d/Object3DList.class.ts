@@ -3,6 +3,7 @@ import { __batched_fires__ } from '../model/basic/Emitter';
 import { IWarehouse } from '@/model';
 import { CoreList, util$$ } from '@/model';
 import { IWarehouseObjectList } from '@/model/IWarehouseObjectList';
+import { Constructor } from '@/interfaces';
 
 export class Object3DList<M extends THREE.Object3D>
   extends CoreList<M>
@@ -53,7 +54,8 @@ export class Object3DList<M extends THREE.Object3D>
     super._clear();
   }
 
-  create(...args: any[]): M {
-    throw new Error('Method not implemented.');
+  create(...args: ConstructorParameters<Constructor<M>>): M {
+    // const m = new ()
+    throw new Error('ha');
   }
 }

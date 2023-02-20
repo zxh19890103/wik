@@ -14,7 +14,6 @@ import {
   WikEvent,
   ListCtorArgs,
   IWarehouseOptional,
-  ConfigProviderConfigValue,
   util$$,
 } from '@/model';
 
@@ -27,7 +26,7 @@ import {
   IBehavior,
   IInjector,
   Constructor,
-  WithLayerID,
+  WithInput,
 } from '@/interfaces';
 
 import { tryInvokingOwn } from '@/utils';
@@ -39,6 +38,7 @@ import { WikMap } from './Map.class';
 import { LayerList } from './LayerList.class';
 import { SVGOverlayList } from './SVGOverlayList.class';
 import { VectorLayerList } from './VectorLayerList.class';
+import { WarehousePhase } from './WarehousePhase';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 
@@ -121,8 +121,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
   update(type: OT, item: LayerWithID, data: any) {
     const updateFn = this.updateDeps[type];
 
-    if (!updateFn && (item as any).onInput) {
-      (item as any).onInput(data);
+    if (!updateFn && item.onInput) {
+      item.onInput(data);
     } else {
       updateFn(item, data);
     }
@@ -153,7 +153,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
     this.onRemove && this.onRemove(_item);
   }
 
-  addList(type: OT, list: LayerList<LayerWithID> | ListCtorArgs) {
+  regList(type: OT, list: LayerList<LayerWithID> | ListCtorArgs) {
     if (!__PROD__ && this.layouted) {
       throw new Error('you can not register new list after layouted! reg in layout method.');
     }
@@ -359,19 +359,3 @@ export type ItemUpdateFn<M extends LayerWithID, D> = (item: M, data: D) => void;
 
 export interface Warehouse<LayoutData = any, OT extends string = string>
   extends IWarehouseOptional {}
-
-export enum WarehousePhase {
-  mount = 1,
-  mounted = 5,
-  data = 10,
-  layout = 20,
-  ready = 40,
-}
-
-export const DEFAULT_WAREHOUSE_DEPENDENCIES: Record<symbol, ConfigProviderConfigValue> = {
-  [interfaces.IPaneManager]: PaneManager,
-  [interfaces.IModeManager]: ModeManager,
-  [interfaces.IAnimationManager]: AnimationManager,
-  [interfaces.IHighlightManager]: HighlightManager,
-  [interfaces.IImageManager]: ImageManager,
-};

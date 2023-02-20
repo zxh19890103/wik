@@ -2,7 +2,7 @@ import L from 'leaflet';
 import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
 import { alias, mix } from '@/model';
 import { leafletOptions } from '../utils';
-import { EMPTY_BOUNDS } from './constants';
+import { empty_bounds } from './constants';
 
 @leafletOptions<L.ImageOverlayOptions>({
   interactive: true,
@@ -20,7 +20,7 @@ export class ImageOverlay extends mix(L.ImageOverlay).with<L.ImageOverlay, React
     size: L.PointTuple,
     options?: L.ImageOverlayOptions,
   ) {
-    super(imageUrl, EMPTY_BOUNDS, options);
+    super(imageUrl, empty_bounds, options);
     this.position = L.latLng(latlng);
     this.size = size;
   }

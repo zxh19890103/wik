@@ -1,4 +1,6 @@
-export interface IList<M> extends Iterable<M> {
+import { Constructor } from '@/interfaces';
+
+export interface IList<M extends object> extends Iterable<M> {
   items: Set<M>;
   index: Map<string, M>;
   size: number;
@@ -37,5 +39,5 @@ export interface IList<M> extends Iterable<M> {
   /**
    * 创建一个默认的对象，并且将其添加至数据集
    */
-  create(...args: any[]): M;
+  create(...args: ConstructorParameters<Constructor<M>>): M;
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
-import { BUILTIN_LEAFLET_PANES } from './constants';
+import { leaflet_buitlin_panes } from './constants';
 import { WikMap } from './Map.class';
 import { SvgFunctionComponent } from './SVGComponentFactory';
 
@@ -54,9 +54,9 @@ class ReactSVGOverlayAppServer {
     }
 
     if (!__PROD__) {
-      if (BUILTIN_LEAFLET_PANES.indexOf(pane) !== -1) {
+      if (leaflet_buitlin_panes.indexOf(pane) !== -1) {
         throw new Error(
-          `You should not use the built-in panes in svg server, which includes: ${BUILTIN_LEAFLET_PANES}`,
+          `You should not use the built-in panes in svg server, which includes: ${leaflet_buitlin_panes}`,
         );
       }
     }

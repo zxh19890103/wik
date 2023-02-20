@@ -22,13 +22,12 @@ export { Edge } from './Edge.class';
 export { Route } from './Route.class';
 export { WikWarehouse } from './WikWarehouse.class';
 
-import { DEFAULT_WAREHOUSE_DEPENDENCIES } from './basic/Warehouse.class';
-import { EMPTY_BOUNDS, DEFAULT_PATH_STYLE } from './basic/constants';
+import { empty_bounds, default_path_style, default_warehouse_deps } from './basic/constants';
 
 export const const$$ = {
-  EMPTY_BOUNDS,
-  DEFAULT_PATH_STYLE,
-  DEFAULT_WAREHOUSE_DEPENDENCIES,
+  empty_bounds,
+  default_path_style,
+  default_warehouse_deps,
 };
 
 import './styles/index.scss';

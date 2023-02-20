@@ -2,6 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import { EmitterMix, WithEmitter } from '@/model/basic/Emitter';
 import { IList } from './IList';
 import { mixin } from './mixin';
+import { Constructor } from '@/interfaces';
 
 export interface Core<E extends string = string> extends WithEmitter<E> {}
 
@@ -21,7 +22,7 @@ export abstract class Core<E extends string = string> extends EventEmitter<E> {
   }
 }
 
-export abstract class CoreList<M = any, E extends string = never>
+export abstract class CoreList<M extends object = object, E extends string = never>
   extends Core<E | CoreListEventType>
   implements IList<M>
 {
@@ -207,14 +208,14 @@ export abstract class CoreList<M = any, E extends string = never>
     return result;
   }
 
-  abstract create(...args: any[]): M;
+  abstract create(...args: ConstructorParameters<Constructor<M>>): M;
   /**
    * key to item.
    */
   abstract itemKey: string;
 }
 
-export interface CoreList<M = any, E extends string = never> {
+export interface CoreList<M extends object = object, E extends string = never> {
   onItemAdd(item: M): void;
   onItemRemove(item: M): void;
   onItemUpdate(item: M, data: any): void;

@@ -4,12 +4,12 @@ import { boundToLatLngs, D2R, leafletOptions, mapLatLng } from '../utils';
 import { createOffscreenCanvas } from '@/utils';
 import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
 import { Constructor } from '@/interfaces';
-import { DEFAULT_PATH_STYLE } from './constants';
+import { default_path_style } from './constants';
 
 export type ImageLayerDataSource = HTMLImageElement | HTMLCanvasElement;
 
 @leafletOptions<L.PolylineOptions>({
-  ...DEFAULT_PATH_STYLE,
+  ...default_path_style,
   stroke: true,
   dashArray: [3, 4],
   fill: true,

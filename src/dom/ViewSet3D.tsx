@@ -19,7 +19,7 @@ export const ViewSet3D = memo((props: ViewSet3DProps) => {
     list = warehouse.queryList(type);
     if (list) return list;
 
-    list = warehouse.addList(type);
+    list = warehouse.regList(type);
 
     return list;
   });
@@ -47,7 +47,7 @@ export const InstancedViewSet3D = memo((props: InstancedViewSet3DProps) => {
     list = warehouse.queryList(type);
     if (list) return list;
 
-    list = warehouse.addList(type);
+    list = warehouse.regList(type);
 
     return list;
   });

@@ -3,9 +3,9 @@ import type { PolylineLatLngs } from '@/interfaces';
 import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
 import { deco$$ } from '@/model';
 import { leafletOptions, mapLatLng } from '../utils';
-import { DEFAULT_PATH_STYLE } from './constants';
+import { default_path_style } from './constants';
 
-@leafletOptions<L.PolylineOptions>(DEFAULT_PATH_STYLE)
+@leafletOptions<L.PolylineOptions>(default_path_style)
 export class Polyline extends deco$$
   .mix(L.Polyline)
   .with<L.Polyline, ReactiveLayer>(ReactiveLayerMixin) {

@@ -32,11 +32,11 @@ export const Warehouse3D = (props: WarehouseProps) => {
     element.appendChild(renderer.domElement);
 
     const camera = new THREE.PerspectiveCamera(45, 1, 1, Number.MAX_SAFE_INTEGER);
-    camera.position.set(5000, 0, 1000);
+    camera.position.set(1, 10000, 5000);
     camera.up.set(0, 0, 1);
     camera.lookAt(0, 0, 0);
 
-    const adjust = () => {
+    const adjustSize = () => {
       const w = element.clientWidth;
       const h = element.clientHeight;
 
@@ -45,7 +45,7 @@ export const Warehouse3D = (props: WarehouseProps) => {
       camera.updateProjectionMatrix();
     };
 
-    adjust();
+    adjustSize();
 
     const scene = new THREE.Scene();
 
@@ -65,7 +65,7 @@ export const Warehouse3D = (props: WarehouseProps) => {
 
     setTimeout(loop, 0);
 
-    window.onresize = adjust;
+    window.onresize = adjustSize;
 
     warehouse = createWarehouse(injector, props.warehouse);
     warehouse?.mount(scene, renderer, camera);

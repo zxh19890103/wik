@@ -2,10 +2,10 @@ import L from 'leaflet';
 import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
 import { mix } from '@/model';
 import { leafletOptions } from '../utils/leaflet';
-import { DEFAULT_PATH_STYLE } from './constants';
+import { default_path_style } from './constants';
 
 @leafletOptions<L.CircleMarkerOptions>({
-  ...DEFAULT_PATH_STYLE,
+  ...default_path_style,
   radius: 400,
 })
 export class Circle extends mix(L.Circle).with<L.Circle, ReactiveLayer>(ReactiveLayerMixin) {

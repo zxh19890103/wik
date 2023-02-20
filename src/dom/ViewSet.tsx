@@ -28,7 +28,7 @@ export const ViewSet = memo(
       list = warehouse.queryList(type);
       if (list) return list;
 
-      list = warehouse.addList(type, {
+      list = warehouse.regList(type, {
         rendererBy: renderer,
         pane: `${type}Pane`,
       });

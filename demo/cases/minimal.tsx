@@ -9,7 +9,7 @@ wik.configProviders('root', {
 });
 
 @wik.inject(wik.interfaces.IInjector)
-@wik.provides(wikui.const$$.DEFAULT_WAREHOUSE_DEPENDENCIES)
+@wik.provides(wikui.const$$.default_warehouse_deps)
 class MyWarehouse extends wikui.WikWarehouse {
   async layout(data: any) {
     await this.imageManager.load(wikui.images.SVG_KUBOT, wikui.images.SVG_KUBOT_RED);

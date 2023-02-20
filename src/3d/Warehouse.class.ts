@@ -67,24 +67,29 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     // lights, ground
     {
       // lights
+
       const light = new THREE.DirectionalLight(0xffffff, 1);
       light.position.set(0, 0, 1);
       scene.add(light);
+
       const amlight = new THREE.AmbientLight(0xffffff, 0.3);
       scene.add(amlight);
-      // const sky = new THREE.HemisphereLight(0x2345f5, 0xff0000);
-      // scene.add(sky);
 
-      const grid = new THREE.GridHelper(5000);
+      // const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf87);
+      // hemiLight.position.set(0, 10000, 0);
+      // scene.add(hemiLight);
+
+      const grid = new THREE.GridHelper(10000);
       grid.rotateX(Math.PI / 2);
       scene.add(grid);
 
       // ground
-      const ground = new Ground(5000, 5000);
+      const ground = new Ground(50000, 50000, 0x910293);
       scene.add(ground);
 
       // axes
-      const axesHelper = new THREE.AxesHelper(300);
+      const axesHelper = new THREE.AxesHelper(10000);
+
       axesHelper.setColors(
         new THREE.Color(0x3487f0), // x
         new THREE.Color(0xff4f00), // y
@@ -137,7 +142,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     return this.typedLists.get(type);
   }
 
-  addList<O extends THREE.Object3D>(type: string): Object3DList<O> {
+  regList<O extends THREE.Object3D>(type: string): Object3DList<O> {
     if (this.typedLists.has(type)) return;
     const list = this.injector.$new<Object3DList<O>>(Object3DList);
     this.typedLists.set(type, list);

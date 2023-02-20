@@ -29,18 +29,25 @@ class MyWarehouse3D extends wikui.Warehouse3D {
 
   racks: wikui.Object3DList<wikui.InstancedRack>;
 
+  robots: wikui.Object3DList<wikui.Robot>;
+
   instancedPack: wikui.InstancePack;
   instancedBoard: wikui.InstanceBoard;
 
   constructor(injector: IInjector) {
     super();
-    // this.injector = injector;
 
-    this.shelfs = this.addList('shelf');
-    this.packs = this.addList('pack');
-    this.boards = this.addList('board');
-    this.racks = this.addList('rack');
+    this.assign('injector', injector);
 
+    this.shelfs = this.regList('shelf');
+    this.packs = this.regList('pack');
+    this.boards = this.regList('board');
+    this.racks = this.regList('rack');
+
+    this.robots = this.regList('robot');
+  }
+
+  async layout(data: any) {
     const pack = new wikui.InstancePack(1000000, packSpec);
     const board = new wikui.InstanceBoard(100000, boardSpec);
 
@@ -49,9 +56,16 @@ class MyWarehouse3D extends wikui.Warehouse3D {
 
     this.instancedBoard = board;
     this.instancedPack = pack;
-  }
 
-  async layout(data: any) {}
+    this.robots.add(new MyRobot());
+  }
+}
+
+class MyRobot extends wikui.Robot {
+  constructor() {
+    super();
+    console.log('...');
+  }
 }
 
 export default () => {
@@ -65,8 +79,8 @@ export default () => {
     setTimeout(() => {
       wik.__batched_fires__(() => {
         // 400 dots
-        for (let x = 0; x < 4; x++) {
-          for (let y = 0; y < 3; y++) {
+        for (let x = 0; x < 100; x++) {
+          for (let y = 0; y < 100; y++) {
             const dot = state.dots.create();
             dot.px = x * 2000;
             dot.py = y * 2000;
@@ -79,12 +93,7 @@ export default () => {
 
   return (
     <wikdom.World defaultKeys={['w3d']}>
-      <wikdom.Warehouse3D
-        key="w3d"
-        modes
-        mvMappings={mvMapping3}
-        warehouse={(injector) => injector.$new(MyWarehouse3D)}
-      >
+      <wikdom.Warehouse3D key="w3d" modes mvMappings={mvMapping3} warehouse={MyWarehouse3D}>
         <wikdom.ViewSet3D type="rack" model={state.dots} />
       </wikdom.Warehouse3D>
       <wikdom.SelectShell w={300}>

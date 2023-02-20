@@ -48,7 +48,7 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
-      - name: Build with Jekyll & TypeDoc
+      - name: Build with Jekyll
         # Outputs to the './_site' directory by default
         run: |
           cd document
