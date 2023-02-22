@@ -43,9 +43,9 @@ Wik is a JavaScript Library for big-scale warehouse visualization. Both 2D and 3
 
 {% include figure.html image="/assets/images/snapshot3.png" caption="Just 2 Objects needed to run your digital warehouse." position="center" %}
 
-{% include figure.html image="/assets/images/snapshot.png" caption="More than 20000 packages rendered!" position="center" %}
+{% include figure.html image="/assets/images/snapshot.jpg" caption="More than 20000 packages rendered!" position="center" %}
 
-{% include figure.html image="/assets/images/snapshot2.png" caption="Colorful packages render" position="center" %}
+{% include figure.html image="/assets/images/snapshot2.jpg" caption="Colorful packages render" position="center" %}
 
 ## Dependencies
 
