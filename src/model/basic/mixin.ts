@@ -50,13 +50,13 @@ function _with<B extends object, M0, M1, M2, M3>(
   m2: Mixin<B, M2>,
   m3: Mixin<B, M3>,
 ): Constructor<B & M0 & M1 & M2 & M3>;
-function _with(this: any, ...m: Mixin<{}, {}>[]) {
-  return m.reduce((c, _m) => {
+function _with(this: any, ...mixins: Mixin<{}, {}>[]) {
+  return mixins.reduce((c, _m) => {
     return _m(c);
   }, this.b);
 }
 
-const mixContext: MixReturns & { b: Constructor<any> } = { b: null, with: _with };
+const __mix_context__: MixReturns & { b: Constructor<any> } = { b: null, with: _with };
 interface MixReturns {
   with: typeof _with;
 }
@@ -66,13 +66,12 @@ interface MixReturns {
  * A language-suger for mix-with
  */
 export function mix<B extends object>(b: Constructor<B>): MixReturns {
-  mixContext.b = b;
-  return mixContext;
+  __mix_context__.b = b;
+  return __mix_context__;
 }
 
 /**
  * @decorator
- *
  * Warn! just mix own methods in.
  *
  * constructor IS excluded!

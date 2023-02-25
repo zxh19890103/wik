@@ -59,7 +59,6 @@ export enum ReactiveLayerRenderEffect {
  * move,rotate,scale,shape,size
  */
 export const TRANSFORM_EFFECT =
-  ReactiveLayerRenderEffect.init |
   ReactiveLayerRenderEffect.translate |
   ReactiveLayerRenderEffect.rotate |
   ReactiveLayerRenderEffect.scale |
@@ -67,17 +66,8 @@ export const TRANSFORM_EFFECT =
   ReactiveLayerRenderEffect.size;
 
 /**
- * json,init,json2,form
- */
-export const LAYER_DATA_UPDATE_EFFECTS =
-  ReactiveLayerRenderEffect.json |
-  ReactiveLayerRenderEffect.init |
-  ReactiveLayerRenderEffect.json2 |
-  ReactiveLayerRenderEffect.form |
-  ReactiveLayerRenderEffect.state;
-
-/**
- *transform,form,state
+ * transform,form,stat
+ * @deprecated
  */
 export const MODEL_WS_UPDATE_EFFECT =
   TRANSFORM_EFFECT | ReactiveLayerRenderEffect.form | ReactiveLayerRenderEffect.state;

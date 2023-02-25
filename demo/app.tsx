@@ -5,7 +5,15 @@ import './app.scss';
 
 const route = new URLSearchParams(location.search).get('route');
 
-const Page = React.lazy(() => import(`./cases/${route}.tsx`));
+const PageLoadError = () => {
+  return <h3 style={{ textAlign: 'center' }}>page load error. try loading ./cases/{route}.tsx</h3>;
+};
+
+const Page = React.lazy(() => {
+  return import(`./cases/${route}.tsx`).catch((err) => {
+    return { default: PageLoadError };
+  });
+});
 
 const Route = () => {
   return (

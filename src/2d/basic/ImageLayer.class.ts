@@ -1,9 +1,9 @@
 import L from 'leaflet';
-import { deco$$ } from '@/model';
+import { mix } from '@/model';
 import { boundToLatLngs, D2R, leafletOptions, mapLatLng } from '../utils';
 import { createOffscreenCanvas } from '@/utils';
 import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
-import { Constructor } from '@/interfaces';
+import { Constructor, WithLayerState } from '@/interfaces';
 import { default_path_style } from './constants';
 
 export type ImageLayerDataSource = HTMLImageElement | HTMLCanvasElement;
@@ -15,9 +15,9 @@ export type ImageLayerDataSource = HTMLImageElement | HTMLCanvasElement;
   fill: true,
   fillColor: '#f90',
 })
-export class ImageLayer extends deco$$
-  .mix(L.Polygon)
-  .with<L.Polygon, ReactiveLayer>(ReactiveLayerMixin) {
+export class ImageLayer<S = {}> extends mix(L.Polygon).with<L.Polygon, ReactiveLayer>(
+  ReactiveLayerMixin,
+) {
   protected image: ImageLayerDataSource = null;
   protected width = 0;
   protected height = 0;
@@ -134,7 +134,7 @@ export class ImageLayer extends deco$$
   }
 }
 
-export interface ImageLayer {
+export interface ImageLayer<S = {}> extends WithLayerState<S> {
   _renderer: L.Canvas;
   _pxBounds: L.Bounds;
   readonly __DEFAULT_IMAGE__: ImageLayerDataSource;

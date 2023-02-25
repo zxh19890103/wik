@@ -1,30 +1,32 @@
 import * as glMatrix from 'gl-matrix';
-import { PolylineLatLngs } from '@/interfaces';
-import { WithLayerID } from '@/interfaces';
 import { ReactiveLayerRenderEffect } from './effects';
 import { WithClickCancel } from './ClickCancel';
 import { IList } from '@/model';
-import { WithParent } from '@/interfaces';
-import { WithRef } from '@/interfaces';
-import { WithLayerState } from '@/interfaces';
+import {
+  WithParent,
+  WithRef,
+  PolylineLatLngs,
+  WithLayerID,
+  InteractiveExports,
+} from '@/interfaces';
 import { WithSnapshotAbstract } from './Snapshot';
 
-export interface ReactiveLayerSnapshot {
+export interface ReactiveLayerSnapshot<S = any> {
   id: string;
   parent: string;
   angle: number;
   position: L.LatLng;
   scale: L.LatLngLiteral;
   latlngs: PolylineLatLngs;
-  state: any;
+  state: S;
 }
 
-export interface ReactiveLayer
-  extends WithSnapshotAbstract<ReactiveLayerSnapshot>,
+export interface ReactiveLayer<S = any>
+  extends WithSnapshotAbstract<ReactiveLayerSnapshot<S>>,
     WithClickCancel,
     WithLayerID,
-    WithLayerState<unknown>,
     WithParent<IList<ReactiveLayer>>,
+    InteractiveExports,
     WithRef {
   readonly $$isReactive: true;
 
@@ -34,6 +36,8 @@ export interface ReactiveLayer
    * which means it is an object exsiting in the root system without any sub-system.
    */
   readonly disableMatrix: boolean;
+
+  _lastRenderedEffect: ReactiveLayerRenderEffect;
 
   /**
    * container object
@@ -91,6 +95,8 @@ export interface ReactiveLayer
   scales(dLat: number): void;
   scales(dLat: number, dLng: number): void;
 
+  leafletRender(): void;
+
   // optionals, May be implemented in the specific classes
   onInit?(): void;
   /**
@@ -113,9 +119,17 @@ export interface ReactiveLayer
    * scale changes
    */
   onScale?(previousScale: L.LatLngLiteral): void;
-  onLayerUpdate?(snapshot: any): void;
+  /**
+   * state
+   */
   onLayerStateUpdate?(previousState: unknown): void;
+  /**
+   * All render cases, transform & state.
+   */
   onRender?(effect: ReactiveLayerRenderEffect): void;
+  /**
+   * called after leaflet rendered.
+   */
   afterRender?(effect: ReactiveLayerRenderEffect): void;
 
   // martix

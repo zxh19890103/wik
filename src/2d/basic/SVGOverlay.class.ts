@@ -3,17 +3,18 @@ import { WikDraggable } from './Draggable.class';
 import { WikMap } from './Map.class';
 import { empty_bounds } from './constants';
 import { leafletOptions } from '../utils';
-import { deco$$ } from '@/model';
+import { mix, alias } from '@/model';
 import { ReactiveLayer, ReactiveLayerMixin, ReactiveLayerRenderEffect } from '@/mixins';
+import { WithLayerState } from '@/interfaces';
 
 @leafletOptions<L.ImageOverlayOptions>({
   interactive: true,
   bubblingMouseEvents: false,
 })
-@deco$$.alias('_reset', 'redraw')
-export class SVGOverlay extends deco$$
-  .mix(L.SVGOverlay)
-  .with<L.SVGOverlay, ReactiveLayer>(ReactiveLayerMixin) {
+@alias('_reset', 'redraw')
+export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, ReactiveLayer>(
+  ReactiveLayerMixin,
+) {
   private _size: L.Point = null;
   /**
    * 修改前的 svg 尺寸
@@ -147,7 +148,7 @@ export class SVGOverlay extends deco$$
   }
 }
 
-export interface SVGOverlay {
+export interface SVGOverlay<S = {}> extends WithLayerState<S> {
   _map: WikMap;
   /**
    * world bounds.
@@ -157,5 +158,5 @@ export interface SVGOverlay {
   _image: HTMLElement;
   dragging: WikDraggable;
 
-  redraw: () => void;
+  redraw(): void;
 }

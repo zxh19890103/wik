@@ -1,5 +1,5 @@
 /**
- * try invoking a method named `name` on o's own.
+ * try invoking a method named `name` on o's own prototype. no more further!
  */
 export const tryInvokingOwn = (o: object, name: string, ...args) => {
   if (!Object.hasOwn(o['__proto__'], name)) return;

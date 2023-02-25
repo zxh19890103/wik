@@ -1,9 +1,16 @@
 import L from 'leaflet';
 import { ReactiveLayer, ReactiveLayerMixin, WithClickCancel } from '@/mixins';
-import { deco$$, util$$, interfaces, InteractiveStateActionManager, ModeManager } from '@/model';
+import {
+  mix,
+  inject,
+  util$$,
+  interfaces,
+  InteractiveStateActionManager,
+  ModeManager,
+} from '@/model';
 import { PaneManager, WikPane } from '../state/PaneManager.class';
 import { leafletOptions } from '../utils';
-import { ContextMenuItem, Interactive, OnInteractive } from '@/interfaces';
+import { ContextMenuItem, Interactive, OnInteractive, WithLayerState } from '@/interfaces';
 
 const leafletEvent2OnCallback = {
   click: 'onClick',
@@ -22,17 +29,17 @@ interface GroupOptions {
 }
 
 @leafletOptions<GroupOptions>({
-  pane: 'groupPane',
+  pane: 'group',
 })
-export class Group
-  extends deco$$.mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLayerMixin)
+export class Group<S = {}>
+  extends mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLayerMixin)
   implements OnInteractive
 {
-  @deco$$.inject(interfaces.IPaneManager)
+  @inject(interfaces.IPaneManager)
   readonly paneMgr: PaneManager;
-  @deco$$.inject(interfaces.IModeManager)
+  @inject(interfaces.IModeManager)
   readonly modeMgr: ModeManager;
-  @deco$$.inject(interfaces.IStateActionManager)
+  @inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
   readonly paneObj: WikPane;
@@ -138,5 +145,7 @@ export class Group
     });
   }
 }
+
+export interface Group<S = {}> extends WithLayerState<S> {}
 
 let _pane_z_seed = 451;

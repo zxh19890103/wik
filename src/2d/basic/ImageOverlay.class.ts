@@ -3,13 +3,14 @@ import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
 import { alias, mix } from '@/model';
 import { leafletOptions } from '../utils';
 import { empty_bounds } from './constants';
+import { WithLayerState } from '@/interfaces';
 
 @leafletOptions<L.ImageOverlayOptions>({
   interactive: true,
   bubblingMouseEvents: false,
 })
 @alias('_reset', 'redraw')
-export class ImageOverlay extends mix(L.ImageOverlay).with<L.ImageOverlay, ReactiveLayer>(
+export class ImageOverlay<S = {}> extends mix(L.ImageOverlay).with<L.ImageOverlay, ReactiveLayer>(
   ReactiveLayerMixin,
 ) {
   private size: L.PointTuple;
@@ -34,7 +35,7 @@ export class ImageOverlay extends mix(L.ImageOverlay).with<L.ImageOverlay, React
   }
 }
 
-export interface ImageOverlay {
+export interface ImageOverlay<S = {}> extends WithLayerState<S> {
   _image: any;
   _bounds: L.LatLngBounds;
   redraw(): void;

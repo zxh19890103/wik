@@ -1,13 +1,14 @@
 import L from 'leaflet';
 import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
-import { deco$$ } from '@/model';
+import { mix } from '@/model';
 import { leafletOptions, mapLatLng } from '../utils';
 import { default_path_style, empty_bounds } from './constants';
+import { WithLayerState } from '@/interfaces';
 
 @leafletOptions<L.PolylineOptions>(default_path_style)
-export class Rectangle extends deco$$
-  .mix(L.Rectangle)
-  .with<L.Rectangle, ReactiveLayer>(ReactiveLayerMixin) {
+export class Rectangle<S = {}> extends mix(L.Rectangle).with<L.Rectangle, ReactiveLayer>(
+  ReactiveLayerMixin,
+) {
   constructor(latlng: L.LatLngExpression, l: number, w: number, options?: L.PolylineOptions) {
     super(empty_bounds, options);
     this.position = L.latLng(latlng);
@@ -29,3 +30,5 @@ export class Rectangle extends deco$$
     );
   }
 }
+
+export interface Rectangle<S = {}> extends WithLayerState<S> {}

@@ -1,9 +1,13 @@
 import L from 'leaflet';
 import * as glMatrix from 'gl-matrix';
-import { Constructor } from '@/interfaces';
+import { Constructor, WithLayerState } from '@/interfaces';
 import { ReactiveLayerRenderEffect } from './effects';
-import { appendLayerRenderReq } from './_render_loop';
-import { SimpleObject, PolylineLatLngs } from '@/interfaces';
+import {
+  appendLayerRenderReq,
+  reactiveLayerRenderFn,
+  reactiveLayerReRenderFn,
+} from './_reactive_layer_render_loop';
+import { PolylineLatLngs } from '@/interfaces';
 import { mapLatLng } from '@/2d/utils/mapLatLng';
 import { boundToLatLngs } from '@/2d/utils/boundToLatLngs';
 import { ReactiveLayer, ReactiveLayerSnapshot } from './ReactiveLayer';
@@ -51,7 +55,7 @@ export function ReactiveLayerMixin(
 export function ReactiveLayerMixin(
   Base: Constructor<L.Layer>,
 ): Constructor<L.Layer & ReactiveLayer> {
-  return class extends Base implements ReactiveLayer {
+  return class extends Base implements ReactiveLayer, WithLayerState<any> {
     readonly $$isReactive = true;
 
     $$parent: IList<ReactiveLayer> = null;
@@ -62,6 +66,16 @@ export function ReactiveLayerMixin(
     readonly disableMatrix = false;
     ifRender = true;
 
+    _lastRenderedEffect: ReactiveLayerRenderEffect = null;
+
+    //#region interactive
+
+    _headStateHasChanged = false;
+    _uiStateChangeLogs: any[] = null;
+    _syncRenderOnce = false;
+
+    //#endregion
+
     layerId = `layer${idseed++}`;
     latlngs: PolylineLatLngs = [];
     angle = 0;
@@ -69,7 +83,7 @@ export function ReactiveLayerMixin(
     position: L.LatLng = new L.LatLng(0, 0);
     scale: L.LatLngLiteral = { lat: 1, lng: 1 };
 
-    layerState: SimpleObject = {};
+    layerState: any = {};
 
     isClickEventFireCancelled = false;
     cancelClickEventFire() {
@@ -207,9 +221,9 @@ export function ReactiveLayerMixin(
       return !!this.$$system;
     }
 
-    setLayerState(partial: SimpleObject): void {
+    setLayerState(partial: any): void {
       if (!__PROD__ && Object.getPrototypeOf(partial) !== Object.prototype) {
-        throw new Error('partial must be a simple object.');
+        throw new Error('partial must be a plain object.');
       }
 
       const state = this.layerState;
@@ -309,9 +323,13 @@ export function ReactiveLayerMixin(
         return;
       }
 
-      appendLayerRenderReq(this, effect);
-
       this.updateMatrix();
+
+      if (this._syncRenderOnce) {
+        reactiveLayerRenderFn(this, effect);
+      } else {
+        appendLayerRenderReq(this, effect);
+      }
 
       for (const child of this.$$subSystems) {
         child.requestRenderCall(effect);
@@ -326,8 +344,7 @@ export function ReactiveLayerMixin(
     isMatrixNeedsUpdate = true;
 
     /**
-     * 计算的逻辑：
-     * @see https://zbqq3ri6o0.feishu.cn/docs/doccnapGd3Ldm2TCvOWLe1fQdLe#d3LEuM
+     * The compution logic:
      */
     updateMatrix() {
       if (!this.isMatrixNeedsUpdate) return;
@@ -402,8 +419,9 @@ export function ReactiveLayerMixin(
 
     //#endregion
 
-    //#region default OnCallback
-    onTransform(snapshot: any): void {
+    //#region render
+
+    leafletRender() {
       if (this instanceof L.Polyline) {
         this.setLatLngs(
           mapLatLng(
@@ -420,6 +438,14 @@ export function ReactiveLayerMixin(
         console.log('not Polyline Or Circle, no need to transform');
       }
     }
+
+    reRender() {
+      reactiveLayerReRenderFn(this);
+    }
+
+    //#endregion
+
+    //#region default OnCallback
     //#endregion
   };
 }

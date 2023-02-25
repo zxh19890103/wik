@@ -1,14 +1,14 @@
 import L from 'leaflet';
-import type { PolylineLatLngs } from '@/interfaces';
+import type { PolylineLatLngs, WithLayerState } from '@/interfaces';
 import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
-import { deco$$ } from '@/model';
+import { mix } from '@/model';
 import { leafletOptions, mapLatLng } from '../utils';
 import { default_path_style } from './constants';
 
 @leafletOptions<L.PolylineOptions>(default_path_style)
-export class Polyline extends deco$$
-  .mix(L.Polyline)
-  .with<L.Polyline, ReactiveLayer>(ReactiveLayerMixin) {
+export class Polyline<S = {}> extends mix(L.Polyline).with<L.Polyline, ReactiveLayer>(
+  ReactiveLayerMixin,
+) {
   constructor(latlngs: PolylineLatLngs, options?: L.PolylineOptions) {
     super(latlngs, options);
     this.latlngs = latlngs;
@@ -26,3 +26,5 @@ export class Polyline extends deco$$
     );
   }
 }
+
+export interface Polyline<S = {}> extends WithLayerState<S> {}

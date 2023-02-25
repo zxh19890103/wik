@@ -1,19 +1,8 @@
-import { Interactive } from '@/interfaces';
+import { Interactive, PossibleUndoableInteractName } from '@/interfaces';
 import { IStateAction } from '@/interfaces';
 import { StateActionBase } from './StateAction.class';
 
 const noop = () => null;
-
-/**
- * Must be start with captical char.
- */
-export type InteractiveStateActionName = 'Hover' | 'Highlight' | 'Select';
-
-const action2is: Record<InteractiveStateActionName, string> = {
-  Hover: 'isHover',
-  Highlight: 'isHighlight',
-  Select: 'isSelected',
-};
 
 /**
  * @todo
@@ -23,18 +12,17 @@ const action2is: Record<InteractiveStateActionName, string> = {
  * 3. Support providing specified couple names: do & undo
  */
 export class InteractiveStateAction extends StateActionBase implements IStateAction {
-  public readonly type: InteractiveStateActionName;
+  public readonly type: PossibleUndoableInteractName;
 
   private readonly payload: any = null;
   private data: any = null;
 
   private readonly doFn: (...args) => any;
   private readonly unDoFn: (...args) => void;
-  private readonly fieldIs: string = null;
 
   private applied = false;
 
-  constructor(public context: Interactive, type: InteractiveStateActionName, payload?: any) {
+  constructor(public context: Interactive, type: PossibleUndoableInteractName, payload?: any) {
     super();
 
     this.type = type;
@@ -42,25 +30,29 @@ export class InteractiveStateAction extends StateActionBase implements IStateAct
 
     this.doFn = context[`on${type}`] || noop;
     this.unDoFn = context[`onUn${type}`] || noop;
-
-    this.fieldIs = action2is[type];
   }
 
   apply() {
     if (this.applied) return;
 
-    this.data = this.doFn.call(this.context, this.payload);
+    const ctx = this.context;
 
-    this.context[this.fieldIs] = true;
+    ctx._syncRenderOnce = true;
+    this.data = this.doFn.call(ctx, this.payload);
+    ctx._syncRenderOnce = false;
+
     this.applied = true;
   }
 
   revert() {
     if (!this.applied) return;
 
-    this.unDoFn.call(this.context, this.data, this.payload);
+    const ctx = this.context;
 
-    this.context[this.fieldIs] = false;
+    ctx._syncRenderOnce = true;
+    this.unDoFn.call(ctx, this.data, this.payload);
+    ctx._syncRenderOnce = false;
+
     this.applied = false;
   }
 }

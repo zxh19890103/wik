@@ -1,18 +1,51 @@
 import { ContextMenuItem } from './d';
 
 export interface OnMouseOverOut<S = any> {
+  /**
+   *
+   * @param data the event maybe
+   */
   onHover(data?: any): S;
+  onHovered?(): void;
+  /**
+   *
+   * @param state the state onHover returns
+   * @param data the event maybe
+   */
   onUnHover(state?: S, data?: any): void;
+  onUnHovered?(): void;
 }
 
 export interface OnSelect<S = any> {
+  /**
+   *
+   * @param data the event maybe
+   */
   onSelect(data?: any): S;
+  onSelected?(): void;
+  /**
+   *
+   * @param state the state onSelect returns
+   * @param data the event maybe
+   */
   onUnSelect(state?: S, data?: any): void;
+  onUnSelected?(): void;
 }
 
 export interface OnHighlight<S = any> {
+  /**
+   *
+   * @param data the event maybe
+   */
   onHighlight(data?: any): S;
+  onHighlighted?(): void;
+  /**
+   *
+   * @param state the state onHightlight returns
+   * @param data the even maybe
+   */
   onUnHighlight(state?: S, data?: any): void;
+  onUnHighlighted?(): void;
 }
 
 export interface OnClick {
@@ -48,33 +81,40 @@ export interface OnInteractive<S1 = any, S2 = any, S3 = any>
     OnDrag,
     OnContextMenu {}
 
-export interface Interactive extends Partial<OnInteractive> {
-  uiStateChangeLogs: any[];
-
+export interface InteractiveExports {
   /**
-   * If it is in state of being selected.
+   * run the render function again, it's a sync call, no post render call.
    */
-  isSelected: boolean;
+  reRender(): void;
   /**
-   * If it is in state of being highlight.
+   * render the state syncronize
    */
-  isHighlight: boolean;
+  _syncRenderOnce: boolean;
   /**
-   * if it is in state of being mouse over.
+   * a signal indicating whether the head state has changed.
    */
-  isHover: boolean;
+  _headStateHasChanged: boolean;
+  /**
+   * logs to record the state before calling onXX. It's data onXX returns.
+   */
+  _uiStateChangeLogs: any[];
 }
+
+export type PossibleUndoableInteractName = 'Hover' | 'Select' | 'Highlight';
+
+export interface Interactive
+  extends Partial<OnInteractive>,
+    InteractiveExports,
+    Record<`is${PossibleUndoableInteractName}ed`, boolean> {}
 
 export type OnInteractName =
   | 'onClick'
   | 'onDblClick'
-  | 'onHover'
-  | 'onUnHover'
-  | 'onSelect'
-  | 'onUnSelect'
   | 'onDragEnd'
   | 'onDragStart'
   | 'onDragging'
-  | 'onHighlight'
-  | 'onUnHighlight'
-  | 'onContextMenu';
+  | 'onContextMenu'
+  | `on${PossibleUndoableInteractName}`
+  | `onUn${PossibleUndoableInteractName}`
+  | `on${PossibleUndoableInteractName}ed`
+  | `onUn${PossibleUndoableInteractName}ed`;

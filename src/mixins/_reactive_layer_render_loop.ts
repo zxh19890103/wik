@@ -1,5 +1,5 @@
 import { ReactiveLayer } from './ReactiveLayer';
-import { ReactiveLayerRenderEffect, LAYER_DATA_UPDATE_EFFECTS, TRANSFORM_EFFECT } from './effects';
+import { ReactiveLayerRenderEffect, TRANSFORM_EFFECT } from './effects';
 import { WithSnapshot } from './Snapshot';
 
 const __RENDER_REQUESTS__: Set<ReactiveLayer> = new Set();
@@ -47,43 +47,7 @@ const flush = () => {
 
   // Before render & During render
   for (const item of __RENDER_REQUESTS__) {
-    const effect = __RENDER_REQUEST_EFFECTS__.get(item.layerId);
-    const asWithSnap = item as unknown as WithSnapshot;
-    const snapshot = asWithSnap.getSnapshot ? asWithSnap.getSnapshot() : null;
-
-    item.onRender && item.onRender(effect);
-
-    if (effect & TRANSFORM_EFFECT) {
-      item.onTransform && item.onTransform(snapshot);
-    }
-
-    if (effect & ReactiveLayerRenderEffect.translate) {
-      item.onTranslate && item.onTranslate(snapshot?.position);
-    }
-
-    if (effect & ReactiveLayerRenderEffect.rotate) {
-      item.onRotate && item.onRotate(snapshot?.angle);
-    }
-
-    if (effect & ReactiveLayerRenderEffect.scale) {
-      item.onScale && item.onScale(snapshot?.scale);
-    }
-
-    if (effect & ReactiveLayerRenderEffect.shape) {
-      item.onShapeUpdate && item.onShapeUpdate(snapshot?.latlngs);
-    }
-
-    if (effect & LAYER_DATA_UPDATE_EFFECTS) {
-      item.onLayerUpdate && item.onLayerUpdate(snapshot);
-    }
-
-    if (effect & ReactiveLayerRenderEffect.state) {
-      item.onLayerStateUpdate && item.onLayerStateUpdate(snapshot?.state);
-    }
-
-    if (effect & ReactiveLayerRenderEffect.init) {
-      item.onInit && item.onInit();
-    }
+    render(item, __RENDER_REQUEST_EFFECTS__.get(item.layerId));
   }
 
   isRendering = false;
@@ -98,11 +62,61 @@ const flush = () => {
     if (postRenderSchedule) clearTimeout(postRenderSchedule);
     postRenderSchedule = setTimeout(afterFlush, 10);
   } else {
+    // Just clear the reqs. no post render.
     __RENDER_REQUESTS__.clear();
     __RENDER_REQUEST_EFFECTS__.clear();
   }
 
   lastFlushCallAt = now;
+};
+
+const render = (item: ReactiveLayer, effect: ReactiveLayerRenderEffect) => {
+  const asWithSnap = item as unknown as WithSnapshot;
+  const snapshot = asWithSnap.getSnapshot ? asWithSnap.getSnapshot() : null;
+
+  // do render.
+  item.leafletRender();
+
+  item.onRender && item.onRender(effect);
+
+  if (effect & ReactiveLayerRenderEffect.init) {
+    item.onInit && item.onInit();
+  }
+
+  if (effect & ReactiveLayerRenderEffect.state) {
+    item.onLayerStateUpdate && item.onLayerStateUpdate(snapshot?.state);
+  }
+
+  if (effect & TRANSFORM_EFFECT) {
+    item.onTransform && item.onTransform(snapshot);
+  }
+
+  if (effect & ReactiveLayerRenderEffect.translate) {
+    item.onTranslate && item.onTranslate(snapshot?.position);
+  }
+
+  if (effect & ReactiveLayerRenderEffect.rotate) {
+    item.onRotate && item.onRotate(snapshot?.angle);
+  }
+
+  if (effect & ReactiveLayerRenderEffect.scale) {
+    item.onScale && item.onScale(snapshot?.scale);
+  }
+
+  if (effect & ReactiveLayerRenderEffect.shape) {
+    item.onShapeUpdate && item.onShapeUpdate(snapshot?.latlngs);
+  }
+
+  if (item._syncRenderOnce) return;
+
+  item._lastRenderedEffect = effect;
+  item._headStateHasChanged = true;
+};
+
+const reRender = (item: ReactiveLayer) => {
+  if (!item._lastRenderedEffect) return;
+
+  render(item, item._lastRenderedEffect);
 };
 
 const afterFlush = () => {
@@ -136,4 +150,8 @@ const afterFlush = () => {
   postRenderSchedule = null;
 };
 
-export { appendLayerRenderReq };
+export {
+  appendLayerRenderReq,
+  reRender as reactiveLayerReRenderFn,
+  render as reactiveLayerRenderFn,
+};
