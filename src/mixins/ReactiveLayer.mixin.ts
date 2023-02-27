@@ -67,6 +67,7 @@ export function ReactiveLayerMixin(
     ifRender = true;
 
     _lastRenderedEffect: ReactiveLayerRenderEffect = null;
+    _isRenderScheduled = false;
 
     //#region interactive
 
@@ -318,6 +319,7 @@ export function ReactiveLayerMixin(
     }
 
     requestRenderCall(effect: ReactiveLayerRenderEffect) {
+      console.log('[requestRenderCall]', ReactiveLayerRenderEffect[effect]);
       if (!this.ifRender) {
         this.ifRender = true;
         return;
@@ -347,7 +349,7 @@ export function ReactiveLayerMixin(
      * The compution logic:
      */
     updateMatrix() {
-      if (!this.isMatrixNeedsUpdate) return;
+      if (!this.isMatrixNeedsUpdate || this.disableMatrix) return;
 
       this.matrix = mat3.create();
 

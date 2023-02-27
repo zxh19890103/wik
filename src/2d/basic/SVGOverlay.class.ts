@@ -17,7 +17,7 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
 ) {
   private _size: L.Point = null;
   /**
-   * 修改前的 svg 尺寸
+   * the size before changed.
    */
   __preSize: L.Point = null;
 
@@ -25,7 +25,9 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
     return this._size;
   }
 
-  // eslint-disable-next-line
+  /**
+   * no reactive, if you mean react, use setSize instead.
+   */
   set size(val: L.PointExpression) {
     this.__preSize = this._size;
     this._size = L.point(val);
@@ -53,7 +55,7 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
 
   getCientSize() {
     return {
-      x: this.size.x * this.scale.lng,
+      x: this._size.x * this.scale.lng,
       y: this._size.y * this.scale.lat,
     };
   }
@@ -76,25 +78,10 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
 
     const { lat, lng } = this.scale;
 
-    const gAttrs = {
-      transform: this.getVisibleObjectTransformStyle(r, lng, lat),
-    };
-
-    const styleAttrs = {
-      x: 0,
-      y: 0,
-      width: size,
-      height: size,
-      cx: r,
-      cy: r,
-      r: r,
-      fill: 'none',
-      stroke: 'none',
-    };
-
     return {
-      gAttrs,
-      styleAttrs,
+      size,
+      r,
+      transform: this.getVisibleObjectTransformStyle(r, lng, lat),
       viewbox: `0 0 ${size} ${size}`,
     };
   }

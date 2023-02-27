@@ -1,21 +1,15 @@
+import { ReactSVGOverlay } from './ReactSVGOverlay.class';
 import { SvgComponentFactory } from './SVGComponentFactory';
 
-const AnySVG = SvgComponentFactory<{}>(
+const WithImageSvg = SvgComponentFactory<{ imageURL: string }, ReactSVGOverlay>(
   (props) => {
     const { model, data } = props;
     const { size } = model;
-    const imageURL = data.imageURL;
 
-    if (!__PROD__) {
-      if (!imageURL) {
-        throw new Error('Pls provide imageURL for THIS component.');
-      }
-    }
-
-    return <image width={size.x} height={size.y} xlinkHref={imageURL} />;
+    return <image width={size.x} height={size.y} xlinkHref={data.imageURL} />;
   },
   'AnySVG',
-  { angle: 0, size: [0, 0] },
+  { imageURL: null },
 );
 
-export default AnySVG;
+export default WithImageSvg;

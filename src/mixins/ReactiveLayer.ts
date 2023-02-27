@@ -38,6 +38,7 @@ export interface ReactiveLayer<S = any>
   readonly disableMatrix: boolean;
 
   _lastRenderedEffect: ReactiveLayerRenderEffect;
+  _isRenderScheduled: boolean;
 
   /**
    * container object

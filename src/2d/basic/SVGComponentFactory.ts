@@ -1,49 +1,41 @@
 import React, { memo } from 'react';
 import { ReactSVGOverlay } from './ReactSVGOverlay.class';
 
-export interface SvgComponentUpdateDataBase {
-  size: L.PointTuple;
-  angle: number;
-  [k: string]: any;
-}
+export type SvgData = Record<string, any>;
 
-export interface SvgComponentProps<
-  D = Record<string, any>,
-  M extends ReactSVGOverlay = ReactSVGOverlay,
-> {
+export interface SvgComponentProps<D extends SvgData, M extends ReactSVGOverlay> {
   id: string;
-  data: D & SvgComponentUpdateDataBase;
-  style: React.CSSProperties;
-  /**
-   * 一般是 svg overlay
-   */
+  data: D;
+  style: React.SVGAttributes<SVGRectElement>;
   model: M;
+  sX: number;
+  sY: number;
+  a: number;
   svgType: string;
-  className: string;
 }
 
-export interface SvgFunctionComponent<D = Record<string, any>> {
-  (props: { data: any }): React.ReactElement;
-  svgType: string;
-  defaultData: Readonly<D & SvgComponentUpdateDataBase>;
+export type SvgFC = (props: any) => React.ReactElement;
+
+export interface SvgFunctionComponent<D extends SvgData, M extends ReactSVGOverlay> {
+  (props: SvgComponentProps<D, M>): React.ReactElement;
+  svgType?: string;
+  defaultData?: Partial<D>;
 }
 
 const h = React.createElement;
 
-export const SvgComponentFactory = <
-  D = Record<string, any>,
-  M extends ReactSVGOverlay = ReactSVGOverlay,
->(
-  com: React.FunctionComponent<SvgComponentProps<D, M>>,
+export const SvgComponentFactory = <D extends SvgData, M extends ReactSVGOverlay>(
+  com: React.FC<SvgComponentProps<D, M>>,
   type: string,
-  defaultData?: D & SvgComponentUpdateDataBase,
-): SvgFunctionComponent<D> => {
+  defaultData: Partial<D> = null,
+): SvgFunctionComponent<D, M> => {
   /**
    * props: style, data, model, id,...
    */
-  const fc = memo((props: any) => {
-    const model = props.model as M;
+  const fc = memo((props: SvgComponentProps<D, M>) => {
+    const model = props.model;
     const layout = model.getSVGLayout();
+    const strokeWeight = Number(props.style.strokeWidth || 1);
 
     return h(
       'svg',
@@ -56,15 +48,33 @@ export const SvgComponentFactory = <
         xmlnsXlink: 'http://www.w3.org/1999/xlink',
       },
       h(model.svgStyleElement, {
-        ...layout.styleAttrs,
+        fill: 'none',
+        stroke: 'none',
+        ...(model.svgStyleElement === 'rect'
+          ? {
+              x: strokeWeight,
+              y: strokeWeight,
+              width: layout.size - strokeWeight * 2,
+              height: layout.size - strokeWeight * 2,
+            }
+          : {
+              cx: layout.r,
+              cy: layout.r,
+              r: layout.r - strokeWeight,
+            }),
         ...props.style,
       }),
-      h('g', layout.gAttrs, h(com, props)),
+      h('g', { transform: layout.transform }, props.data ? h(com, props) : null),
     );
-  });
+  }) as SvgFunctionComponent<D, M>;
 
-  (fc as any).svgType = type;
-  (fc as any).defaultData = defaultData;
+  fc.svgType = type;
+  fc.defaultData = defaultData;
 
-  return fc as any;
+  return fc;
 };
+
+/**
+ * alias of SvgComponentFactory
+ */
+export const cSvgFc = SvgComponentFactory;

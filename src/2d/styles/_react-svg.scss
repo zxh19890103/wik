@@ -1,5 +1,7 @@
 .wik-reactSvg {
-  border: 1px dashed transparent;
+  &.css-interactive {
+    border: 1px dashed transparent;
+  }
 
   &.leaflet-interactive:hover {
     border-color: #000;

@@ -32,6 +32,7 @@ const appendLayerRenderReq = (context: ReactiveLayer, effect: ReactiveLayerRende
     __RENDER_REQUEST_EFFECTS__.set(id, effect);
   }
 
+  context._isRenderScheduled = true;
   __RENDER_REQUESTS__.add(context);
 
   // one cycle, one task.
@@ -47,6 +48,7 @@ const flush = () => {
 
   // Before render & During render
   for (const item of __RENDER_REQUESTS__) {
+    item._isRenderScheduled = false;
     render(item, __RENDER_REQUEST_EFFECTS__.get(item.layerId));
   }
 

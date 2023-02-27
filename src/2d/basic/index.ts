@@ -10,8 +10,8 @@ export { ReactSVGOverlayApp, ReactSVGOverlayAppServer } from './ReactSVGOverlayA
 export { ReactSVGOverlay } from './ReactSVGOverlay.class';
 export {
   SvgComponentFactory,
+  cSvgFc,
   type SvgComponentProps,
-  type SvgComponentUpdateDataBase,
   type SvgFunctionComponent,
 } from './SVGComponentFactory';
 export { ImageLayer } from './ImageLayer.class';

@@ -2,7 +2,7 @@ import React from 'react';
 import L, { Map } from 'leaflet';
 import { SVGOverlay } from './SVGOverlay.class';
 import { ReactSVGOverlayAppServer } from './ReactSVGOverlayApp';
-import type { SvgFunctionComponent } from './SVGComponentFactory';
+import type { SvgData, SvgFC, SvgFunctionComponent } from './SVGComponentFactory';
 import { leafletOptions } from '../utils';
 
 let _svg_id = 1992;
@@ -10,17 +10,17 @@ let _svg_id = 1992;
 export type SvgStyleElementType = 'rect' | 'circle';
 
 @leafletOptions<L.ImageOverlayOptions>({})
-export class ReactSVGOverlay<D = any, S = {}> extends SVGOverlay<S> {
+export class ReactSVGOverlay<D extends SvgData = SvgData, S = {}> extends SVGOverlay<S> {
+  private readonly svgC: SvgFC;
   readonly svgServer: ReactSVGOverlayAppServer = null;
-  readonly svgC: SvgFunctionComponent;
   readonly svgId: string;
 
   svgStyleElement: SvgStyleElementType = 'rect';
   svgStyle: React.SVGAttributes<SVGRectElement> = {};
-  svgData: D = null;
+  svgData: D = {} as D;
 
   constructor(
-    svgC: SvgFunctionComponent,
+    svgC: SvgFC,
     latlng: L.LatLngExpression,
     sizeX: number,
     sizeY: number,
@@ -35,10 +35,13 @@ export class ReactSVGOverlay<D = any, S = {}> extends SVGOverlay<S> {
 
   onRender() {
     super.onRender();
-    this.setSVGData();
+
+    this.reqSvgUpdate();
   }
 
   private reqSvgUpdate() {
+    if (this._isRenderScheduled) return;
+
     svgUpdateReqs.add(this);
     if (svgUpdateTaskScheduled) return;
     // it looks like that queueMicroTask do not work well.
@@ -55,12 +58,10 @@ export class ReactSVGOverlay<D = any, S = {}> extends SVGOverlay<S> {
     this.svgServer.updateComponent(this.svgId, this.svgData, this.svgStyle);
   }
 
-  setSVGData(nextData: D = null) {
+  setSVGData(nextData: Partial<D> = null) {
     this.svgData = {
       ...this.svgData,
       ...nextData,
-      angle: this.angle,
-      size: [this.size.x, this.size.y],
     };
 
     this.reqSvgUpdate();
@@ -94,7 +95,7 @@ export class ReactSVGOverlay<D = any, S = {}> extends SVGOverlay<S> {
   }
 }
 
-export interface ReactSVGOverlay<D = any> {
+export interface ReactSVGOverlay<D extends SvgData = SvgData, S = {}> {
   _url: HTMLElement;
   _initImage: () => void;
   /**

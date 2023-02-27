@@ -6,3 +6,7 @@ export * from './offscreenCanvas';
 export * from './entries';
 export * from './loop';
 export * from './is';
+
+import range from './range';
+
+export { range };

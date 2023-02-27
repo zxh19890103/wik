@@ -2,14 +2,15 @@ import React, { useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import { leaflet_buitlin_panes } from './constants';
 import { WikMap } from './Map.class';
-import { SvgFunctionComponent } from './SVGComponentFactory';
+import { ReactSVGOverlay } from './ReactSVGOverlay.class';
+import { SvgData, SvgFC, SvgFunctionComponent } from './SVGComponentFactory';
 
 interface SVG {
   id: string;
-  component: SvgFunctionComponent;
-  data?: any;
+  component: SvgFunctionComponent<SvgData, ReactSVGOverlay<SvgData>>;
+  data?: SvgData;
   style?: React.CSSProperties;
-  model?: any;
+  model?: ReactSVGOverlay<SvgData>;
 }
 
 type SVGPool = { value: Map<string, SVG> };
@@ -32,7 +33,7 @@ class ReactSVGOverlayAppServer {
   settleAfterRenderPromisesQueue: Map<string, AfterRenderPromiseSettleFn> = new Map();
 
   addComponent: (
-    component: SvgFunctionComponent,
+    component: SvgFC,
     id: string,
     model: any,
     data: any,
@@ -221,11 +222,16 @@ export const ReactSVGOverlayApp = React.memo((props: { server: ReactSVGOverlayAp
   return (
     <>
       {items.map((svg) => {
+        const { size } = svg.model;
+
         const props = {
           id: svg.id,
           key: svg.id,
           model: svg.model,
           style: svg.style,
+          sX: size.x,
+          sY: size.y,
+          a: svg.model.angle,
           svgType: svg.component.svgType,
           data: svg.data || svg.component.defaultData, // data on component is the default value.
         } as any;
