@@ -12,13 +12,12 @@ export class Chargepile extends ReactSVGOverlay {
 
   constructor(
     latlng: L.LatLngExpression,
-    svgServer?: ReactSVGOverlayAppServer,
-    meta?: meta.Chargepile,
+    meta: meta.Chargepile,
+    svgServer: ReactSVGOverlayAppServer = null,
   ) {
-    super(ImageSVG, svgServer, 1000, 1000);
+    super(ImageSVG, latlng, 1000, 1000, svgServer);
     this.svgStyle = { strokeDasharray: 4, strokeWidth: 1 };
     this.svgData = { imageURL: svgURL };
-    this.position = L.latLng(latlng);
     this.angle = meta?.angle || 0;
   }
 }

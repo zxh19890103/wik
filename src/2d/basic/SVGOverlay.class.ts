@@ -31,13 +31,6 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
     this._size = L.point(val);
   }
 
-  /**
-   * svg 的短边
-   */
-  get svgMinLength() {
-    return Math.min(this._size.x, this._size.y);
-  }
-
   constructor(
     el: string | SVGElement,
     position: L.LatLngExpression,
@@ -46,7 +39,6 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
     options?: L.ImageOverlayOptions,
   ) {
     super(el, empty_bounds, options);
-    // (this as any)._initContextMenu();
     this.position = L.latLng(position);
     this.size = new L.Point(sizeX, sizeY);
   }
@@ -59,12 +51,18 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
     this.requestRenderCall(ReactiveLayerRenderEffect.size);
   }
 
-  computesSvgBoxRadius() {
-    const { x, y } = this._size;
+  getCientSize() {
+    return {
+      x: this.size.x * this.scale.lng,
+      y: this._size.y * this.scale.lat,
+    };
+  }
+
+  protected computesSvgBoxRadius() {
+    const { x, y } = this.getCientSize();
     const hx = x / 2;
     const hy = y / 2;
-    const r = Math.sqrt(hx * hx + hy * hy);
-    return r;
+    return Math.ceil(Math.sqrt(hx * hx + hy * hy));
   }
 
   /**
@@ -72,12 +70,14 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
    * @param scale means
    * @returns
    */
-  getSVGLayout(scale = 1) {
+  getSVGLayout() {
     const r = this.computesSvgBoxRadius();
     const size = r * 2;
 
+    const { lat, lng } = this.scale;
+
     const gAttrs = {
-      transform: this.getVisibleObjectTransformStyle(scale, r),
+      transform: this.getVisibleObjectTransformStyle(r, lng, lat),
     };
 
     const styleAttrs = {
@@ -95,7 +95,7 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
     return {
       gAttrs,
       styleAttrs,
-      viewbox: `0,0,${size},${size}`,
+      viewbox: `0 0 ${size} ${size}`,
     };
   }
 
@@ -104,7 +104,7 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
    * @param r 为 svg 的窗口尺寸
    */
   computesVisibleObjectOffset(boxRadius: number) {
-    const { x, y } = this._size;
+    const { x, y } = this.getCientSize();
     return [boxRadius - x / 2, boxRadius - y / 2];
   }
 
@@ -116,17 +116,13 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
     this.redraw();
   }
 
-  // getCenter() {
-  //   return this._bounds.getCenter();
-  // }
-
   /**
    *
    * @param scale We use this to scale
    * @param _r We use this to compute the translation offset and rotation origin. If _r not provided, we call computesSvgBoxRadius.
    * @returns
    */
-  getVisibleObjectTransformStyle(scale = 1, _r = 0) {
+  private getVisibleObjectTransformStyle(_r = 0, scale = 1, scaleY = 1) {
     const { angle, anglePhase } = this;
 
     const r = _r || this.computesSvgBoxRadius();
@@ -134,17 +130,14 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
 
     const deg = angle + anglePhase;
 
-    return `rotate(${deg} ${r} ${r}) translate(${offsetX} ${offsetY}) scale(${scale} ${scale})`;
+    return `rotate(${deg} ${r} ${r}) translate(${offsetX} ${offsetY}) scale(${scale} ${
+      scaleY || scale
+    })`;
   }
 
   getSvgViewboxProp() {
     const r = this.computesSvgBoxRadius();
     return `0 0 ${r * 2} ${r * 2}`;
-  }
-
-  override setScale(s: number): void {
-    const { x, y } = this.size;
-    this.setSize(x * s, y * s);
   }
 }
 

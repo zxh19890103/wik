@@ -43,13 +43,13 @@ export const SvgComponentFactory = <
    */
   const fc = memo((props: any) => {
     const model = props.model as M;
-    const layout = model.getSVGLayout(1);
+    const layout = model.getSVGLayout();
 
     return h(
       'svg',
       {
         id: props.id,
-        className: `hr-reactSvg hr-reactSvg-${type}`,
+        className: `wik-reactSvg wik-reactSvg-${type}`,
         viewBox: layout.viewbox,
         version: '1.1',
         xmlns: 'http://www.w3.org/2000/svg',

@@ -9,14 +9,13 @@ import * as svg from './images';
 export class Haiport extends ReactSVGOverlay {
   constructor(
     latlng: L.LatLngExpression,
-    svgServer?: ReactSVGOverlayAppServer,
-    meta?: meta.Haiport,
+    meta: meta.Haiport,
+    svgServer: ReactSVGOverlayAppServer = null,
   ) {
-    super(ImageSVG, svgServer, 1000, 1000);
+    super(ImageSVG, latlng, 1000, 1000, svgServer);
     this.svgStyle = {};
     this.svgData = {
       imageURL: meta?.type === 'OUT' ? svg.SVG_HAIPORT_D : svg.SVG_HAIPORT_D,
     };
-    this.position = L.latLng(latlng);
   }
 }

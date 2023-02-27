@@ -19,26 +19,18 @@ export class ReactSVGOverlay<D = any, S = {}> extends SVGOverlay<S> {
   svgStyle: React.SVGAttributes<SVGRectElement> = {};
   svgData: D = null;
 
-  private lastSvgStyle: React.SVGAttributes<SVGRectElement> = null;
-
   constructor(
     svgC: SvgFunctionComponent,
-    svgServer: ReactSVGOverlayAppServer,
+    latlng: L.LatLngExpression,
     sizeX: number,
     sizeY: number,
+    svgServer: ReactSVGOverlayAppServer,
     options?: L.ImageOverlayOptions,
   ) {
-    super(null, [0, 0], sizeX, sizeY, options);
+    super(null, latlng, sizeX, sizeY, options);
     this.svgC = svgC;
-    this.svgId = `hrReactSvgId_${_svg_id++}`;
+    this.svgId = `wik-reactsvg-id_${_svg_id++}`;
     this.svgServer = svgServer;
-    if (svgServer) {
-      L.Util.setOptions(this, { pane: svgServer.pane });
-    }
-  }
-
-  getLastSvgStyle() {
-    return this.lastSvgStyle;
   }
 
   onRender() {
@@ -46,7 +38,7 @@ export class ReactSVGOverlay<D = any, S = {}> extends SVGOverlay<S> {
     this.setSVGData();
   }
 
-  updateSVG() {
+  private reqSvgUpdate() {
     svgUpdateReqs.add(this);
     if (svgUpdateTaskScheduled) return;
     // it looks like that queueMicroTask do not work well.
@@ -57,7 +49,7 @@ export class ReactSVGOverlay<D = any, S = {}> extends SVGOverlay<S> {
   /**
    * @private
    */
-  doUpdateSVG() {
+  _doUpdateSVG() {
     if (!this._map || !this._image) return;
     if (!this.svgServer || !this.svgServer.isMounted) return;
     this.svgServer.updateComponent(this.svgId, this.svgData, this.svgStyle);
@@ -71,13 +63,12 @@ export class ReactSVGOverlay<D = any, S = {}> extends SVGOverlay<S> {
       size: [this.size.x, this.size.y],
     };
 
-    this.updateSVG();
+    this.reqSvgUpdate();
   }
 
   setSVGStyle(style: React.SVGAttributes<SVGRectElement>) {
-    this.lastSvgStyle = this.svgStyle;
     this.svgStyle = { ...this.svgStyle, ...style };
-    this.updateSVG();
+    this.reqSvgUpdate();
   }
 
   override onAdd(map: Map): this {
@@ -88,7 +79,7 @@ export class ReactSVGOverlay<D = any, S = {}> extends SVGOverlay<S> {
         this._initImage();
         super.onAdd(map);
         // Here we update svg after added because we need to see the lastest state on page at initial.
-        this.updateSVG();
+        this.reqSvgUpdate();
         this.onMounted && this.onMounted();
       });
 
@@ -101,8 +92,6 @@ export class ReactSVGOverlay<D = any, S = {}> extends SVGOverlay<S> {
     super.onRemove(map);
     return this;
   }
-
-  onTransform() {}
 }
 
 export interface ReactSVGOverlay<D = any> {
@@ -121,7 +110,7 @@ const svgUpdateReqs: Set<ReactSVGOverlay> = new Set();
 
 function flushSvgUpdateReqs() {
   for (const update of svgUpdateReqs) {
-    update.doUpdateSVG();
+    update._doUpdateSVG();
   }
 
   svgUpdateReqs.clear();

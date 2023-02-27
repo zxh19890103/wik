@@ -24,7 +24,7 @@ export class SVGOverlayList<M extends LayerWithID, E extends string = never> ext
   }
 
   protected override _add(item: M): void {
-    L.Util.setOptions(item, { pane: this.pane });
+    L.Util.setOptions(item, { pane: this.paneObj.fullname });
     util$$.writeReadonlyProp(item, 'svgServer', this.svgServer);
 
     super._add(item);

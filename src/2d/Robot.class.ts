@@ -8,8 +8,8 @@ import * as svg from './images';
 
 @leafletOptions<L.ImageOverlayOptions>({})
 export class Robot extends ReactSVGOverlay {
-  constructor(svgServer: ReactSVGOverlayAppServer, meta?: meta.Robot) {
-    super(ImageSVG, svgServer, 1000, 1000);
+  constructor(meta: meta.Robot, svgServer: ReactSVGOverlayAppServer = null) {
+    super(ImageSVG, [0, 0], 1000, 1000, svgServer);
     this.svgStyle = { strokeDasharray: 4, strokeWidth: 1 };
     this.svgData = {
       imageURL: meta?.type === 'kiva' ? svg.SVG_KIVA : svg.SVG_KUBOT,
