@@ -46,6 +46,8 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
     const paneObj = this.paneMgr.get(this.pane, this.rendererType, _pane_z_seed++);
     util$$.writeReadonlyProp(this, 'paneObj', paneObj);
   }
+
+  dispose(): void {}
 }
 
 let _pane_z_seed = 402;

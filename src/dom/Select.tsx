@@ -5,6 +5,7 @@ import { IWarehouse } from '@/model';
 import { LayerPosition } from './LayerPosition';
 import { useEvented } from './useEvented';
 import { useMultipleSelection, useSelection } from './useSelection';
+import { WithEmitter } from '@/model/basic/Emitter';
 
 type CSSWidthHeight = number | string;
 
@@ -81,7 +82,7 @@ const Modes = memo((props: { warehouse: IWarehouse }) => {
   const { warehouse } = props;
   const { modeManager } = warehouse;
 
-  useEvented(modeManager, 'change');
+  useEvented(modeManager as unknown as WithEmitter<'change'>, 'change');
 
   const onModeChange = (evt) => {
     const name = evt.target.getAttribute('itemid');

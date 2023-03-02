@@ -4,7 +4,7 @@ import { GraphicObject } from '@/interfaces';
 import { IInjector } from '@/interfaces';
 import { IBehavior, IModeManager } from '@/interfaces';
 import { ISelectionManager } from '@/interfaces';
-import { ClickCancelMix, WithClickCancel } from '@/mixins/ClickCancel';
+import { ClickCancelMix, WithClickCancel } from '@/model/basic/ClickCancel';
 import {
   IWarehouse,
   IWarehouseOptional,
@@ -132,6 +132,8 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     })();
   }
 
+  unmount(): void {}
+
   dispose(): void {}
 
   queryListAll(): { type: string; value: IList<GraphicObject> }[] {
@@ -154,7 +156,7 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     return list;
   }
 
-  removeList(type: string): void {
+  unregList(type: string): void {
     const list = this.typedLists.get(type);
     if (!list) return;
 

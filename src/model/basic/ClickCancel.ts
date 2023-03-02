@@ -1,5 +1,13 @@
-export abstract class ClickCancelMix implements WithClickCancel {
+import { Mix } from '@/interfaces';
+
+export abstract class ClickCancelMix implements Mix, WithClickCancel {
   isClickEventFireCancelled: boolean;
+
+  getMixOptions() {
+    return {
+      isClickEventFireCancelled: false,
+    };
+  }
 
   cancelClickEventFire() {
     this.isClickEventFireCancelled = true;

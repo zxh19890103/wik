@@ -1,4 +1,4 @@
-import { AbstractConstructor, Constructor } from '@/interfaces';
+import { AbstractConstructor, Constructor, Mix, MixConstructor } from '@/interfaces';
 
 const hasOwn = Object.prototype.hasOwnProperty;
 const defineProp = Object.defineProperty;
@@ -76,14 +76,13 @@ export function mix<B extends object>(b: Constructor<B>): MixReturns {
  *
  * constructor IS excluded!
  */
-export function mixin(...features: Array<object | Constructor>) {
+export function mixin(...features: Array<MixConstructor>) {
   return (to: any) => {
     for (const feature of features) {
-      if (hasOwn.call(feature, 'prototype')) {
-        _internal_mixin(to, feature as Constructor, true);
-      } else {
-        _internal_mixin(to, { name: 'FakeClass', prototype: feature } as Constructor, true);
-      }
+      const _class = hasOwn.call(feature, 'prototype')
+        ? feature
+        : { name: 'FakeClass', prototype: feature };
+      _internal_mixin(to, _class as MixConstructor, true);
     }
   };
 }
@@ -148,33 +147,52 @@ function _internal_alias(to: AbstractConstructor, pairs: Record<string, string>)
  */
 function _internal_mixin(
   destClass: AbstractConstructor,
-  srcClass: Constructor,
+  srcClass: MixConstructor,
   onlyMethods = false,
 ) {
-  const protoDest = destClass.prototype;
-  const protoSrc = srcClass.prototype;
+  const destProto = destClass.prototype;
+  const srcProto = srcClass.prototype;
 
   /**
    * constructor, method defined on CLASS are readonly and CANNOT be enumerated.
    */
-  for (const key of Object.getOwnPropertyNames(protoSrc)) {
-    if (key === 'constructor') continue;
-    if (onlyMethods && typeof protoSrc[key] !== 'function') continue;
+  for (const key of Object.getOwnPropertyNames(srcProto)) {
+    if (key === 'constructor' || key === get_mix_options_method_name) continue;
+    if (onlyMethods && typeof srcProto[key] !== 'function') continue;
 
-    if (hasOwn.call(protoDest, key)) {
+    if (hasOwn.call(destProto, key)) {
       if (!__PROD__) {
-        throw new Error(`member "${key}" should not be overrided in ${destClass.name}`);
+        throw new Error(`[mixin] member "${key}" should not be overrided in ${destClass.name}`);
       }
       return;
     }
 
     // but those methods defined on the super Class will be override.
-    if (!__PROD__ && protoDest[key] !== undefined) {
+    if (!__PROD__ && destProto[key] !== undefined) {
       console.warn(
-        `member "${key}" on ${destClass.name} will be overrided! Because it's not on the this prototype.`,
+        `[mixin] member "${key}" on ${destClass.name} will be overrided on ${srcClass.name}! Because it's not on the this prototype.`,
       );
     }
 
-    defineProp(protoDest, key, { value: protoSrc[key] });
+    defineProp(destProto, key, { value: srcProto[key] });
+  }
+
+  if (!hasOwn.call(srcProto, get_mix_options_method_name)) return;
+
+  const options = srcProto.getMixOptions();
+
+  for (const key in options) {
+    if (__PROD__) {
+      defineProp(destProto, key, { value: options[key] });
+    } else {
+      defineProp(destProto, key, {
+        value: options[key],
+        writable: false,
+        configurable: false,
+        enumerable: false,
+      });
+    }
   }
 }
+
+const get_mix_options_method_name = 'getMixOptions';

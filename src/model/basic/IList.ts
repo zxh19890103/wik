@@ -4,6 +4,7 @@ export interface IList<M extends object> extends Iterable<M> {
   items: Set<M>;
   index: Map<string, M>;
   size: number;
+
   /**
    * 将一个对象加入到数据集，标记为 Added，将在下次提交时远程添加
    */

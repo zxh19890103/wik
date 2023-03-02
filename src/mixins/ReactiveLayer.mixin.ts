@@ -55,7 +55,7 @@ export function ReactiveLayerMixin(
 export function ReactiveLayerMixin(
   Base: Constructor<L.Layer>,
 ): Constructor<L.Layer & ReactiveLayer> {
-  return class extends Base implements ReactiveLayer, WithLayerState<any> {
+  class CCP extends Base implements ReactiveLayer, WithLayerState<any> {
     readonly $$isReactive = true;
 
     $$parent: IList<ReactiveLayer> = null;
@@ -449,5 +449,7 @@ export function ReactiveLayerMixin(
 
     //#region default OnCallback
     //#endregion
-  };
+  }
+
+  return CCP;
 }

@@ -1,7 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 
-const folder = path.join(__dirname, '../2d/images');
+const folder = path.join(__dirname, '../src/2d/images');
+
 const outfile = path.join(folder, './index.ts');
 
 const tsfile = fs.createWriteStream(outfile, { encoding: 'utf-8' });

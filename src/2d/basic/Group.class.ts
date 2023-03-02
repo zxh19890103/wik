@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { ReactiveLayer, ReactiveLayerMixin, WithClickCancel } from '@/mixins';
+import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
 import {
   mix,
   inject,
@@ -7,7 +7,9 @@ import {
   interfaces,
   InteractiveStateActionManager,
   ModeManager,
+  WithClickCancel,
 } from '@/model';
+
 import { PaneManager, WikPane } from '../state/PaneManager.class';
 import { leafletOptions } from '../utils';
 import { ContextMenuItem, Interactive, OnInteractive, WithLayerState } from '@/interfaces';

@@ -2,7 +2,7 @@ import { Serializable } from '@/interfaces';
 import { mixin } from './mixin';
 import { WithParent } from '@/interfaces';
 import { WithID } from '@/interfaces';
-import { SnapshotMix, WithSnapshot } from '@/mixins/Snapshot';
+import { SnapshotMix, WithSnapshot } from '@/model/basic/Snapshot';
 import { EffectCallReq } from './effect';
 import { Core } from './Core.class';
 import { IList } from './IList';

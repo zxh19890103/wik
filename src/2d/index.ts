@@ -12,7 +12,6 @@ export { CacheShelf } from './CacheShelf.class';
 export { Chargepile } from './Chargepile.class';
 export { Conveyor } from './Conveyor.class';
 export { ConveyorNode } from './ConveyorNode.class';
-export { Haiport } from './Haiport.class';
 export { Location } from './Location.class';
 export { Point } from './Point.class';
 export { Robot } from './Robot.class';

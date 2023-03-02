@@ -2,7 +2,7 @@ import { Constructor, ConstructorOrFactory, Factory } from '@/interfaces';
 import { Serializable } from '@/interfaces';
 import { isClass } from '@/utils';
 import { Base } from './Base.class';
-import { CoreList } from './Core.class';
+import { CoreList } from './CoreList.class';
 
 /**
  *

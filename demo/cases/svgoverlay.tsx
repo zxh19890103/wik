@@ -17,7 +17,7 @@ class MyWarehouse extends wikui.WikWarehouse {
     range(400, (i) => {
       this.add(
         'chargepile',
-        new Circle(random2(-1500, 1500), random2(-50000, 50000), random2(0, 360), randomColor()),
+        new Circle(random2(-1500, 1500), random2(-1000, 1000), random2(0, 360), randomColor()),
       );
     });
 
@@ -40,7 +40,7 @@ class Circle
   implements OnSelect, OnClick, OnMouseOverOut
 {
   constructor(lat, lng, a, color) {
-    super(SVG, [lat, lng], 3000, 3000, null);
+    super(SVG, [lat, lng], 400, 400, null);
     this.angle = a;
     this.svgStyleElement = 'rect';
     this.svgData = { color: randomColor() };

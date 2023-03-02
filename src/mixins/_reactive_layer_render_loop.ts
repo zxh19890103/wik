@@ -1,6 +1,6 @@
 import { ReactiveLayer } from './ReactiveLayer';
 import { ReactiveLayerRenderEffect, TRANSFORM_EFFECT } from './effects';
-import { WithSnapshot } from './Snapshot';
+import { WithSnapshot } from '../model/basic/Snapshot';
 
 const __RENDER_REQUESTS__: Set<ReactiveLayer> = new Set();
 const __RENDER_REQUEST_EFFECTS__: Map<string, ReactiveLayerRenderEffect> = new Map();

@@ -1,6 +1,5 @@
 import L from 'leaflet';
-import { ClickCancelMix, WithClickCancel } from '@/mixins';
-import { deco$$ } from '@/model';
+import { deco$$, ClickCancelMix, WithClickCancel } from '@/model';
 import { leafletOptions } from '../utils';
 import { HR_CRS, INITIAL_ZOOM_LEVEL } from './CRS';
 import { PaneManager } from '../state';

@@ -1,6 +1,6 @@
 import * as glMatrix from 'gl-matrix';
 import { ReactiveLayerRenderEffect } from './effects';
-import { WithClickCancel } from './ClickCancel';
+import { WithClickCancel } from '../model/basic/ClickCancel';
 import { IList } from '@/model';
 import {
   WithParent,
@@ -9,7 +9,7 @@ import {
   WithLayerID,
   InteractiveExports,
 } from '@/interfaces';
-import { WithSnapshotAbstract } from './Snapshot';
+import { WithSnapshotAbstract } from '../model/basic/Snapshot';
 
 export interface ReactiveLayerSnapshot<S = any> {
   id: string;

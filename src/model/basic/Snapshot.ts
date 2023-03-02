@@ -1,6 +1,14 @@
-export abstract class SnapshotMix implements WithSnapshot<any> {
+import { Mix } from '@/interfaces';
+
+export abstract class SnapshotMix implements Mix, WithSnapshot<any> {
   private _snapshot = null;
   abstract toSnapshot(): any;
+
+  getMixOptions() {
+    return {
+      _snapshot: null,
+    };
+  }
 
   getSnapshot() {
     return this._snapshot;

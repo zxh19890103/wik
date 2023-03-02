@@ -12,11 +12,11 @@ wik.configProviders('root', {
 @wik.provides(wikui.const$$.default_warehouse_deps)
 class MyWarehouse extends wikui.WikWarehouse {
   async layout(data: any) {
-    await this.imageManager.load(wikui.images.SVG_KUBOT, wikui.images.SVG_KUBOT_RED);
+    await this.imageManager.load(wikui.images.SVG_CHARGEPILE, wikui.images.SVG_CHARGEPILE);
 
     const bot = this.create(
       wikui.Bot,
-      this.imageManager.get(wikui.images.SVG_KUBOT_RED),
+      this.imageManager.get(wikui.images.SVG_CHARGEPILE),
       1000,
       1000,
     );

@@ -1,3 +1,4 @@
+import { WithEmitter } from '@/model/basic/Emitter';
 import { useContext, useEffect, useMemo } from 'react';
 import { ViewSetProps } from './interface';
 import { useEvented } from './useEvented';
@@ -12,7 +13,7 @@ export const useViewSet = (options: UseViewSetOptions) => {
   const { model, reactOn, type, filter } = options;
   const { warehouse } = useContext(__warehouse_context__);
 
-  useEvented(model, `size ${reactOn}`);
+  useEvented(model as unknown as WithEmitter<'hel' | 'ui' | 'po'>, 'hel ui po');
 
   const pipe = useMemo(() => {
     if (!filter) return null;
@@ -29,7 +30,7 @@ export const useViewSet = (options: UseViewSetOptions) => {
 
   useEffect(() => {
     return () => {
-      warehouse.removeList(type);
+      warehouse.unregList(type);
     };
   }, []);
 

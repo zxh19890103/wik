@@ -12,7 +12,7 @@ export class Robot extends ReactSVGOverlay {
     super(ImageSVG, [0, 0], 1000, 1000, svgServer);
     this.svgStyle = { strokeDasharray: 4, strokeWidth: 1 };
     this.svgData = {
-      imageURL: meta?.type === 'kiva' ? svg.SVG_KIVA : svg.SVG_KUBOT,
+      imageURL: meta?.type === 'kiva' ? svg.SVG_CHARGEPILE : svg.SVG_CHARGEPILE,
     };
     this.svgStyleElement = 'circle';
   }

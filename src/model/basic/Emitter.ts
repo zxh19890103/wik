@@ -1,5 +1,5 @@
 import { EventEmitter, EventNames } from 'eventemitter3';
-import { SimpleObject } from '@/interfaces';
+import { Mix, SimpleObject } from '@/interfaces';
 import { WikEvent } from './Event.class';
 import { WithParent } from '@/interfaces';
 import { link } from './mixin';
@@ -12,10 +12,17 @@ import { link } from './mixin';
   once: 'listen$1',
   off: 'unlisten',
 })
-export abstract class EmitterMix implements WithParent<EmitterMix> {
+export abstract class EmitterMix implements Mix, WithParent<EmitterMix>, IsEmitter {
   $$parent: EmitterMix;
+  readonly $$isEmitter = true;
 
   noEmit: boolean;
+
+  getMixOptions() {
+    return {
+      $$isEmitter: true,
+    };
+  }
 
   /**
    * @overrides
@@ -171,4 +178,8 @@ export interface WithEmitter<E extends string> {
   setEventChild(child: WithEmitter<string>, off?: boolean): this;
 
   setEventParent(parent: WithEmitter<string>): this;
+}
+
+export interface IsEmitter {
+  readonly $$isEmitter: true;
 }

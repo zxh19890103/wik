@@ -1,5 +1,5 @@
 import { Constructor, IInjector } from '@/interfaces';
-import { IWarehouse } from '@/model';
+import { CoreList, IWarehouse } from '@/model';
 import { Base, IList, Model, View } from '@/model';
 
 export interface ViewProps {

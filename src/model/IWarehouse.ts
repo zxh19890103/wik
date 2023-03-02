@@ -11,16 +11,17 @@ export interface IWarehouse
   selectionManager: ISelectionManager;
   modeManager: IModeManager;
 
-  mounted: boolean;
-  layouted: boolean;
+  readonly mounted: boolean;
+  readonly layouted: boolean;
 
   mount(root: unknown, ...args: any[]): void;
+  unmount(): void;
   layout(data?: unknown): void | Promise<void>;
 
   queryListAll(): Array<{ type: string; value: IList<GraphicObject> }>;
   queryList(type: string): IList<GraphicObject>;
   regList(type: string, list?: ListCtorArgs): IList<any>;
-  removeList(type: string): void;
+  unregList(type: string): void;
 
   each(fn: (item: GraphicObject, type: string) => void, type?: string): void;
 

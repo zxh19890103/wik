@@ -2,7 +2,6 @@ import L from 'leaflet';
 import {
   IWarehouse,
   Core,
-  deco$$,
   inject,
   const$$,
   interfaces,
@@ -26,7 +25,6 @@ import {
   IBehavior,
   IInjector,
   Constructor,
-  WithInput,
 } from '@/interfaces';
 
 import { tryInvokingOwn } from '@/utils';
@@ -194,7 +192,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
     return _list;
   }
 
-  removeList(type: OT) {
+  unregList(type: OT) {
     const list = this.typedLists.get(type);
     if (!list) return;
 
@@ -213,7 +211,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
     const injector = this.injector;
 
     // inject
-    util$$.writeProp(this, 'scene', map);
+    this.readOnly('scene', map);
     util$$.writeProp(this.paneManager, 'scene', map);
 
     this.paneManager.interact();
@@ -326,6 +324,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
 
     //#endregion
   }
+
+  unmount() {}
 
   addUpdateDep<M extends LayerWithID = LayerWithID, D = any>(
     type: OT,

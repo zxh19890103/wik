@@ -1,4 +1,5 @@
-export { Core, CoreList } from './basic/Core.class';
+export { Core } from './basic/Core.class';
+export { CoreList } from './basic/CoreList.class';
 export { Base, type Model, type View } from './basic/Base.class';
 export { List } from './basic/List.class';
 export { type IList } from './basic/IList';
@@ -15,6 +16,8 @@ export { InteractiveStateActionManager } from './state/InteractiveStateActionMan
 export { SelectionManager } from './state/SelectionManager.class';
 export { StateActionBase } from './state/StateAction.class';
 export { StateActionManager } from './state/StateActionManager.class';
+export { SnapshotMix, type WithSnapshot, type WithSnapshotAbstract } from './basic/Snapshot';
+export { ClickCancelMix, type WithClickCancel } from './basic/ClickCancel';
 
 export { WikModel } from './WikModel.class';
 export { Robot, RobotEffect } from './Robot.class';

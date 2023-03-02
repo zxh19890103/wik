@@ -17,6 +17,7 @@ interface ViewSet2DProps extends ViewSetProps {
    */
   z?: number;
 }
+
 export const ViewSet = memo(
   (props: ViewSet2DProps) => {
     const { model, renderer, type } = props;

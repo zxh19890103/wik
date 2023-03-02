@@ -8,8 +8,8 @@ import {
   CoreList,
   IWarehouse,
   interfaces,
+  WithClickCancel,
 } from '@/model';
-import { WithClickCancel } from '@/mixins';
 
 type LayerListEventType =
   | 'click'

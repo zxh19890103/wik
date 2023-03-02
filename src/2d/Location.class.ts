@@ -28,8 +28,8 @@ const createDefaultOptions = (meta: meta.Location): L.MarkerOptions => {
     case 'labor':
       return {
         icon: new L.Icon({
-          className: 'hr-marker-icon',
-          iconUrl: iconURL || svg.SVG_LABOR,
+          className: 'wik-marker-icon',
+          iconUrl: iconURL || svg.SVG_CHARGEPILE,
           shadowUrl: null,
           shadowAnchor: [5, 20],
         }),

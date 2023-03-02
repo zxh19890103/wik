@@ -17,3 +17,4 @@ export * from './WithLayerState';
 export * from './WithParent';
 export * from './WithRef';
 export * from './d';
+export * from './Mix';
