@@ -187,7 +187,7 @@ function _internal_mixin(
     } else {
       defineProp(destProto, key, {
         value: options[key],
-        writable: false,
+        writable: true,
         configurable: false,
         enumerable: false,
       });

@@ -5,7 +5,7 @@ import { useLeafletEvented } from './useLeafletEvented';
 export const LayerPosition = memo((props: { model: ReactiveLayer }) => {
   const { model } = props;
 
-  useLeafletEvented(model, 'position angle');
+  useLeafletEvented(model as unknown as L.Layer, 'position angle');
 
   const { position, angle } = model;
 

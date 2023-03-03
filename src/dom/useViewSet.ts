@@ -13,7 +13,7 @@ export const useViewSet = (options: UseViewSetOptions) => {
   const { model, reactOn, type, filter } = options;
   const { warehouse } = useContext(__warehouse_context__);
 
-  useEvented(model as unknown as WithEmitter<'hel' | 'ui' | 'po'>, 'hel ui po');
+  useEvented(model as unknown as WithEmitter<string>, `size ${reactOn}`);
 
   const pipe = useMemo(() => {
     if (!filter) return null;

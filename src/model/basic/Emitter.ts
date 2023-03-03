@@ -138,7 +138,7 @@ export const __batched_fires__ = <R = any>(fn: () => R | Promise<R>, event?: str
   }
 };
 
-export interface WithEmitter<E extends string> {
+export interface WithEmitter<E extends string> extends IsEmitter {
   /**
    * set it True, the follow emit will be ignore and then set it False.
    */

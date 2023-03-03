@@ -1,5 +1,6 @@
 import THREE from 'three';
 import { meta } from '@/model';
+import { queueTask } from '@/utils';
 
 const _color = new THREE.Color();
 const _identity = new THREE.Matrix4();
@@ -123,7 +124,15 @@ export class InstancedMesh extends THREE.InstancedMesh<any, THREE.Material> {
     return instance;
   }
 
-  updateInstances() {
+  requestUpdate() {
+    queueTask({
+      key: 'updateInstancedMesh',
+      run: 'markInstancesNeedUpdate',
+      context: this,
+    });
+  }
+
+  markInstancesNeedUpdate() {
     const total = this.total + this.removedTotal;
 
     this.instanceMatrix.updateRange = {

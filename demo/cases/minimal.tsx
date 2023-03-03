@@ -80,6 +80,6 @@ const Aside = (props: wikdom.MultipleObjectsSelectProps<any>) => {
   return <div>{props.model?.length} selected</div>;
 };
 
-const Aside2 = (props: wikdom.ObjectSelectProps<any>) => {
+const Aside2 = (props: wikdom.ObjectSelectProps<MyPoint>) => {
   return <div>.. selected</div>;
 };

@@ -7,16 +7,13 @@ export function useEvented<E extends string>(evented: WithEmitter<E>, events: st
   const tick = useGlobalTick();
 
   useEffect(() => {
-    const eventsArr = events.split(/[\s,]/g).filter(Boolean);
+    if (!evented.$$isEmitter) return;
 
-    for (const event of eventsArr) {
-      evented.listen$n(event, tick);
-    }
+    const _events = Array.isArray(events) ? events.join(' ') : events;
 
+    evented.listen$n(_events, tick);
     return () => {
-      for (const event of eventsArr) {
-        evented.unlisten$n(event, tick);
-      }
+      evented.unlisten$n(_events, tick);
     };
   }, [evented, events]);
 }

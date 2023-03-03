@@ -149,13 +149,7 @@ class RackView extends wikui.Shelf implements wik.PointView, wik.WithWarehouseRe
       this.packs.push(instance);
     }
 
-    wikutil.queueTask({
-      key: 'updateInstances',
-      run: () => {
-        instancedPack.updateInstances();
-        instancedBoard.updateInstances();
-      },
-    });
+    instancedPack.requestUpdate();
   }
 
   whenUnInit?(): void {
@@ -168,14 +162,6 @@ class RackView extends wikui.Shelf implements wik.PointView, wik.WithWarehouseRe
     for (const board of this.boards) {
       board.delete();
     }
-
-    wikutil.queueTask({
-      key: 'updateInstances',
-      run: () => {
-        instancedPack.updateInstances();
-        instancedBoard.updateInstances();
-      },
-    });
   }
 
   whenEffect?(effect: string): void {}
