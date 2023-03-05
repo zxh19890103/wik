@@ -20,6 +20,7 @@ export class InstancedMesh extends THREE.InstancedMesh<any, THREE.Material> {
   instanceIndex = -1;
   color: number;
   model: any;
+  disableUpdateRequest = true;
 
   private total = 0;
   private removedTotal = 0;
@@ -62,7 +63,7 @@ export class InstancedMesh extends THREE.InstancedMesh<any, THREE.Material> {
     return true;
   }
 
-  deleteInstance(id: number) {
+  private deleteInstance(id: number) {
     const instance = this.instances.get(id);
 
     if (!instance) return;
@@ -79,6 +80,10 @@ export class InstancedMesh extends THREE.InstancedMesh<any, THREE.Material> {
     this.indexTrash.push(instance.instanceIndex);
 
     this.total -= 1;
+
+    if (!this.disableUpdateRequest) {
+      this.requestUpdate();
+    }
   }
 
   delete() {
@@ -121,17 +126,24 @@ export class InstancedMesh extends THREE.InstancedMesh<any, THREE.Material> {
 
     this.total += 1;
 
+    if (!this.disableUpdateRequest) {
+      this.requestUpdate();
+    }
+
     return instance;
   }
 
   requestUpdate() {
     queueTask({
-      key: 'updateInstancedMesh',
+      key: `updateInstancedMesh-${this.constructor.name}`,
       run: 'markInstancesNeedUpdate',
       context: this,
     });
   }
 
+  /**
+   * If the total number of instances changed, call this method to re-render.
+   */
   markInstancesNeedUpdate() {
     const total = this.total + this.removedTotal;
 
@@ -197,4 +209,7 @@ export class InstancedMesh extends THREE.InstancedMesh<any, THREE.Material> {
   override setColorAt(index: number, color: THREE.Color): void {
     color.toArray(this.instanceColor.array, index * 3);
   }
+
+  setPosition(x: number, y: number, z: number) {}
+  setRotation(rad: number) {}
 }

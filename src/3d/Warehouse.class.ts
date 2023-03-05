@@ -17,16 +17,20 @@ import {
   util$$,
 } from '@/model';
 import { tryInvokingOwn } from '@/utils';
-import { PointerReactBehavior } from './behaviors';
+import { ObjectDragBehavior, PointerReactBehavior } from './behaviors';
 import { DefaultBehavior } from './behaviors/DefaultBehavior.class';
 import { Ground } from './Ground.class';
 import { Object3DList } from './Object3DList.class';
+import { IControl } from './controls';
 
 @deco$$.mixin(ClickCancelMix)
 export abstract class Warehouse3D extends Core implements IWarehouse, IDisposable {
+  abstract size: number;
+
   readonly mounted: boolean = false;
   readonly layouted: boolean = false;
 
+  readonly controls: IControl = null;
   readonly scene: THREE.Scene;
   readonly camera: THREE.Camera = null;
   readonly renderer: THREE.Renderer = null;
@@ -43,27 +47,31 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
   fireBehavior(type: string, target: THREE.Object3D, event?: any) {
     if (!target) return;
 
-    if (target === this.scene) {
-      this.modeManager.apply(const$$.event2behavior[type], target, event);
-      return;
-    }
+    const eventType = const$$.event2behavior[target === this.scene ? type : `item@${type}`];
 
-    this.modeManager.apply(const$$.event2behavior[`item@${type}`], target, event);
+    this.modeManager.apply(eventType, target, event);
   }
 
-  mount(scene: THREE.Scene, renderer: THREE.Renderer, camera: THREE.Camera): void {
+  mount(
+    scene: THREE.Scene,
+    renderer: THREE.Renderer,
+    camera: THREE.Camera,
+    controls: IControl,
+  ): void {
     if (this.mounted) return;
 
     this.assign({
       scene,
       camera,
       renderer,
+      controls,
     });
 
     for (const [_, list] of this.typedLists) {
       if (list.mounted) continue;
       list.mount(scene);
     }
+
     // lights, ground
     {
       // lights
@@ -75,36 +83,50 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
       const amlight = new THREE.AmbientLight(0xffffff, 0.3);
       scene.add(amlight);
 
-      // const hemiLight = new THREE.HemisphereLight(0xffffff, 0xf87);
-      // hemiLight.position.set(0, 10000, 0);
-      // scene.add(hemiLight);
-
-      const grid = new THREE.GridHelper(10000);
-      grid.rotateX(Math.PI / 2);
-      scene.add(grid);
+      // const grid = new THREE.GridHelper(this.radius, 30, 0xffffff, 0xffffff);
+      // grid.rotateX(Math.PI / 2);
+      // scene.add(grid);
 
       // ground
-      const ground = new Ground(50000, 50000, 0x910293);
+      const ground = new Ground({ w: this.size, h: this.size, color: 0x9def89, unlimit: true });
+      ground.receiveShadow = true;
       scene.add(ground);
 
       // axes
-      const axesHelper = new THREE.AxesHelper(10000);
+      const axesHelper = new THREE.AxesHelper(this.size);
 
       axesHelper.setColors(
         new THREE.Color(0x3487f0), // x
         new THREE.Color(0xff4f00), // y
         new THREE.Color(0x00ff8f), // z
       );
-      scene.add(axesHelper);
 
-      // a ref
-      const ball = new THREE.Mesh(
-        new THREE.SphereGeometry(100, 60, 60),
-        new THREE.MeshPhongMaterial({ color: 0x00ff99 }),
+      console.log(
+        '%cX-axis; %cY-axis, %cZ-axis',
+        'color: #3487f0',
+        'color:#ff4f00',
+        'color:#00ff8f',
       );
 
-      ball.position.set(0, 0, 700);
-      scene.add(ball);
+      scene.add(axesHelper);
+    }
+
+    // skybox
+    {
+      const materialArray = [
+        new THREE.MeshBasicMaterial({ color: 0xff9800, side: THREE.BackSide }), // front
+        new THREE.MeshBasicMaterial({ color: 0xef8fef, side: THREE.BackSide }), //
+        new THREE.MeshBasicMaterial({ color: 0xae10cf, side: THREE.BackSide }),
+        new THREE.MeshBasicMaterial({ color: 0xea0192, side: THREE.BackSide }),
+        new THREE.MeshBasicMaterial({ color: 0x13f4aa, side: THREE.BackSide }),
+        // new THREE.MeshBasicMaterial({ color: 0x19acef, side: THREE.BackSide }),
+      ];
+
+      const skyboxGeo = new THREE.BoxGeometry(this.size, this.size, this.size);
+      const skybox = new THREE.Mesh(skyboxGeo, materialArray);
+      skybox.translateZ(this.size / 2 - 100);
+
+      this.scene.add(skybox);
     }
 
     // modes
@@ -113,6 +135,12 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
         'default',
         this.injector.$new(PointerReactBehavior, this),
         this.injector.$new(DefaultBehavior),
+      );
+
+      this.modeManager.create(
+        'drag',
+        this.injector.$new(PointerReactBehavior, this),
+        this.injector.$new(ObjectDragBehavior, this),
       );
 
       this.modeManager.create('readonly');
@@ -144,9 +172,9 @@ export abstract class Warehouse3D extends Core implements IWarehouse, IDisposabl
     return this.typedLists.get(type);
   }
 
-  regList<O extends THREE.Object3D>(type: string): Object3DList<O> {
+  regList<O extends THREE.Object3D>(type: string) {
     if (this.typedLists.has(type)) return;
-    const list = this.injector.$new<Object3DList<O>>(Object3DList);
+    const list = this.injector.$new(Object3DList<O>);
     this.typedLists.set(type, list);
 
     this.setEventChild(list);

@@ -1,6 +1,6 @@
 import { InteractiveStateActionManager, Behavior, inject, interfaces } from '@/model';
 import { InteractiveObject3D } from '../IInteractive3D';
-import { ISelectionManager } from '@/interfaces';
+import { GraphicObject, ISelectionManager } from '@/interfaces';
 
 export class DefaultBehavior extends Behavior {
   @inject(interfaces.ISelectionManager)
@@ -10,6 +10,18 @@ export class DefaultBehavior extends Behavior {
 
   override onLoad(): void {}
   override onUnload(): void {}
+
+  onPress(obj: GraphicObject, evt: unknown): void {
+    console.log('pressed', obj);
+  }
+
+  onMouseDown(evt: unknown): void {
+    console.log('mouse down on', evt);
+  }
+
+  onMouseMove(evt: unknown): void {
+    console.log('mouse move...');
+  }
 
   override onHover(layer: InteractiveObject3D, e: unknown): void {
     if (!layer.onHover || !layer.onUnHover) return;

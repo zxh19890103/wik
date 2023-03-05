@@ -17,7 +17,7 @@ export interface IInjector {
    * Based on this injector, create an object  which may depend providers from this injector.
    * If C is a provider, we create a sub injector, whose parent is the injector.
    */
-  $new<T extends object>(C: Constructor<T>, ...args: any[]): T;
+  $new<C extends Constructor<object>>(c: C, ...args: ConstructorParameters<C>): InstanceType<C>;
 
   /**
    * get a value from THIS injector in hierarchical.

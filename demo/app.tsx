@@ -11,6 +11,7 @@ const PageLoadError = () => {
 
 const Page = React.lazy(() => {
   return import(`./cases/${route}.tsx`).catch((err) => {
+    console.log(err);
     return { default: PageLoadError };
   });
 });

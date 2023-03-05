@@ -2,11 +2,11 @@ import { Mesh, MeshPhongMaterial } from 'three';
 import { BoardGeometry } from './geometries/BoardGeometry.class';
 
 export class Ground extends Mesh {
-  constructor(w: number, h: number, color?: number) {
+  constructor(params: { w: number; h: number; color?: number; unlimit?: boolean }) {
     super(
-      new BoardGeometry(w, h),
+      new BoardGeometry(params.w, params.h),
       new MeshPhongMaterial({
-        color: color || 0x348700,
+        color: params.color ?? 0x348700,
         transparent: true,
         opacity: 0.5,
         depthWrite: false,

@@ -1,3 +1,5 @@
+const { sin, cos, PI } = Math;
+
 /**
  * generate 4 vertices to represent a retangle on z, and be pendicular to the XY plane.
  *
@@ -28,4 +30,22 @@ export const generatePlane = (l: number, w: number, axe: 'x' | 'y' | 'z', dir: 1
     vertices: [],
     normal: [0, 0, 0],
   };
+};
+
+export const generateCircle = (z = 0, radius: number, divisions = 100) => {
+  const points = [];
+
+  const delta = (PI * 2) / divisions;
+
+  for (let a = 0, i = 0; i < divisions; i++) {
+    points.push(sin(a) * radius, cos(a) * radius, z);
+
+    a += delta;
+  }
+
+  return points;
+};
+
+export const offset = (indices: number[], startAt: number) => {
+  return indices.map((i) => i + startAt);
 };

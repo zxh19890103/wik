@@ -14,13 +14,13 @@ export class Object3DList<M extends THREE.Object3D>
   readonly scene: THREE.Scene;
   readonly mounted: boolean = false;
 
-  mount(root: THREE.Scene): void {
-    this.assign('scene', root);
+  mount(scene: THREE.Scene): void {
+    this.assign('scene', scene);
     this.assign('mounted', true);
 
     // init add to ui
     for (const item of this.items) {
-      root.add(item);
+      scene.add(item);
       util$$.writeProp(item, '$$warehouse', this.$$parent);
     }
   }

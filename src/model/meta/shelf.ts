@@ -2,6 +2,7 @@ import { Base } from './base';
 import { Position } from './position';
 
 export interface Rack extends Base {
+  type: string;
   width: number;
   depth: number;
   height: number;

@@ -52,7 +52,7 @@ export class PointerReactBehavior extends Behavior {
       this.isPointerMoving = true;
 
       clearTimeout(mousemovestopTimer);
-      mousemovestopTimer = setTimeout(onmousemovestop, 300);
+      mousemovestopTimer = setTimeout(onmousemovestop, 50);
 
       if (!this.isMouseDown) return;
 
@@ -66,6 +66,8 @@ export class PointerReactBehavior extends Behavior {
         // mousdown
         console.log('obj is down');
         warehouse.fireBehavior('mousedown', this.activatedObj3d);
+      } else {
+        warehouse.fireBehavior('mousedown', this.warehouse.scene);
       }
     };
 
@@ -99,6 +101,15 @@ export class PointerReactBehavior extends Behavior {
 
     this.userOnTick = userOnTick;
 
+    const indicator = new THREE.Mesh(
+      new THREE.SphereGeometry(1000),
+      new THREE.MeshPhongMaterial({ color: 0xff4f00 }),
+    );
+
+    indicator.position.set(0, 0, 0);
+
+    warehouse.scene.add(indicator);
+
     warehouse.onTick = () => {
       userOnTick && userOnTick();
 
@@ -112,11 +123,14 @@ export class PointerReactBehavior extends Behavior {
 
       this.raycaster.setFromCamera(this.pointer, this.warehouse.camera);
 
+      console.time('raycaster.intersectObjects');
+      // The heavy run.
       for (const [_, list] of this.warehouse.typedLists) {
         const intersection = this.raycaster.intersectObjects([...list.items], false);
         if (intersection.length === 0) continue;
         intersections.push(intersection[0]);
       }
+      console.timeEnd('raycaster.intersectObjects');
 
       // if hit one
       if (intersections.length > 0) {
@@ -134,6 +148,24 @@ export class PointerReactBehavior extends Behavior {
 
         this.intersection = intersection;
       }
+
+      // Ray is an object re-use over and over again.
+
+      // if (obj3d) {
+      //   const intersection = this.raycaster.ray.intersectSphere(
+      //     new THREE.Sphere(obj3d.position, 1000),
+      //     new THREE.Vector3(),
+      //   );
+
+      //   if (intersection) {
+      //     indicator.position.copy(intersection);
+      //   }
+      //   // console.log(intersection.x, intersection.y, intersection.z);
+      // }
+
+      console.log('you got:', obj3d);
+
+      warehouse.fireBehavior('mousemove', obj3d || warehouse.scene);
 
       if (this.activatedObj3d === obj3d) {
         return;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import THREE from 'three';
-import { OrbitControls } from '@/3d/controls';
+import { OrbitControls, MapControls } from '@/3d/controls';
 import { IWarehouse } from '@/model';
 import { WarehouseContextValue, WarehouseProps } from './interface';
 import { Modes } from './Select';
@@ -51,7 +51,7 @@ export const Warehouse3D = (props: WarehouseProps) => {
 
     let warehouse: IWarehouse = null;
 
-    new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
 
     const loop = () => {
       requestAnimationFrame(loop);
@@ -68,7 +68,7 @@ export const Warehouse3D = (props: WarehouseProps) => {
     window.onresize = adjustSize;
 
     warehouse = createWarehouse(injector, props.warehouse);
-    warehouse?.mount(scene, renderer, camera);
+    warehouse?.mount(scene, renderer, camera, controls);
 
     setValue({ ...value, mvMappings: props.mvMappings, warehouse });
   }, []);
