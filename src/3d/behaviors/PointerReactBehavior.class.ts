@@ -126,7 +126,7 @@ export class PointerReactBehavior extends Behavior {
       console.time('raycaster.intersectObjects');
       // The heavy run.
       for (const [_, list] of this.warehouse.typedLists) {
-        const intersection = this.raycaster.intersectObjects([...list.items], false);
+        const intersection = this.raycaster.intersectObjects([...list.items], true);
         if (intersection.length === 0) continue;
         intersections.push(intersection[0]);
       }
