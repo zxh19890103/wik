@@ -5,11 +5,6 @@ import { ReactiveLayer } from '@/mixins';
 import { IWarehouse, Behavior } from '@/model';
 import { WikMap } from '../basic/Map.class';
 
-/**
- * @todo
- * marker is not ok.
- */
-
 export class EditBehavior extends Behavior {
   private ogirin: L.Marker = null;
   private currentContextMenuTarget = null;
@@ -27,7 +22,7 @@ export class EditBehavior extends Behavior {
       keepInView: true,
       closeButton: false,
       closeOnClick: true,
-      className: 'hrContextMenu',
+      className: 'wik-contextmenu',
       closeOnEscapeKey: false,
     }).on('remove', () => {
       this.currentContextMenuTarget = null;
@@ -89,15 +84,13 @@ export class EditBehavior extends Behavior {
   }
 
   onPress(layer: ReactiveLayer, evt: L.LeafletMouseEvent): void {
-    // const leaf = evt.propagatedFrom; //
-
     /**
      * the target to translate or call on-methods.
      */
     const target = layer.$$system || layer;
     const asInteractive = target as unknown as Interactive;
 
-    const startPoint = evt.containerPoint.clone();
+    const startPoint = evt.layerPoint.clone();
     const mapDragging = this.map.dragging;
     const isMapDraggingDisabled = mapDragging.enabled();
     let dragged = false;
@@ -108,7 +101,7 @@ export class EditBehavior extends Behavior {
 
     const onMove = (evt: MouseEvent) => {
       evt.stopPropagation();
-      const containerPoint = this.map.mouseEventToContainerPoint(evt);
+      const containerPoint = this.map.mouseEventToLayerPoint(evt);
 
       const x = containerPoint.x;
       const y = containerPoint.y;
@@ -119,6 +112,7 @@ export class EditBehavior extends Behavior {
       if (dx || dy) {
         const dLatLng = this.map.unproject([dx, dy]);
 
+        target._syncRenderOnce = true;
         target.translate(dLatLng.lat, dLatLng.lng);
         asInteractive.onDragging && asInteractive.onDragging();
 

@@ -319,11 +319,12 @@ export function ReactiveLayerMixin(
     }
 
     requestRenderCall(effect: ReactiveLayerRenderEffect) {
-      console.log('[requestRenderCall]', ReactiveLayerRenderEffect[effect]);
       if (!this.ifRender) {
         this.ifRender = true;
         return;
       }
+
+      console.log('[requestRenderCall]', ReactiveLayerRenderEffect[effect]);
 
       this.updateMatrix();
 
@@ -437,7 +438,7 @@ export function ReactiveLayerMixin(
       } else if (this instanceof L.Circle || this instanceof L.Marker) {
         this.setLatLng(this.localToWorld([0, 0]));
       } else {
-        console.log('not Polyline Or Circle, no need to transform');
+        console.log('neither Polyline nor Circle, no need to transform');
       }
     }
 

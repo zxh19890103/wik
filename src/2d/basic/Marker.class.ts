@@ -4,9 +4,16 @@ import { ReactiveLayer, ReactiveLayerMixin } from '@/mixins';
 import { leafletOptions } from '../utils/leaflet';
 import { WithLayerState } from '@/interfaces';
 
+import * as images from '../images';
+
 @leafletOptions<L.MarkerOptions>({
   interactive: true,
   draggable: false,
+  icon: new L.Icon({
+    className: 'debug-bordered',
+    iconUrl: images.SVG_CHARGEPILE,
+    iconSize: [32, 32],
+  }),
 })
 export class Marker<S = {}> extends mix(L.Marker).with<L.Marker, ReactiveLayer>(
   ReactiveLayerMixin,
@@ -14,10 +21,6 @@ export class Marker<S = {}> extends mix(L.Marker).with<L.Marker, ReactiveLayer>(
   constructor(latlng: L.LatLngExpression, options?: L.MarkerOptions) {
     super(latlng, options);
     this.position = L.latLng(latlng);
-  }
-
-  onTransform(snapshot: any): void {
-    this.setLatLng(this.position);
   }
 }
 
