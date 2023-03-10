@@ -1,4 +1,4 @@
-import { Circle, LayerList, SVGOverlayList, VectorLayerList } from './basic';
+import { Circle, MarkerList, SVGOverlayList, VectorLayerList } from './basic';
 import { Bot } from './Bot.class';
 import { Chargepile } from './Chargepile.class';
 import { Conveyor } from './Conveyor.class';
@@ -22,22 +22,21 @@ export abstract class WikWarehouse<LayoutData = any, OT extends string = never> 
   readonly rests: VectorLayerList<Circle>;
   readonly maintains: VectorLayerList<Circle>;
 
-  readonly locations: LayerList<Location>;
+  readonly locations: MarkerList<Location>;
   readonly conveyors: VectorLayerList<Conveyor>;
 
   constructor(injector: IInjector) {
     super();
 
-    this.points = injector.$new<any>(VectorLayerList, 'point', 'canvas');
-    this.shelfs = injector.$new<any>(VectorLayerList, 'shelf', 'canvas');
-    this.chargepiles = injector.$new<any>(SVGOverlayList, 'chargepile');
-    this.labors = injector.$new<any>(VectorLayerList, 'labor', 'canvas');
-    this.rests = injector.$new<any>(VectorLayerList, 'rest', 'canvas');
-    this.maintains = injector.$new<any>(VectorLayerList, 'maintainence', 'canvas');
-    this.bots = injector.$new<any>(VectorLayerList, 'bot', 'canvas');
-    // this.cacheShelfs = injector.$new<any>(LayerList);
-    this.conveyors = injector.$new<any>(VectorLayerList, 'conveyor', 'canvas');
-    this.locations = injector.$new<any>(LayerList);
+    this.points = injector.$new(VectorLayerList<Point>, 'point', 'canvas');
+    this.shelfs = injector.$new(VectorLayerList<Shelf>, 'shelf', 'canvas');
+    this.chargepiles = injector.$new(SVGOverlayList<Chargepile>, 'chargepile');
+    this.labors = injector.$new(VectorLayerList<Circle>, 'labor', 'canvas');
+    this.rests = injector.$new(VectorLayerList<Circle>, 'rest', 'canvas');
+    this.maintains = injector.$new(VectorLayerList<Circle>, 'maintainence', 'canvas');
+    this.bots = injector.$new(VectorLayerList<Bot>, 'bot', 'canvas');
+    this.conveyors = injector.$new(VectorLayerList<Conveyor>, 'conveyor', 'canvas');
+    this.locations = injector.$new(MarkerList<Location>, 'location');
 
     //#region set
     this.regList('point', this.points);
@@ -50,7 +49,6 @@ export abstract class WikWarehouse<LayoutData = any, OT extends string = never> 
 
     this.regList('bot', this.bots);
 
-    // this.addList('cacheShelf', this.cacheShelfs);
     this.regList('conveyor', this.conveyors);
     this.regList('location', this.locations);
     //#endregion

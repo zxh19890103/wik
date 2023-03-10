@@ -260,8 +260,9 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       'edit',
       injector.$new(behaviors.DefaultBehavior),
       injector.$new(behaviors.SpaceDragBehavior, map),
-      injector.$new(behaviors.RectDrawSelectBehavior, this, map),
+      // injector.$new(behaviors.RectDrawSelectBehavior, this, map),
       injector.$new(behaviors.EditBehavior, this, map),
+      // injector.$new(behaviors.MarkerDragBehavior, map),
     );
 
     const modes = this.configModes();

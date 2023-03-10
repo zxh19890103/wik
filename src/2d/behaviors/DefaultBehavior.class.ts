@@ -28,10 +28,6 @@ export class DefaultBehavior extends Behavior {
     layer.onDblClick && layer.onDblClick(e);
   }
 
-  onNoopClick(evt: unknown): void {
-    console.log('noop click');
-  }
-
   override onClick(layer: Interactive, e: L.LeafletMouseEvent): void {
     layer.onClick && layer.onClick(e);
 

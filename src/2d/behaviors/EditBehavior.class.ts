@@ -4,6 +4,7 @@ import { ContextMenuItem } from '@/interfaces';
 import { ReactiveLayer } from '@/mixins';
 import { IWarehouse, Behavior } from '@/model';
 import { WikMap } from '../basic/Map.class';
+import { Marker } from '../basic';
 
 export class EditBehavior extends Behavior {
   private ogirin: L.Marker = null;
@@ -16,8 +17,6 @@ export class EditBehavior extends Behavior {
   }
 
   onLoad(): void {
-    this.ogirin = L.marker([0, 0]).addTo(this.map);
-
     this.contextmenuPopup = new L.Popup({
       keepInView: true,
       closeButton: false,
@@ -30,11 +29,7 @@ export class EditBehavior extends Behavior {
     });
   }
 
-  onUnload(): void {
-    this.ogirin?.remove();
-    this.ogirin = null;
-    console.log('unload edit behavior');
-  }
+  onUnload(): void {}
 
   private handleContextMenuClick = (e) => {
     const target = e.target as HTMLAnchorElement;
@@ -90,18 +85,30 @@ export class EditBehavior extends Behavior {
     const target = layer.$$system || layer;
     const asInteractive = target as unknown as Interactive;
 
-    const startPoint = evt.layerPoint.clone();
+    const startPoint = this.map.mouseEventToContainerPoint(evt.originalEvent); //  evt.containerPoint.clone();
+
+    // fix, for marker, the evt.containerPoint is always the center of the marker.
+    // if (target instanceof Marker) {
+    //   const { offsetX, offsetY } = evt.originalEvent;
+    //   const { clientHeight, clientWidth } = target._icon;
+    //   startPoint.x += -clientWidth / 2 + offsetX;
+    //   startPoint.y += -clientHeight / 2 + offsetY;
+    // }
+
     const mapDragging = this.map.dragging;
     const isMapDraggingDisabled = mapDragging.enabled();
     let dragged = false;
 
+    L.circle(evt.latlng).addTo(this.map);
+
     if (isMapDraggingDisabled) {
       mapDragging.disable();
+      this.map.scrollWheelZoom.disable();
     }
 
     const onMove = (evt: MouseEvent) => {
       evt.stopPropagation();
-      const containerPoint = this.map.mouseEventToLayerPoint(evt);
+      const containerPoint = this.map.mouseEventToContainerPoint(evt);
 
       const x = containerPoint.x;
       const y = containerPoint.y;
@@ -110,10 +117,9 @@ export class EditBehavior extends Behavior {
       const dy = y - startPoint.y;
 
       if (dx || dy) {
-        const dLatLng = this.map.unproject([dx, dy]);
-
         target._syncRenderOnce = true;
-        target.translate(dLatLng.lat, dLatLng.lng);
+        const { lat: dLat, lng: dLng } = this.map.unproject([dx, dy]);
+        target.translate(dLat, dLng);
         asInteractive.onDragging && asInteractive.onDragging();
 
         startPoint.x = x;
@@ -131,11 +137,15 @@ export class EditBehavior extends Behavior {
 
       if (isMapDraggingDisabled) {
         mapDragging.enable();
+        this.map.scrollWheelZoom.enabled();
       }
 
       if (dragged) {
         asInteractive.onDragEnd && asInteractive.onDragEnd();
         target.cancelClickEventFire();
+
+        const latlng = this.map.mouseEventToLatLng(evt);
+        L.circle(latlng).addTo(this.map);
       }
 
       document.removeEventListener('mousemove', onMove);

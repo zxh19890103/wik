@@ -6,3 +6,4 @@ export { RectDrawSelectBehavior } from './RectDrawSelectBehavior.class';
 export { EditBehavior } from './EditBehavior.class';
 export { DragBehavior } from './DragBehavior.class';
 export { SpaceDragBehavior } from './SpaceDragBehavior.class';
+export { MarkerDragBehavior } from './MarkerDragBehavior.class';

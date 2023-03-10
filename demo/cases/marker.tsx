@@ -1,7 +1,5 @@
-import { useState } from 'react';
+import L from 'leaflet';
 import { wik, wikdom, wikui, wikutil } from '@/i2d';
-
-import { OnClick, OnMouseOverOut, OnSelect } from '@/interfaces';
 
 wik.configProviders('root', {
   [wik.interfaces.IGlobalConstManager]: wik.GlobalConstManager,
@@ -28,6 +26,7 @@ class MyWarehouse extends wikui.WikWarehouse {
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         this.add('location', this.create(MyPoint, i * 400, j * 400));
+        // L.circle([i * 400, j * 400], { radius: 100 }).addTo(this.scene);
       }
     }
   }
@@ -35,7 +34,7 @@ class MyWarehouse extends wikui.WikWarehouse {
 
 class MyPoint extends wikui.Marker {
   constructor(lat, lng) {
-    super([lat, lng], {});
+    super([lat, lng], { opacity: 0.1 });
   }
 }
 

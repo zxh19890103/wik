@@ -24,4 +24,6 @@ export class Marker<S = {}> extends mix(L.Marker).with<L.Marker, ReactiveLayer>(
   }
 }
 
-export interface Marker<S = {}> extends WithLayerState<S> {}
+export interface Marker<S = {}> extends WithLayerState<S> {
+  _icon: HTMLElement;
+}

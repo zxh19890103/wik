@@ -22,6 +22,7 @@ export { WikMap } from './Map.class';
 export { LayerList } from './LayerList.class';
 export { SVGOverlayList } from './SVGOverlayList.class';
 export { VectorLayerList } from './VectorLayerList.class';
+export { MarkerList } from './MarkerList.class';
 
 export { Warehouse } from './Warehouse.class';
 export { WarehousePhase } from './WarehousePhase';
