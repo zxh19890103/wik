@@ -37,9 +37,9 @@ export class InteractiveStateAction extends StateActionBase implements IStateAct
 
     const ctx = this.context;
 
-    ctx._syncRenderOnce = true;
+    ctx._immediatelyRenderOnce = true;
     this.data = this.doFn.call(ctx, this.payload);
-    ctx._syncRenderOnce = false;
+    ctx._immediatelyRenderOnce = false;
 
     this.applied = true;
   }
@@ -49,9 +49,9 @@ export class InteractiveStateAction extends StateActionBase implements IStateAct
 
     const ctx = this.context;
 
-    ctx._syncRenderOnce = true;
+    ctx._immediatelyRenderOnce = true;
     this.unDoFn.call(ctx, this.data, this.payload);
-    ctx._syncRenderOnce = false;
+    ctx._immediatelyRenderOnce = false;
 
     this.applied = false;
   }

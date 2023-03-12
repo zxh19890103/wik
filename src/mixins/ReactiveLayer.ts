@@ -21,6 +21,8 @@ export interface ReactiveLayerSnapshot<S = any> {
   state: S;
 }
 
+export type ReactiveLayerRenderingMode = 'mixed' | 'vector' | 'overlay' | 'marker';
+
 export interface ReactiveLayer<S = any>
   extends WithSnapshotAbstract<ReactiveLayerSnapshot<S>>,
     WithClickCancel,
@@ -28,6 +30,8 @@ export interface ReactiveLayer<S = any>
     WithParent<IList<ReactiveLayer>>,
     InteractiveExports,
     WithRef {
+  readonly renderingMode: ReactiveLayerRenderingMode;
+
   readonly $$isReactive: true;
 
   /**
@@ -77,7 +81,7 @@ export interface ReactiveLayer<S = any>
   addChild(...children: ReactiveLayer[]): void;
   removeChild(...children: ReactiveLayer[]): void;
   isChild(): boolean;
-  traverse<T = ReactiveLayer>(every: (item: T) => void): void;
+  traverse<T extends ReactiveLayer = ReactiveLayer>(every: (item: T) => void): void;
 
   setPosition(latlng: L.LatLngExpression): void;
   setPosition(lat: number, lng: number): void;

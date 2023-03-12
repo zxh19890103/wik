@@ -5,6 +5,7 @@ import { leafletOptions } from '../utils/leaflet';
 import { WithLayerState } from '@/interfaces';
 
 import * as images from '../images';
+import { ReactiveLayerRenderingMode } from '@/mixins/ReactiveLayer';
 
 @leafletOptions<L.MarkerOptions>({
   interactive: true,
@@ -18,6 +19,8 @@ import * as images from '../images';
 export class Marker<S = {}> extends mix(L.Marker).with<L.Marker, ReactiveLayer>(
   ReactiveLayerMixin,
 ) {
+  readonly renderingMode: ReactiveLayerRenderingMode = 'marker';
+
   constructor(latlng: L.LatLngExpression, options?: L.MarkerOptions) {
     super(latlng, options);
     this.position = L.latLng(latlng);

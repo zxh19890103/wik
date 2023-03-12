@@ -109,7 +109,7 @@ const render = (item: ReactiveLayer, effect: ReactiveLayerRenderEffect) => {
     item.onShapeUpdate && item.onShapeUpdate(snapshot?.latlngs);
   }
 
-  if (item._syncRenderOnce) return;
+  if (item._immediatelyRenderOnce) return;
 
   item._lastRenderedEffect = effect;
   item._headStateHasChanged = true;

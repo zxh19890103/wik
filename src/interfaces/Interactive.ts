@@ -6,14 +6,20 @@ export interface OnMouseOverOut<S = any> {
    * @param data the event maybe
    */
   onHover(data?: any): S;
-  onHovered?(): void;
   /**
    *
    * @param state the state onHover returns
    * @param data the event maybe
    */
   onUnHover(state?: S, data?: any): void;
-  onUnHovered?(): void;
+}
+
+export interface OnMouseEnter {
+  onHovered(): void;
+}
+
+export interface OnMouseLeave {
+  onUnHovered(): void;
 }
 
 export interface OnSelect<S = any> {
@@ -22,14 +28,21 @@ export interface OnSelect<S = any> {
    * @param data the event maybe
    */
   onSelect(data?: any): S;
-  onSelected?(): void;
+
   /**
    *
    * @param state the state onSelect returns
    * @param data the event maybe
    */
   onUnSelect(state?: S, data?: any): void;
-  onUnSelected?(): void;
+}
+
+export interface OnSelected {
+  onSelected(): void;
+}
+
+export interface OnUnSelected {
+  onUnSelected(): void;
 }
 
 export interface OnHighlight<S = any> {
@@ -38,14 +51,12 @@ export interface OnHighlight<S = any> {
    * @param data the event maybe
    */
   onHighlight(data?: any): S;
-  onHighlighted?(): void;
   /**
    *
    * @param state the state onHightlight returns
    * @param data the even maybe
    */
   onUnHighlight(state?: S, data?: any): void;
-  onUnHighlighted?(): void;
 }
 
 export interface OnClick {
@@ -89,7 +100,7 @@ export interface InteractiveExports {
   /**
    * render the state syncronize
    */
-  _syncRenderOnce: boolean;
+  _immediatelyRenderOnce: boolean;
   /**
    * a signal indicating whether the head state has changed.
    */

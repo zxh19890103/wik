@@ -4,6 +4,7 @@ import { alias, mix } from '@/model';
 import { leafletOptions } from '../utils';
 import { empty_bounds } from './constants';
 import { WithLayerState } from '@/interfaces';
+import { ReactiveLayerRenderingMode } from '@/mixins/ReactiveLayer';
 
 @leafletOptions<L.ImageOverlayOptions>({
   interactive: true,
@@ -13,6 +14,8 @@ import { WithLayerState } from '@/interfaces';
 export class ImageOverlay<S = {}> extends mix(L.ImageOverlay).with<L.ImageOverlay, ReactiveLayer>(
   ReactiveLayerMixin,
 ) {
+  readonly renderingMode: ReactiveLayerRenderingMode = 'overlay';
+
   private size: L.PointTuple;
 
   constructor(

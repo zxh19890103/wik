@@ -72,7 +72,6 @@ export class InteractiveStateActionManager implements IStateActionManager {
     }
 
     if (_ctx._headStateHasChanged && _ctx.reRender) {
-      console.log('oh?', 'pop what?', _type);
       _ctx.reRender();
       _ctx._headStateHasChanged = false;
     }

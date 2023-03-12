@@ -25,9 +25,16 @@ export class SVGOverlayList<M extends LayerWithID, E extends string = never> ext
 
   protected override _add(item: M): void {
     L.Util.setOptions(item, { pane: this.paneObj.fullname });
-    util$$.writeReadonlyProp(item, 'svgServer', this.svgServer);
+    util$$.writeProp(item, 'svgServer', this.svgServer);
 
     super._add(item);
+  }
+
+  protected override _remove(item: M): void {
+    super._remove(item);
+
+    L.Util.setOptions(item, { pane: null });
+    util$$.writeProp(item, 'svgServer', null);
   }
 
   override setZ(z: number) {
@@ -41,10 +48,13 @@ export class SVGOverlayList<M extends LayerWithID, E extends string = never> ext
 
   override mount(parent: WikMap): void {
     super.mount(parent);
-    const paneObj = this.paneMgr.get(this.pane, 'overlay', _pane_z_seed++);
-    util$$.writeReadonlyProp(this, 'paneObj', paneObj);
+    const paneObj = this.paneMgr.get(this.pane, 'overlay');
+    util$$.writeProp(this, 'paneObj', paneObj);
     this.svgServer.bootstrap(parent, this.pane);
   }
-}
 
-let _pane_z_seed = 500;
+  dispose(): void {
+    this.paneObj.remove();
+    this.svgServer.teardown();
+  }
+}

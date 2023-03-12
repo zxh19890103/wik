@@ -22,7 +22,6 @@ export class MarkerList<M extends Marker = Marker, E extends string = never> ext
 
   protected override _add(item: M): void {
     L.Util.setOptions(item, { pane: this.paneObj.fullname });
-    super._add(item);
   }
 
   override setZ(z: number) {
@@ -36,9 +35,7 @@ export class MarkerList<M extends Marker = Marker, E extends string = never> ext
 
   override mount(parent: WikMap): void {
     super.mount(parent);
-    const paneObj = this.paneMgr.get(this.pane, 'overlay', _pane_z_seed++);
-    util$$.writeReadonlyProp(this, 'paneObj', paneObj);
+    const paneObj = this.paneMgr.get(this.pane, 'marker');
+    util$$.writeProp(this, 'paneObj', paneObj);
   }
 }
-
-let _pane_z_seed = 600;

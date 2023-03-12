@@ -6,6 +6,7 @@ import { leafletOptions } from '../utils';
 import { mix, alias } from '@/model';
 import { ReactiveLayer, ReactiveLayerMixin, ReactiveLayerRenderEffect } from '@/mixins';
 import { WithLayerState } from '@/interfaces';
+import { ReactiveLayerRenderingMode } from '@/mixins/ReactiveLayer';
 
 @leafletOptions<L.ImageOverlayOptions>({
   interactive: true,
@@ -15,6 +16,8 @@ import { WithLayerState } from '@/interfaces';
 export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, ReactiveLayer>(
   ReactiveLayerMixin,
 ) {
+  readonly renderingMode: ReactiveLayerRenderingMode = 'overlay';
+
   private _size: L.Point = null;
   /**
    * the size before changed.
@@ -95,9 +98,9 @@ export class SVGOverlay<S = {}> extends mix(L.SVGOverlay).with<L.SVGOverlay, Rea
     return [boxRadius - x / 2, boxRadius - y / 2];
   }
 
-  onRender() {
+  leafletRender() {
     const r = this.computesSvgBoxRadius();
-    const { lat, lng } = this.position;
+    const { lat, lng } = this.localToWorld([0, 0]);
     this._bounds = new L.LatLngBounds([-r + lat, -r + lng], [r + lat, r + lng]);
     if (!this._image || !this._map) return;
     this.redraw();

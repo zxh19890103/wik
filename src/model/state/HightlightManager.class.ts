@@ -13,10 +13,8 @@ export class HighlightManager implements IHighlightManager {
 
   highlight(...layers: Interactive[]): void {
     for (const layer of layers) {
-      if (layer.onHighlight && layer.onUnHighlight) {
-        this.layers.add(layer);
-        this.interactiveStateActionManager.push(layer, 'Highlight');
-      }
+      this.layers.add(layer);
+      this.interactiveStateActionManager.push(layer, 'Highlight');
     }
   }
 
@@ -24,9 +22,7 @@ export class HighlightManager implements IHighlightManager {
     for (const layer of layers) {
       if (!this.layers.has(layer)) continue;
 
-      if (layer.onHighlight && layer.onUnHighlight) {
-        this.interactiveStateActionManager.pop(layer, 'Highlight');
-      }
+      this.interactiveStateActionManager.pop(layer, 'Highlight');
 
       this.layers.delete(layer);
     }

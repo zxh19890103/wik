@@ -1,6 +1,7 @@
 import { Constructor } from '@/interfaces';
 import { Core } from './Core.class';
 import { IList } from './IList';
+import { writeProp } from './mixin';
 
 export abstract class CoreList<M extends object = object, E extends string = never>
   extends Core<E | CoreListEventType>

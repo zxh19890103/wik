@@ -33,9 +33,8 @@ export class ReactSVGOverlay<D extends SvgData = SvgData, S = {}> extends SVGOve
     this.svgServer = svgServer;
   }
 
-  onRender() {
-    super.onRender();
-
+  leafletRender() {
+    super.leafletRender();
     this.reqSvgUpdate();
   }
 
@@ -80,15 +79,18 @@ export class ReactSVGOverlay<D extends SvgData = SvgData, S = {}> extends SVGOve
         this._initImage();
         super.onAdd(map);
         // Here we update svg after added because we need to see the lastest state on page at initial.
-        this.reqSvgUpdate();
+        // this.reqSvgUpdate(); // not needed for reactive layer would emit a init render request after added.
         this.onMounted && this.onMounted();
+      })
+      .catch((err) => {
+        console.log(err);
       });
 
     return this;
   }
 
   override onRemove(map: Map): this {
-    // delete by react firstly, and then try delete by leaflet, thus no error would emit.
+    // delete by react firstly, and then try deleting by leaflet, thus no error would emit.
     this.svgServer.removeComponent(this.svgId);
     super.onRemove(map);
     return this;

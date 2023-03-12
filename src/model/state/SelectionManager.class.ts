@@ -8,71 +8,84 @@ import interfaces from '../symbols';
 type SelectionManagerEventType = 'item' | 'items';
 
 @injectable({ providedIn: 'root', provide: interfaces.ISelectionManager })
-export class SelectionManager extends Core<SelectionManagerEventType> implements ISelectionManager {
-  private item: Interactive = null;
-  private items: Interactive[] = [];
+export class SelectionManager<I extends Interactive = Interactive>
+  extends Core<SelectionManagerEventType>
+  implements ISelectionManager
+{
+  private item: I = null;
+  private items: I[] = [];
 
   @inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
 
-  getCurrent(): Interactive {
+  getCurrent(): I {
     return this.item;
   }
 
-  getMany(): Interactive[] {
+  getMany(): I[] {
     return this.items || [];
   }
 
-  protected setItem(item: Interactive) {
+  protected setItem(item: I) {
     this.item = item;
     this.fire('item', { item });
   }
 
-  protected setItems(items: Interactive[]) {
+  protected setItems(items: I[]) {
     this.items = items;
     this.fire('items', { items });
   }
 
-  current(item: Interactive, data?: any) {
-    if (item === this.item) return;
-
-    if (this.item) {
-      this.interactiveStateActionManager.pop(this.item, 'Select');
-    }
-
+  protected _select(item: I, data?: any) {
     this.interactiveStateActionManager.push(item, 'Select', data);
-    this.setItem(item);
   }
 
-  many(layers: Interactive[]): void {
+  protected _unselect(item: I) {
+    this.interactiveStateActionManager.pop(item, 'Select');
+  }
+
+  current(item: I, data?: any) {
+    if (item === this.item) return false;
+
+    if (this.item) {
+      this._unselect(this.item);
+    }
+
+    this._select(item, data);
+    this.setItem(item);
+
+    return true;
+  }
+
+  many(layers: I[]): void {
     const items = [];
     for (const layer of layers) {
       items.push(layer);
-      this.interactiveStateActionManager.push(layer, 'Select');
+      this._select(layer);
     }
 
     this.setItems(items);
   }
 
-  append(item: Interactive) {
+  append(item: I) {
     if (this.items.indexOf(item) > -1) return;
-    this.interactiveStateActionManager.push(item, 'Select');
+    this._select(item);
     this.setItems([...this.items, item]);
   }
 
-  isSelectable(item: Interactive) {
+  isSelectable(item: I) {
     return !!item.onSelect && !!item.onUnSelect;
   }
 
   clearCurrent() {
     if (!this.item) return;
-    this.interactiveStateActionManager.pop(this.item, 'Select');
+    this._unselect(this.item);
     this.setItem(null);
   }
 
   clearMany() {
     for (const item of this.items) {
-      this.interactiveStateActionManager.pop(item, 'Select');
+      this._unselect(item);
     }
 
     this.setItems([]);

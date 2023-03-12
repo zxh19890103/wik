@@ -3,7 +3,7 @@ import { WikMap } from '../basic/Map.class';
 import { IWarehouse, interfaces, Behavior, inject, SelectionManager } from '@/model';
 import { PaneManager, WikPane } from '../state';
 
-export class RectDrawSelectBehavior extends Behavior {
+export class RectangleSelectBehavior extends Behavior {
   @inject(interfaces.ISelectionManager)
   private selectionMgr: SelectionManager;
   @inject(interfaces.IPaneManager)

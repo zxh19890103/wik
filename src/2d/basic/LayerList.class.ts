@@ -9,6 +9,7 @@ import {
   IWarehouse,
   interfaces,
   WithClickCancel,
+  util$$,
 } from '@/model';
 
 type LayerListEventType =
@@ -64,12 +65,16 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
   protected override _add(item: M): void {
     this.featureGroup.addLayer(item as unknown as L.Layer);
+    util$$.writeProp(item, '$$parent', this);
+
     super._add(item);
   }
 
   protected override _remove(item: M): void {
-    this.featureGroup.removeLayer(item as unknown as L.Layer);
     super._remove(item);
+
+    this.featureGroup.removeLayer(item as unknown as L.Layer);
+    util$$.writeProp(item, '$$parent', null);
   }
 
   protected override _clear(): void {

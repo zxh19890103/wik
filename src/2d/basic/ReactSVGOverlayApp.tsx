@@ -16,6 +16,7 @@ interface SVG {
 type SVGPool = { value: Map<string, SVG> };
 type SVGPoolAction = { type: 'init' | 'add' | 'remove' | 'update' | 'clear'; payload?: any };
 type AfterRenderPromiseSettleFn = (val?: HTMLElement) => void;
+type AfterRenderPromiseKey = { svgid: string; action: 'add' | 'update' };
 
 /**
  * 用于渲染 svg 组件的服务
@@ -30,7 +31,8 @@ class ReactSVGOverlayAppServer {
   leafletPanesElement: HTMLDivElement;
   svgToAdd: SVG[] = null;
 
-  settleAfterRenderPromisesQueue: Map<string, AfterRenderPromiseSettleFn> = new Map();
+  private settleAfterRenderPromisesQueue: Map<AfterRenderPromiseKey, AfterRenderPromiseSettleFn> =
+    new Map();
 
   addComponent: (
     component: SvgFC,
@@ -49,6 +51,22 @@ class ReactSVGOverlayAppServer {
     return this.paneElement.querySelector(`#${id}`) || null;
   }
 
+  queueAysncUpdate(svgid: string, settlefn: any, action: 'add' | 'update') {
+    this.settleAfterRenderPromisesQueue.set({ svgid, action }, settlefn);
+  }
+
+  clearQueuedAysncUpdates() {
+    if (this.settleAfterRenderPromisesQueue.size === 0) return;
+
+    const entries = [...this.settleAfterRenderPromisesQueue];
+
+    for (const [key, fn] of entries) {
+      fn(this.getSVGElement(key.svgid));
+    }
+
+    this.settleAfterRenderPromisesQueue.clear();
+  }
+
   bootstrap(map: WikMap, pane: string) {
     if (this.isRunning) {
       return this;
@@ -65,10 +83,11 @@ class ReactSVGOverlayAppServer {
     this.pane = pane;
     this.map = map;
 
-    this.addComponent = async (...args: any) => {
-      if (!this.svgToAdd) this.svgToAdd = [];
-
+    this.addComponent = (...args: any) => {
       return new Promise((r) => {
+        if (!this.svgToAdd) this.svgToAdd = [];
+
+        // these items will be init after app mounted.
         this.svgToAdd.push({
           id: args[1],
           component: args[0],
@@ -77,11 +96,12 @@ class ReactSVGOverlayAppServer {
           style: args[4],
         });
 
-        this.settleAfterRenderPromisesQueue.set(args[1], r);
+        this.queueAysncUpdate(args[1], r, 'add');
       });
     };
 
     this.preparePaneElement();
+    // const portal = ReactDOM.createPortal(<ReactSVGOverlayApp server={this} />, this.paneElement);
     ReactDOM.render(<ReactSVGOverlayApp server={this} />, this.paneElement);
 
     this.isRunning = true;
@@ -97,20 +117,16 @@ class ReactSVGOverlayAppServer {
 
   teardown() {
     if (!this.isRunning) return;
+
     if (this.clearComponents) {
       this.clearComponents();
     }
-    try {
-      this.leafletPanesElement = null;
-      this.paneElement = null;
-      this.map = null;
-      this.isRunning = false;
-      this.isMounted = false;
-    } catch (e) {
-      if (!__PROD__) {
-        window.location.reload();
-      }
-    }
+
+    this.leafletPanesElement = null;
+    this.paneElement = null;
+    this.map = null;
+    this.isRunning = false;
+    this.isMounted = false;
   }
 }
 
@@ -171,10 +187,11 @@ export const ReactSVGOverlayApp = React.memo((props: { server: ReactSVGOverlayAp
     server.addComponent = (fc, id, model, data, style) => {
       return new Promise((r) => {
         dispatch({ type: 'add', payload: { component: fc, svgId: id, model, data, style } });
-        server.settleAfterRenderPromisesQueue.set(id, r);
+        server.queueAysncUpdate(id, r, 'add');
       });
     };
 
+    // handle the initialization of items added before this React App working.
     if (server.svgToAdd?.length > 0) {
       setTimeout(() => {
         dispatch({
@@ -192,7 +209,7 @@ export const ReactSVGOverlayApp = React.memo((props: { server: ReactSVGOverlayAp
     server.updateComponent = (id: string, data: any, style: any) => {
       return new Promise((s) => {
         dispatch({ type: 'update', payload: { svgId: id, data, style } });
-        server.settleAfterRenderPromisesQueue.set(id, s);
+        server.queueAysncUpdate(id, s, 'update');
       });
     };
 
@@ -205,17 +222,20 @@ export const ReactSVGOverlayApp = React.memo((props: { server: ReactSVGOverlayAp
       server.updateComponent = null;
       server.isMounted = false;
     };
-  }, [server]);
+  }, []);
 
+  // This effect may work hard
   useEffect(() => {
-    if (server.svgToAdd) return;
-    if (server.settleAfterRenderPromisesQueue.size > 0) {
-      for (const [svgId, promiseSettle] of server.settleAfterRenderPromisesQueue) {
-        promiseSettle(server.getSVGElement(svgId));
-      }
-      server.settleAfterRenderPromisesQueue.clear();
+    /**
+     * We must wait for the init dispatch happened.
+     */
+    if (server.svgToAdd) {
+      return;
     }
-  }, [svgComponents, server]);
+
+    // Now it happens, let's settle down all the promises queued.
+    server.clearQueuedAysncUpdates();
+  }, [svgComponents]);
 
   const items = [...svgComponents.value.values()];
 

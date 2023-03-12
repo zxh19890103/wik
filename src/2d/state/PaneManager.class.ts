@@ -7,106 +7,128 @@ type PaneGet2Order = 'cover' | 'cover2' | 'cover3' | 'min' | 'max' | number;
 
 /**
  * 0 - no
+ *
  * 1 - loop
+ *
  * 2 - break
  */
 let phaseOfMouseEventHandleLoopFrame = 0;
 let fireEventCall = 0; // on called counter.
 
-console.log('warn!. L.Canvas prototype was overrided.');
+const OFF = false;
 
-(L.Canvas.prototype as any)._initContainer = function () {
-  const container = (this._container = document.createElement('canvas'));
+(() => {
+  if (OFF) return;
 
-  // These 3 lines are deleted for we will use a proxy pane.
-  // DomEvent.on(container, 'mousemove', this._onMouseMove, this);
-  // DomEvent.on(container, 'click dblclick mousedown mouseup contextmenu', this._onClick, this);
-  // DomEvent.on(container, 'mouseout', this._handleMouseOut, this);
+  console.log('warn!. L.Canvas prototype was overrided.');
+  const proto = L.Canvas.prototype as any;
 
-  container['_leaflet_disable_events'] = true; // 1.8
+  proto._initContainer = function () {
+    const container = (this._container = document.createElement('canvas'));
 
-  this._ctx = container.getContext('2d');
-};
+    // These 3 lines are deleted for we will use a proxy pane.
+    // DomEvent.on(container, 'mousemove', this._onMouseMove, this);
+    // DomEvent.on(container, 'click dblclick mousedown mouseup contextmenu', this._onClick, this);
+    // DomEvent.on(container, 'mouseout', this._handleMouseOut, this);
 
-(L.Canvas.prototype as any)._fireEvent = function (layers, e, type) {
-  const map = this._map as WikMap;
+    container['_leaflet_disable_events'] = true; // 1.8
 
-  if (this.__of_proxy_pane__) {
-    map._fireDOMEvent(e, type || e.type, layers);
-    return;
-  }
+    this._ctx = container.getContext('2d');
+  };
 
-  /**
-   * 这个是保持 leaflet 默认的事件发射逻辑
-   */
-  if (phaseOfMouseEventHandleLoopFrame === 0) {
-    // default
-    map._fireDOMEvent(e, type || e.type, layers);
-    return;
-  }
+  proto._fireEvent = function (layers, e, type) {
+    const map = this._map as WikMap;
+    const eventType = type || e.type;
 
-  /**
-   * 检测到物体，停止设置 phaseOfMouseEventHandleLoopFrame = 2 表示要中止遍历，因为目的已经达到
-   */
-  if (layers && phaseOfMouseEventHandleLoopFrame === 1) {
-    map._fireDOMEvent(e, type || e.type, layers);
-    phaseOfMouseEventHandleLoopFrame = 2;
-    return;
-  }
-
-  /**
-   * 全部遍历完毕，没有检测到物体
-   */
-  if (fireEventCall === map.__canvas_renderers_size__) {
-    map._fireDOMEvent(e, type || e.type, layers);
-  }
-};
-
-// IT's really un
-(L.Canvas.prototype as any)._handleMouseHover = function (e, point) {
-  if (this._mouseHoverThrottled) {
-    return;
-  }
-
-  let layer, candidateHoveredLayer;
-
-  for (let order = this._drawFirst; order; order = order.next) {
-    layer = order.layer;
-    if (layer.options.interactive && layer._containsPoint(point)) {
-      candidateHoveredLayer = layer;
+    if (this.__of_proxy_pane__) {
+      map._fireDOMEvent(e, eventType, layers);
+      return;
     }
-  }
 
-  if (candidateHoveredLayer !== this._hoveredLayer) {
-    this._handleMouseOut(e);
-
-    if (candidateHoveredLayer) {
-      DomUtil.addClass(this.$$proxyc, 'leaflet-interactive'); // change cursor
-      this._fireEvent([candidateHoveredLayer], e, 'mouseover');
-      this._hoveredLayer = candidateHoveredLayer;
+    /**
+     * 这个是保持 leaflet 默认的事件发射逻辑
+     */
+    if (phaseOfMouseEventHandleLoopFrame === 0) {
+      // default
+      map._fireDOMEvent(e, eventType, layers);
+      return;
     }
-  }
 
-  this._fireEvent(this._hoveredLayer ? [this._hoveredLayer] : false, e);
+    /**
+     * 检测到物体，停止设置 phaseOfMouseEventHandleLoopFrame = 2 表示要中止遍历，因为目的已经达到
+     */
+    if (layers && phaseOfMouseEventHandleLoopFrame === 1) {
+      map._fireDOMEvent(e, eventType, layers);
+      phaseOfMouseEventHandleLoopFrame = 2;
+      return;
+    }
 
-  this._mouseHoverThrottled = true;
-  setTimeout(() => {
-    this._mouseHoverThrottled = false;
-  }, 32);
-};
+    /**
+     * 全部遍历完毕，没有检测到物体
+     */
+    if (fireEventCall === map.__canvas_renderers_size__) {
+      map._fireDOMEvent(e, eventType, layers);
+    }
+  };
 
-(L.Canvas.prototype as any)._handleMouseOut = function (e) {
-  const layer = this._hoveredLayer;
-  if (layer) {
-    // if we're leaving the layer, fire mouseout
-    DomUtil.removeClass(this.$$proxyc, 'leaflet-interactive');
-    this._fireEvent([layer], e, 'mouseout');
-    this._hoveredLayer = null;
-    this._mouseHoverThrottled = false;
-  }
-};
+  // IT's really un
+  proto._handleMouseHover = function (e, point) {
+    if (this._mouseHoverThrottled) {
+      return;
+    }
 
-export type WikPaneType = 'svg' | 'canvas' | 'overlay';
+    let layer, candidateHoveredLayer;
+
+    for (let order = this._drawFirst; order; order = order.next) {
+      layer = order.layer;
+      if (layer.options.interactive && layer._containsPoint(point)) {
+        candidateHoveredLayer = layer;
+      }
+    }
+
+    if (candidateHoveredLayer !== this._hoveredLayer) {
+      this._handleMouseOut(e);
+
+      if (candidateHoveredLayer) {
+        DomUtil.addClass(this.$$proxyc, 'leaflet-interactive'); // change cursor
+
+        /**
+         * _handleMouseOut may fireout an event ot mouseout which will set
+         *
+         * phaseOfMouseEventHandleLoopFrame = 2 leading to that the next fire not being applied.
+         *
+         * Thus, I re-set phaseOfMouseEventHandleLoopFrame = 1 here
+         */
+        phaseOfMouseEventHandleLoopFrame = 1;
+
+        this._fireEvent([candidateHoveredLayer], e, 'mouseover');
+        this._hoveredLayer = candidateHoveredLayer;
+      }
+    }
+
+    phaseOfMouseEventHandleLoopFrame = 1;
+    this._fireEvent(this._hoveredLayer ? [this._hoveredLayer] : false, e);
+
+    this._mouseHoverThrottled = true;
+    setTimeout(() => {
+      this._mouseHoverThrottled = false;
+    }, 32);
+  };
+
+  // one fire
+  proto._handleMouseOut = function (e) {
+    const layer = this._hoveredLayer;
+    if (layer) {
+      // if we're leaving the layer, fire mouseout
+      DomUtil.removeClass(this.$$proxyc, 'leaflet-interactive');
+      this._fireEvent([layer], e, 'mouseout');
+      this._hoveredLayer = null;
+      this._mouseHoverThrottled = false;
+    }
+  };
+})();
+
+export type WikPaneType = 'svg' | 'canvas' | 'overlay' | 'marker';
 
 /**
  * 一个 pane 只放一个 renderer
@@ -202,6 +224,8 @@ export class WikPane {
     }
 
     switch (this.type) {
+      case 'marker':
+        return 601 + this.i;
       case 'overlay':
         return 501 + this.i;
       case 'svg':
@@ -221,6 +245,9 @@ const orderSort = (a: WikPane, b: WikPane) => b.order - a.order;
 // canvas 402 - 450
 // svg 451 - 499
 // overlay 500 - 599
+// marker 600 -
+// tooltip 650 -
+// popup 700 -
 
 /**
  * @event order/add/remove
@@ -489,7 +516,7 @@ export class PaneManager extends L.Evented {
   }
 
   /**
-   * 存在的问题： 货架遮挡在点之上，move 事件还是会对被遮挡的点起作用，因为，move 此时不会对货架产生 hover 事件
+   * danger, multiple fires, but I've solved it.
    */
   private onmousemove(e) {
     if (this.disabled) {
@@ -511,6 +538,9 @@ export class PaneManager extends L.Evented {
     phaseOfMouseEventHandleLoopFrame = 0;
   }
 
+  /**
+   * safe one fire
+   */
   private onclick(e) {
     if (this.disabled) {
       this.proxy._onClick(e);
@@ -531,6 +561,9 @@ export class PaneManager extends L.Evented {
     phaseOfMouseEventHandleLoopFrame = 0;
   }
 
+  /**
+   * safe, one fire
+   */
   private onmouseout(e) {
     if (this.disabled) {
       this.proxy._handleMouseOut(e);

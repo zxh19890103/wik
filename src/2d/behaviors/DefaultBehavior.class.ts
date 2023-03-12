@@ -5,7 +5,9 @@ import {
   SelectionManager,
   InteractiveStateActionManager,
 } from '@/model';
-import { Interactive } from '@/interfaces';
+import { Group } from '../basic';
+
+import { InteractiveReactiveLayer } from '../interfaces';
 
 export class DefaultBehavior extends Behavior {
   @inject(interfaces.ISelectionManager)
@@ -16,22 +18,42 @@ export class DefaultBehavior extends Behavior {
   override onLoad(): void {}
   override onUnload(): void {}
 
-  override onHover(layer: Interactive, e: L.LeafletMouseEvent): void {
+  private isHoverable(item: InteractiveReactiveLayer) {
+    return (item.onHover && item.onUnHover) || item instanceof Group;
+  }
+
+  private isSelectable(item: InteractiveReactiveLayer) {
+    return !!item.onSelect && !!item.onUnSelect;
+  }
+
+  override onHover(layer: InteractiveReactiveLayer, e: L.LeafletMouseEvent): void {
+    if (!this.isHoverable(layer)) return;
+
     this.interactiveStateActionManager.push(layer, 'Hover');
+    layer.traverse<InteractiveReactiveLayer>((layer) => {
+      if (!this.isHoverable(layer)) return;
+      this.interactiveStateActionManager.push(layer, 'Hover');
+    });
   }
 
-  override onUnHover(layer: Interactive, e: L.LeafletMouseEvent): void {
+  override onUnHover(layer: InteractiveReactiveLayer, e: L.LeafletMouseEvent): void {
+    if (!this.isHoverable(layer)) return;
+
     this.interactiveStateActionManager.pop(layer, 'Hover');
+    layer.traverse<InteractiveReactiveLayer>((layer) => {
+      if (!this.isHoverable(layer)) return;
+      this.interactiveStateActionManager.pop(layer, 'Hover');
+    });
   }
 
-  override onDblClick(layer: Interactive, e: L.LeafletMouseEvent): void {
+  override onDblClick(layer: InteractiveReactiveLayer, e: L.LeafletMouseEvent): void {
     layer.onDblClick && layer.onDblClick(e);
   }
 
-  override onClick(layer: Interactive, e: L.LeafletMouseEvent): void {
+  override onClick(layer: InteractiveReactiveLayer, e: L.LeafletMouseEvent): void {
     layer.onClick && layer.onClick(e);
 
-    if (!this.selectionManager.isSelectable(layer)) return;
+    if (!this.isSelectable(layer)) return;
 
     this.selectionManager.clearMany();
     this.selectionManager.current(layer);

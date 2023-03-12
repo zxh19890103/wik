@@ -1,8 +1,7 @@
-import L from 'leaflet';
+import L, { DivOverlay } from 'leaflet';
 import { wik, wikdom, wikui, wikutil } from '@/i2d';
 
 import { OnClick, OnMouseOverOut, OnSelect } from '@/interfaces';
-import { ReactiveLayerRenderEffect } from '@/mixins';
 import { random2, randomColor, range } from '@/utils';
 
 wik.configProviders('root', {
@@ -14,14 +13,17 @@ wik.configProviders('root', {
 @wik.provides(wikui.const$$.default_warehouse_deps)
 class MyWarehouse extends wikui.WikWarehouse {
   async layout(data: any) {
-    range(400, (i) => {
-      this.add(
-        'chargepile',
-        new Circle(random2(-1500, 1500), random2(-1000, 1000), random2(0, 360), randomColor()),
-      );
-    });
+    const c = this.add(
+      'chargepile',
+      new Circle(random2(-1500, 1500), random2(-1000, 1000), random2(0, 360), randomColor()),
+    );
 
-    this.add('point', new wikui.Circle([0, 0]));
+    setTimeout(() => {
+      c.remove();
+      setTimeout(() => {
+        this.add('chargepile', c);
+      }, 3000);
+    }, 5000);
   }
 }
 
@@ -40,7 +42,7 @@ class Circle
   implements OnSelect, OnClick, OnMouseOverOut
 {
   constructor(lat, lng, a, color) {
-    super(SVG, [lat, lng], 400, 400, null);
+    super(SVG, [lat, lng], 1000, 1000, null);
     this.angle = a;
     this.svgStyleElement = 'rect';
     this.svgData = { color: randomColor() };

@@ -29,7 +29,14 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
 
   protected override _add(item: M): void {
     L.Util.setOptions(item, { renderer: this.paneObj.renderer });
+
     super._add(item);
+  }
+
+  protected override _remove(item: M): void {
+    super._remove(item);
+
+    L.Util.setOptions(item, { renderer: null });
   }
 
   override setZ(z: number) {
@@ -43,11 +50,11 @@ export class VectorLayerList<M extends LayerWithID, E extends string = never> ex
 
   override mount(parent: WikMap): void {
     super.mount(parent);
-    const paneObj = this.paneMgr.get(this.pane, this.rendererType, _pane_z_seed++);
-    util$$.writeReadonlyProp(this, 'paneObj', paneObj);
+    const paneObj = this.paneMgr.get(this.pane, this.rendererType);
+    util$$.writeProp(this, 'paneObj', paneObj);
   }
 
-  dispose(): void {}
+  dispose(): void {
+    this.paneObj.remove();
+  }
 }
-
-let _pane_z_seed = 402;

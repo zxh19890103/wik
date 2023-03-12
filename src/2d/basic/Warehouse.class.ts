@@ -37,6 +37,7 @@ import { LayerList } from './LayerList.class';
 import { SVGOverlayList } from './SVGOverlayList.class';
 import { VectorLayerList } from './VectorLayerList.class';
 import { WarehousePhase } from './WarehousePhase';
+import { ReactiveLayer } from '@/mixins';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 
@@ -130,10 +131,18 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
 
   add(type: OT, item: LayerWithID) {
     const list = this.typedLists.get(type);
-    if (!list) return;
+    if (!list) {
+      if (!__PROD__) {
+        console.log('[Warehouse.add]', 'no list for type', type);
+      }
+      return null;
+    }
+
     list.add(item);
 
     this.onAdd && this.onAdd(item);
+
+    return item;
   }
 
   remove(type: OT, item: LayerWithID | string) {
@@ -260,7 +269,7 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       'edit',
       injector.$new(behaviors.DefaultBehavior),
       injector.$new(behaviors.SpaceDragBehavior, map),
-      // injector.$new(behaviors.RectDrawSelectBehavior, this, map),
+      // injector.$new(behaviors.RectangleSelectBehavior, this, map),
       injector.$new(behaviors.EditBehavior, this, map),
       // injector.$new(behaviors.MarkerDragBehavior, map),
     );

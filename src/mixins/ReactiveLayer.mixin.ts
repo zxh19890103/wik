@@ -10,7 +10,7 @@ import {
 import { PolylineLatLngs } from '@/interfaces';
 import { mapLatLng } from '@/2d/utils/mapLatLng';
 import { boundToLatLngs } from '@/2d/utils/boundToLatLngs';
-import { ReactiveLayer, ReactiveLayerSnapshot } from './ReactiveLayer';
+import { ReactiveLayer, ReactiveLayerRenderingMode, ReactiveLayerSnapshot } from './ReactiveLayer';
 import { IList } from '@/model/basic/IList';
 
 const { mat3, vec2 } = glMatrix;
@@ -56,6 +56,7 @@ export function ReactiveLayerMixin(
   Base: Constructor<L.Layer>,
 ): Constructor<L.Layer & ReactiveLayer> {
   class CCP extends Base implements ReactiveLayer, WithLayerState<any> {
+    readonly renderingMode: ReactiveLayerRenderingMode = 'vector';
     readonly $$isReactive = true;
 
     $$parent: IList<ReactiveLayer> = null;
@@ -73,7 +74,7 @@ export function ReactiveLayerMixin(
 
     _headStateHasChanged = false;
     _uiStateChangeLogs: any[] = null;
-    _syncRenderOnce = false;
+    _immediatelyRenderOnce = false;
 
     //#endregion
 
@@ -108,10 +109,7 @@ export function ReactiveLayerMixin(
 
     override onAdd(map: L.Map): this {
       for (const child of this.$$subSystems) {
-        const { renderer, pane } = (this as unknown as L.Path).options;
-        L.Util.setOptions(child, { renderer, pane });
-
-        map.addLayer(child as unknown as L.Layer);
+        this.mountChild(map, child);
       }
 
       if (super.onAdd) {
@@ -176,13 +174,7 @@ export function ReactiveLayerMixin(
         // Of course it is a layer, so we add it to map if this is added.
         const root = this._map || this._mapToAdd;
         if (root) {
-          // pass renderer or pane
-          const asPath = this as unknown as L.Path;
-          const { renderer, pane } = asPath.options;
-          L.Util.setOptions(child, { renderer, pane });
-
-          // add cuz system already added.
-          root.addLayer(child as unknown as L.Layer);
+          this.mountChild(root, child);
         }
 
         // parent should be set after child added.
@@ -211,10 +203,39 @@ export function ReactiveLayerMixin(
       this.$$subSystems = this.$$subSystems.filter(Boolean);
     }
 
-    traverse<T = ReactiveLayer>(every: (item: T) => void): void {
+    private mountChild(map: L.Map, child: ReactiveLayer) {
+      if (this.renderingMode === 'mixed') {
+        /**
+         * if child is a group, skip.
+         */
+        if (child.renderingMode !== 'mixed') {
+          const { renderer, pane, pane2, pane3 } = (this as any).options as any;
+          L.Util.setOptions(child, {
+            renderer,
+            pane:
+              child.renderingMode === 'vector'
+                ? pane
+                : child.renderingMode === 'marker'
+                ? pane2
+                : pane3,
+          });
+        }
+      } else {
+        /**
+         * just inherits the parent's renderer and pane.
+         */
+        const { renderer, pane } = (this as any).options;
+        L.Util.setOptions(child, { renderer, pane });
+      }
+
+      // add cuz system already added.
+      map.addLayer(child as unknown as L.Layer);
+    }
+
+    traverse<T extends ReactiveLayer = ReactiveLayer>(every: (item: T) => void): void {
       for (const child of this.$$subSystems) {
         every(child as unknown as T);
-        child.traverse(every);
+        child.traverse<T>(every);
       }
     }
 
@@ -328,7 +349,7 @@ export function ReactiveLayerMixin(
 
       this.updateMatrix();
 
-      if (this._syncRenderOnce) {
+      if (this._immediatelyRenderOnce) {
         reactiveLayerRenderFn(this, effect);
       } else {
         appendLayerRenderReq(this, effect);
