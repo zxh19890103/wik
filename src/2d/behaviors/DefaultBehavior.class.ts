@@ -50,6 +50,10 @@ export class DefaultBehavior extends Behavior {
     layer.onDblClick && layer.onDblClick(e);
   }
 
+  override onNoopClick(evt: unknown): void {
+    this.selectionManager.clear();
+  }
+
   override onClick(layer: InteractiveReactiveLayer, e: L.LeafletMouseEvent): void {
     layer.onClick && layer.onClick(e);
 

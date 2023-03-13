@@ -34,10 +34,7 @@ interface GroupOptions {
   paneName: 'group',
   needOverlay: false,
 })
-export class Group<S = {}>
-  extends mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLayerMixin)
-  implements OnContextMenu
-{
+export class Group<S = {}> extends mix(L.Layer).with<L.Layer, ReactiveLayer>(ReactiveLayerMixin) {
   @inject(interfaces.IPaneManager)
   readonly paneMgr: PaneManager;
   @inject(interfaces.IModeManager)
@@ -103,25 +100,6 @@ export class Group<S = {}>
         }
       }
     });
-  }
-
-  onContextMenu(evt?: unknown): ContextMenuItem[] {
-    return [
-      {
-        value: 'del',
-        text: 'Delete',
-      },
-    ];
-  }
-
-  onContextMenuClick(key: string): void | Promise<any> {
-    switch (key) {
-      case 'del': {
-        confirm('really delete?');
-        this.remove();
-        break;
-      }
-    }
   }
 
   override addChild(...children: ReactiveLayer<any>[]): void {

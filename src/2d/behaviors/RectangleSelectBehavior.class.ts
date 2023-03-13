@@ -34,7 +34,7 @@ export class RectangleSelectBehavior extends Behavior {
   }
 
   override onLoad(): void {
-    this.pane = this.paneMgr.get('selectPane', 'canvas', 498);
+    this.pane = this.paneMgr.get('selectPane', 'svg');
   }
 
   override onUnload(): void {}
@@ -73,9 +73,6 @@ export class RectangleSelectBehavior extends Behavior {
 
     const results = [];
 
-    /**
-     * @todo performance
-     */
     this.warehouse.each((item, type) => {
       const layer = item as any;
       if (!this.selectionMgr.isSelectable(layer)) return;

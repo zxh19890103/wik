@@ -14,6 +14,8 @@ type PaneGet2Order = 'cover' | 'cover2' | 'cover3' | 'min' | 'max' | number;
  */
 let phaseOfMouseEventHandleLoopFrame = 0;
 let fireEventCall = 0; // on called counter.
+let fireDOMEventCalled = false;
+let lastFiredRenderer = null;
 
 const OFF = false;
 
@@ -42,6 +44,7 @@ const OFF = false;
 
     if (this.__of_proxy_pane__) {
       map._fireDOMEvent(e, eventType, layers);
+      fireDOMEventCalled = true;
       return;
     }
 
@@ -51,6 +54,7 @@ const OFF = false;
     if (phaseOfMouseEventHandleLoopFrame === 0) {
       // default
       map._fireDOMEvent(e, eventType, layers);
+      fireDOMEventCalled = true;
       return;
     }
 
@@ -60,6 +64,7 @@ const OFF = false;
     if (layers && phaseOfMouseEventHandleLoopFrame === 1) {
       map._fireDOMEvent(e, eventType, layers);
       phaseOfMouseEventHandleLoopFrame = 2;
+      fireDOMEventCalled = true;
       return;
     }
 
@@ -68,6 +73,7 @@ const OFF = false;
      */
     if (fireEventCall === map.__canvas_renderers_size__) {
       map._fireDOMEvent(e, eventType, layers);
+      fireDOMEventCalled = true;
     }
   };
 
@@ -100,7 +106,6 @@ const OFF = false;
          * Thus, I re-set phaseOfMouseEventHandleLoopFrame = 1 here
          */
         phaseOfMouseEventHandleLoopFrame = 1;
-
         this._fireEvent([candidateHoveredLayer], e, 'mouseover');
         this._hoveredLayer = candidateHoveredLayer;
       }
@@ -524,18 +529,28 @@ export class PaneManager extends L.Evented {
       return;
     }
 
+    fireDOMEventCalled = false;
     phaseOfMouseEventHandleLoopFrame = 1;
     fireEventCall = 0;
 
+    /**
+     * @todo should fire _onMouseMove eventhough renderer has no _map yet.
+     */
     for (const { renderer, visible, disabled } of this.canvases) {
       fireEventCall++;
       if (phaseOfMouseEventHandleLoopFrame === 2) continue;
       if (!renderer._map || !visible || disabled) continue;
       renderer._onMouseMove(e);
+      lastFiredRenderer = renderer;
+    }
+
+    if (!fireDOMEventCalled) {
+      lastFiredRenderer && lastFiredRenderer._onMouseMove(e);
     }
 
     fireEventCall = 0;
     phaseOfMouseEventHandleLoopFrame = 0;
+    lastFiredRenderer = null;
   }
 
   /**
@@ -547,6 +562,7 @@ export class PaneManager extends L.Evented {
       return;
     }
 
+    fireDOMEventCalled = false;
     phaseOfMouseEventHandleLoopFrame = 1;
     fireEventCall = 0;
 
@@ -555,10 +571,16 @@ export class PaneManager extends L.Evented {
       if (phaseOfMouseEventHandleLoopFrame === 2) continue;
       if (!renderer._map || !visible || disabled) continue;
       renderer._onClick(e);
+      lastFiredRenderer = renderer;
+    }
+
+    if (!fireDOMEventCalled) {
+      lastFiredRenderer && lastFiredRenderer._onClick(e);
     }
 
     fireEventCall = 0;
     phaseOfMouseEventHandleLoopFrame = 0;
+    lastFiredRenderer = null;
   }
 
   /**
@@ -570,6 +592,7 @@ export class PaneManager extends L.Evented {
       return;
     }
 
+    fireDOMEventCalled = false;
     phaseOfMouseEventHandleLoopFrame = 1;
     fireEventCall = 0;
 
@@ -578,9 +601,15 @@ export class PaneManager extends L.Evented {
       if (phaseOfMouseEventHandleLoopFrame === 2) continue;
       if (!renderer._map || !visible || disabled) continue;
       renderer._handleMouseOut(e);
+      lastFiredRenderer = renderer;
+    }
+
+    if (!fireDOMEventCalled) {
+      lastFiredRenderer && lastFiredRenderer._handleMouseOut(e);
     }
 
     fireEventCall = 0;
     phaseOfMouseEventHandleLoopFrame = 0;
+    lastFiredRenderer = null;
   }
 }

@@ -1,12 +1,14 @@
 import L from 'leaflet';
 import { wik, wikdom, wikui, wikutil } from '@/i2d';
-import { OnMouseOverOut } from '@/interfaces';
+import { OnClick, OnMouseOverOut, OnSelect } from '@/interfaces';
 import { random2, range } from '@/utils';
 import { randomLatLng } from '@/2d/utils';
+import { Group } from '@/2d';
 
 wik.configProviders('root', {
   [wik.interfaces.IGlobalConstManager]: wik.GlobalConstManager,
   [wik.interfaces.ILogger]: { useFactory: () => console },
+  [wik.interfaces.ISelectionManager]: wikui.SelectionManager,
 });
 
 @wik.inject(wik.interfaces.IInjector)
@@ -15,7 +17,7 @@ class MyWarehouse extends wikui.WikWarehouse<{}, 'group'> {
   async layout(data: any) {
     await this.imageManager.load(wikui.images.SVG_CHARGEPILE, wikui.images.SVG_CHARGEPILE);
 
-    const group = this.create(wikui.Group, [], { needOverlay: true });
+    const group = this.create(MyGroup, [], { needOverlay: true });
     this.scene.addLayer(group);
 
     range(10, (i) => {
@@ -27,6 +29,8 @@ class MyWarehouse extends wikui.WikWarehouse<{}, 'group'> {
     });
 
     group.addChild(this.create(MyMarker, [9000, 9000]));
+
+    L.circle([0, 0]).addTo(this.scene);
 
     const n = 2;
     for (let i = 0; i < n; i++) {
@@ -59,6 +63,14 @@ class MyPoint extends wikui.Circle implements OnMouseOverOut {
   }
 }
 
+class MyGroup extends Group implements OnSelect, OnClick {
+  onSelect(data?: any) {}
+  onUnSelect(state?: any, data?: any): void {}
+  onClick(e?: unknown): void {
+    console.log('clickded');
+  }
+}
+
 class MyMarker extends wikui.Marker implements OnMouseOverOut {
   onHover(data?: any) {
     this.setOpacity(0.3);
@@ -69,7 +81,17 @@ class MyMarker extends wikui.Marker implements OnMouseOverOut {
   }
 }
 
-class MyRobot extends wikui.Robot implements OnMouseOverOut {
+class MyRobot extends wikui.Robot implements OnMouseOverOut, OnSelect {
+  onSelect(data?: any) {
+    console.log('select child');
+    this.setSVGStyle({ fill: '#1f0' });
+  }
+
+  onUnSelect(state?: any, data?: any): void {
+    console.log('un select child');
+    this.setSVGStyle({ fill: '' });
+  }
+
   onHover(data?: any) {
     const angle = this.angle;
     const posi = this.position;

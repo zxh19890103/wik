@@ -37,7 +37,6 @@ import { LayerList } from './LayerList.class';
 import { SVGOverlayList } from './SVGOverlayList.class';
 import { VectorLayerList } from './VectorLayerList.class';
 import { WarehousePhase } from './WarehousePhase';
-import { ReactiveLayer } from '@/mixins';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 
@@ -301,7 +300,9 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
        */
       this.scene
         .on('mousedown mousemove mouseup click', (evt) => {
+          console.log('clicked', evt.type);
           if (evt.type === 'click' && this.scene.isClickEventFireCancelled) return;
+          console.log('yes!', 'noop click');
           this.modeManager.apply(const$$.event2behavior[evt.type], evt);
         })
         .on('zoom drag', () => {

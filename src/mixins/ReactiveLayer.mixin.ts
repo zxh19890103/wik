@@ -345,7 +345,7 @@ export function ReactiveLayerMixin(
         return;
       }
 
-      console.log('[requestRenderCall]', ReactiveLayerRenderEffect[effect]);
+      // console.log('[requestRenderCall]', ReactiveLayerRenderEffect[effect]);
 
       this.updateMatrix();
 
