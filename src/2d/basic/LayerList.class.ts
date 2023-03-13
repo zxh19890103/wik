@@ -1,4 +1,4 @@
-import L from 'leaflet';
+import L, { LeafletEvent, LeafletMouseEvent } from 'leaflet';
 import { WikMap } from './Map.class';
 import { IDisposable, LayerWithID, IInjector, WithInjector } from '@/interfaces';
 import {
@@ -10,7 +10,12 @@ import {
   interfaces,
   WithClickCancel,
   util$$,
+  ModeManager,
+  const$$,
 } from '@/model';
+import { tryInvokingOwn } from '@/utils';
+import { ReactiveLayer } from '@/mixins';
+import { Group } from './Group.class';
 
 type LayerListEventType =
   | 'click'
@@ -31,6 +36,9 @@ export class LayerList<M extends LayerWithID, E extends string = never>
 
   @inject(interfaces.IStateActionManager)
   readonly interactiveStateActionManager: InteractiveStateActionManager;
+  @inject(interfaces.IModeManager)
+  readonly modeMgr: ModeManager;
+
   readonly mounted = false;
 
   protected featureGroup: L.FeatureGroup = null;
@@ -43,22 +51,72 @@ export class LayerList<M extends LayerWithID, E extends string = never>
     /**
      * stop the leaflet events and transform to emiter
      */
-    this.featureGroup.on(
-      'click dblclick mousedown mouseover mouseout contextmenu',
-      (evt) => {
+    this.featureGroup
+      .on(
+        'click dblclick mousedown contextmenu',
+        (evt) => {
+          L.DomEvent.stop(evt);
+
+          const layer = evt.propagatedFrom as ReactiveLayer;
+
+          if (evt.type === 'click' && layer.isClickEventFireCancelled) return;
+
+          const target = layer.getTheWorld();
+          apply(target, evt);
+        },
+        this,
+      )
+      .on('mouseover mouseout', (evt: LeafletEvent) => {
         L.DomEvent.stop(evt);
+        const layer = evt.propagatedFrom as ReactiveLayer;
+        const target = layer.getTheWorld();
 
-        const layer = evt.propagatedFrom as WithClickCancel;
+        if (target.renderingMode === 'mixed') {
+          mouseoverout(target, evt);
+        } else {
+          apply(target, evt);
+        }
+      });
 
-        if (evt.type === 'click' && layer.isClickEventFireCancelled) return;
+    const apply = (layer: ReactiveLayer, evt: LeafletEvent) => {
+      const onFn = const$$.event2behavior[`item@${evt.type}`];
+      this.modeMgr.apply(onFn, layer, evt);
+      tryInvokingOwn(this.$$parent, onFn);
 
-        this.fire(evt.type as LayerListEventType, {
-          layer,
-          leafletEvt: evt,
-        });
-      },
-      this,
-    );
+      this.fire(evt.type as LayerListEventType, {
+        layer,
+        leafletEvt: evt,
+      });
+    };
+
+    let is_hovered = false;
+    let mouseout_timer = null;
+
+    /**
+     * This is designed for Group for group composited with many elements,
+     * and some of which may share one area of canvas.
+     */
+    const mouseoverout = (layer: ReactiveLayer, evt: LeafletEvent) => {
+      if (is_hovered && evt.type === 'mouseout') {
+        mouseout_timer = setTimeout(() => {
+          is_hovered = false;
+          mouseout_timer = null;
+
+          apply(layer, evt);
+        }, 32);
+      } else {
+        if (mouseout_timer) {
+          clearTimeout(mouseout_timer);
+          mouseout_timer = null;
+        }
+
+        if (!is_hovered) {
+          is_hovered = true;
+
+          apply(layer, evt);
+        }
+      }
+    };
 
     layers && this.addArr(layers);
   }

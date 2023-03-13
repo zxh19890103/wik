@@ -62,5 +62,5 @@ export interface IWarehouseOptional {
  */
 export type ListCtorArgs = {
   pane: string;
-  rendererBy?: 'canvas' | 'svg' | 'overlay';
+  rendererBy?: 'canvas' | 'svg' | 'overlay' | 'marker' | 'group';
 };

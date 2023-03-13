@@ -314,6 +314,14 @@ export function ReactiveLayerMixin(
       this.setLocalLatLngs([latlngs]);
     }
 
+    getTheWorld<W extends ReactiveLayer>() {
+      let world = this as unknown as W;
+      while (world.$$system) {
+        world = world.$$system as W;
+      }
+      return world;
+    }
+
     translate(dLat: number, dLng: number): void {
       const { lat, lng } = this.position;
       this.setPosition(lat + dLat, lng + dLng);

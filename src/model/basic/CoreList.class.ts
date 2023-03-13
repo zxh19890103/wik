@@ -29,6 +29,8 @@ export abstract class CoreList<M extends object = object, E extends string = nev
   }
 
   add(item: M): void {
+    if (this.items.has(item)) return;
+
     this._add(item);
 
     if (this.isBatching) return;

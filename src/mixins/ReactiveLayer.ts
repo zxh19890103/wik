@@ -100,6 +100,11 @@ export interface ReactiveLayer<S = any>
   scales(dLat: number): void;
   scales(dLat: number, dLng: number): void;
 
+  /**
+   * find the root system of this element by $$system
+   */
+  getTheWorld<W extends ReactiveLayer>(): W;
+
   leafletRender(): void;
 
   // optionals, May be implemented in the specific classes

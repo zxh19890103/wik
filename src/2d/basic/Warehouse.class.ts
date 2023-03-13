@@ -37,6 +37,8 @@ import { LayerList } from './LayerList.class';
 import { SVGOverlayList } from './SVGOverlayList.class';
 import { VectorLayerList } from './VectorLayerList.class';
 import { WarehousePhase } from './WarehousePhase';
+import { MarkerList } from './MarkerList.class';
+import { GroupList } from './GroupList.class';
 
 type WarehouseEventType = 'click' | 'dblclick' | 'hover' | 'press' | 'contextmenu' | 'phase';
 
@@ -185,6 +187,14 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
           _list = injector.$new(SVGOverlayList, list.pane);
           break;
         }
+        case 'marker': {
+          _list = injector.$new(MarkerList, list.pane);
+          break;
+        }
+        case 'group': {
+          _list = injector.$new(GroupList, [], { pane: list.pane });
+          break;
+        }
         default: {
           _list = injector.$new(LayerList, []);
           break;
@@ -268,9 +278,8 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       'edit',
       injector.$new(behaviors.DefaultBehavior),
       injector.$new(behaviors.SpaceDragBehavior, map),
-      // injector.$new(behaviors.RectangleSelectBehavior, this, map),
+      injector.$new(behaviors.RectangleSelectBehavior, this, map),
       injector.$new(behaviors.EditBehavior, this, map),
-      // injector.$new(behaviors.MarkerDragBehavior, map),
     );
 
     const modes = this.configModes();
@@ -287,22 +296,20 @@ export abstract class Warehouse<LayoutData = any, OT extends string = string>
       /**
        * mapping from event of emitter or lealfet to behavior's callbacks.
        */
-      this.listen$n('click dblclick mouseover mouseout mousedown contextmenu', (evt: WikEvent) => {
-        if (evt.type === 'click' && this.scene.isClickEventFireCancelled) return;
-        const { layer, leafletEvt } = evt.payload;
-        const cb = const$$.event2behavior[`item@${evt.type}`];
-        tryInvokingOwn(this, cb, layer, leafletEvt);
-        this.modeManager.apply(cb, layer, leafletEvt);
-      });
+      // this.listen$n('click dblclick mouseover mouseout mousedown contextmenu', (evt: WikEvent) => {
+      //   if (evt.type === 'click' && this.scene.isClickEventFireCancelled) return;
+      //   const { layer, leafletEvt } = evt.payload;
+      //   const cb = const$$.event2behavior[`item@${evt.type}`];
+      //   tryInvokingOwn(this, cb, layer, leafletEvt);
+      //   this.modeManager.apply(cb, layer, leafletEvt);
+      // });
 
       /**
        * event bind on map seems like that it can't read the actual propagatedFrom layer, no this field.
        */
       this.scene
         .on('mousedown mousemove mouseup click', (evt) => {
-          console.log('clicked', evt.type);
           if (evt.type === 'click' && this.scene.isClickEventFireCancelled) return;
-          console.log('yes!', 'noop click');
           this.modeManager.apply(const$$.event2behavior[evt.type], evt);
         })
         .on('zoom drag', () => {
